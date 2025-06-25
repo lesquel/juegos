@@ -1,0 +1,23 @@
+---
+import "./style.css";
+---
+
+
+<canvas id="canvas"></canvas>
+<div id="overlay">
+  <div id="hud">
+    <p>
+      Hole <b id="hole"></b><br />
+      Jumps <b id="jumps"></b><br />
+      Stars <b id="stars"></b>
+    </p>
+    <p id="message"></p>
+  </div>
+  <div id="menu">
+    <button onclick="retryHole()">↺ Retry</button><br />
+    <br />
+    <button onclick="nextHole()">➜ Continue</button>
+  </div>
+  <div id="gameover">Thanks for playing!</div>
+</div>
+<script src="./script.js"></script>
