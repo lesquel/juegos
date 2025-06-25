@@ -17,15 +17,48 @@ bun create astro@latest -- --template basics
 Inside of your Astro project, you'll see the following folders and files:
 
 ```text
-/
+my-app/
 ├── public/
-│   └── favicon.svg
+│   └── assets/             # Imágenes globales
 ├── src/
+│   ├── modules/
+│   │   ├── home/
+│   │   │   ├── components/     # Componentes React específicos de home
+│   │   │   ├── pages/          # Rutas específicas del módulo
+│   │   │   │   └── index.astro
+│   │   │   ├── sections/       # Secciones Astro (hero, banner, etc.)
+│   │   │   └── styles/
+│   │   │       └── home.css
+│   │   ├── auth/
+│   │   │   ├── components/
+│   │   │   ├── pages/
+│   │   │   │   ├── login.astro
+│   │   │   │   └── register.astro
+│   │   │   └── services/       # Lógica para autenticación
+│   │   ├── dashboard/
+│   │   │   ├── components/
+│   │   │   ├── pages/
+│   │   │   │   └── index.astro
+│   │   │   └── hooks/
+│   │   │       └── useStats.jsx
 │   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   │   └── BaseLayout.astro
+│   ├── shared/             # Componentes o utilidades comunes
+│   │   ├── components/
+│   │   │   ├── Button.jsx
+│   │   │   └── Navbar.astro
+│   │   ├── hooks/
+│   │   │   └── useTheme.jsx
+│   │   ├── styles/
+│   │   │   └── global.css
+│   │   └── utils/
+│   │       └── api.js
+│   └── config/
+│       └── site.config.js
+├── astro.config.mjs
+├── package.json
+└── tailwind.config.js
+
 ```
 
 To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
