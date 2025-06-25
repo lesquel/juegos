@@ -1,81 +1,56 @@
-# Astro Starter Kit: Basics
+# 🚀 Astro Modular Project con React + Bun
 
-```sh
-bun create astro@latest -- --template basics
-```
+Este proyecto usa **Astro** como framework principal, **React** para componentes interactivos y **Bun** como gestor de paquetes y entorno de ejecución.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+---
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 📁 Estructura del Proyecto
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-my-app/
-├── public/
-│   └── assets/             # Imágenes globales
-├── src/
-│   ├── modules/
-│   │   ├── home/
-│   │   │   ├── components/     # Componentes React específicos de home
-│   │   │   ├── pages/          # Rutas específicas del módulo
-│   │   │   │   └── index.astro
-│   │   │   ├── sections/       # Secciones Astro (hero, banner, etc.)
-│   │   │   └── styles/
-│   │   │       └── home.css
-│   │   ├── auth/
-│   │   │   ├── components/
-│   │   │   ├── pages/
-│   │   │   │   ├── login.astro
-│   │   │   │   └── register.astro
-│   │   │   └── services/       # Lógica para autenticación
-│   │   ├── dashboard/
-│   │   │   ├── components/
-│   │   │   ├── pages/
-│   │   │   │   └── index.astro
-│   │   │   └── hooks/
-│   │   │       └── useStats.jsx
-│   ├── layouts/
-│   │   └── BaseLayout.astro
-│   ├── shared/             # Componentes o utilidades comunes
-│   │   ├── components/
-│   │   │   ├── Button.jsx
-│   │   │   └── Navbar.astro
-│   │   ├── hooks/
-│   │   │   └── useTheme.jsx
-│   │   ├── styles/
-│   │   │   └── global.css
-│   │   └── utils/
-│   │       └── api.js
-│   └── config/
-│       └── site.config.js
-├── astro.config.mjs
-├── package.json
-└── tailwind.config.js
-
-```
-
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+```bash
+src/
+├── all-games/              # Lógica relacionada a todos los juegos
+├── auth/                   # Módulo de autenticación
+│   ├── components/
+│   ├── config/
+│   ├── models/
+│   ├── services/
+│   └── games/
+├── marketplace/            # Juegos dentro del marketplace
+│   ├── do-not-make/
+│   ├── drive/
+│   ├── golfrog/
+│   ├── lost-city/
+│   ├── puzle/
+│   └── srmcgann/
+├── assets/                 # Recursos como imágenes, íconos, etc.
+├── components/             # Componentes globales (React o Astro)
+├── config/                 # Configuraciones generales del sitio
+├── layouts/                # Layouts compartidos para las páginas
+├── modules/                # Otros módulos reutilizables
+├── pages/                  # Rutas principales del sitio (file-based routing)
+│   └── play/marketplace/
+│       ├── doNotMake.astro
+│       ├── drive.astro
+│       ├── golfrog.astro
+│       ├── lostCity.astro
+│       ├── puzle.astro
+│       ├── srmcgann.astro
+│       └── index.astro
+├── providers/              # Providers globales como QueryProvider
+│   └── QueryProvider.tsx
+├── styles/                 # Estilos globales
+│   └── global.css
+└── utils/                  # Funciones utilitarias
 
 ## 🧞 Commands
 
-All commands are run from the root of the project, from a terminal:
+Todos los comandos se ejecutan desde la raíz del proyecto, desde un terminal en frontend:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Comando               | Descripción                                         |
+| --------------------- | --------------------------------------------------- |
+| `bun install`         | Instala las dependencias                            |
+| `bun dev`             | Inicia el servidor de desarrollo (`localhost:4321`) |
+| `bun build`           | Genera el sitio para producción en `./dist/`        |
+| `bun preview`         | Previsualiza el sitio en producción localmente      |
+| `bun astro ...`       | Ejecuta comandos de la CLI de Astro                 |
+| `bun astro -- --help` | Muestra ayuda para la CLI de Astro                  |
