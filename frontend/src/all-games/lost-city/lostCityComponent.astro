@@ -1,0 +1,262 @@
+<style>
+html {
+	background: #000;
+}
+body {
+	margin: 0; padding: 0;
+	font: bold min(3vw, 3vh) sans-serif; color: #fff;
+	line-height: 150%;
+	overflow: hidden;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-ms-touch-action: none;
+	user-select: none;
+}
+canvas {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+}
+svg {
+	display: none;
+}
+#M {
+	display: none;
+	position: fixed;
+	right: 0;
+	background: #fff; color: #111;
+	margin: 1em; padding: .25em .5em;
+	border: .15em solid #111;
+	border-radius: .2em;
+}
+#E {
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	padding-top: 48vh;
+	font-size: 200%;
+}
+</style>
+<canvas id="C"></canvas>
+<div id="M"></div>
+<div id="E">The End</div>
+<svg id="A">
+<!-- 0: touch stick --><g>
+	<circle style="fill: rgba(255, 255, 255, .25)" cx="50" cy="50" r="45"/>
+</g>
+<!-- 1: dot --><g>16x16
+	<circle style="fill: rgb(255, 255, 255);" cx="8" cy="8" r="4"/>
+</g>
+<!-- 2: particle --><g>10x10
+	<circle style="fill: rgb(255, 255, 255);" cx="5" cy="5" r="1"/>
+</g>
+<!-- 3: player idle --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="94" rx="22" ry="4" cx="50"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 35 30 L 25 46 L 26 63 L 30 69 L 30 64 L 33 63 L 29 60 L 32 47 L 38 40 L 35 30 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 61 29 L 72 43 L 72 62 L 68 69 L 68 64 L 65 62 L 69 59 L 65 46 L 59 38 L 61 29 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 43 25 L 42 21 C 40 21 35 14 40 14 C 38 3 55 5 54 13 C 59 13 54 21 53 21 L 51 25 L 55 27 L 50 49 L 41 28 L 43 25 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 61 28 L 70 39 L 64 47 L 60 42 L 62 53 L 60 56 L 39 58 L 37 56 L 37 43 L 34 47 L 28 40 L 34 30 L 41 26 L 49 37 L 54 25 L 61 28 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 66 77 L 63 89 L 67 96 L 64 98 L 56 92 L 54 78 L 55 78 L 55 74 L 50 63 L 45 74 L 45 78 L 46 78 L 45 93 L 36 97 L 33 95 L 39 89 L 35 77 L 37 77 L 36 74 L 39 57 L 42 56 L 37 28 L 39 27 L 45 56 L 55 55 L 57 26 L 59 27 L 57 55 L 60 55 L 65 73 L 64 77 L 66 77 Z" />
+	<path style="fill: rgb(255, 255, 255);" d="M 54 8 L 58 11 C 59 12 37 15 36 14 L 39 10 C 38 2 52 0 54 8 Z"/>
+</g>
+<!-- 4: player beat --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="94" rx="41" ry="4" cx="50"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 60 59 L 68 75 L 63 85 L 57 87 L 60 77 L 59 67 L 60 59 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 41 55 L 41 52 C 39 53 32 47 37 46 C 33 36 50 33 50 42 C 55 40 52 49 51 50 L 51 53 L 55 55 L 51 71 L 36 59 L 41 55 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 63 59 L 68 67 L 62 76 L 62 81 L 55 86 L 39 81 L 36 78 L 38 71 L 30 74 L 32 62 L 36 58 L 52 66 L 54 54 L 63 59 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 38 71 L 32 73 L 39 85 L 46 85 L 38 71 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 83 86 L 88 81 L 91 83 L 85 95 L 70 91 L 59 93 L 53 93 L 46 94 L 35 92 L 16 96 L 12 87 L 14 84 L 17 88 L 26 83 L 27 85 L 40 81 L 39 56 L 41 55 L 43 81 L 52 84 L 57 55 L 59 56 L 54 84 L 61 81 L 72 84 L 73 82 L 83 86 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 51 39 L 55 42 C 57 49 36 54 33 45 L 36 41 C 35 33 49 31 51 39 Z"/>
+</g>
+<!-- 5: player walking 1 --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="94" rx="22" ry="4" cx="50"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 35 30 L 27 47 L 27 61 L 31 67 L 31 62 L 34 61 L 30 58 L 34 48 L 38 40 L 35 30 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 61 29 L 71 44 L 69 60 L 65 67 L 65 62 L 62 60 L 66 57 L 64 47 L 59 38 L 61 29 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 43 24 L 42 20 C 40 20 35 13 40 13 C 38 2 55 4 54 12 C 59 12 54 20 53 20 L 51 24 L 55 26 L 50 48 L 41 27 L 43 24 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 61 27 L 70 40 L 63 47 L 60 41 L 62 52 L 60 55 L 39 57 L 37 55 L 37 42 L 35 46 L 29 40 L 34 29 L 41 25 L 49 36 L 54 24 L 61 27 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 66 77 L 63 89 L 67 96 L 64 98 L 56 92 L 54 78 L 55 78 L 54 74 L 50 66 L 46 69 L 44 72 L 45 72 L 44 87 L 38 93 L 35 91 L 38 83 L 34 71 L 36 71 L 35 68 L 39 56 L 42 55 L 37 27 L 39 26 L 45 55 L 55 54 L 57 25 L 59 26 L 57 54 L 60 54 L 64 73 L 64 77 L 66 77 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 54 7 L 58 10 C 59 11 37 14 36 13 L 39 9 C 38 1 52 -1 54 7 Z"/>
+</g>
+<!-- 6: player walking 2 --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="94" rx="22" ry="4" cx="50"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 35 32 L 27 49 L 30 66 L 34 72 L 34 67 L 37 66 L 33 63 L 34 50 L 38 40 L 35 32 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 61 29 L 71 42 L 71 58 L 67 64 L 67 60 L 65 59 L 68 56 L 65 45 L 59 38 L 61 29 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 43 25 L 42 21 C 40 21 35 14 40 14 C 38 3 55 5 54 13 C 59 13 54 21 53 21 L 51 25 L 55 27 L 50 49 L 41 28 L 43 25 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 61 28 L 68 37 L 64 45 L 60 42 L 62 53 L 60 56 L 39 58 L 37 56 L 37 43 L 35 49 L 29 42 L 34 31 L 41 26 L 49 37 L 54 25 L 61 28 Z"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 62 77 L 59 87 L 59 96 L 56 98 L 52 90 L 50 78 L 51 78 L 51 74 L 49 65 L 47 75 L 49 75 L 54 88 L 46 92 L 43 90 L 46 85 L 38 79 L 39 77 L 38 74 L 40 57 L 42 56 L 37 28 L 39 27 L 45 56 L 55 55 L 57 26 L 59 27 L 57 55 L 60 55 L 61 73 L 60 77 L 62 77 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 54 9 L 58 12 C 59 13 37 15 36 14 L 39 10 C 38 2 52 1 54 9 Z"/>
+</g>
+<!-- 7: gorilla walking 1 --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="94" rx="29" ry="5" cx="50"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 40 28 L 39 20 L 43 6 L 51 3 L 59 5 L 63 20 L 62 29 L 77 42 L 83 69 L 76 93 L 69 97 L 71 92 L 66 92 L 70 88 L 72 73 L 67 59 L 64 70 L 67 82 L 62 92 L 62 97 L 55 98 L 55 95 L 51 95 L 55 90 L 58 83 L 50 77 L 44 82 L 45 90 L 47 96 L 44 95 L 43 98 L 35 96 L 37 92 L 32 82 L 36 70 L 34 57 L 28 71 L 31 87 L 31 93 L 28 89 L 26 94 L 21 91 L 21 85 L 17 65 L 28 41 L 40 28 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 46 20 L 45 23 L 50 21 L 46 20 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 56 20 L 52 21 L 57 23 L 56 20 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 46 27 L 50 26 L 53 27 L 56 29 L 54 26 L 48 25 L 46 27 Z"/>
+</g>
+<!-- 8: gorilla walking 2 --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="94" rx="33" ry="5" cx="51"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 39 29 L 38 21 L 42 7 L 50 4 L 58 6 L 62 21 L 61 30 L 75 41 L 85 62 L 83 88 L 76 92 L 78 87 L 73 87 L 77 83 L 76 67 L 67 57 L 64 70 L 69 79 L 65 90 L 65 95 L 58 96 L 58 93 L 54 93 L 58 86 L 50 77 L 46 90 L 48 95 L 45 95 L 44 98 L 37 97 L 38 92 L 36 82 L 36 70 L 34 57 L 30 71 L 31 89 L 33 94 L 30 93 L 29 96 L 24 96 L 21 88 L 19 65 L 27 41 L 39 29 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 45 21 L 44 24 L 49 22 L 45 21 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 55 21 L 51 22 L 56 24 L 55 21 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 45 28 L 49 27 L 52 28 L 55 30 L 53 27 L 47 26 L 45 28 Z"/>
+</g>
+<!-- 9: gorilla walking 3 --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="94" rx="33" ry="5" cx="51"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 41 28 L 40 20 L 44 6 L 52 3 L 60 5 L 64 20 L 63 29 L 77 41 L 85 62 L 81 83 L 74 87 L 76 82 L 71 82 L 75 78 L 76 67 L 67 59 L 64 70 L 68 82 L 66 93 L 66 98 L 59 99 L 59 96 L 55 96 L 59 91 L 57 84 L 50 77 L 48 82 L 50 89 L 52 94 L 49 94 L 48 97 L 41 96 L 42 91 L 36 82 L 36 70 L 34 57 L 28 66 L 29 81 L 30 85 L 28 85 L 27 90 L 21 86 L 19 80 L 17 61 L 28 40 L 41 28 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 46 20 L 45 23 L 50 21 L 46 20 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 56 20 L 52 21 L 57 23 L 56 20 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 46 27 L 50 26 L 53 27 L 56 29 L 54 26 L 48 25 L 46 27 Z"/>
+</g>
+<!-- 10: gorilla attacking --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="94" rx="33" ry="5" cx="41"/>
+	<path style="fill: rgb(52, 52, 52);" d="M 38 28 L 37 20 L 41 6 L 49 3 L 57 5 L 61 20 L 60 29 L 67 37 L 70 54 L 66 69 L 68 82 L 66 93 L 66 98 L 59 99 L 59 96 L 55 96 L 59 91 L 57 84 L 50 77 L 48 82 L 50 89 L 52 94 L 49 94 L 48 97 L 41 96 L 42 91 L 36 82 L 36 70 L 34 57 L 32 67 L 33 82 L 34 86 L 32 86 L 31 91 L 25 87 L 23 81 L 21 62 L 26 49 L 14 48 L 4 46 L 4 39 L 12 34 L 17 37 L 30 36 L 38 28 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 40 19 L 41 23 L 46 21 L 40 19 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 54 19 L 48 21 L 53 23 L 54 19 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 42 27 L 46 27 L 52 29 L 50 26 L 44 25 L 42 27 Z"/>
+</g>
+<!-- 11: tree --><g>x200
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="191" rx="39" ry="6" cx="50"/>
+	<path style="fill: rgb(168, 125, 74);" d="M 50 68 C 50 68 60 121 60 121 L 40 161 L 44 188 L 38 192 L 46 190 L 46 194 L 52 190 L 64 193 L 59 188 L 52 166 L 68 119 L 54 65 L 50 68 Z"/>
+	<path style="fill: rgb(76, 189, 113);" d="M 1 87 C 12 61 32 49 50 50 C 68 49 88 61 99 87 C 91 82 82 81 76 79 C 80 87 82 94 82 107 C 73 94 64 87 56 81 C 52 91 44 100 38 117 C 35 107 35 96 38 89 C 32 92 24 100 18 107 C 18 94 20 87 24 79 C 18 81 9 82 1 87 Z"/>
+	<path style="fill: rgb(87, 217, 129);" d="M 82 107 C 76 81 64 75 54 64 C 48 81 36 88 38 117 C 32 99 33 85 38 73 C 30 81 21 88 18 107 C 18 88 24 75 32 64 C 24 68 14 75 1 87 C 12 61 32 49 50 50 C 68 49 88 61 99 87 C 86 75 76 68 68 64 C 76 75 82 88 82 107 Z"/>
+	<path style="fill: rgb(76, 189, 113);" d="M 42 164 C 38 158 30 153 20 158 C 30 164 32 167 42 164 Z"/>
+	<path style="fill: rgb(76, 189, 113);" d="M 67 119 C 70 113 79 109 91 113 C 76 121 74 125 67 119 Z"/>
+	<path style="fill: rgb(76, 189, 113);" d="M 56 136 C 53 132 48 129 38 132 C 46 137 48 140 56 136 Z"/>
+	<path style="fill: rgb(87, 217, 129);" d="M 42 164 C 38 158 30 153 20 158 C 30 158 32 164 42 164 Z"/>
+	<path style="fill: rgb(87, 217, 129);" d="M 56 136 C 53 132 48 129 38 132 C 46 132 48 136 56 136 Z"/>
+	<path style="fill: rgb(87, 217, 129);" d="M 67 119 C 70 113 79 109 91 113 C 79 113 74 121 67 119 Z"/>
+	<path style="fill: rgb(76, 189, 113);" d="M 42 164 C 36 161 27 164 21 173 C 33 172 38 173 42 164 Z"/>
+	<path style="fill: rgb(87, 217, 129);" d="M 42 164 C 36 161 27 164 21 173 C 30 167 33 170 42 164 Z"/>
+</g>
+<!-- 12: soil --><g>
+	<rect width="100" height="100" style="fill: #8f6b3f;"/>
+	<ellipse style="fill: #6b502f;" cx="22" cy="42" rx="6" ry="2"/>
+	<ellipse style="fill: #6b502f;" cx="75" cy="36" rx="4" ry="1"/>
+	<ellipse style="fill: #6b502f;" cx="56" cy="59" rx="6" ry="2"/>
+	<ellipse style="fill: #6b502f;" cx="33" cy="81" rx="4" ry="2"/>
+	<ellipse style="fill: #6b502f;" cx="54" cy="20" rx="6" ry="1"/>
+</g>
+<!-- 13: stone 1 --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="91" rx="13" ry="3" cx="47"/>
+	<path d="M 59 86 C 58 94 35 94 35 86 C 36 70 59 72 59 86 Z" style="fill: rgb(204, 204, 204);"/>
+	<path d="M 59 86 C 58 94 35 94 35 86 C 46 82 46 90 59 86 Z" style="fill: rgb(174, 174, 174);"/>
+</g>
+<!-- 14: stone 2 --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="93" rx="18" ry="3" cx="50"/>
+	<path d="M 35 88 C 36 96 66 96 66 88 C 66 81 56 74 48 75 C 40 76 35 80 35 88 Z" style="fill: rgb(204, 204, 204);"/>
+	<path d="M 35 88 C 36 96 66 96 66 88 C 65 81 53 89 45 90 C 38 91 35 80 35 88 Z" style="fill: rgb(174, 174, 174);"/>
+</g>
+<!-- 15: grass --><g>
+	<ellipse style="fill: rgba(0, 0, 0, 0.133);" cy="94" rx="18" ry="3" cx="51" />
+	<path style="fill: rgb(76, 189, 113);" d="M 65 70 C 63 81 57 83 53 88 C 50 81 45 78 47 64 C 43 73 43 79 46 84 C 42 81 38 77 37 68 C 37 77 39 83 43 88 C 39 86 35 82 29 77 C 34 89 42 95 50 95 C 58 95 68 91 73 79 C 67 84 63 86 59 88 C 63 83 65 79 65 70 Z"/>
+</g>
+<!-- 16: star --><g>
+	<path style="fill: rgb(255, 255, 255);" d="M 47 46 L 57 31 L 55 47 L 70 55 L 54 55 L 51 70 L 47 55 L 31 59 L 42 51 L 32 40 L 47 46 Z"/>
+</g>
+<!-- 17: ruin small --><g>
+	<path d="M 44 96 L 96 91 L 91 87 L 7 84 L 3 85 L 44 96 Z" style="fill: rgba(0, 0, 0, 0.133);"/>
+	<path d="M 52 8 L 33 18 L 15 18 L 19 51 L 13 61 L 7 84 L 44 91 L 47 62 L 52 52 L 52 8 Z" style="fill: rgb(174, 174, 174);"/>
+	<path d="M 52 8 L 75 10 L 83 25 L 91 88 L 44 91 L 47 62 L 52 52 L 52 8 Z" style="fill: rgb(204, 204, 204);"/>
+</g>
+<!-- 18: ruin big --><g>x200
+	<path d="M 45 196 L 95 180 L 88 178 L 14 181 L 5 183 L 45 196 Z" style="fill: rgba(0, 0, 0, 0.133);"/>
+	<path d="M 45 12 L 34 34 L 21 40 L 12 56 L 23 126 L 14 181 L 45 191 L 51 127 L 45 12 Z" style="fill: rgb(174, 174, 174);"/>
+	<path d="M 45 12 L 74 13 L 86 31 L 73 148 L 88 178 L 45 191 L 51 127 L 45 12 Z" style="fill: rgb(204, 204, 204);"/>
+</g>
+<!-- 19: soil to sand --><g>
+	<rect width="100" height="100" style="fill: rgb(243, 190, 83);"/>
+	<path d="M 0 37 C 0 37 50 55 100 37 L 100 100 L 0 100 L 0 37 Z" style="fill: rgb(143, 107, 63);"/>
+	<ellipse style="fill: rgb(107, 80, 47);" cx="22" cy="68" rx="8" ry="3"/>
+	<ellipse style="fill: rgb(107, 80, 47);" cx="58" cy="89" rx="6" ry="2"/>
+</g>
+<!-- 20: sand --><g>
+	<rect width="100" height="100" style="fill: rgb(243, 190, 83);"/>
+	<path style="fill: rgb(212, 165, 71);" d="M 8 35 C 45 33 58 14 85 20 C 62 23 35 42 8 35 Z"/>
+	<path style="fill: rgb(212, 165, 71);" d="M 23 53 C 53 63 56 48 95 52 C 67 55 51 71 23 53 Z"/>
+	<path style="fill: rgb(212, 165, 71);" d="M 11 68 C 28 79 53 77 63 88 C 43 75 31 92 11 68 Z"/>
+</g>
+<!-- 21: sand to water --><g>
+	<rect width="100" height="100" style="fill: rgb(243, 190, 83);"/>
+	<path d="M 0 0 L 100 0 L 100 53 C 50 71 50 35 0 53 L 0 0 Z" style="fill: rgb(80, 117, 228);"/>
+</g>
+<!-- 22: water --><g>
+	<rect width="100" height="100" style="fill: rgb(80, 117, 228);" y="-1"/>
+	<path style="fill: rgba(255, 255, 255, 0.133);" d="M 26 18 C 52 16 56 36 87 41 C 66 32 52 9 26 18 Z"/>
+	<path style="fill: rgba(255, 255, 255, 0.133);" d="M 13 45 C 39 43 38 72 69 77 C 48 68 39 36 13 45 Z"/>
+</g>
+<!-- 23: water pyramid --><g>
+	<rect width="100" height="100" style="fill: rgb(80, 117, 228);" y="-1"/>
+	<path style="fill: rgba(255, 255, 255, 0.133);" d="M 90 53 L 8 54 L 37 92 L 90 53 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 90 53 L 39 75 L 45 20 L 90 53 Z"/>
+	<path style="fill: rgb(218, 218, 218);" d="M 8 54 L 39 75 L 45 20 L 8 54 Z"/>
+</g>
+<!-- 24: water stones --><g>
+	<rect width="100" height="100" style="fill: rgb(80, 117, 228);" y="-1"/>
+	<path style="fill: rgba(255, 255, 255, 0.133);" d="M 19 64 L 5 38 L 94 32 L 84 61 L 94 62 L 89 90 L 35 94 L 24 72 L 25 65 L 19 64 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 94 32 L 21 48 L 30 24 L 45 5 L 75 8 L 94 32 Z"/>
+	<path style="fill: rgb(218, 218, 218);" d="M 5 38 L 21 48 L 30 24 L 45 5 L 14 22 L 5 38 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 83 82 L 39 77 L 60 31 L 94 62 L 83 82 Z"/>
+	<path style="fill: rgb(218, 218, 218);" d="M 27 54 L 39 77 L 60 31 L 27 54 Z"/>
+</g>
+<!-- 25: water head --><g>
+	<path style="fill: rgba(255, 255, 255, 0.133);" d="M 14 70 L 21 90 L 75 94 L 89 76 L 14 70 Z"/>
+	<path style="fill: rgb(255, 255, 255);" d="M 23 80 L 28 31 L 43 12 L 68 10 L 83 29 L 89 76 L 23 80 Z"/>
+	<path style="fill: rgb(168, 168, 168);" d="M 38 34 L 51 37 L 49 44 L 38 34 Z"/>
+	<path style="fill: rgb(168, 168, 168);" d="M 73 32 L 60 37 L 62 43 L 73 32 Z"/>
+	<path style="fill: rgb(168, 168, 168);" d="M 37 48 L 35 59 L 57 61 L 78 56 L 74 47 L 69 56 L 64 49 L 59 58 L 54 49 L 49 58 L 46 49 L 42 55 L 37 48 Z"/>
+	<path style="fill: rgb(218, 218, 218);" d="M 23 80 L 28 31 L 43 12 L 31 18 L 20 31 L 14 70 L 23 80 Z"/>
+</g>
+<!-- 26: scorpion walking 1 --><g>
+	<path style="fill: rgb(52, 52, 52);" d="M 26 72 L 35 71 L 44 66 L 40 70 L 47 69 L 51 63 L 51 68 L 55 68 L 66 63 L 60 68 L 68 70 L 81 62 L 89 77 C 89 77 78 71 78 70 C 78 70 68 74 68 74 L 65 80 L 72 88 L 85 84 L 69 95 L 62 84 L 54 82 L 51 98 L 48 81 L 44 80 L 37 92 L 40 80 L 35 79 L 32 91 L 32 78 L 22 76 L 14 64 L 26 47 L 54 53 L 27 58 L 21 64 L 26 72 Z"/>
+</g>
+<!-- 27: scorpion walking 2 --><g>
+	<path style="fill: rgb(52, 52, 52);" d="M 26 72 L 35 71 L 37 65 L 40 70 L 47 69 L 52 64 L 51 68 L 55 68 L 60 62 L 60 68 L 68 70 L 84 62 L 92 77 C 92 77 81 71 81 70 C 81 70 68 74 68 74 L 65 80 L 75 87 L 88 83 L 72 94 L 62 84 L 54 82 L 47 93 L 48 81 L 44 80 L 39 92 L 40 80 L 35 79 L 23 89 L 32 78 L 22 76 L 14 64 L 29 46 L 57 52 L 30 57 L 21 64 L 26 72 Z"/>
+</g>
+<!-- 28: piranha 1 --><g>
+	<path style="fill: rgb(103, 136, 233);" d="M 87 48 L 78 40 L 56 33 L 44 34 L 35 33 L 31 41 L 20 48 L 6 34 L 8 54 L 6 69 L 21 60 L 41 73 L 48 71 L 56 73 L 90 66 L 93 61 L 90 63 L 89 61 L 87 63 L 87 61 L 84 63 L 86 59 L 89 57 L 87 48 Z"/>
+	<ellipse style="fill: rgba(52, 52, 52, 0.498);" cx="74" cy="56" rx="3" ry="3"/>
+	<ellipse style="fill: rgb(255, 255, 255);" cx="73" cy="55" rx="1" ry="1"/>
+</g>
+<!-- 29: piranha 2 --><g>
+	<path style="fill: rgb(103, 136, 233);" d="M 84 48 L 75 40 L 54 33 L 42 34 L 33 32 L 29 41 L 18 48 L 6 34 L 10 54 L 7 69 L 19 60 L 39 74 L 46 71 L 54 73 L 88 66 L 91 61 L 88 63 L 87 61 L 85 63 L 85 61 L 81 63 L 83 59 L 86 57 L 84 48 Z"/>
+	<ellipse style="fill: rgba(52, 52, 52, 0.498);" cx="74" cy="56" rx="3" ry="3"/>
+	<ellipse style="fill: rgb(255, 255, 255);" cx="73" cy="55" rx="1" ry="1"/>
+</g>
+</g>
+</svg>
+<script id="VertexShader" type="x-shader/x-vertex">
+attribute vec2 v;
+attribute vec2 t;
+
+uniform vec2 c;
+
+varying vec2 u;
+
+void main() {
+	u = t;
+	gl_Position = vec4(v + c, 0., 1.);
+}
+</script>
+<script id="FragmentShader" type="x-shader/x-fragment">
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+
+varying vec2 u;
+
+uniform sampler2D s;
+uniform vec4 m;
+
+void main() {
+	gl_FragColor = texture2D(s, u).rgba * m;
+}
+</script>
+<script src="./src.js"></script>
