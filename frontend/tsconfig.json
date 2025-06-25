@@ -17,7 +17,8 @@
       "@assets/*": ["src/assets/*"],
       "@utils/*": ["src/utils/*"],
       "@providers/*": ["src/providers/*"],
-      "@modules/*": ["src/modules/*"]
+      "@modules/*": ["src/modules/*"],
+      "@all-games/*": ["src/modules/all-games/*"],
     },
     "jsx": "react-jsx",
     "jsxImportSource": "react"
