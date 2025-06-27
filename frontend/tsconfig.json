@@ -21,7 +21,8 @@
       "@all-games/*": ["src/all-games/*"],
       "@config/*": ["src/config/*"],
       "@models/*": ["src/models/*"],
-      "@adapters/*": ["src/adapters/*"]
+      "@adapters/*": ["src/adapters/*"], 
+      "@services/*": ["src/services/*"]
     },
     "jsx": "react-jsx",
     "jsxImportSource": "react"
