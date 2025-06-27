@@ -1,11 +1,11 @@
 ---
-import Layout from '@layouts/Layout.astro';
-import LinksMarketplacePages from "@modules/games/components/LinksMarketplacePages.astro";
+import Layout from "@layouts/Layout.astro";
+import { ListGames } from "@modules/games/components/ListGames";
 ---
 
 <Layout>
-	<h1 class="text-4xl font-bold">
-		Welcome to <a href="https://astro.build/">Astro</a>
-	</h1>
-	<LinksMarketplacePages />
+  <h1 class="text-4xl font-bold">
+    Welcome to <a href="https://astro.build/">Astro</a>
+  </h1>
+  <ListGames client:load />
 </Layout>

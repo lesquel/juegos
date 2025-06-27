@@ -1,3 +1,3 @@
 export const environment = {
-    baseUrl: import.meta.env.BASE_URL
+    BASE_URL: import.meta.env.BASE_URL
 }

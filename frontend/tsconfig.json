@@ -19,6 +19,9 @@
       "@providers/*": ["src/providers/*"],
       "@modules/*": ["src/modules/*"],
       "@all-games/*": ["src/all-games/*"],
+      "@config/*": ["src/config/*"],
+      "@models/*": ["src/models/*"],
+      "@adapters/*": ["src/adapters/*"]
     },
     "jsx": "react-jsx",
     "jsxImportSource": "react"
