@@ -5,5 +5,16 @@
   "game_url": "/play/marketplace/doNotMake",
   "game_description": "do not make",
   "create_at": "2023-01-01T00:00:00.000Z",
-  "update_at": "2023-01-01T00:00:00.000Z"
+  "update_at": "2023-01-01T00:00:00.000Z",
+  "categorys": [
+    {
+      "category_id": 1,
+      "category_name": "math",
+      "category_img": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+      "category_description": "Matematicas",
+      "status": true,
+      "created_at": "2023-01-01T00:00:00.000Z",
+      "updated_at": "2023-01-01T00:00:00.000Z"
+    }
+  ]
 }
