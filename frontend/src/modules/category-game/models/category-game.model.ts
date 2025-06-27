@@ -1,6 +1,6 @@
 import type { Info } from "@models/info.model";
 
-export interface CategoryGame {
+export interface CategoryGameDetail {
   category_id: number;
   category_name: string;
   category_img: string;
@@ -9,6 +9,8 @@ export interface CategoryGame {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface CategoryGame extends Omit<CategoryGameDetail, ""> {}
 
 export interface CategoryGameList {
   info: Info;
