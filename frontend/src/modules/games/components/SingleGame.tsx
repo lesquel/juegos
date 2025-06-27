@@ -2,6 +2,7 @@ import { QueryProvider } from "@providers/QueryProvider";
 import { GameClientData } from "../services/gameClientData";
 import { ListTagCategoryGame } from "@modules/category-game/components/Tags/ListTagCategoryGame";
 import { LoadingComponent } from "@components/LoadingComponent";
+import { ListCommentGame } from "@modules/comment-game/components/ListCommentGame";
 
 export const SingleGame = ({ id }: { id: number }) => {
   return (
@@ -22,8 +23,8 @@ const UseSingleGame = ({ id }: { id: number }) => {
       <p>{data?.game_description}</p>
       <a href={data?.game_url}>Jugar</a>
 
-      <h2>Categorías</h2>
       <ListTagCategoryGame categories={data?.categories} />
+      <ListCommentGame commentGames={data?.comments} />
     </div>
   );
 };

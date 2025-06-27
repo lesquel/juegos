@@ -1,6 +1,7 @@
 import { InfoAdapter } from "@adapters/info.adapter";
 import type { Game, GameDetail, GameList } from "../models/game.model";
 import { CategoryGameGameAdapter } from "@modules/category-game/adapters/category-game.adapter";
+import { CommentGameAdapter } from "@modules/comment-game/adapters/comment-game.adapter";
 
 export class GameAdapter {
   public static adapt(game: any): Game {
@@ -28,6 +29,9 @@ export class GameAdapter {
         ? game.categorys.map((category: any) =>
             CategoryGameGameAdapter.adapt(category)
           )
+        : undefined,
+      comments: game.comments
+        ? game.comments.map((comment: any) => CommentGameAdapter.adapt(comment))
         : undefined,
     };
   }

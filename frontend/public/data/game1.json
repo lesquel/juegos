@@ -16,5 +16,47 @@
       "created_at": "2023-01-01T00:00:00.000Z",
       "updated_at": "2023-01-01T00:00:00.000Z"
     }
+  ],
+  "comments": [
+    {
+      "comment_game_id": 1,
+      "comment_game_content": "¡Este juego es increíble!",
+      "game_id": 2,
+      "user_id": 101,
+      "create_at": "2023-06-01T10:00:00Z",
+      "update_at": "2023-06-01T10:00:00Z"
+    },
+    {
+      "comment_game_id": 2,
+      "comment_game_content": "Me encantaron los gráficos.",
+      "game_id": 2,
+      "user_id": 102,
+      "create_at": "2023-06-02T14:30:00Z",
+      "update_at": "2023-06-02T14:30:00Z"
+    },
+    {
+      "comment_game_id": 3,
+      "comment_game_content": "Muy adictivo, pasé horas jugando.",
+      "game_id": 3,
+      "user_id": 103,
+      "create_at": "2023-06-03T09:15:00Z",
+      "update_at": "2023-06-03T09:15:00Z"
+    },
+    {
+      "comment_game_id": 4,
+      "comment_game_content": "Se debería mejorar el rendimiento.",
+      "game_id": 1,
+      "user_id": 104,
+      "create_at": "2023-06-04T11:20:00Z",
+      "update_at": "2023-06-04T11:20:00Z"
+    },
+    {
+      "comment_game_id": 5,
+      "comment_game_content": "No entendí bien la mecánica del juego.",
+      "game_id": 4,
+      "user_id": 105,
+      "create_at": "2023-06-05T16:45:00Z",
+      "update_at": "2023-06-05T16:45:00Z"
+    }
   ]
 }

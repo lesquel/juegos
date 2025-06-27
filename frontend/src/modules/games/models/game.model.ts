@@ -1,5 +1,6 @@
 import type { CategoryGame } from "@modules/category-game/models/category-game.model";
-import type { Info } from "src/models/info.model";
+import type { CommentGame } from "@modules/comment-game/models/comment-game.model";
+import type { Info } from "@models/info.model";
 
 export interface GameDetail {
   game_id: number;
@@ -10,9 +11,10 @@ export interface GameDetail {
   create_at: Date;
   update_at: Date;
   categories?: CategoryGame[];
+  comments?: CommentGame[];
 }
 
-export interface Game extends Omit<GameDetail, "categories"> {}
+export interface Game extends Omit<GameDetail, "categories" | "comments"> {}
 
 export interface GameList {
   info: Info;
