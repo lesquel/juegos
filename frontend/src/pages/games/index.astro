@@ -1,0 +1,9 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { ListGames } from "@modules/games/components/ListGames";
+---
+
+<Layout>
+  <h1 class="text-4xl font-bold">Games</h1>
+  <ListGames client:load />
+</Layout>

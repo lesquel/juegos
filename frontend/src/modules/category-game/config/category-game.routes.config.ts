@@ -1,3 +1,3 @@
 export const categoryGameRoutesConfig = {
-  base: "/categories",
+  base: "/category-games",
 };

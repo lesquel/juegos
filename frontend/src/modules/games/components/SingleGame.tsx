@@ -1,6 +1,7 @@
 import { QueryProvider } from "@providers/QueryProvider";
 import { GameClientData } from "../services/gameClientData";
 import { ListTagCategoryGame } from "@modules/category-game/components/Tags/ListTagCategoryGame";
+import { LoadingComponent } from "@components/LoadingComponent";
 
 export const SingleGame = ({ id }: { id: number }) => {
   return (
@@ -12,7 +13,7 @@ export const SingleGame = ({ id }: { id: number }) => {
 
 const UseSingleGame = ({ id }: { id: number }) => {
   const { data, isLoading, error } = GameClientData.getGameDetail(id);
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingComponent />;
   if (error) return <div>Error: {error.message}</div>;
   return (
     <div>

@@ -1,6 +1,7 @@
 import { QueryProvider } from "@providers/QueryProvider";
 import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { CardCategoryGame } from "./CardCategoryGame";
+import { LoadingComponent } from "@components/LoadingComponent";
 
 export const ListCategoryGame = () => {
   return (
@@ -12,7 +13,7 @@ export const ListCategoryGame = () => {
 
 const UseListCategoryGame = () => {
   const { data, isLoading, error } = CategoryGameClientData.getCategoryGames();
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingComponent />;
   if (error) return <div>Error: {error.message}</div>;
   return (
     <div>
