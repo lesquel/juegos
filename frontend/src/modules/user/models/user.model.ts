@@ -9,9 +9,7 @@ export interface UserMe {
   };
 }
 
-export interface UserRegister {
+export interface UserMeDetail {
   id: string;
   email: string;
 }
-
-export interface UserModel extends UserRegister {}

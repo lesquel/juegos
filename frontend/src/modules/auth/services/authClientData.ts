@@ -1,5 +1,5 @@
 import { environment } from "@config/environment";
-import type { LoginModel } from "../models/auth.model";
+import type { LoginModel, RegisterModel } from "../models/auth.model";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import type { UserMe } from "@modules/user/models/user.model";
@@ -16,7 +16,7 @@ export class AuthClientData {
     return useMutation({
       mutationFn: async (data: LoginModel) => {
         const response = await axios.post<UserMe>(
-          `http://localhost:8000/auth/login`,
+          `${AuthClientData.baseUrl}/auth/login`,
           data
         );
         return UserAdapter.adaptMe(response.data);
@@ -36,8 +36,8 @@ export class AuthClientData {
   static register() {
     return useMutation({
       mutationFn: async (data: LoginModel) => {
-        const response = await axios.post<UserMe>(
-          `http://localhost:8000/auth/register`,
+        const response = await axios.post<RegisterModel>(
+          `${AuthClientData.baseUrl}/auth/register`,
           data
         );
         return AuthAdapter.adaptRegister(response.data);
