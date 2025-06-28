@@ -1,8 +1,10 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import { MyTransferPaymentComponent } from "@modules/transfer-payment/components/MyListTransferPaymentComponent";
 import { MeComponent } from "@modules/user/components/MeComponent";
 ---
 
 <Layout title="Me">
   <MeComponent client:load />
+  <MyTransferPaymentComponent client:visible />
 </Layout>

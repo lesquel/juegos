@@ -8,9 +8,6 @@ export const NavbarAvatar = () => {
     <a href={userRoutesConfig.children.me.url}>
       <User />
       {user?.user.email}
-      {user?.user.id}
-      <br />
-      {user?.access_token.access_token}
     </a>
   );
 };
