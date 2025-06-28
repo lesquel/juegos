@@ -1,4 +1,3 @@
-
 import type { UserMe } from "@modules/user/models/user.model";
 import Cookies from "js-cookie";
 
@@ -13,7 +12,15 @@ export class CookiesSection {
   }
 
   static get(): UserMe | null {
-    return JSON.parse(Cookies.get(CookiesSection.cookieName) || "") || null;
+    const cookieValue = Cookies.get(CookiesSection.cookieName);
+    if (!cookieValue) return null;
+
+    try {
+      return JSON.parse(cookieValue) as UserMe;
+    } catch (error) {
+      console.error("Error parsing cookie:", error);
+      return null;
+    }
   }
 
   static clear() {

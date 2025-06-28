@@ -3,5 +3,7 @@ export interface LoginModel {
     password: string;
 }
 
-export interface RegisterModel extends LoginModel {
+export interface RegisterModel {
+    id : string;
+    email: string;
 }

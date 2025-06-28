@@ -1,6 +1,7 @@
 ---
 import { gamesRoutesConfig } from "@modules/games/config/games.routes.config";
 import { categoryGameRoutesConfig } from "@modules/category-game/config/category-game.routes.config";
+import { NarbarAuthLoginRegister } from "@modules/auth/components/NarbarAuthLoginRegister";
 ---
 
 <div>
@@ -8,5 +9,5 @@ import { categoryGameRoutesConfig } from "@modules/category-game/config/category
   <a href={gamesRoutesConfig.base}>Games</a>
   <a href={categoryGameRoutesConfig.base}>Category Games</a>
   ---------------
-  <a href="/auth/login">Login</a>
+  <NarbarAuthLoginRegister client:load />
 </div>

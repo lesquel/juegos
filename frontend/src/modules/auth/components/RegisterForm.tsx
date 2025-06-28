@@ -4,17 +4,17 @@ import { z } from "zod";
 import { AuthClientData } from "../services/authClientData";
 import { MiddlewareAstroProtectUser } from "../middleware/middlewareAstroProtectUser";
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
   MiddlewareAstroProtectUser.isLogged();
   return (
     <QueryProvider>
-      <UseLoginForm />
+      <UseRegisterForm />
     </QueryProvider>
   );
 };
 
-const UseLoginForm = () => {
-  const { mutate } = AuthClientData.login();
+const UseRegisterForm = () => {
+  const { mutate } = AuthClientData.register();
   const form = useForm({
     defaultValues: {
       email: "",
@@ -42,7 +42,7 @@ const UseLoginForm = () => {
         name="email"
         children={(field) => (
           <div>
-            <h1>Login</h1>
+            <h1>Register</h1>
             <label>Email</label>
             <input
               type="email"
