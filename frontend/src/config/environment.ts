@@ -1,3 +1,3 @@
 export const environment = {
-    baseUrl: import.meta.env.BASE_URL
+    BASE_URL: import.meta.env.VITE_BASE_URL || "http://localhost:8000",
 }

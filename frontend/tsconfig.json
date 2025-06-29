@@ -8,6 +8,22 @@
     "dist"
   ],
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@pages/*": ["src/pages/*"],
+      "@styles/*": ["src/styles/*"],
+      "@assets/*": ["src/assets/*"],
+      "@utils/*": ["src/utils/*"],
+      "@providers/*": ["src/providers/*"],
+      "@modules/*": ["src/modules/*"],
+      "@all-games/*": ["src/all-games/*"],
+      "@config/*": ["src/config/*"],
+      "@models/*": ["src/models/*"],
+      "@adapters/*": ["src/adapters/*"], 
+      "@services/*": ["src/services/*"]
+    },
     "jsx": "react-jsx",
     "jsxImportSource": "react"
   }

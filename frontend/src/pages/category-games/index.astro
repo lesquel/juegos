@@ -1,0 +1,9 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { ListCategoryGame } from "@modules/category-game/components/ListCategoryGame";
+---
+
+<Layout>
+  <h1 class="text-4xl font-bold">Categoty Games</h1>
+  <ListCategoryGame client:load />
+</Layout>

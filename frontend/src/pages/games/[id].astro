@@ -1,0 +1,10 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { SingleGame } from "@modules/games/components/SingleGame";
+
+const { id } = Astro.params;
+---
+
+<Layout>
+  <SingleGame client:load id={parseInt(id as string)} />
+</Layout>
