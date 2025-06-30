@@ -1,40 +1,53 @@
 project/
 │
 ├── app/                           # 🧠 Capa de dominio (entidades y lógica central)
-│   ├── __init__.py
 │   ├── entities/
 │   │   ├── __init__.py
-│   │   └── game.py                # class Game (entidad del dominio)
-│   └── use_cases/
-│       ├── __init__.py
-│       └── create_game.py        # lógica del caso de uso
+│   │   └── user.py                # class User (entidad del dominio)
+│   └── use_cases/                 # casos de uso
+│       └── create_user.py         # lógica del caso de uso
 │
 ├── infrastructure/               # 🧰 Adaptadores externos y frameworks
-│   ├── __init__.py
-│   ├── db/
+│   ├── core/
 │   │   ├── __init__.py
-│   │   └── game_repository.py    # implementación concreta del repositorio (ej. MongoDB)
-│   └── auth/
-│       └── jwt_handler.py        # librerías externas de JWT
+│   │   ├── __init__.py
+│   │   ├── settings_config.py     # configuración de la aplicación
+│   │   ├── envs/                  # variables de entorno
+│   │   └── specific_settings/     # configuraciones específicas
+│   └── db/
+│       ├── config.py              # configuración de base de datos
+│       ├── connection.py          # conexión a la base de datos
+│       └── postgres/
+│           └── user_repository.py # implementación PostgreSQL del repositorio
 │
-├── interfaces/                   # 🎯 Adaptadores de entrada (API, CLI, etc.)
-│   ├── __init__.py
+├── interfaces/                    # 🎯 Adaptadores de entrada (API, CLI, etc.)
 │   └── api/
-│       ├── __init__.py
 │       ├── routes/
 │       │   ├── __init__.py
-│       │   └── game_routes.py    # FastAPI routers
-│       └── request_models/
-│           └── game_input.py     # Pydantic models para entradas
+│       │   ├── auth_routes.py     # rutas de autenticación
+│       │   └── user_routes.py     # rutas de usuarios
+│       ├── request_models/
+│       │   └── user_input.py      # Pydantic models para entradas
+│       └── response_models/
+│           └── user_output.py     # Pydantic models para respuestas
 │
-├── data/                         # 📦 Repositorios genéricos y DTOs
+├── data/                          # 📦 Repositorios genéricos y DTOs
 │   ├── __init__.py
 │   ├── repositories/
 │   │   ├── __init__.py
-│   │   └── game_repository.py    # interfaz abstracta del repositorio
+│   │   └── user_repository.py     # interfaz abstracta del repositorio
 │   └── dtos/
-│       └── game_dto.py           # objeto de transferencia de datos
+│       └── user_dto.py            # objeto de transferencia de datos
 │
-├── main.py                       # 🚀 Punto de entrada de la aplicación
-├── requirements.txt              # 📦 Dependencias
-└── README.md
+├── migrations/                    # 📊 Migraciones de base de datos (Alembic)
+│   ├── env.py
+│   ├── README
+│   ├── script.py.mako
+│   └── versions/                  # archivos de migración
+│
+├── main.py                        # 🚀 Punto de entrada de la aplicación
+├── requirements.txt               # 📦 Dependencias de Python
+├── alembic.ini                    # ⚙️ Configuración de Alembic
+├── alembic.md                     # 📝 Documentación de Alembic
+├── .gitignore                     # 🚫 Archivos ignorados por Git
+├── .venv/                         # 🐍 Entorno virtual de Python

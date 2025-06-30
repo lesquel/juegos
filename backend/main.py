@@ -1,11 +1,10 @@
-from fastapi import FastAPI
 import uvicorn
 
-app = FastAPI()
+from app_factory import create_app
 
-@app.get("/")
-async def read_root():
-    return {"message": "Hello, FastAPI!"}
+# Crear la aplicación usando el factory
+app = create_app()
+
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
