@@ -1,7 +1,12 @@
+from enum import Enum
 from typing import Optional
 
+from .base_entity import BaseEntity
+from application.enums import UserRole
 
-class UserEntity:
+
+
+class UserEntity(BaseEntity):
     def __init__(
         self,
         user_id: Optional[str],
@@ -9,18 +14,18 @@ class UserEntity:
         email: str,
         hashed_password: str,
         virtual_currency: float = 0.0,
+        role: UserRole = UserRole.USER,
         created_at: Optional[str] = None,
         updated_at: Optional[str] = None,
     ):
+        super().__init__(created_at, updated_at)
 
         self.user_id = user_id
         self.username = username
         self.email = email
         self.hashed_password = hashed_password
         self.virtual_currency = virtual_currency
-        self.created_at = created_at
-        self.updated_at = updated_at
-        
+        self.role = role
 
     def __repr__(self):
         return f"User(user_id={self.user_id}, username='{self.username}', email='{self.email}')"

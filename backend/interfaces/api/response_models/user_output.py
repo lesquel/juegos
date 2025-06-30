@@ -1,9 +1,13 @@
 from pydantic import BaseModel
 import datetime
+
+from application.enums import UserRole
+
 class UserBaseOutput(BaseModel):
     user_id: str
     username: str
     email: str
+    role: UserRole
 
 class UserOutput(UserBaseOutput):
     virtual_currency: float

@@ -5,10 +5,15 @@ Configuración y setup de la aplicación FastAPI
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+
+
+from admin import initialize_admin
+
+
 from contextlib import asynccontextmanager
 
 from infrastructure.core.settings_config import settings
-from infrastructure.db.init_db import create_tables
+from infrastructure.db import create_tables, engine
 from infrastructure.logging import get_logger
 from infrastructure.middleware import LoggingMiddleware
 from interfaces.api.routes import user_router, auth_router
@@ -36,6 +41,8 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     logger.info("👋 Shutting down application...")
+
+
 
 
 def create_app() -> FastAPI:
@@ -87,5 +94,7 @@ def create_app() -> FastAPI:
     logger.info(f"✅ {app_settings.app_name} configured successfully!")
     logger.info(f"📊 Environment: {app_settings.environment}")
     logger.info(f"🔧 Debug mode: {app_settings.debug}")
+
+    initialize_admin(app)
 
     return app

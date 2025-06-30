@@ -187,8 +187,12 @@ class PostgresUserRepository(IUserRepository):
             email=model.email,
             hashed_password=model.hashed_password,
             virtual_currency=model.virtual_currency,
+            role=model.role, 
             created_at=model.created_at,
             updated_at=model.updated_at,
+
+
+
         )
 
     def _entity_to_model(self, entity: UserEntity) -> UserModel:
@@ -199,6 +203,7 @@ class PostgresUserRepository(IUserRepository):
             email=entity.email,
             hashed_password=entity.hashed_password,
             virtual_currency=entity.virtual_currency,
+            role=entity.role,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )

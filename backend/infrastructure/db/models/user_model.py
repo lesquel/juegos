@@ -1,13 +1,14 @@
 from sqlalchemy import Column, String, Float, DateTime, func
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.types import Enum as SqlEnum
 import uuid
 
 from ..base import Base
+from application.enums import UserRole
 
 
 class UserModel(Base):
     __tablename__ = "users"
-    
 
     user_id = Column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True
@@ -17,7 +18,12 @@ class UserModel(Base):
     hashed_password = Column(String(255), nullable=False)
     virtual_currency = Column(Float, default=0.0, nullable=False)
 
-    # Timestamps
+    role = Column(
+        SqlEnum(UserRole, name="userrole", create_type=True),
+        default=UserRole.USER,
+        nullable=False,
+    )
+
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
