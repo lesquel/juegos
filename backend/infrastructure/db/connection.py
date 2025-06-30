@@ -7,7 +7,7 @@ from .config import get_postgres_url
 DATABASE_URL = get_postgres_url()
 
 engine = create_engine(
-    DATABASE_URL, echo=True
+    DATABASE_URL
 )
 
 

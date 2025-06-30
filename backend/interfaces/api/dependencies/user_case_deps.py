@@ -1,7 +1,7 @@
 from application.use_cases.users import GetAllUsersUseCase, GetUserUseCase
 from application.use_cases.auth import RegisterUserUseCase, LoginUserUseCase
 
-from domain.interfaces.Itoken_provider import ITokenProvider
+from domain.interfaces.token_provider import ITokenProvider
 from infrastructure.auth import PasswordHasher
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 

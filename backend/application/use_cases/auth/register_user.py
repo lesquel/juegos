@@ -4,6 +4,10 @@ from domain.entities.user import UserEntity
 from domain.exceptions import UserAlreadyExistsError, ValidationError
 from domain.repositories import IUserRepository
 from application.interfaces import IPasswordHasher
+from infrastructure.logging import get_logger
+
+# Configurar logger
+logger = get_logger("register_use_case")
 
 
 @dataclass
@@ -35,22 +39,23 @@ class RegisterUserUseCase:
 
     def execute(self, request: RegisterUserRequest) -> RegisterUserResponse:
         """Ejecuta el caso de uso de registro"""
+        logger.info(f"Registration attempt for email: {request.email}, username: {request.username}")
+        
         # Validaciones básicas
         if not request.email or not request.username or not request.password:
+            logger.warning(f"Registration failed - missing required fields for email: {request.email}")
             raise ValidationError("All fields are required")
-
-
 
         # Verificar si el usuario ya existe
         existing_user = self.user_repo.get_by_email(request.email)
         if existing_user:
+            logger.warning(f"Registration failed - email already exists: {request.email}")
             raise UserAlreadyExistsError("Email already registered")
 
-        print(f"Previos password: {request.password}")
-
+        logger.debug(f"Password hashing for user: {request.email}")
         # Hash de la contraseña
         hashed_password = self.password_hasher.hash(request.password)
-        print(f"Hashed password: {hashed_password}")
+        logger.debug(f"Password hashed successfully for user: {request.email}")
     
         # Crear nueva entidad de usuario
         new_user = UserEntity(
@@ -61,6 +66,8 @@ class RegisterUserUseCase:
         )
 
         # Guardar usuario
+        logger.debug(f"Saving new user to database: {request.email}")
         saved_user = self.user_repo.save(new_user)
 
+        logger.info(f"Successful registration for user: {saved_user.email}")
         return RegisterUserResponse(user=saved_user)

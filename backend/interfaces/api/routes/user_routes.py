@@ -8,6 +8,7 @@ from application.use_cases.users.get_all_users import GetAllUsersUseCase
 from application.use_cases.users.get_user import GetUserUseCase
 from infrastructure.db.repositories import PostgresUserRepository
 from infrastructure.db.connection import get_db
+from infrastructure.logging import get_logger
 from application.dtos import PaginatedResponseDTO
 from interfaces.api.dependencies.user_case_deps import (
     get_all_users_use_case,
@@ -22,7 +23,10 @@ from ..common.sort import SortParams, get_sort_params
 
 
 
-user_router = APIRouter(prefix="/users", tags=["users"])
+user_router = APIRouter(prefix="/users", tags=["Users",])
+
+# Configurar logger
+logger = get_logger("user_routes")
 
 
 @user_router.get("/", response_model=PaginatedResponseDTO[UserOutput])
@@ -50,14 +54,23 @@ def get_all_users(
     :param db: The database session dependency.
     :return: PaginatedResponseDTO with UserOutput objects.
     """
-    users, total_count = use_case.execute(pagination, filters, sort_params)
+    logger.info(f"Getting all users - page: {pagination.page}, limit: {pagination.limit}")
+    logger.debug(f"Filters applied: {filters.to_dict()}")
+    
+    try:
+        users, total_count = use_case.execute(pagination, filters, sort_params)
 
-    return create_paginated_response(
-        items=users,
-        total_count=total_count,
-        pagination=pagination,
-        request=request,
-    )
+        logger.info(f"Retrieved {len(users)} users from {total_count} total")
+        return create_paginated_response(
+            items=users,
+            total_count=total_count,
+            pagination=pagination,
+            request=request,
+        )
+    
+    except Exception as e:
+        logger.error(f"Failed to retrieve users: {str(e)}")
+        raise
 
 
 @user_router.get("/{user_id}", response_model=UserOutput)
@@ -72,10 +85,20 @@ def get_user(
     :param db: Database session
     :return: UserOutput object
     """
+    logger.info(f"Getting user by ID: {user_id}")
+    
+    try:
+        user = use_case.execute(user_id)
 
-    user = use_case.execute(user_id)
+        if not user:
+            logger.warning(f"User not found with ID: {user_id}")
+            raise HTTPException(status_code=404, detail="User not found")
 
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return user
+        logger.debug(f"Successfully retrieved user: {user.email}")
+        return user
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to retrieve user {user_id}: {str(e)}")
+        raise

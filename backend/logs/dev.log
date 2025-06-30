@@ -1,0 +1,768 @@
+[2025-06-29 23:07:24] INFO app - Logging system configured successfully
+[2025-06-29 23:07:25] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:07:25] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:07:25] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:07:25] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:07:25] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:07:25] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:07:25] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:07:25] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:07:25] INFO sqlalchemy.engine.Engine - [generated in 0.00033s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:07:25] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:07:50] INFO app - Logging system configured successfully
+[2025-06-29 23:07:50] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:07:50] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:07:50] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:07:50] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:07:50] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:07:50] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:07:50] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:07:50] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:07:50] INFO sqlalchemy.engine.Engine - [generated in 0.00027s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:07:50] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:08:54] INFO app - Logging system configured successfully
+[2025-06-29 23:08:54] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:08:54] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:08:54] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:08:54] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:08:54] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:08:54] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:08:54] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:08:54] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:08:54] INFO sqlalchemy.engine.Engine - [generated in 0.00019s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:08:54] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:10:08] INFO app - Logging system configured successfully
+[2025-06-29 23:10:09] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:10:09] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:10:09] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:10:09] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:10:09] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:10:09] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:10:09] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:10:09] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:10:09] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:10:09] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:10:30] INFO app - Logging system configured successfully
+[2025-06-29 23:10:30] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:10:30] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:10:30] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:10:30] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:10:30] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:10:30] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:10:30] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:10:30] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:10:30] INFO sqlalchemy.engine.Engine - [generated in 0.00018s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:10:30] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:10:38] INFO app - Logging system configured successfully
+[2025-06-29 23:10:38] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:10:38] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:10:38] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:10:38] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:10:38] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:10:38] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:10:38] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:10:38] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:10:38] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:10:38] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:12:11] INFO app - Logging system configured successfully
+[2025-06-29 23:12:11] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:12:11] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:12:11] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:12:11] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:12:11] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:12:11] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:12:11] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:12:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:12:11] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:12:11] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:20:44] INFO app - Logging system configured successfully
+[2025-06-29 23:20:44] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:20:44] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:20:44] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:20:44] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:20:44] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:20:44] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:20:44] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:20:44] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:20:44] INFO sqlalchemy.engine.Engine - [generated in 0.00026s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:20:44] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:20:51] INFO app - Logging system configured successfully
+[2025-06-29 23:20:51] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:20:51] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:20:51] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:20:51] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:20:51] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:20:51] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:20:51] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:20:51] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:20:51] INFO sqlalchemy.engine.Engine - [generated in 0.00054s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:20:51] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:21:07] INFO app - Logging system configured successfully
+[2025-06-29 23:21:07] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:21:07] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:07] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:21:07] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:07] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:21:07] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:07] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:21:08] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:21:08] INFO sqlalchemy.engine.Engine - [generated in 0.00017s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:21:08] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:21:22] INFO app - Logging system configured successfully
+[2025-06-29 23:21:23] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:21:23] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:23] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:21:23] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:23] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:21:23] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:23] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:21:23] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:21:23] INFO sqlalchemy.engine.Engine - [generated in 0.00017s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:21:23] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:21:28] INFO app - Logging system configured successfully
+[2025-06-29 23:21:28] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:21:28] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:28] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:21:28] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:28] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:21:28] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:28] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:21:28] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:21:28] INFO sqlalchemy.engine.Engine - [generated in 0.00020s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:21:28] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:21:37] INFO app - Logging system configured successfully
+[2025-06-29 23:21:37] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:21:37] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:37] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:21:37] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:37] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:21:37] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:37] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:21:37] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:21:37] INFO sqlalchemy.engine.Engine - [generated in 0.00018s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:21:37] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:21:49] INFO app - Logging system configured successfully
+[2025-06-29 23:21:49] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:21:49] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:49] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:21:49] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:49] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:21:49] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:49] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:21:49] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:21:49] INFO sqlalchemy.engine.Engine - [generated in 0.00018s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:21:49] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:21:56] INFO app - Logging system configured successfully
+[2025-06-29 23:21:56] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:21:56] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:56] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:21:56] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:56] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:21:56] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:21:56] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:21:56] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:21:56] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:21:56] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:22:15] INFO app - Logging system configured successfully
+[2025-06-29 23:22:15] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:22:15] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:15] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:22:15] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:15] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:22:15] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:15] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:22:15] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:22:15] INFO sqlalchemy.engine.Engine - [generated in 0.00018s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:22:15] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:22:29] INFO app - Logging system configured successfully
+[2025-06-29 23:22:29] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:22:29] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:29] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:22:29] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:29] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:22:29] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:29] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:22:29] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:22:29] INFO sqlalchemy.engine.Engine - [generated in 0.00018s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:22:29] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:22:40] INFO app - Logging system configured successfully
+[2025-06-29 23:22:40] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:22:40] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:40] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:22:40] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:40] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:22:40] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:40] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:22:40] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:22:40] INFO sqlalchemy.engine.Engine - [generated in 0.00023s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:22:40] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:22:54] INFO app - Logging system configured successfully
+[2025-06-29 23:22:54] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:22:54] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:54] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:22:54] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:54] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:22:54] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:22:54] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:22:54] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:22:54] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:22:54] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:23:04] INFO app - Logging system configured successfully
+[2025-06-29 23:23:04] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:23:04] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:04] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:23:04] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:04] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:23:04] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:04] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:23:04] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:23:04] INFO sqlalchemy.engine.Engine - [generated in 0.00018s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:23:04] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:23:20] INFO app - Logging system configured successfully
+[2025-06-29 23:23:20] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:23:20] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:20] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:23:20] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:20] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:23:20] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:20] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:23:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:23:20] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:23:20] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:23:32] INFO app - Logging system configured successfully
+[2025-06-29 23:23:32] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:23:32] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:32] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:23:32] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:32] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:23:32] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:32] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:23:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:23:32] INFO sqlalchemy.engine.Engine - [generated in 0.00023s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:23:32] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:23:41] INFO app - Logging system configured successfully
+[2025-06-29 23:23:41] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:23:41] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:41] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:23:41] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:41] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:23:41] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:41] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:23:41] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:23:41] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:23:41] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:23:52] INFO app - Logging system configured successfully
+[2025-06-29 23:23:52] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:23:52] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:52] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:23:52] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:52] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:23:52] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:23:52] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:23:52] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:23:52] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:23:52] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:24:02] INFO app - Logging system configured successfully
+[2025-06-29 23:24:02] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:24:02] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:02] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:24:02] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:02] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:24:02] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:02] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:24:02] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:24:02] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:24:02] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:24:18] INFO app - Logging system configured successfully
+[2025-06-29 23:24:18] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:24:18] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:18] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:24:18] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:18] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:24:18] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:18] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:24:18] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:24:18] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:24:18] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:24:28] INFO app - Logging system configured successfully
+[2025-06-29 23:24:29] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:24:29] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:29] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:24:29] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:29] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:24:29] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:29] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:24:29] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:24:29] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:24:29] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:24:53] INFO app - Logging system configured successfully
+[2025-06-29 23:24:53] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:24:53] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:53] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:24:53] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:53] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:24:53] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:24:53] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:24:53] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:24:53] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:24:53] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:25:03] INFO app - Logging system configured successfully
+[2025-06-29 23:25:03] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:25:03] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:25:03] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:25:03] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:25:03] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:25:03] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:25:03] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:25:03] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:25:03] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:25:03] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:25:16] INFO app - Logging system configured successfully
+[2025-06-29 23:25:17] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:25:17] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:25:17] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:25:17] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:25:17] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:25:17] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:25:17] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:25:17] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:25:17] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:25:17] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:25:31] INFO app - Logging system configured successfully
+[2025-06-29 23:25:31] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:25:31] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:25:31] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:25:31] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:25:31] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:25:31] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:25:31] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:25:31] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:25:31] INFO sqlalchemy.engine.Engine - [generated in 0.00039s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:25:31] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:26:29] INFO app - Logging system configured successfully
+[2025-06-29 23:26:29] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:26:29] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:26:29] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:26:29] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:26:29] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:26:29] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:26:29] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:26:29] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:26:29] INFO sqlalchemy.engine.Engine - [generated in 0.00018s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:26:29] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:26:38] INFO app - Logging system configured successfully
+[2025-06-29 23:26:38] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:26:38] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:26:38] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:26:38] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:26:38] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:26:38] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:26:38] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:26:38] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:26:38] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:26:38] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:26:57] INFO app - Logging system configured successfully
+[2025-06-29 23:26:57] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:26:57] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:26:57] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:26:57] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:26:57] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:26:57] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:26:57] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:26:57] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:26:57] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:26:57] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:27:20] INFO app - Logging system configured successfully
+[2025-06-29 23:27:21] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:27:21] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:21] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:27:21] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:21] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:27:21] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:21] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:27:21] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:27:21] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:27:21] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:27:28] INFO app - Logging system configured successfully
+[2025-06-29 23:27:28] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:27:28] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:28] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:27:28] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:28] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:27:28] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:28] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:27:28] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:27:28] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:27:28] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:27:38] INFO app - Logging system configured successfully
+[2025-06-29 23:27:38] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:27:38] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:38] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:27:38] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:38] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:27:38] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:38] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:27:38] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:27:38] INFO sqlalchemy.engine.Engine - [generated in 0.00021s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:27:38] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:27:46] INFO app - Logging system configured successfully
+[2025-06-29 23:27:47] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:27:47] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:47] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:27:47] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:47] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:27:47] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:47] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:27:47] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:27:47] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:27:47] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:27:57] INFO app - Logging system configured successfully
+[2025-06-29 23:27:58] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:27:58] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:58] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:27:58] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:58] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:27:58] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:27:58] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:27:58] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:27:58] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:27:58] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:28:07] INFO app - Logging system configured successfully
+[2025-06-29 23:28:07] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:28:07] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:28:07] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:28:07] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:28:07] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:28:07] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:28:07] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:28:07] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:28:07] INFO sqlalchemy.engine.Engine - [generated in 0.00017s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:28:07] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:28:24] INFO app - Logging system configured successfully
+[2025-06-29 23:28:24] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:28:24] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:28:24] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:28:24] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:28:24] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:28:24] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:28:24] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:28:24] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:28:24] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:28:24] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:30:31] INFO app - Logging system configured successfully
+[2025-06-29 23:30:31] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:30:31] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:30:31] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:30:31] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:30:31] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:30:31] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:30:31] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:30:31] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:30:31] INFO sqlalchemy.engine.Engine - [generated in 0.00030s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:30:31] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:32:28] INFO app - Logging system configured successfully
+[2025-06-29 23:32:28] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:32:28] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:28] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:32:28] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:28] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:32:28] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:28] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:32:28] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:32:28] INFO sqlalchemy.engine.Engine - [generated in 0.00018s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:32:28] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:32:34] INFO app - Logging system configured successfully
+[2025-06-29 23:32:34] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:32:34] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:34] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:32:34] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:34] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:32:34] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:34] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:32:34] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:32:34] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:32:34] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:32:45] INFO app - Logging system configured successfully
+[2025-06-29 23:32:45] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:32:45] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:45] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:32:45] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:45] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:32:45] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:45] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:32:45] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:32:45] INFO sqlalchemy.engine.Engine - [generated in 0.00018s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:32:45] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:32:46] INFO app - Logging system configured successfully
+[2025-06-29 23:32:46] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:32:46] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:46] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:32:46] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:46] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:32:46] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:32:46] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:32:46] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:32:46] INFO sqlalchemy.engine.Engine - [generated in 0.00017s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:32:46] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:33:18] INFO app - Logging system configured successfully
+[2025-06-29 23:33:18] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:33:18] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:33:18] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:33:18] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:33:18] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:33:18] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:33:18] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:33:18] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:33:18] INFO sqlalchemy.engine.Engine - [generated in 0.00022s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:33:18] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:34:41] INFO app - Logging system configured successfully
+[2025-06-29 23:34:41] INFO app - Logging system configured successfully
+[2025-06-29 23:34:42] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:34:42] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:34:42] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:34:42] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:34:42] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:34:42] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:34:42] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:34:42] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:34:42] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:34:42] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:35:14] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:35:14] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:35:14] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:35:14] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:35:14] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:35:14] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:35:14] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:35:14] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-29 23:35:14] INFO sqlalchemy.engine.Engine - [generated in 0.00014s] {'email_1': 'bryan@gmail.com', 'param_1': 1}
+[2025-06-29 23:35:14] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-29 23:38:36] INFO app - Logging system configured successfully
+[2025-06-29 23:38:36] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:38:36] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:36] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:38:36] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:36] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:38:36] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:36] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:38:36] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:38:36] INFO sqlalchemy.engine.Engine - [generated in 0.00026s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:38:36] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:38:38] INFO app - Logging system configured successfully
+[2025-06-29 23:38:39] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:38:39] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:39] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:38:39] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:39] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:38:39] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:39] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:38:39] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:38:39] INFO sqlalchemy.engine.Engine - [generated in 0.00026s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:38:39] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:38:45] INFO app - Logging system configured successfully
+[2025-06-29 23:38:45] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:38:45] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:45] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:38:45] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:45] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:38:45] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:45] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:38:45] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:38:45] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:38:45] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:38:54] INFO app - Logging system configured successfully
+[2025-06-29 23:38:54] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:38:54] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:54] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:38:54] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:54] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:38:54] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:38:54] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:38:54] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:38:54] INFO sqlalchemy.engine.Engine - [generated in 0.00018s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:38:54] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:39:10] INFO app - Logging system configured successfully
+[2025-06-29 23:39:10] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:39:10] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:39:10] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:39:10] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:39:10] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:39:10] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:39:10] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:39:10] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:39:10] INFO sqlalchemy.engine.Engine - [generated in 0.00020s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:39:10] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:40:32] INFO app - Logging system configured successfully
+[2025-06-29 23:40:32] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:40:32] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:40:32] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:40:32] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:40:32] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:40:32] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:40:32] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:40:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:40:32] INFO sqlalchemy.engine.Engine - [generated in 0.00020s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:40:32] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:40:34] INFO app - Logging system configured successfully
+[2025-06-29 23:40:34] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:40:34] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:40:34] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:40:34] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:40:34] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:40:34] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:40:34] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:40:34] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:40:34] INFO sqlalchemy.engine.Engine - [generated in 0.00023s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:40:34] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:40:37] INFO app - Logging system configured successfully
+[2025-06-29 23:40:37] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:40:37] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:40:37] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:40:37] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:40:37] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:40:37] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:40:37] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:40:37] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:40:37] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:40:37] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:41:12] INFO app - Logging system configured successfully
+[2025-06-29 23:41:12] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:41:12] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:41:12] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:41:12] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:41:12] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:41:12] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:41:12] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:41:12] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:41:12] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:41:12] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-29 23:43:25] INFO app - Logging system configured successfully
+[2025-06-29 23:43:25] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-29 23:43:25] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:43:25] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-29 23:43:25] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:43:25] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-29 23:43:25] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-29 23:43:25] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-29 23:43:25] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-29 23:43:25] INFO sqlalchemy.engine.Engine - [generated in 0.00016s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-29 23:43:25] INFO sqlalchemy.engine.Engine - COMMIT

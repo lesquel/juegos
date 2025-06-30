@@ -1,17 +1,17 @@
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from domain.entities.user import UserEntity
 from domain.interfaces import ITokenProvider
 from infrastructure.db.repositories.user_repository import PostgresUserRepository
+from infrastructure.logging import get_logger
 from sqlalchemy.orm import Session
-
 
 # Security scheme para Swagger/OpenAPI
 security = HTTPBearer()
 
-
-
+# Configurar logger
+logger = get_logger("auth_middleware")
 
 
 class AuthenticationMiddleware:
@@ -35,44 +35,46 @@ class AuthenticationMiddleware:
         Raises:
             HTTPException: Si el token es inválido o el usuario no existe
         """
+        logger.debug("Authenticating user from token")
+
         try:
-            print("INSIDE AUTH MIDDLEWARE")
-
-            print(f"Token: {token}")
-            print(f"Token received: {token.credentials}")
             # Decodificar token
-
-            print(token_provider)
+            logger.debug("Decoding JWT token")
             payload = token_provider.decode_token(token.credentials)
-            print(f"Decoded payload: {payload}")
-            email = payload.get("sub")
-            print(f"Decoded email: {email}")
+            logger.debug(f"Token decoded successfully")
 
+            email = payload.get("sub")
             if email is None:
+                logger.warning("Token validation failed - missing email in payload")
                 raise HTTPException(
                     status_code=401,
                     detail="Invalid token format",
                     headers={"WWW-Authenticate": "Bearer"},
                 )
 
+            logger.debug(f"Token validation successful for email: {email}")
+
             # Buscar usuario
             user_repo = PostgresUserRepository(db)
             user = user_repo.get_by_email(email)
 
             if user is None:
+                logger.warning(
+                    f"Authentication failed - user not found for email: {email}"
+                )
                 raise HTTPException(
                     status_code=401,
                     detail="User not found",
                     headers={"WWW-Authenticate": "Bearer"},
                 )
 
+            logger.info(f"User authenticated successfully: {email}")
             return user
 
+        except HTTPException:
+            raise
         except Exception as e:
-            print(f"Token validation error: {e}")
-
-            if isinstance(e, HTTPException):
-                raise e
+            logger.error(f"Token validation error: {str(e)}")
             raise HTTPException(
                 status_code=401,
                 detail="Invalid token",

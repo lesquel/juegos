@@ -7,9 +7,12 @@ from domain.entities import UserEntity
 from interfaces.api.common.sort import SortParams
 from interfaces.api.common.pagination import PaginationParams
 from interfaces.api.common.filters.specific_filters import UserFilterParams
-
+from infrastructure.logging import get_logger
 
 from ..models.user_model import UserModel
+
+# Configurar logger
+logger = get_logger("user_repository")
 
 
 class PostgresUserRepository(IUserRepository):
@@ -22,8 +25,14 @@ class PostgresUserRepository(IUserRepository):
 
     def get_all(self) -> List[UserEntity]:
         """Retrieves all users from the repository."""
-        user_models = self.db.query(UserModel).all()
-        return [self._model_to_entity(model) for model in user_models]
+        logger.debug("Getting all users from database")
+        try:
+            user_models = self.db.query(UserModel).all()
+            logger.info(f"Retrieved {len(user_models)} users from database")
+            return [self._model_to_entity(model) for model in user_models]
+        except Exception as e:
+            logger.error(f"Error retrieving all users: {str(e)}")
+            raise
 
     def get_paginated(
         self,
@@ -81,42 +90,74 @@ class PostgresUserRepository(IUserRepository):
 
     def get_by_id(self, user_id: str) -> Optional[UserEntity]:
         """Retrieves a user by their ID."""
-        user_model = (
-            self.db.query(UserModel).filter(UserModel.user_id == user_id).first()
-        )
+        logger.debug(f"Getting user by ID: {user_id}")
+        try:
+            user_model = (
+                self.db.query(UserModel).filter(UserModel.user_id == user_id).first()
+            )
 
-        return self._model_to_entity(user_model) if user_model else None
+            if user_model:
+                logger.debug(f"User found with ID: {user_id}")
+                return self._model_to_entity(user_model)
+            else:
+                logger.debug(f"No user found with ID: {user_id}")
+                return None
+        except Exception as e:
+            logger.error(f"Error retrieving user by ID {user_id}: {str(e)}")
+            raise
 
     def get_by_email(self, email: str) -> Optional[UserEntity]:
         """Retrieves a user by their email address."""
-        user_model = self.db.query(UserModel).filter(UserModel.email == email).first()
-        return self._model_to_entity(user_model) if user_model else None
+        logger.debug(f"Getting user by email: {email}")
+        try:
+            user_model = (
+                self.db.query(UserModel).filter(UserModel.email == email).first()
+            )
+
+            if user_model:
+                logger.debug(f"User found with email: {email}")
+                return self._model_to_entity(user_model)
+            else:
+                logger.debug(f"No user found with email: {email}")
+                return None
+        except Exception as e:
+            logger.error(f"Error retrieving user by email {email}: {str(e)}")
+            raise
 
     def save(self, user: UserEntity) -> UserEntity:
         """Saves a user to the repository."""
-        if user.user_id is None:
-            # Create new user
-            user_model = UserModel(
-                username=user.username,
-                email=user.email,
-                hashed_password=user.hashed_password,
-            )
-            self.db.add(user_model)
-        else:
-            # Update existing user
-            user_model = (
-                self.db.query(UserModel)
-                .filter(UserModel.user_id == user.user_id)
-                .first()
-            )
-            if user_model:
-                user_model.username = user.username
-                user_model.email = user.email
-                user_model.hashed_password = user.hashed_password
+        logger.debug(f"Saving user: {user.email}")
+        try:
+            if user.user_id is None:
+                # Create new user
+                logger.debug(f"Creating new user: {user.email}")
+                user_model = UserModel(
+                    username=user.username,
+                    email=user.email,
+                    hashed_password=user.hashed_password,
+                )
+                self.db.add(user_model)
+            else:
+                # Update existing user
+                logger.debug(f"Updating existing user: {user.email}")
+                user_model = (
+                    self.db.query(UserModel)
+                    .filter(UserModel.user_id == user.user_id)
+                    .first()
+                )
+                if user_model:
+                    user_model.username = user.username
+                    user_model.email = user.email
+                    user_model.hashed_password = user.hashed_password
 
-        self.db.commit()
-        self.db.refresh(user_model)
-        return self._model_to_entity(user_model)
+            self.db.commit()
+            self.db.refresh(user_model)
+            logger.info(f"Successfully saved user: {user.email}")
+            return self._model_to_entity(user_model)
+        except Exception as e:
+            logger.error(f"Error saving user {user.email}: {str(e)}")
+            self.db.rollback()
+            raise
 
     def update(self, user_id: str, user: UserEntity) -> None:
         """Updates a user in the repository."""

@@ -9,30 +9,40 @@ from contextlib import asynccontextmanager
 
 from infrastructure.core.settings_config import settings
 from infrastructure.db.init_db import create_tables
+from infrastructure.logging import get_logger
+from infrastructure.middleware import LoggingMiddleware
 from interfaces.api.routes import user_router, auth_router
 from interfaces.api.common.exception_handler import GlobalExceptionHandler
+
+# Configurar logger
+logger = get_logger("app_factory")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan events para FastAPI"""
     # Startup
-    print("🚀 Starting application...")
+    logger.info("🚀 Starting application...")
 
     # Crear tablas de base de datos
-    create_tables()
-    print("✅ Database tables created/verified")
+    try:
+        create_tables()
+        logger.info("✅ Database tables created/verified")
+    except Exception as e:
+        logger.error(f"❌ Error creating database tables: {str(e)}")
+        raise
 
     yield
 
     # Shutdown
-    print("👋 Shutting down application...")
+    logger.info("👋 Shutting down application...")
 
 
 def create_app() -> FastAPI:
     """Factory function para crear la aplicación FastAPI"""
 
     app_settings = settings.app_settings
+    logger.info(f"Creating FastAPI application: {app_settings.app_name}")
 
     # Crear aplicación
     app = FastAPI(
@@ -45,6 +55,7 @@ def create_app() -> FastAPI:
     )
 
     # Configurar CORS
+    logger.info("Configuring CORS middleware")
     app.add_middleware(
         CORSMiddleware,
         allow_origins=app_settings.allowed_origins,
@@ -53,21 +64,28 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Middleware de logging de requests
+    logger.info("Adding HTTP request logging middleware")
+    app.add_middleware(LoggingMiddleware)
+
     # Middleware de seguridad (solo en producción)
     if app_settings.environment == "prod":
+        logger.info("Adding TrustedHost middleware for production")
         app.add_middleware(
             TrustedHostMiddleware, allowed_hosts=["yourdomain.com", "*.yourdomain.com"]
         )
 
     # Configurar manejo global de excepciones
+    logger.info("Setting up global exception handlers")
     GlobalExceptionHandler.setup_handlers(app)
 
     # Incluir routers
+    logger.info("Including API routers")
     app.include_router(auth_router)
     app.include_router(user_router)
 
-    print(f"✅ {app_settings.app_name} configured successfully!")
-    print(f"📊 Environment: {app_settings.environment}")
-    print(f"🔧 Debug mode: {app_settings.debug}")
+    logger.info(f"✅ {app_settings.app_name} configured successfully!")
+    logger.info(f"📊 Environment: {app_settings.environment}")
+    logger.info(f"🔧 Debug mode: {app_settings.debug}")
 
     return app
