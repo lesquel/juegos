@@ -2,10 +2,10 @@ from typing import Optional
 
 from .game import GameEntity
 
-from .base_entity import BaseEntity
+from .time_stamp_entity_mixin import TimeStampEntityMixin
 
 
-class CategoryEntity(BaseEntity):
+class CategoryEntity(TimeStampEntityMixin):
     def __init__(
         self,
         category_id: Optional[str],

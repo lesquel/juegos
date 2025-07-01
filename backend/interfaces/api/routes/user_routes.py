@@ -2,12 +2,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Request, HTTPException
 
 from uuid import UUID
-from sqlalchemy.orm import Session
 
-from application.use_cases.users.get_all_users import GetAllUsersUseCase
-from application.use_cases.users.get_user import GetUserUseCase
-from infrastructure.db.repositories import PostgresUserRepository
-from infrastructure.db.connection import get_db
+from application.use_cases.users import GetAllUsersUseCase, GetUserUseCase
 from infrastructure.logging import get_logger
 from application.dtos import PaginatedResponseDTO
 from interfaces.api.dependencies.user_case_deps import (

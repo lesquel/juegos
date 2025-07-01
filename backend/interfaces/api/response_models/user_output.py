@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 import datetime
 
@@ -7,7 +8,7 @@ class UserBaseOutput(BaseModel):
     user_id: str
     username: str
     email: str
-    role: UserRole
+    role: Optional[UserRole] = None
 
 class UserOutput(UserBaseOutput):
     virtual_currency: float

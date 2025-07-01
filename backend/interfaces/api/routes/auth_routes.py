@@ -22,7 +22,6 @@ from ..response_models.common_responses import SuccessResponse
 
 auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 
-# Configurar logger
 logger = get_logger("auth_routes")
 
 
@@ -90,7 +89,7 @@ def register(
 
         response = register_use_case.execute(request)
 
-        user_output = UserOutput(
+        user_output = UserBaseOutput(
             user_id=response.user.user_id,
             username=response.user.username,
             email=response.user.email,

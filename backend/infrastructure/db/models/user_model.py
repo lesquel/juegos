@@ -1,13 +1,16 @@
-from sqlalchemy import Column, String, Float, DateTime, func
+from sqlalchemy import Column, String, Float
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.types import Enum as SqlEnum
+from sqlalchemy.orm import relationship
 import uuid
 
 from ..base import Base
 from application.enums import UserRole
 
+from .time_stamp_model_mixin import TimeStampModelMixin
 
-class UserModel(Base):
+
+class UserModel(Base, TimeStampModelMixin):
     __tablename__ = "users"
 
     user_id = Column(
@@ -24,14 +27,19 @@ class UserModel(Base):
         nullable=False,
     )
 
-    created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
+    reviews = relationship(
+        "GameReviewModel", back_populates="user", cascade="all, delete-orphan"
     )
-    updated_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False,
+    transfers = relationship(
+        "TransferPaymentModel", back_populates="user", cascade="all, delete-orphan"
+    )
+    won_matches = relationship(
+        "MatchModel",
+        back_populates="winner",
+        foreign_keys="[MatchModel.winner_id]",
+    )
+    match_participations = relationship(
+        "MatchParticipationModel", back_populates="user", cascade="all, delete-orphan"
     )
 
     def __repr__(self):

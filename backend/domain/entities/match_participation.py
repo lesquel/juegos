@@ -3,10 +3,10 @@ from typing import Optional
 from domain.entities.match import MatchEntity
 from domain.entities.user import UserEntity
 
-from .base_entity import BaseEntity
+from .time_stamp_entity_mixin import TimeStampEntityMixin
 
 
-class MatchParticipation(BaseEntity):
+class MatchParticipation(TimeStampEntityMixin):
     def __init__(
         self,
         match: MatchEntity,

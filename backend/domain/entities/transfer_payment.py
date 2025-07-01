@@ -1,16 +1,10 @@
 from typing import Optional
-from enum import Enum
+from application.enums import TransferStateEnum
 
-from .base_entity import BaseEntity
-
-
-class TransferStateEnum(str, Enum):
-    PENDING = "pending"
-    COMPLETED = "completed"
-    FAILED = "failed"
+from .time_stamp_entity_mixin import TimeStampEntityMixin
 
 
-class TransferPayment(BaseEntity):
+class TransferPayment(TimeStampEntityMixin):
     def __init__(
         self,
         transfer_id: Optional[str],

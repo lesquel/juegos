@@ -2,10 +2,10 @@ from typing import Optional
 
 from .match_participation import MatchParticipation
 
-from .base_entity import BaseEntity
+from .time_stamp_entity_mixin import TimeStampEntityMixin
 
 
-class MatchEntity(BaseEntity):
+class MatchEntity(TimeStampEntityMixin):
     def __init__(
         self,
         match_id: Optional[str],

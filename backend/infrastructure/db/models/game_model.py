@@ -1,0 +1,34 @@
+from sqlalchemy import Column, String, Text
+from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
+
+from ..base import Base
+
+from .associations import game_categories
+from .time_stamp_model_mixin import TimeStampModelMixin
+
+
+class GameModel(Base, TimeStampModelMixin):
+    __tablename__ = "games"
+
+    game_id = Column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True
+    )
+    game_name = Column(String(100), nullable=False, unique=True, index=True)
+    game_description = Column(Text, nullable=False)
+    game_url = Column(String(255), nullable=False)
+    game_img = Column(String(255), nullable=False)
+    categories = relationship(
+        "CategoryModel", secondary=game_categories, back_populates="games"
+    )
+    reviews = relationship("GameReviewModel", back_populates="game", cascade="all, delete-orphan")
+    matches = relationship("MatchModel", back_populates="game", cascade="all, delete-orphan")
+
+
+
+    def __repr__(self):
+        return (
+            f"<GameModel(game_id={self.game_id}, game_name='{self.game_name}', "
+            f"game_description='{self.game_description}', game_url='{self.game_url}')>"
+        )

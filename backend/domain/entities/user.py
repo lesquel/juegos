@@ -1,12 +1,12 @@
 from enum import Enum
 from typing import Optional
 
-from .base_entity import BaseEntity
+from .time_stamp_entity_mixin import TimeStampEntityMixin
 from application.enums import UserRole
 
 
 
-class UserEntity(BaseEntity):
+class UserEntity(TimeStampEntityMixin):
     def __init__(
         self,
         user_id: Optional[str],

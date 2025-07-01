@@ -3,12 +3,10 @@ from typing import Optional
 from .game import GameEntity
 from .user import UserEntity
 
-from .category import CategoryEntity
-
-from .base_entity import BaseEntity
+from .time_stamp_entity_mixin import TimeStampEntityMixin
 
 
-class GameReviewEntity(BaseEntity):
+class GameReviewEntity(TimeStampEntityMixin):
     def __init__(
         self,
         review_id: Optional[str],
