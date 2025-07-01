@@ -4,12 +4,25 @@ export interface UserMe {
     token_type: string;
   };
   user: {
-    id: string;
+    user_id: string;
+    username: string;
     email: string;
+    role?: string;
   };
+  message: string;
+  success: true;
 }
 
 export interface UserMeDetail {
-  id: string;
-  email: string;
+  message: string;
+  data: {
+    user_id: string;
+    username: string;
+    email: string;
+    role?: string;
+    virtual_currency: number;
+    created_at: Date;
+    updated_at: Date;
+  };
+  success: true;
 }

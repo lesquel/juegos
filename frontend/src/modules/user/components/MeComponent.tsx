@@ -17,7 +17,7 @@ const UseMeComponent = () => {
   return (
     <div>
       <h1>Me</h1>
-      <p>{data?.email}</p>
+      <p>{data?.data.email}</p>
     </div>
   );
 };

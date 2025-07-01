@@ -17,11 +17,13 @@ const UseRegisterForm = () => {
   const { mutate } = AuthClientData.register();
   const form = useForm({
     defaultValues: {
+      username: "",
       email: "",
       password: "",
     },
     validators: {
       onChange: z.object({
+        username: z.string(),
         email: z.string().email(),
         password: z.string(),
       }),
@@ -38,6 +40,29 @@ const UseRegisterForm = () => {
         form.handleSubmit();
       }}
     >
+      <form.Field
+        name="username"
+        children={(field) => (
+          <div>
+            <label>Username</label>
+            <input
+              type="text"
+              name={field.name}
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              onBlur={field.handleBlur}
+              placeholder="Username"
+            />
+            {field.state.meta.errors.length > 0 && (
+              <span>
+                {field.state.meta.errors
+                  .map((error) => error?.message)
+                  .join(", ")}
+              </span>
+            )}
+          </div>
+        )}
+      />
       <form.Field
         name="email"
         children={(field) => (
