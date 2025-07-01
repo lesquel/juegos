@@ -3,3 +3,7 @@
 *.env.dev
 *.env.prod
 .
+
+*.pyc
+__pycache__/
+*.log
