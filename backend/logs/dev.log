@@ -553,6 +553,7 @@ WHERE users.user_id = %(pk_1)s::UUID
 [2025-06-30 20:50:48] INFO sqlalchemy.engine.Engine - [cached since 127.4s ago] {'user_id': UUID('3c469ef9-6694-490d-a4f4-fd2257dd5485'), 'username': 'stewrwering', 'email': 'usefweer@gmail.com', 'hashed_password': '$2b$12$TD4Wxm3GtaLxbVwPriEZhehKHvypZ67AyDbEErPEnhLkC05rUb6zO', 'virtual_currency': 0.0, 'role': 'USER'}
 [2025-06-30 20:50:48] INFO sqlalchemy.engine.Engine - ROLLBACK
 >>>>>>> a696ce4bf0a04db6ebe0108d2c23754f091d0a06
+<<<<<<< HEAD
 [2025-06-30 21:10:16] INFO app - Logging system configured successfully
 [2025-06-30 21:10:18] INFO app - Logging system configured successfully
 [2025-06-30 21:10:18] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
@@ -5815,6 +5816,60 @@ CREATE TABLE users (
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - CREATE UNIQUE INDEX ix_users_email ON users (email)
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00011s] {}
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - 
+=======
+[2025-06-30 20:59:56] INFO app - Logging system configured successfully
+[2025-06-30 20:59:59] INFO app - Logging system configured successfully
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [generated in 0.00081s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [cached since 0.008638s ago] {'table_name': 'game_categories', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [cached since 0.009566s ago] {'table_name': 'categories', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [cached since 0.01023s ago] {'table_name': 'games', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [cached since 0.01085s ago] {'table_name': 'game_reviews', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [cached since 0.01144s ago] {'table_name': 'matches', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [cached since 0.01205s ago] {'table_name': 'match_participations', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [cached since 0.01257s ago] {'table_name': 'transfer_payments', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [generated in 0.00028s] {'typname_1': 'userrole', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [cached since 0.004195s ago] {'typname_1': 'transferstateenum', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - CREATE TYPE transferstateenum AS ENUM ('PENDING', 'COMPLETED', 'FAILED')
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00023s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - 
+>>>>>>> d3694ad000a2e422e913a1a60469773a7f8066f7
 CREATE TABLE categories (
 	category_id UUID NOT NULL, 
 	category_name VARCHAR(100) NOT NULL, 
@@ -5826,12 +5881,21 @@ CREATE TABLE categories (
 )
 
 
+<<<<<<< HEAD
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00010s] {}
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_categories_category_id ON categories (category_id)
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00010s] {}
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - CREATE UNIQUE INDEX ix_categories_category_name ON categories (category_name)
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00009s] {}
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - 
+=======
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00038s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_categories_category_id ON categories (category_id)
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00018s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - CREATE UNIQUE INDEX ix_categories_category_name ON categories (category_name)
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00017s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - 
+>>>>>>> d3694ad000a2e422e913a1a60469773a7f8066f7
 CREATE TABLE games (
 	game_id UUID NOT NULL, 
 	game_name VARCHAR(100) NOT NULL, 
@@ -5844,6 +5908,7 @@ CREATE TABLE games (
 )
 
 
+<<<<<<< HEAD
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00013s] {}
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_games_game_id ON games (game_id)
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00013s] {}
@@ -5897,6 +5962,14 @@ CREATE TABLE matches (
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_matches_match_id ON matches (match_id)
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00009s] {}
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - 
+=======
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00019s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_games_game_id ON games (game_id)
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00017s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - CREATE UNIQUE INDEX ix_games_game_name ON games (game_name)
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00026s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - 
+>>>>>>> d3694ad000a2e422e913a1a60469773a7f8066f7
 CREATE TABLE transfer_payments (
 	transfer_id UUID NOT NULL, 
 	user_id UUID NOT NULL, 
@@ -5911,10 +5984,64 @@ CREATE TABLE transfer_payments (
 )
 
 
+<<<<<<< HEAD
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00008s] {}
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_transfer_payments_transfer_id ON transfer_payments (transfer_id)
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00008s] {}
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - 
+=======
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00018s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_transfer_payments_transfer_id ON transfer_payments (transfer_id)
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00024s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - 
+CREATE TABLE game_categories (
+	game_id UUID NOT NULL, 
+	category_id UUID NOT NULL, 
+	PRIMARY KEY (game_id, category_id), 
+	FOREIGN KEY(game_id) REFERENCES games (game_id) ON DELETE CASCADE, 
+	FOREIGN KEY(category_id) REFERENCES categories (category_id) ON DELETE CASCADE
+)
+
+
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00023s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - 
+CREATE TABLE game_reviews (
+	review_id UUID NOT NULL, 
+	game_id UUID NOT NULL, 
+	user_id UUID NOT NULL, 
+	rating INTEGER NOT NULL, 
+	comment TEXT, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	PRIMARY KEY (review_id), 
+	FOREIGN KEY(game_id) REFERENCES games (game_id) ON DELETE CASCADE, 
+	FOREIGN KEY(user_id) REFERENCES users (user_id) ON DELETE CASCADE
+)
+
+
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00020s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_game_reviews_review_id ON game_reviews (review_id)
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00025s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - 
+CREATE TABLE matches (
+	match_id UUID NOT NULL, 
+	game_id UUID NOT NULL, 
+	winner_id UUID, 
+	start_time TIMESTAMP WITH TIME ZONE NOT NULL, 
+	end_time TIMESTAMP WITH TIME ZONE NOT NULL, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	PRIMARY KEY (match_id), 
+	FOREIGN KEY(game_id) REFERENCES games (game_id) ON DELETE CASCADE, 
+	FOREIGN KEY(winner_id) REFERENCES users (user_id) ON DELETE SET NULL
+)
+
+
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00016s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_matches_match_id ON matches (match_id)
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00027s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - 
+>>>>>>> d3694ad000a2e422e913a1a60469773a7f8066f7
 CREATE TABLE match_participations (
 	id UUID NOT NULL, 
 	match_id UUID NOT NULL, 
@@ -5929,6 +6056,7 @@ CREATE TABLE match_participations (
 )
 
 
+<<<<<<< HEAD
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00013s] {}
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_match_participations_id ON match_participations (id)
 [2025-07-01 00:15:00] INFO sqlalchemy.engine.Engine - [no key 0.00008s] {}
@@ -9242,3 +9370,453 @@ FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.
 WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
 [2025-07-01 22:19:06] INFO sqlalchemy.engine.Engine - [cached since 0.001221s ago] {'typname_1': 'transferstateenum', 'nspname_1': 'pg_catalog'}
 [2025-07-01 22:19:06] INFO sqlalchemy.engine.Engine - COMMIT
+=======
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00018s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - CREATE INDEX ix_match_participations_id ON match_participations (id)
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - [no key 0.00019s] {}
+[2025-06-30 21:00:00] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-30 21:01:02] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-30 21:01:02] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:01:02] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-30 21:01:02] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:01:02] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-30 21:01:02] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:01:02] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:01:02] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:01:02] INFO sqlalchemy.engine.Engine - [generated in 0.00024s] {'email_1': 'user@example.com', 'param_1': 1}
+[2025-06-30 21:01:02] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:01:10] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:01:10] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:01:10] INFO sqlalchemy.engine.Engine - [cached since 8.055s ago] {'email_1': 'u3ser@hrthrrtt.com', 'param_1': 1}
+[2025-06-30 21:01:10] INFO sqlalchemy.engine.Engine - INSERT INTO users (user_id, username, email, hashed_password, virtual_currency, role) VALUES (%(user_id)s::UUID, %(username)s, %(email)s, %(hashed_password)s, %(virtual_currency)s, %(role)s) RETURNING users.created_at, users.updated_at
+[2025-06-30 21:01:10] INFO sqlalchemy.engine.Engine - [generated in 0.00030s] {'user_id': UUID('136b7a9a-1192-4bc7-abef-8c85c0d40d54'), 'username': 'string', 'email': 'u3ser@hrthrrtt.com', 'hashed_password': '$2b$12$aTmoPMpOn6MLxqgOvxjqrOf4WBxzhLRVntPUVJpfVkiUEKQpc9wba', 'virtual_currency': 0.0, 'role': 'USER'}
+[2025-06-30 21:01:10] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:01:33] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:01:33] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:01:33] INFO sqlalchemy.engine.Engine - [cached since 31.48s ago] {'email_1': 'u3ser@hrthrrtt.com', 'param_1': 1}
+[2025-06-30 21:01:33] INFO sqlalchemy.engine.Engine - INSERT INTO users (user_id, username, email, hashed_password, virtual_currency, role) VALUES (%(user_id)s::UUID, %(username)s, %(email)s, %(hashed_password)s, %(virtual_currency)s, %(role)s) RETURNING users.created_at, users.updated_at
+[2025-06-30 21:01:33] INFO sqlalchemy.engine.Engine - [cached since 23.39s ago] {'user_id': UUID('bf867aec-4e7f-4b9c-9c1d-3d685ee4b960'), 'username': 'strirthyrtng', 'email': 'u3ser@hrthrrtt.com', 'hashed_password': '$2b$12$6Jn8R65VO/13sGV.RKvtfuRXwxl5odpgrFsCHL/qCSs8kjTliFFpq', 'virtual_currency': 0.0, 'role': 'USER'}
+[2025-06-30 21:01:33] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-30 21:01:33] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:01:33] INFO sqlalchemy.engine.Engine - SELECT users.user_id, users.username, users.email, users.hashed_password, users.virtual_currency, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.user_id = %(pk_1)s::UUID
+[2025-06-30 21:01:33] INFO sqlalchemy.engine.Engine - [generated in 0.00014s] {'pk_1': UUID('bf867aec-4e7f-4b9c-9c1d-3d685ee4b960')}
+[2025-06-30 21:01:33] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:04:57] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:04:57] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:04:57] INFO sqlalchemy.engine.Engine - [cached since 235.2s ago] {'email_1': 'u3ser@hrthrrtt.com', 'param_1': 1}
+[2025-06-30 21:04:57] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:05:13] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:05:13] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:05:13] INFO sqlalchemy.engine.Engine - [cached since 251.2s ago] {'email_1': 'u3ser@hrthrrtt.com', 'param_1': 1}
+[2025-06-30 21:05:13] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:05:31] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:05:31] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:05:31] INFO sqlalchemy.engine.Engine - [cached since 269.3s ago] {'email_1': 'u3ser@hrthrrtt.com', 'param_1': 1}
+[2025-06-30 21:05:32] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:18:20] INFO app - Logging system configured successfully
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [generated in 0.00028s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [cached since 0.004567s ago] {'table_name': 'game_categories', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [cached since 0.006126s ago] {'table_name': 'categories', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [cached since 0.007643s ago] {'table_name': 'games', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [cached since 0.008968s ago] {'table_name': 'game_reviews', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [cached since 0.01018s ago] {'table_name': 'matches', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [cached since 0.011s ago] {'table_name': 'match_participations', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [cached since 0.01199s ago] {'table_name': 'transfer_payments', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [generated in 0.00033s] {'typname_1': 'userrole', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - [cached since 0.002147s ago] {'typname_1': 'transferstateenum', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:20] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-30 21:18:32] INFO app - Logging system configured successfully
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [generated in 0.00026s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [cached since 0.004328s ago] {'table_name': 'game_categories', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [cached since 0.005634s ago] {'table_name': 'categories', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [cached since 0.00656s ago] {'table_name': 'games', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [cached since 0.007457s ago] {'table_name': 'game_reviews', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [cached since 0.008389s ago] {'table_name': 'matches', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [cached since 0.009328s ago] {'table_name': 'match_participations', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [cached since 0.01188s ago] {'table_name': 'transfer_payments', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [generated in 0.00042s] {'typname_1': 'userrole', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - [cached since 0.002141s ago] {'typname_1': 'transferstateenum', 'nspname_1': 'pg_catalog'}
+[2025-06-30 21:18:32] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-30 21:19:17] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-06-30 21:19:17] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:19:17] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-06-30 21:19:17] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:19:17] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-06-30 21:19:17] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-06-30 21:19:17] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:19:17] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:19:17] INFO sqlalchemy.engine.Engine - [generated in 0.00042s] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:19:18] INFO sqlalchemy.engine.Engine - INSERT INTO users (user_id, username, email, hashed_password, virtual_currency, role) VALUES (%(user_id)s::UUID, %(username)s, %(email)s, %(hashed_password)s, %(virtual_currency)s, %(role)s) RETURNING users.created_at, users.updated_at
+[2025-06-30 21:19:18] INFO sqlalchemy.engine.Engine - [generated in 0.00057s] {'user_id': UUID('1c2ab7b5-05b0-4d0e-aa63-78a3bb072dba'), 'username': 'jbviebieur', 'email': 'lesquel662@gmail.com', 'hashed_password': '$2b$12$RsgGx2GMN3n5QTAbmuHyI.w8LWg./IOA16FMnKDAv8THaqM1BGEdu', 'virtual_currency': 0.0, 'role': 'USER'}
+[2025-06-30 21:19:18] INFO sqlalchemy.engine.Engine - COMMIT
+[2025-06-30 21:19:18] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:19:18] INFO sqlalchemy.engine.Engine - SELECT users.user_id, users.username, users.email, users.hashed_password, users.virtual_currency, users.role, users.created_at, users.updated_at 
+FROM users 
+WHERE users.user_id = %(pk_1)s::UUID
+[2025-06-30 21:19:18] INFO sqlalchemy.engine.Engine - [generated in 0.00015s] {'pk_1': UUID('1c2ab7b5-05b0-4d0e-aa63-78a3bb072dba')}
+[2025-06-30 21:19:18] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:20:31] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:20:31] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:20:31] INFO sqlalchemy.engine.Engine - [cached since 73.34s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:20:31] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:21:50] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:21:50] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:21:50] INFO sqlalchemy.engine.Engine - [cached since 152.9s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:21:50] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:22:45] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:22:45] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:22:45] INFO sqlalchemy.engine.Engine - [cached since 207.2s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:22:45] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:23:46] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:23:46] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:23:46] INFO sqlalchemy.engine.Engine - [cached since 269s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:23:46] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:24:22] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:24:22] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:24:22] INFO sqlalchemy.engine.Engine - [cached since 304.9s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:24:22] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:24:23] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:24:23] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:24:23] INFO sqlalchemy.engine.Engine - [cached since 305.9s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:24:23] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:05] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:05] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:05] INFO sqlalchemy.engine.Engine - [cached since 348s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:05] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:12] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:12] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:12] INFO sqlalchemy.engine.Engine - [cached since 354.5s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:12] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:15] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:15] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:15] INFO sqlalchemy.engine.Engine - [cached since 358.1s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:15] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:20] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:20] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:20] INFO sqlalchemy.engine.Engine - [cached since 362.8s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:20] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:25] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:25] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:25] INFO sqlalchemy.engine.Engine - [cached since 367.6s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:25] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:27] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:27] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:27] INFO sqlalchemy.engine.Engine - [cached since 369.5s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:27] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:35] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:35] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:35] INFO sqlalchemy.engine.Engine - [cached since 377.7s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:35] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:40] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:40] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:40] INFO sqlalchemy.engine.Engine - [cached since 382.8s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:40] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:43] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:43] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:43] INFO sqlalchemy.engine.Engine - [cached since 385.2s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:43] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:48] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:48] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:48] INFO sqlalchemy.engine.Engine - [cached since 390.3s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:48] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:51] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:51] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:51] INFO sqlalchemy.engine.Engine - [cached since 394s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:51] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:25:56] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:25:56] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:25:56] INFO sqlalchemy.engine.Engine - [cached since 398.8s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:25:56] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:00] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:00] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:00] INFO sqlalchemy.engine.Engine - [cached since 402.7s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:00] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:05] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:05] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:05] INFO sqlalchemy.engine.Engine - [cached since 407.2s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:05] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:08] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:08] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:08] INFO sqlalchemy.engine.Engine - [cached since 410.5s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:08] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:09] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:09] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:09] INFO sqlalchemy.engine.Engine - [cached since 411.9s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:09] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:15] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:15] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:15] INFO sqlalchemy.engine.Engine - [cached since 417.6s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:15] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:25] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:25] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:25] INFO sqlalchemy.engine.Engine - [cached since 427.2s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:25] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:28] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:28] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:28] INFO sqlalchemy.engine.Engine - [cached since 430.2s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:28] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:30] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:30] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:30] INFO sqlalchemy.engine.Engine - [cached since 432.3s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:30] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:39] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:39] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:39] INFO sqlalchemy.engine.Engine - [cached since 441.7s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:39] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:43] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:43] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:43] INFO sqlalchemy.engine.Engine - [cached since 445.2s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:43] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:47] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:47] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:47] INFO sqlalchemy.engine.Engine - [cached since 449.7s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:47] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:48] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:48] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:48] INFO sqlalchemy.engine.Engine - [cached since 450.9s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:48] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-06-30 21:26:58] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-06-30 21:26:58] INFO sqlalchemy.engine.Engine - SELECT users.user_id AS users_user_id, users.username AS users_username, users.email AS users_email, users.hashed_password AS users_hashed_password, users.virtual_currency AS users_virtual_currency, users.role AS users_role, users.created_at AS users_created_at, users.updated_at AS users_updated_at 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s
+[2025-06-30 21:26:58] INFO sqlalchemy.engine.Engine - [cached since 461s ago] {'email_1': 'lesquel662@gmail.com', 'param_1': 1}
+[2025-06-30 21:26:59] INFO sqlalchemy.engine.Engine - ROLLBACK
+[2025-07-01 09:20:05] INFO app - Logging system configured successfully
+[2025-07-01 09:20:09] INFO app - Logging system configured successfully
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - select pg_catalog.version()
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - select current_schema()
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - show standard_conforming_strings
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [raw sql] {}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - BEGIN (implicit)
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [generated in 0.00061s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [cached since 0.01443s ago] {'table_name': 'game_categories', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [cached since 0.0165s ago] {'table_name': 'categories', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [cached since 0.0183s ago] {'table_name': 'games', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [cached since 0.02011s ago] {'table_name': 'game_reviews', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [cached since 0.02216s ago] {'table_name': 'matches', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [cached since 0.02422s ago] {'table_name': 'match_participations', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [cached since 0.02628s ago] {'table_name': 'transfer_payments', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [generated in 0.00054s] {'typname_1': 'userrole', 'nspname_1': 'pg_catalog'}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - [cached since 0.003591s ago] {'typname_1': 'transferstateenum', 'nspname_1': 'pg_catalog'}
+[2025-07-01 09:20:11] INFO sqlalchemy.engine.Engine - COMMIT
+>>>>>>> d3694ad000a2e422e913a1a60469773a7f8066f7

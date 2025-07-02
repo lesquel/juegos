@@ -1,5 +1,5 @@
 import { environment } from "@config/environment";
-import type { LoginModel, RegisterModel } from "../models/auth.model";
+import type { LoginModel, RegisterModel, RegiterInpustModel } from "../models/auth.model";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import type { UserMe } from "@modules/user/models/user.model";
@@ -35,7 +35,7 @@ export class AuthClientData {
 
   static register() {
     return useMutation({
-      mutationFn: async (data: LoginModel) => {
+      mutationFn: async (data: RegiterInpustModel) => {
         const response = await axios.post<RegisterModel>(
           `${AuthClientData.baseUrl}/auth/register`,
           data

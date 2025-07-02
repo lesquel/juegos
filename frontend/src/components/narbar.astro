@@ -4,10 +4,12 @@ import { categoryGameRoutesConfig } from "@modules/category-game/config/category
 import { NarbarAuthLoginRegister } from "@modules/auth/components/NarbarAuthLoginRegister";
 ---
 
-<div>
-  <a href="/">Home</a>
-  <a href={gamesRoutesConfig.base}>Games</a>
-  <a href={categoryGameRoutesConfig.base}>Category Games</a>
-  ---------------
-  <NarbarAuthLoginRegister client:load />
+<div class="sticky top-0 flex items-center justify-between px-10 py-4 w-full bg-amber-100">
+  <div class="flex items-center gap-4 sm:text-base text-sm">
+    <a href="/">Home</a>
+    <a href={gamesRoutesConfig.base}>Games</a>
+    <a href={categoryGameRoutesConfig.base}>Category Games</a>
+    <!-- --------------- -->
+    <NarbarAuthLoginRegister client:load />
+  </div>
 </div>
