@@ -26,10 +26,24 @@ project/
 │       │   ├── __init__.py
 │       │   ├── auth_routes.py     # rutas de autenticación
 │       │   └── user_routes.py     # rutas de usuarios
-│       ├── request_models/
-│       │   └── user_input.py      # Pydantic models para entradas
 │       └── response_models/
-│           └── user_output.py     # Pydantic models para respuestas
+│           └── user_output.py     # Pydantic models para respuestas (legacy)
+│
+├── dtos/                          # 📦 Objetos de transferencia de datos centralizados
+│   ├── __init__.py
+│   ├── request/                   # DTOs para requests/peticiones
+│   │   ├── __init__.py
+│   │   ├── auth_request_dto.py    # DTOs para autenticación
+│   │   ├── user_request_dto.py    # DTOs para usuarios
+│   │   └── validators.py          # Validadores para DTOs
+│   ├── response/                  # DTOs para responses/respuestas
+│   │   ├── __init__.py
+│   │   ├── auth_response_dto.py   # DTOs de respuesta de auth
+│   │   └── user_response_dto.py   # DTOs de respuesta de usuarios
+│   └── common/                    # DTOs comunes
+│       ├── __init__.py
+│       ├── paginated_response_dto.py # DTOs para paginación
+│       └── user_dto.py            # DTO común de usuario
 │
 ├── data/                          # 📦 Repositorios genéricos y DTOs
 │   ├── __init__.py

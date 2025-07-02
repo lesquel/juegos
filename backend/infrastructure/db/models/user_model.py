@@ -16,7 +16,6 @@ class UserModel(Base, TimeStampModelMixin):
     user_id = Column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True
     )
-    username = Column(String(50), unique=True, nullable=False, index=True)
     email = Column(String(100), unique=True, nullable=False, index=True)
     hashed_password = Column(String(255), nullable=False)
     virtual_currency = Column(Float, default=0.0, nullable=False)
@@ -43,4 +42,4 @@ class UserModel(Base, TimeStampModelMixin):
     )
 
     def __repr__(self):
-        return f"<UserModel(user_id={self.user_id}, username='{self.username}', email='{self.email}')>"
+        return f"<UserModel(id={self.user_id}, email='{self.email}')>"

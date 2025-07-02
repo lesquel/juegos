@@ -26,7 +26,4 @@ class CategoryModel(Base, TimeStampModelMixin):
     )
 
     def __repr__(self):
-        return (
-            f"<CategoryModel(category_id={self.category_id}, category_name='{self.category_name}', "
-            f"category_img='{self.category_img}', category_description='{self.category_description}')>"
-        )
+        return f"<CategoryModel(id={self.category_id}, name='{self.category_name}')>"

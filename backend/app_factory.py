@@ -16,6 +16,7 @@ from infrastructure.core.settings_config import settings
 from infrastructure.db import create_tables, engine
 from infrastructure.logging import get_logger
 from infrastructure.middleware import LoggingMiddleware
+
 from interfaces.api.routes import user_router, auth_router
 from interfaces.api.common.exception_handler import GlobalExceptionHandler
 
@@ -71,8 +72,8 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Middleware de logging de requests
-    logger.info("Adding HTTP request logging middleware")
+    # Middleware de logging de requests y tracking de errores
+    logger.info("Adding request logging and error tracking middleware")
     app.add_middleware(LoggingMiddleware)
 
     # Middleware de seguridad (solo en producción)
@@ -82,9 +83,9 @@ def create_app() -> FastAPI:
             TrustedHostMiddleware, allowed_hosts=["yourdomain.com", "*.yourdomain.com"]
         )
 
-    # Configurar manejo global de excepciones
-    logger.info("Setting up global exception handlers")
-    GlobalExceptionHandler.setup_handlers(app)
+    # Configurar manejo global de excepciones estandarizado
+    logger.info("Setting up standardized global exception handlers")
+    GlobalExceptionHandler.setup_error_handlers(app)
 
     # Incluir routers
     logger.info("Including API routers")

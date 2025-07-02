@@ -2,7 +2,7 @@ from typing import List, TypeVar, Optional, Callable
 from math import ceil
 from fastapi import Request
 
-from application.dtos import PaginatedResponseDTO, PaginationInfoDTO
+from dtos import PaginatedResponseDTO, PaginationInfoDTO
 from .pagination import PaginationParams
 
 T = TypeVar("T")

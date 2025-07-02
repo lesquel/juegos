@@ -16,6 +16,7 @@ class GameAdmin(ModelView, model=GameModel):
         GameModel.game_description,
         GameModel.game_url,
         GameModel.game_img,
+        GameModel.categories,
         GameModel.created_at,
         GameModel.updated_at,
     ]
@@ -27,6 +28,7 @@ class GameAdmin(ModelView, model=GameModel):
         GameModel.game_description,
         GameModel.game_url,
         GameModel.game_img,
+        GameModel.categories,
         GameModel.created_at,
         GameModel.updated_at,
     ]
@@ -37,6 +39,7 @@ class GameAdmin(ModelView, model=GameModel):
         GameModel.game_description,
         GameModel.game_url,
         GameModel.game_img,
+        GameModel.categories,
     ]
 
     # Columnas para búsqueda
@@ -72,6 +75,7 @@ class GameAdmin(ModelView, model=GameModel):
         GameModel.game_description: "Descripción",
         GameModel.game_url: "URL del Juego",
         GameModel.game_img: "Imagen del Juego",
+        GameModel.categories: "Categorías",
         GameModel.created_at: "Fecha de Creación",
         GameModel.updated_at: "Última Actualización",
     }
@@ -82,6 +86,7 @@ class GameAdmin(ModelView, model=GameModel):
         GameModel.updated_at: lambda m, a: m.updated_at.strftime("%d/%m/%Y %H:%M"),
         GameModel.game_description: lambda m, a: (m.game_description[:50] + "...") if len(m.game_description) > 50 else m.game_description,
         GameModel.game_url: lambda m, a: f"<a href='{m.game_url}' target='_blank'>{m.game_url[:30]}...</a>" if len(m.game_url) > 30 else f"<a href='{m.game_url}' target='_blank'>{m.game_url}</a>",
+        GameModel.categories: lambda m, a: ", ".join([cat.category_name for cat in m.categories]) if m.categories else "Sin categorías",
     }
 
     # Configuración de exportación

@@ -1,10 +1,9 @@
-from sqladmin import Admin
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
-from starlette.responses import RedirectResponse
 
 # Importar nuestros servicios de autenticación
-from application.use_cases.auth import LoginUserUseCase, LoginUserRequest
+from application.use_cases.auth import LoginUserUseCase
+from dtos.request.auth_request_dto import LoginRequestDTO
 from application.services import PasswordHasher
 from infrastructure.auth import get_token_provider
 from infrastructure.db.connection import SessionLocal
@@ -49,7 +48,7 @@ class AdminAuth(AuthenticationBackend):
                 )
 
                 try:
-                    login_request = LoginUserRequest(email=email, password=password)
+                    login_request = LoginRequestDTO(email=email, password=password)
                     response = login_use_case.execute(login_request)
 
                     if response.user.role != UserRole.ADMIN:
@@ -61,10 +60,9 @@ class AdminAuth(AuthenticationBackend):
                     # Guardar información del usuario en la sesión
                     request.session.update(
                         {
-                            "token": response.access_token,
+                            "token": response.token.access_token,
                             "user_id": response.user.user_id,
                             "email": response.user.email,
-                            "username": response.user.username,
                         }
                     )
 
@@ -121,6 +119,7 @@ class AdminAuth(AuthenticationBackend):
                     )
                     request.session.clear()  # Limpiar sesión inválida
                     return False
+
 
             logger.debug(f"Admin authentication successful for: {user_email}")
             return True

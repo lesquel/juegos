@@ -62,8 +62,9 @@ def get_current_user(
 ) -> UserEntity:
     """Dependency function para obtener usuario actual"""
 
-    
-    return AuthenticationMiddleware.get_current_user_from_token(token, db, token_provider)
+    return AuthenticationMiddleware.get_current_user_from_token(
+        token, db, token_provider
+    )
 
 
 def get_optional_current_user(

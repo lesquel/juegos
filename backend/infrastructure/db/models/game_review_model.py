@@ -32,7 +32,4 @@ class GameReviewModel(Base, TimeStampModelMixin):
     user = relationship("UserModel", back_populates="reviews")
 
     def __repr__(self):
-        return (
-            f"<GameReviewModel(review_id={self.review_id}, rating={self.rating}, "
-            f"comment='{self.comment}', game_id={self.game_id}, user_id={self.user_id})>"
-        )
+        return f"<GameReviewModel(id={self.review_id}, rating={self.rating}/5)>"

@@ -5,12 +5,12 @@ from uuid import UUID
 
 from application.use_cases.users import GetAllUsersUseCase, GetUserUseCase
 from infrastructure.logging import get_logger
-from application.dtos import PaginatedResponseDTO
+from dtos import PaginatedResponseDTO
+from dtos.response.user_response_dto import UserResponseDTO
 from interfaces.api.dependencies.user_case_deps import (
     get_all_users_use_case,
     get_user_use_case,
 )
-from interfaces.api.response_models.user_output import UserOutput
 
 from ..common.pagination import PaginationParams, get_pagination_params
 from ..common.filters.specific_filters import UserFilterParams, get_user_filter_params
@@ -18,28 +18,31 @@ from ..common.response_utils import create_paginated_response
 from ..common.sort import SortParams, get_sort_params
 
 
-
-user_router = APIRouter(prefix="/users", tags=["Users",])
+user_router = APIRouter(
+    prefix="/users",
+    tags=[
+        "Users",
+    ],
+)
 
 # Configurar logger
 logger = get_logger("user_routes")
 
 
-@user_router.get("/", response_model=PaginatedResponseDTO[UserOutput])
+@user_router.get("/", response_model=PaginatedResponseDTO[UserResponseDTO])
 def get_all_users(
     request: Request,
     pagination: PaginationParams = Depends(get_pagination_params),
     filters: UserFilterParams = Depends(get_user_filter_params),
     sort_params: SortParams = Depends(get_sort_params),
     use_case: GetAllUsersUseCase = Depends(get_all_users_use_case),
-) -> PaginatedResponseDTO[UserOutput]:
+) -> PaginatedResponseDTO[UserResponseDTO]:
     """
     Retrieves paginated users with optional filters.
 
     Query Parameters:
     - page: Número de página (default: 1)
     - limit: Elementos por página (default: 10, max: 100)
-    - username: Filtrar por username (búsqueda parcial)
     - email: Filtrar por email (búsqueda parcial)
     - min_currency: Moneda virtual mínima
     - max_currency: Moneda virtual máxima
@@ -50,9 +53,11 @@ def get_all_users(
     :param db: The database session dependency.
     :return: PaginatedResponseDTO with UserOutput objects.
     """
-    logger.info(f"Getting all users - page: {pagination.page}, limit: {pagination.limit}")
+    logger.info(
+        f"Getting all users - page: {pagination.page}, limit: {pagination.limit}"
+    )
     logger.debug(f"Filters applied: {filters.to_dict()}")
-    
+
     try:
         users, total_count = use_case.execute(pagination, filters, sort_params)
 
@@ -63,17 +68,17 @@ def get_all_users(
             pagination=pagination,
             request=request,
         )
-    
+
     except Exception as e:
         logger.error(f"Failed to retrieve users: {str(e)}")
         raise
 
 
-@user_router.get("/{user_id}", response_model=UserOutput)
+@user_router.get("/{user_id}", response_model=UserResponseDTO)
 def get_user(
     user_id: Optional[UUID],
     use_case: GetUserUseCase = Depends(get_user_use_case),
-) -> UserOutput:
+) -> UserResponseDTO:
     """
     Retrieve a specific user by ID.
 
@@ -82,7 +87,7 @@ def get_user(
     :return: UserOutput object
     """
     logger.info(f"Getting user by ID: {user_id}")
-    
+
     try:
         user = use_case.execute(user_id)
 
@@ -92,7 +97,7 @@ def get_user(
 
         logger.debug(f"Successfully retrieved user: {user.email}")
         return user
-    
+
     except HTTPException:
         raise
     except Exception as e:

@@ -65,8 +65,6 @@ class PostgresUserRepository(IUserRepository):
 
     def _apply_filters(self, query, filters: UserFilterParams):
         """Aplica filtros a la consulta SQL"""
-        if filters.username:
-            query = query.filter(UserModel.username.ilike(f"%{filters.username}%"))
 
         if filters.email:
             query = query.filter(UserModel.email.ilike(f"%{filters.email}%"))
@@ -129,10 +127,8 @@ class PostgresUserRepository(IUserRepository):
         logger.debug(f"Saving user: {user.email}")
         try:
             if user.user_id is None:
-                # Create new user
                 logger.debug(f"Creating new user: {user.email}")
                 user_model = UserModel(
-                    username=user.username,
                     email=user.email,
                     hashed_password=user.hashed_password,
                 )
@@ -140,15 +136,7 @@ class PostgresUserRepository(IUserRepository):
             else:
                 # Update existing user
                 logger.debug(f"Updating existing user: {user.email}")
-                user_model = (
-                    self.db.query(UserModel)
-                    .filter(UserModel.user_id == user.user_id)
-                    .first()
-                )
-                if user_model:
-                    user_model.username = user.username
-                    user_model.email = user.email
-                    user_model.hashed_password = user.hashed_password
+                self.update(user.user_id, user_model)
 
             self.db.commit()
             self.db.refresh(user_model)
@@ -165,7 +153,6 @@ class PostgresUserRepository(IUserRepository):
             self.db.query(UserModel).filter(UserModel.user_id == user_id).first()
         )
         if user_model:
-            user_model.username = user.username
             user_model.email = user.email
             user_model.hashed_password = user.hashed_password
             self.db.commit()
@@ -183,23 +170,18 @@ class PostgresUserRepository(IUserRepository):
         """Converts a UserModel to a User entity."""
         return UserEntity(
             user_id=str(model.user_id),
-            username=model.username,
             email=model.email,
             hashed_password=model.hashed_password,
             virtual_currency=model.virtual_currency,
-            role=model.role, 
+            role=model.role,
             created_at=model.created_at,
             updated_at=model.updated_at,
-
-
-
         )
 
     def _entity_to_model(self, entity: UserEntity) -> UserModel:
         """Converts a User entity to a UserModel."""
         return UserModel(
             user_id=uuid.UUID(entity.user_id) if entity.user_id else None,
-            username=entity.username,
             email=entity.email,
             hashed_password=entity.hashed_password,
             virtual_currency=entity.virtual_currency,

@@ -12,7 +12,6 @@ class UserAdmin(ModelView, model=UserModel):
     # Configuración de columnas
     column_list = [
         UserModel.user_id,
-        UserModel.username,
         UserModel.email,
         UserModel.virtual_currency,
         UserModel.role,
@@ -23,7 +22,6 @@ class UserAdmin(ModelView, model=UserModel):
     # Columnas a mostrar en detalle
     column_details_list = [
         UserModel.user_id,
-        UserModel.username,
         UserModel.email,
         UserModel.virtual_currency,
         UserModel.role,
@@ -33,18 +31,16 @@ class UserAdmin(ModelView, model=UserModel):
 
     # Columnas editables
     form_columns = [
-        UserModel.username,
         UserModel.email,
         UserModel.virtual_currency,
         UserModel.role,
     ]
 
     # Columnas para búsqueda
-    column_searchable_list = [UserModel.username, UserModel.email]
+    column_searchable_list = [UserModel.email]
 
     # Columnas para filtrado
     column_filters = [
-        UserModel.username,
         UserModel.email,
         UserModel.role,
         UserModel.virtual_currency,
@@ -53,7 +49,6 @@ class UserAdmin(ModelView, model=UserModel):
 
     # Configuración de ordenamiento
     column_sortable_list = [
-        UserModel.username,
         UserModel.email,
         UserModel.virtual_currency,
         UserModel.created_at,
@@ -72,7 +67,6 @@ class UserAdmin(ModelView, model=UserModel):
     # Personalizar etiquetas de columnas
     column_labels = {
         UserModel.user_id: "ID de Usuario",
-        UserModel.username: "Nombre de Usuario",
         UserModel.email: "Correo Electrónico",
         UserModel.virtual_currency: "Moneda Virtual",
         UserModel.created_at: "Fecha de Creación",

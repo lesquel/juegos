@@ -8,9 +8,6 @@ from ..filter import BaseFilterParams
 class UserFilterParams(BaseFilterParams):
     """Filtros específicos para usuarios - hereda filtros base + específicos"""
 
-    username: Optional[str] = Field(
-        None, description="Filtrar por nombre de usuario (búsqueda parcial)"
-    )
     email: Optional[str] = Field(
         None, description="Filtrar por email (búsqueda parcial)"
     )
@@ -29,7 +26,6 @@ def get_user_filter_params(
     created_after: Optional[str] = Query(None, description="Creado después de"),
     created_before: Optional[str] = Query(None, description="Creado antes de"),
     # Filtros específicos de usuario
-    username: Optional[str] = Query(None, description="Filtrar por username"),
     email: Optional[str] = Query(None, description="Filtrar por email"),
     min_currency: Optional[float] = Query(
         None, ge=0, description="Moneda virtual mínima"
@@ -43,7 +39,6 @@ def get_user_filter_params(
         search=search,
         created_after=created_after,
         created_before=created_before,
-        username=username,
         email=email,
         min_currency=min_currency,
         max_currency=max_currency,

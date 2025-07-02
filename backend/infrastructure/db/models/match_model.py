@@ -30,7 +30,5 @@ class MatchModel(Base, TimeStampModelMixin):
     
 
     def __repr__(self):
-        return (
-            f"<MatchModel(match_id={self.match_id}, game_id={self.game_id}, "
-            f"start_time={self.start_time}, end_time={self.end_time}, winner_id={self.winner_id})>"
-        )
+        winner_info = f", winner={self.winner_id}" if self.winner_id else ", no winner"
+        return f"<MatchModel(id={self.match_id}{winner_info})>"

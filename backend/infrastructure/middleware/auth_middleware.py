@@ -38,29 +38,30 @@ class AuthenticationMiddleware:
         logger.debug("Authenticating user from token")
 
         try:
+            
             # Decodificar token
             logger.debug("Decoding JWT token")
             payload = token_provider.decode_token(token.credentials)
             logger.debug(f"Token decoded successfully")
 
-            email = payload.get("sub")
-            if email is None:
-                logger.warning("Token validation failed - missing email in payload")
+            user_id = payload.sub
+            if user_id is None:
+                logger.warning("Token validation failed - missing user_id in payload")
                 raise HTTPException(
                     status_code=401,
                     detail="Invalid token format",
                     headers={"WWW-Authenticate": "Bearer"},
                 )
 
-            logger.debug(f"Token validation successful for email: {email}")
+            logger.debug(f"Token validation successful for user_id: {user_id}")
 
             # Buscar usuario
             user_repo = PostgresUserRepository(db)
-            user = user_repo.get_by_email(email)
+            user = user_repo.get_by_id(user_id)
 
             if user is None:
                 logger.warning(
-                    f"Authentication failed - user not found for email: {email}"
+                    f"Authentication failed - user not found for user_id: {user_id}"
                 )
                 raise HTTPException(
                     status_code=401,
@@ -68,7 +69,7 @@ class AuthenticationMiddleware:
                     headers={"WWW-Authenticate": "Bearer"},
                 )
 
-            logger.info(f"User authenticated successfully: {email}")
+            logger.info(f"User authenticated successfully: {user_id}")
             return user
 
         except HTTPException:

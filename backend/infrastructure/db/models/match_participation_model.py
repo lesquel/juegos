@@ -22,7 +22,4 @@ class MatchParticipationModel(Base, TimeStampModelMixin):
     user = relationship("UserModel", back_populates="match_participations")
 
     def __repr__(self):
-        return (
-            f"<MatchParticipationModel(match_id={self.match_id}, user_id={self.user_id}, "
-            f"score={self.score}, bet_amount={self.bet_amount})>"
-        )
+        return f"<MatchParticipationModel(id={self.id}, score={self.score}, bet=${self.bet_amount})>"

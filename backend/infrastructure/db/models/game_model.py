@@ -28,7 +28,4 @@ class GameModel(Base, TimeStampModelMixin):
 
 
     def __repr__(self):
-        return (
-            f"<GameModel(game_id={self.game_id}, game_name='{self.game_name}', "
-            f"game_description='{self.game_description}', game_url='{self.game_url}')>"
-        )
+        return f"<GameModel(id={self.game_id}, name='{self.game_name}')>"
