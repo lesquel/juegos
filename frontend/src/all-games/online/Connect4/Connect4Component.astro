@@ -1,0 +1,195 @@
+<style is:inline>
+  #body {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    color: white;
+  }
+
+  h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  #message {
+    font-size: 24px;
+    font-weight: bold;
+    height: 40px;
+    margin: 20px 0;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  #board {
+    height: 540px;
+    width: 630px;
+    background: linear-gradient(145deg, #1e3c72, #2a5298);
+    border: 10px solid #0f2557;
+    border-radius: 20px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tile {
+    height: 70px;
+    width: 70px;
+    margin: 5px;
+    background-color: white;
+    border-radius: 50%;
+    border: 3px solid #0f2557;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .tile:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+  }
+
+  .red-piece {
+    background: radial-gradient(circle at 30% 30%, #ff6b6b, #e74c3c);
+    border-color: #c0392b;
+    animation: dropIn 0.5s ease-out;
+  }
+
+  .yellow-piece {
+    background: radial-gradient(circle at 30% 30%, #f1c40f, #f39c12);
+    border-color: #d68910;
+    animation: dropIn 0.5s ease-out;
+  }
+
+  @keyframes dropIn {
+    0% {
+      transform: translateY(-300px) scale(0.8);
+      opacity: 0.5;
+    }
+
+    50% {
+      transform: translateY(10px) scale(1.1);
+    }
+
+    100% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .winning-piece {
+    animation:
+      winPulse 1s infinite,
+      glow 2s infinite;
+    z-index: 10;
+  }
+
+  @keyframes winPulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes glow {
+    0%,
+    100% {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    50% {
+      box-shadow:
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 30px rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  .tie-piece {
+    background: linear-gradient(45deg, #95a5a6, #bdc3c7);
+    animation: tieShake 0.5s ease-in-out;
+  }
+
+  @keyframes tieShake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-5px);
+    }
+
+    75% {
+      transform: translateX(5px);
+    }
+  }
+
+  #restartBtn {
+    font-size: 18px;
+    padding: 12px 25px;
+    margin-top: 20px;
+    background: linear-gradient(145deg, #27ae60, #2ecc71);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    font-weight: bold;
+  }
+
+  #restartBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(145deg, #2ecc71, #27ae60);
+  }
+
+  .current-player {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 10px;
+    vertical-align: middle;
+    border: 2px solid white;
+  }
+
+  .current-red {
+    background: radial-gradient(circle at 30% 30%, #ff6b6b, #e74c3c);
+  }
+
+  .current-yellow {
+    background: radial-gradient(circle at 30% 30%, #f1c40f, #f39c12);
+  }
+
+  #gameStats {
+    margin-top: 20px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+</style>
+
+<div id="body">
+
+    <h1>🔴 Connect 4 🟡</h1>
+    <div id="message">
+      Turno del Jugador Rojo
+      <span class="current-player current-red"></span>
+    </div>
+    <div id="board"></div>
+    <button id="restartBtn" onclick="restartGame()">🎮 Jugar de Nuevo</button>
+    <div id="gameStats">Movimientos: <span id="moveCount">0</span></div>
+    <script src="./connect4.js"></script>
+</div>
