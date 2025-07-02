@@ -3,6 +3,7 @@ import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { AuthClientData } from "../services/authClientData";
 import { MiddlewareAstroProtectUser } from "../middleware/middlewareAstroProtectUser";
+import { authRoutesConfig } from "../config/auth.routes.config";
 
 export const LoginForm = () => {
   MiddlewareAstroProtectUser.isLogged();
@@ -57,7 +58,7 @@ const UseLoginForm = () => {
 
       <p className="text-sm text-gray-500 mb-6 border-b border-gray-300 pb-1 text-center">
         ¿Aun no tienes una?{" "}
-        <a href="./register" className="text-blue-600 hover:underline">
+        <a href={authRoutesConfig.children.register.url} className="text-blue-600 hover:underline">
           Creala!
         </a>
       </p>

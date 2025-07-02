@@ -3,6 +3,7 @@ import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { AuthClientData } from "../services/authClientData";
 import { MiddlewareAstroProtectUser } from "../middleware/middlewareAstroProtectUser";
+import { authRoutesConfig } from "../config/auth.routes.config";
 
 export const RegisterForm = () => {
   MiddlewareAstroProtectUser.isLogged();
@@ -27,13 +28,15 @@ const UseRegisterForm = () => {
         username: z.string(),
         email: z.string().email(),
         password: z.string(),
+        confirmPassword: z.string(),
       }),
       onSubmit: z
         .object({
-          username: z.string().min(1, "Por favor, ingresa un nombre de usuario."),
+          username: z
+            .string()
+            .min(1, "Por favor, ingresa un nombre de usuario."),
           email: z.string().email("Por favor, ingresa un correo válido."),
-          password: z
-            .string(), // .min(VALIDADOR, "La contraseña debe de tener blah blah blah para que sirva")
+          password: z.string(), // .min(VALIDADOR, "La contraseña debe de tener blah blah blah para que sirva")
           confirmPassword: z.string().min(1, "Confirma tu contraseña."), /// minimo un caracter en el de confirmar la contraseña
         })
         .refine((data) => data.password === data.confirmPassword, {
@@ -42,93 +45,16 @@ const UseRegisterForm = () => {
         }),
     },
     onSubmit: async ({ value }) => {
-      mutate({ email: value.email, password: value.password });
+      mutate(value);
     },
   });
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.handleSubmit();
-      }}
-    >
-      <form.Field
-        name="username"
-        children={(field) => (
-          <div>
-            <label>Username</label>
-            <input
-              type="text"
-              name={field.name}
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              onBlur={field.handleBlur}
-              placeholder="Username"
-            />
-            {field.state.meta.errors.length > 0 && (
-              <span>
-                {field.state.meta.errors
-                  .map((error) => error?.message)
-                  .join(", ")}
-              </span>
-            )}
-          </div>
-        )}
-      />
-      <form.Field
-        name="email"
-        children={(field) => (
-          <div>
-            <h1>Register</h1>
-            <label>Email</label>
-            <input
-              type="email"
-              name={field.name}
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              onBlur={field.handleBlur}
-              placeholder="Email"
-            />
-            {field.state.meta.errors.length > 0 && (
-              <span>
-                {field.state.meta.errors
-                  .map((error) => error?.message)
-                  .join(", ")}
-              </span>
-            )}
-          </div>
-        )}
-      />
-      <form.Field
-        name="password"
-        children={(field) => (
-          <div>
-            <label>Password</label>
-            <input
-              type="password"
-              name={field.name}
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              onBlur={field.handleBlur}
-              placeholder="Password"
-            />
-            {field.state.meta.errors.length > 0 && (
-              <span>
-                {field.state.meta.errors
-                  .map((error) => error?.message)
-                  .join(", ")}
-              </span>
-            )}
-          </div>
-        )}
-      />
 
   return (
     <div className="w-full px-4 max-w-sm sm:max-w-md mx-auto">
       <h1 className="text-3xl lg:text-4xl font-bold mb-6 mt-4 text-center">
         ¡Regístrate!
       </h1>
+
 
       <div className="relative w-36 h-36 rounded-full bg-green-500 flex items-center justify-center overflow-hidden mb-8 mx-auto">
         <img
@@ -137,6 +63,15 @@ const UseRegisterForm = () => {
           className="w-full h-full object-cover"
         />
       </div>
+
+
+            <p className="text-sm text-gray-500 mb-6 border-b border-gray-300 pb-1 text-center">
+              ¿Ya tienes una cuenta?{" "}
+              <a href={authRoutesConfig.children.login.url} className="text-blue-600 hover:underline">
+                Inicia sesión
+              </a>
+            </p>
+      
 
       <form
         onSubmit={(e) => {
