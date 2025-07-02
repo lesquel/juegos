@@ -22,34 +22,31 @@ class JWTService(ITokenProvider):
     ) -> TokenResponseDTO:
         """Crea un token de acceso JWT"""
         logger.debug(f"Creating access token for subject: {data.sub}")
-        try:
-            # Crear payload del JWT
-            expire = datetime.now(timezone.utc) + (
-                expires_delta
-                or timedelta(minutes=settings.jwt_settings.jwt_expiration_time)
-            )
+        
+        # Crear payload del JWT
+        expire = datetime.now(timezone.utc) + (
+            expires_delta
+            or timedelta(minutes=settings.jwt_settings.jwt_expiration_time)
+        )
 
-            payload = {
-                "sub": data.sub,
-                "exp": expire,
-                "iat": datetime.now(timezone.utc),
-                "type": "access_token",
-            }
+        payload = {
+            "sub": data.sub,
+            "exp": expire,
+            "iat": datetime.now(timezone.utc),
+            "type": "access_token",
+        }
 
-            # Generar token
-            token = jwt.encode(
-                payload,
-                settings.jwt_settings.jwt_secret_key,
-                algorithm=settings.jwt_settings.jwt_algorithm,
-            )
-            print("INSIDE TOKEN")
-            print(token)
+        # Generar token
+        token = jwt.encode(
+            payload,
+            settings.jwt_settings.jwt_secret_key,
+            algorithm=settings.jwt_settings.jwt_algorithm,
+        )
+        print("INSIDE TOKEN")
+        print(token)
 
-            logger.debug(f"Access token created successfully, expires at: {expire}")
-            return TokenResponseDTO(access_token=token, token_type="bearer")
-        except Exception as e:
-            logger.error(f"Error creating access token: {str(e)}")
-            raise
+        logger.debug(f"Access token created successfully, expires at: {expire}")
+        return TokenResponseDTO(access_token=token, token_type="bearer")
 
     def decode_token(self, token: str) -> TokenData:
         """Decodifica un token JWT y retorna TokenData"""
@@ -78,9 +75,6 @@ class JWTService(ITokenProvider):
             raise
         except jwt.InvalidTokenError as e:
             logger.warning(f"Token decode failed: invalid token - {str(e)}")
-            raise
-        except Exception as e:
-            logger.error(f"Unexpected error decoding token: {str(e)}")
             raise
 
     def verify_token(self, token: str) -> bool:

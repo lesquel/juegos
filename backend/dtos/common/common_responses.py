@@ -22,10 +22,3 @@ class SuccessResponse(ApiResponse[T]):
     model_config = ConfigDict(extra="ignore")
 
 
-class ErrorResponse(ApiResponse[None]):
-    """Respuesta de error"""
-
-    success: bool = False  # sobrescribe el valor por defecto
-
-    errors: Optional[Dict[str, Any]] = None
-    model_config = ConfigDict(extra="ignore")

@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, Request, HTTPException
 from uuid import UUID
 
 from application.use_cases.users import GetAllUsersUseCase, GetUserUseCase
+from domain.exceptions import FailedToRetrieveUserError, UserNotFoundError
 from infrastructure.logging import get_logger
 from dtos import PaginatedResponseDTO
 from dtos.response.user_response_dto import UserResponseDTO
@@ -50,56 +51,41 @@ def get_all_users(
     :param request: FastAPI request object for URL building
     :param pagination: Pagination parameters
     :param filters: Filter parameters
-    :param db: The database session dependency.
-    :return: PaginatedResponseDTO with UserOutput objects.
+    :return: PaginatedResponseDTO with UserResponseDTO objects.
     """
+    # ✅ Solo log de entrada HTTP con parámetros clave
     logger.info(
-        f"Getting all users - page: {pagination.page}, limit: {pagination.limit}"
+        f"GET /users - Request received - page: {pagination.page}, limit: {pagination.limit}"
     )
-    logger.debug(f"Filters applied: {filters.to_dict()}")
+    
+    # ✅ El Use Case maneja toda la lógica y logging interno
+    users, total_count = use_case.execute(pagination, filters, sort_params)
 
-    try:
-        users, total_count = use_case.execute(pagination, filters, sort_params)
-
-        logger.info(f"Retrieved {len(users)} users from {total_count} total")
-        return create_paginated_response(
-            items=users,
-            total_count=total_count,
-            pagination=pagination,
-            request=request,
-        )
-
-    except Exception as e:
-        logger.error(f"Failed to retrieve users: {str(e)}")
-        raise
+    # ✅ Log de resultado a nivel HTTP
+    logger.info(f"GET /users - Response: {len(users)} users from {total_count} total")
+    
+    return create_paginated_response(
+        items=users,
+        total_count=total_count,
+        pagination=pagination,
+        request=request,
+    )
 
 
 @user_router.get("/{user_id}", response_model=UserResponseDTO)
 def get_user(
-    user_id: Optional[UUID],
+    user_id: UUID,
     use_case: GetUserUseCase = Depends(get_user_use_case),
 ) -> UserResponseDTO:
     """
     Retrieve a specific user by ID.
 
     :param user_id: The ID of the user to retrieve
-    :param db: Database session
-    :return: UserOutput object
+    :return: UserResponseDTO object
     """
-    logger.info(f"Getting user by ID: {user_id}")
-
-    try:
-        user = use_case.execute(user_id)
-
-        if not user:
-            logger.warning(f"User not found with ID: {user_id}")
-            raise HTTPException(status_code=404, detail="User not found")
-
-        logger.debug(f"Successfully retrieved user: {user.email}")
-        return user
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Failed to retrieve user {user_id}: {str(e)}")
-        raise
+    # ✅ Solo log de entrada HTTP - nivel INFO
+    logger.info(f"GET /users/{user_id} - Request received")
+    
+    # ✅ El Use Case maneja toda la lógica y logging interno
+    # ✅ Los Exception Handlers capturan y convierten excepciones automáticamente
+    return use_case.execute(str(user_id))

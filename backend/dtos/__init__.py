@@ -14,5 +14,4 @@ from .common import (
     PaginatedResponseDTO,
     ApiResponse,
     SuccessResponse,
-    ErrorResponse,
 )

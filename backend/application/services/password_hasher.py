@@ -1,5 +1,6 @@
 from passlib.context import CryptContext
 from ..interfaces import IPasswordHasher
+from domain.exceptions import DomainException
 from infrastructure.logging import get_logger
 
 # Configurar logger
@@ -18,7 +19,7 @@ class PasswordHasher(IPasswordHasher):
             return result
         except Exception as e:
             logger.error(f"Error during password verification: {str(e)}")
-            return False
+            raise DomainException("Password verification failed", 500, "password_verification_error")
 
     def hash(self, password: str) -> str:
         logger.debug("Hashing password")
@@ -28,4 +29,4 @@ class PasswordHasher(IPasswordHasher):
             return hashed
         except Exception as e:
             logger.error(f"Error during password hashing: {str(e)}")
-            raise
+            raise DomainException("Password hashing failed", 500, "password_hashing_error")
