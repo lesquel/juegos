@@ -1,12 +1,12 @@
-from application.use_cases.users import GetAllUsersUseCase, GetUserUseCase
+from application.use_cases.users import GetAllUsersUseCase, GetUserUseCase, GetCurrentUserUseCase
 from application.use_cases.auth import RegisterUserUseCase, LoginUserUseCase
 
 from domain.interfaces.token_provider import ITokenProvider
+from dtos.response.user_response_dto import UserResponseDTO
 from infrastructure.auth import PasswordHasher
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 
-from typing import Optional
 from fastapi import Depends
 
 from domain.entities.user import UserEntity
@@ -14,7 +14,9 @@ from infrastructure.auth.jwt_service import get_token_provider
 from infrastructure.db.connection import get_db
 from sqlalchemy.orm import Session
 from infrastructure.db.repositories import PostgresUserRepository
-from infrastructure.middleware import AuthenticationMiddleware, security
+
+# Security scheme para Swagger/OpenAPI
+security = HTTPBearer()
 
 
 def get_all_users_use_case(db: Session = Depends(get_db)) -> GetAllUsersUseCase:
@@ -59,21 +61,11 @@ def get_current_user(
     token: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db),
     token_provider: ITokenProvider = Depends(get_token_provider),
-) -> UserEntity:
+) -> UserResponseDTO:
     """Dependency function para obtener usuario actual"""
+    
+    user_repo = PostgresUserRepository(db)
+    use_case = GetCurrentUserUseCase(user_repo, token_provider)
+    current_user = use_case.execute(token)
 
-    return AuthenticationMiddleware.get_current_user_from_token(
-        token, db, token_provider
-    )
-
-
-def get_optional_current_user(
-    token: Optional[HTTPAuthorizationCredentials] = Depends(
-        HTTPBearer(auto_error=False)
-    ),
-    db: Session = Depends(get_db),
-) -> Optional[UserEntity]:
-    """Dependency function para obtener usuario actual opcional"""
-    if token is None:
-        return None
-    return AuthenticationMiddleware.get_current_user_from_token(token, db)
+    return current_user

@@ -18,7 +18,7 @@ const data = await GlobalClientData.getGlobalInfo();
     <title>{data.site_name}</title>
     <ClientRouter />
   </head>
-  <body>
+  <body class="min-h-screen flex flex-col">
     <SaveAuthProvider />
     <Narbar />
     <slot />

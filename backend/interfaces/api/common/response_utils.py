@@ -22,7 +22,6 @@ def create_paginated_response(
         total_count: Número total de elementos en la base de datos
         pagination: Parámetros de paginación
         request: Request de FastAPI para construir URLs
-        transform_func: Función opcional para transformar elementos (ej: Entity -> DTO)
 
     Returns:
         PaginatedResponseDTO con la información paginada
@@ -58,18 +57,3 @@ def create_paginated_response(
 
     return PaginatedResponseDTO(info=pagination_info, results=items)
 
-
-# Función genérica para crear transformaciones simples
-def create_simple_transform(dto_class):
-    """
-    Crea una función de transformación simple para cualquier DTO.
-
-    Ejemplo de uso:
-    transform_func = create_simple_transform(UserDTO)
-    """
-
-    def transform(entity):
-        # Asume que el DTO tiene los mismos campos que la entity
-        return dto_class(**entity.__dict__)
-
-    return transform

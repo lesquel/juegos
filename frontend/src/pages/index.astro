@@ -1,9 +1,10 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import { ListGames } from "@modules/games/components/ListGames";
+import { Home } from "@modules/home/components/Home.tsx";
 ---
 
 <Layout>
-  <h1 class="text-4xl font-bold">inicio</h1>
-  <ListGames client:load />
+  <main class="flex-grow flex items-center justify-center">
+    <Home client:load/>
+  </main>
 </Layout>

@@ -14,7 +14,7 @@ from infrastructure.logging import get_logger
 logger = get_logger("exception_handler")
 
 
-class ErrorHandlerMiddleware:
+class ErrorHandler:
     """Middleware para manejo de errores - Similar al de Django"""
 
     @staticmethod
@@ -37,6 +37,12 @@ class ErrorHandlerMiddleware:
         request: Request, exc: RequestValidationError
     ) -> JSONResponse:
         """Maneja errores de validación de Pydantic"""
+
+        print("DEBUG validation error:", exc.errors())
+
+        logger.warning(
+            f"Validation error: {len(exc.errors())} field(s) - Path: {request.url}"
+        )
 
         # Convertir errores de Pydantic a formato similar a Django
         errors = {}
@@ -120,7 +126,7 @@ class ErrorHandlerMiddleware:
 def setup_exception_handlers(app: FastAPI):
     """Configura los handlers de excepciones - Similar al setup de Django"""
 
-    handler = ErrorHandlerMiddleware()
+    handler = ErrorHandler()
 
     # Handler para excepciones del dominio
     @app.exception_handler(DomainException)

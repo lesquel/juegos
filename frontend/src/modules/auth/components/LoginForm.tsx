@@ -41,11 +41,11 @@ const UseLoginForm = () => {
 
   return (
     <div className="w-full max-w-sm sm:max-w-md mx-auto">
-      <h1 className="text-3xl   font-bold mb-6 mt-4 text-center">
+      <h1 className="text-3xl font-bold mb-6 text-center">
         Bienvenido/a de nuevo
       </h1>
 
-      <div className="relative w-36 h-36 rounded-full bg-red-500 flex items-center justify-center overflow-hidden mb-8 mx-auto">
+      <div className="relative w-36 h-36 rounded-full bg-red-500 flex items-center justify-center overflow-hidden mb-4 mx-auto">
         <img
           src="/placeholder-avatar.png"
           alt="Avatar ese de figma"
@@ -86,7 +86,7 @@ const UseLoginForm = () => {
             <div className="mb-6">
               <label
                 htmlFor={field.name}
-                className="block text-lg font-medium text-gray-800 mb-3"
+                className="block text-base font-medium text-gray-800 mb-3"
               >
                 ¿Cual es tu usuario?
               </label>
@@ -98,7 +98,7 @@ const UseLoginForm = () => {
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 placeholder="Ingresa tu correo electrónico"
-                className="w-full px-4 py-3 rounded-xl bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-base"
+                className="w-full px-4 py-3 rounded-xl bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-sm"
               />
               {field.state.meta.errors.length > 0 && (
                 <span className="text-red-500 text-sm mt-2 block">
@@ -116,7 +116,7 @@ const UseLoginForm = () => {
             <div className="mb-6">
               <label
                 htmlFor={field.name}
-                className="block text-lg font-medium text-gray-800 mb-3"
+                className="block text-base font-medium text-gray-800 mb-3"
               >
                 ¿Cual es tu contraseña?
               </label>
@@ -128,7 +128,7 @@ const UseLoginForm = () => {
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 placeholder="Ingresa tu contraseña"
-                className="w-full px-4 py-3 rounded-xl bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-base"
+                className="w-full px-4 py-3 rounded-xl bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-sm"
               />
               {field.state.meta.errors.length > 0 && (
                 <span className="text-red-500 text-sm mt-2 block">
@@ -151,7 +151,7 @@ const UseLoginForm = () => {
 
         <button
           type="submit"
-          className="w-full bg-gray-800 text-white font-semibold py-3 lg:py-4 rounded-xl shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 transition duration-300 ease-in-out text-base lg:text-xl cursor-pointer"
+          className="w-full bg-gray-800 text-white font-semibold py-3 rounded-xl shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 transition duration-300 ease-in-out text-lg cursor-pointer"
         >
           Accede!
         </button>

@@ -6,13 +6,13 @@ from application.use_cases.auth import (
 )
 
 
-from domain.entities.user import UserEntity
 from infrastructure.logging import get_logger
 
 from interfaces.api.dependencies import (
     get_register_user_use_case,
     get_login_use_case,
     get_current_user,
+    security,
 )
 from dtos.request.auth_request_dto import LoginRequestDTO
 from dtos.request.auth_request_dto import UserCreateRequestDTO
@@ -42,17 +42,11 @@ def login(
     """
     logger.info(f"Login attempt for email: {user_login.email}")
 
-    try:
-        request = LoginRequestDTO(email=user_login.email, password=user_login.password)
+    request = LoginRequestDTO(email=user_login.email, password=user_login.password)
+    response = login_use_case.execute(request)
 
-        response = login_use_case.execute(request)
-
-        logger.info(f"Successful login for user: {response.user.email}")
-        return SuccessResponse(data=response, message="Login successful")
-
-    except Exception as e:
-        logger.error(f"Login failed for email {user_login.email}: {str(e)}")
-        raise
+    logger.info(f"Successful login for user: {response.user.email}")
+    return SuccessResponse(data=response, message="Login successful")
 
 
 @auth_router.post("/register", response_model=SuccessResponse[UserBaseResponseDTO])
@@ -68,25 +62,19 @@ def register(
     """
     logger.info(f"Registration attempt for email: {user_data.email}")
 
-    try:
-        request = UserCreateRequestDTO(
-            email=user_data.email,
-            password=user_data.password,
-        )
-        print(request)
+    request = UserCreateRequestDTO(
+        email=user_data.email,
+        password=user_data.password,
+    )
 
-        response = register_use_case.execute(request)
+    response = register_use_case.execute(request)
 
-        logger.info(f"Successful registration for user: {response.email}")
-        return SuccessResponse(data=response, message="User registered successfully")
-
-    except Exception as e:
-        logger.error(f"Registration failed for email {user_data.email}: {str(e)}")
-        raise
+    logger.info(f"Successful registration for user: {response.email}")
+    return SuccessResponse(data=response, message="User registered successfully")
 
 
 @auth_router.get("/me", response_model=SuccessResponse[UserResponseDTO])
-def get_current_user_info(current_user: UserEntity = Depends(get_current_user)):
+def get_current_user_info(current_user: UserResponseDTO = Depends(get_current_user)):
     """
     Obtener información del usuario autenticado
 
@@ -95,21 +83,18 @@ def get_current_user_info(current_user: UserEntity = Depends(get_current_user)):
     """
     logger.info(f"Get current user info for: {current_user.email}")
 
-    try:
-        user_data = UserResponseDTO(
-            user_id=str(current_user.user_id),
-            email=current_user.email,
-            virtual_currency=current_user.virtual_currency,
-            role=current_user.role,
-            created_at=current_user.created_at,
-            updated_at=current_user.updated_at,
-        )
+    user_data = UserResponseDTO(
+        user_id=str(current_user.user_id),
+        email=current_user.email,
+        virtual_currency=current_user.virtual_currency,
+        role=current_user.role,
+        created_at=current_user.created_at,
+        updated_at=current_user.updated_at,
+    )
 
-        logger.debug(f"Successfully retrieved user info for: {current_user.email}")
-        return SuccessResponse(
-            data=user_data, message="User information retrieved successfully"
-        )
 
-    except Exception as e:
-        logger.error(f"Failed to retrieve user info for {current_user.email}: {str(e)}")
-        raise
+    logger.debug(f"Successfully retrieved user info for: {current_user.email}")
+    return SuccessResponse(
+        data=user_data, message="User information retrieved successfully"
+    )
+

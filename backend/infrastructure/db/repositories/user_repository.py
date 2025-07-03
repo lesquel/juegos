@@ -26,13 +26,9 @@ class PostgresUserRepository(IUserRepository):
     def get_all(self) -> List[UserEntity]:
         """Retrieves all users from the repository."""
         logger.debug("Getting all users from database")
-        try:
-            user_models = self.db.query(UserModel).all()
-            logger.info(f"Retrieved {len(user_models)} users from database")
-            return [self._model_to_entity(model) for model in user_models]
-        except Exception as e:
-            logger.error(f"Error retrieving all users: {str(e)}")
-            raise
+        user_models = self.db.query(UserModel).all()
+        logger.info(f"Retrieved {len(user_models)} users from database")
+        return [self._model_to_entity(model) for model in user_models]
 
     def get_paginated(
         self,
@@ -89,38 +85,30 @@ class PostgresUserRepository(IUserRepository):
     def get_by_id(self, user_id: str) -> Optional[UserEntity]:
         """Retrieves a user by their ID."""
         logger.debug(f"Getting user by ID: {user_id}")
-        try:
-            user_model = (
-                self.db.query(UserModel).filter(UserModel.user_id == user_id).first()
-            )
+        user_model = (
+            self.db.query(UserModel).filter(UserModel.user_id == user_id).first()
+        )
 
-            if user_model:
-                logger.debug(f"User found with ID: {user_id}")
-                return self._model_to_entity(user_model)
-            else:
-                logger.debug(f"No user found with ID: {user_id}")
-                return None
-        except Exception as e:
-            logger.error(f"Error retrieving user by ID {user_id}: {str(e)}")
-            raise
+        if user_model:
+            logger.debug(f"User found with ID: {user_id}")
+            return self._model_to_entity(user_model)
+        else:
+            logger.debug(f"No user found with ID: {user_id}")
+            return None
 
     def get_by_email(self, email: str) -> Optional[UserEntity]:
         """Retrieves a user by their email address."""
         logger.debug(f"Getting user by email: {email}")
-        try:
-            user_model = (
-                self.db.query(UserModel).filter(UserModel.email == email).first()
-            )
+        user_model = (
+            self.db.query(UserModel).filter(UserModel.email == email).first()
+        )
 
-            if user_model:
-                logger.debug(f"User found with email: {email}")
-                return self._model_to_entity(user_model)
-            else:
-                logger.debug(f"No user found with email: {email}")
-                return None
-        except Exception as e:
-            logger.error(f"Error retrieving user by email {email}: {str(e)}")
-            raise
+        if user_model:
+            logger.debug(f"User found with email: {email}")
+            return self._model_to_entity(user_model)
+        else:
+            logger.debug(f"No user found with email: {email}")
+            return None
 
     def save(self, user: UserEntity) -> UserEntity:
         """Saves a user to the repository."""
