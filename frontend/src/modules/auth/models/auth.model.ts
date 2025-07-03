@@ -4,7 +4,6 @@ export interface LoginModel {
 }
 
 export interface RegiterInpustModel {
-  username: string;
   email: string;
   password: string;
 }

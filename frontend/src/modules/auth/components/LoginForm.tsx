@@ -15,7 +15,9 @@ export const LoginForm = () => {
 };
 
 const UseLoginForm = () => {
-  const { mutate } = AuthClientData.login();
+  const { mutate, error } = AuthClientData.login();
+
+  console.log(error);
 
   const form = useForm({
     defaultValues: {
@@ -25,8 +27,7 @@ const UseLoginForm = () => {
     validators: {
       onChange: z.object({
         email: z.string().email("Correo electrónico inválido"),
-        password: z
-          .string() // .min(VALIDADOR, "La contraseña debe de tener blah blah blah para que sirva")
+        password: z.string(), // .min(VALIDADOR, "La contraseña debe de tener blah blah blah para que sirva")
       }),
       onSubmit: z.object({
         email: z.string().email("Por favor, ingresa un correo válido."),
@@ -58,7 +59,10 @@ const UseLoginForm = () => {
 
       <p className="text-sm text-gray-500 mb-6 border-b border-gray-300 pb-1 text-center">
         ¿Aun no tienes una?{" "}
-        <a href={authRoutesConfig.children.register.url} className="text-blue-600 hover:underline">
+        <a
+          href={authRoutesConfig.children.register.url}
+          className="text-blue-600 hover:underline"
+        >
           Creala!
         </a>
       </p>
@@ -71,6 +75,11 @@ const UseLoginForm = () => {
         }}
         className="w-full"
       >
+        {error && (
+          <p className="text-red-500 text-sm mt-2 block">
+            {error.errors.map((error) => error).join(", ")}
+          </p>
+        )}
         <form.Field
           name="email"
           children={(field) => (

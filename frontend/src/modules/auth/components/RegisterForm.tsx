@@ -15,26 +15,22 @@ export const RegisterForm = () => {
 };
 
 const UseRegisterForm = () => {
-  const { mutate } = AuthClientData.register();
+  const { mutate, error } = AuthClientData.register();
+
   const form = useForm({
     defaultValues: {
-      username: "",
       email: "",
       password: "",
       confirmPassword: "", // aca falto uno para confirmar la contraseña
     },
     validators: {
       onChange: z.object({
-        username: z.string(),
         email: z.string().email(),
         password: z.string(),
         confirmPassword: z.string(),
       }),
       onSubmit: z
         .object({
-          username: z
-            .string()
-            .min(1, "Por favor, ingresa un nombre de usuario."),
           email: z.string().email("Por favor, ingresa un correo válido."),
           password: z.string(), // .min(VALIDADOR, "La contraseña debe de tener blah blah blah para que sirva")
           confirmPassword: z.string().min(1, "Confirma tu contraseña."), /// minimo un caracter en el de confirmar la contraseña
@@ -45,7 +41,10 @@ const UseRegisterForm = () => {
         }),
     },
     onSubmit: async ({ value }) => {
-      mutate(value);
+      mutate({
+        email: value.email,
+        password: value.password,
+      });
     },
   });
 
@@ -55,7 +54,6 @@ const UseRegisterForm = () => {
         ¡Regístrate!
       </h1>
 
-
       <div className="relative w-36 h-36 rounded-full bg-green-500 flex items-center justify-center overflow-hidden mb-8 mx-auto">
         <img
           src="/placeholder-avatar-welder.png"
@@ -64,14 +62,15 @@ const UseRegisterForm = () => {
         />
       </div>
 
-
-            <p className="text-sm text-gray-500 mb-6 border-b border-gray-300 pb-1 text-center">
-              ¿Ya tienes una cuenta?{" "}
-              <a href={authRoutesConfig.children.login.url} className="text-blue-600 hover:underline">
-                Inicia sesión
-              </a>
-            </p>
-      
+      <p className="text-sm text-gray-500 mb-6 border-b border-gray-300 pb-1 text-center">
+        ¿Ya tienes una cuenta?{" "}
+        <a
+          href={authRoutesConfig.children.login.url}
+          className="text-blue-600 hover:underline"
+        >
+          Inicia sesión
+        </a>
+      </p>
 
       <form
         onSubmit={(e) => {
@@ -81,6 +80,12 @@ const UseRegisterForm = () => {
         }}
         className="w-full"
       >
+        {error && (
+          <p className="text-red-500 text-sm mt-2 block">
+            {error.errors.map((error) => error).join(", ")}
+          </p>
+        )}
+
         <form.Field
           name="email"
           children={(field) => (
@@ -89,7 +94,7 @@ const UseRegisterForm = () => {
                 htmlFor={field.name}
                 className="block text-lg font-medium text-gray-800 mb-3"
               >
-                Ingresa tu nuevo usuario
+                Correo electrónico
               </label>
               <input
                 id={field.name}

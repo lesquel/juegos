@@ -1,5 +1,9 @@
 import { environment } from "@config/environment";
-import type { LoginModel, RegisterModel, RegiterInpustModel } from "../models/auth.model";
+import type {
+  LoginModel,
+  RegisterModel,
+  RegiterInpustModel,
+} from "../models/auth.model";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import type { UserMe } from "@modules/user/models/user.model";
@@ -8,6 +12,11 @@ import { CookiesSection } from "../utils/cookiesSection";
 import { useAuthStore } from "../store/auth.store";
 import { authRoutesConfig } from "../config/auth.routes.config";
 import { AuthAdapter } from "../adapters/auth.adapter";
+import { ErrorResponseAdapter } from "@adapters/errorResponse.adapter";
+import type {
+  ErrorResponse,
+  ErrorResponseErrorsArray,
+} from "@models/ErrorResponse";
 
 export class AuthClientData {
   private static readonly baseUrl = environment.BASE_URL;
@@ -15,20 +24,25 @@ export class AuthClientData {
     const setUser = useAuthStore.getState().setUser;
     return useMutation({
       mutationFn: async (data: LoginModel) => {
-        const response = await axios.post<UserMe>(
-          `${AuthClientData.baseUrl}/auth/login`,
-          data
-        );
-        return UserAdapter.adaptMe(response.data);
+        try {
+          const response = await axios.post<UserMe>(
+            `${AuthClientData.baseUrl}/auth/login`,
+            data
+          );
+          return UserAdapter.adaptMe(response.data);
+        } catch (error: any) {
+          throw ErrorResponseAdapter.adaptErrorResponseErrorsArray(
+            ErrorResponseAdapter.adaptErrorResponse(error)
+          );
+        }
       },
       onSuccess: (data) => {
         CookiesSection.set(data);
         setUser(data);
         window.location.href = "/";
-        return data;
       },
-      onError: (error) => {
-        console.log(error);
+      onError: (error: ErrorResponseErrorsArray) => {
+        console.error("onError:", error);
       },
     });
   }
@@ -36,17 +50,24 @@ export class AuthClientData {
   static register() {
     return useMutation({
       mutationFn: async (data: RegiterInpustModel) => {
-        const response = await axios.post<RegisterModel>(
-          `${AuthClientData.baseUrl}/auth/register`,
-          data
-        );
-        return AuthAdapter.adaptRegister(response.data);
+        try {
+          const response = await axios.post<UserMe>(
+            `${AuthClientData.baseUrl}/auth/register`,
+            data
+          );
+          return UserAdapter.adaptMe(response.data);
+        } catch (error: any) {
+          console.log(error);
+          throw ErrorResponseAdapter.adaptErrorResponseErrorsArray(
+            ErrorResponseAdapter.adaptErrorResponse(error)
+          );
+        }
       },
       onSuccess: (data) => {
         window.location.href = authRoutesConfig.children.login.url;
         return data;
       },
-      onError: (error) => {
+      onError: (error: ErrorResponseErrorsArray) => {
         console.log(error);
       },
     });
