@@ -1,7 +1,3 @@
-"""
-Vista de administración para Reseñas de Juegos
-"""
-
 from sqladmin import ModelView
 from infrastructure.db.models.game_review_model import GameReviewModel
 

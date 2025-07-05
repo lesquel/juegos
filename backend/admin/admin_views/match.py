@@ -1,7 +1,3 @@
-"""
-Vista de administración para Partidas
-"""
-
 from sqladmin import ModelView
 from infrastructure.db.models.match_model import MatchModel
 

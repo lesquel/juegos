@@ -1,5 +1,5 @@
 from domain.repositories import IUserRepository
-from dtos.response.user_response_dto import UserResponseDTO
+from dtos.response.user.user_response_dto import UserResponseDTO
 
 from infrastructure.logging import get_logger
 

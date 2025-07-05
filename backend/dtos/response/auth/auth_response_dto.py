@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field
 
-from domain.entities.token_data import TokenData
+from domain.entities.user.token_data import TokenData
 
 
-from .user_response_dto import UserResponseDTO
+from ..user.user_response_dto import UserResponseDTO
 
 
 class TokenResponseDTO(BaseModel):

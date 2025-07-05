@@ -1,7 +1,3 @@
-"""
-Modelos de administración para SQLAdmin
-"""
-
 from sqladmin import ModelView
 from infrastructure.db.models.user_model import UserModel
 

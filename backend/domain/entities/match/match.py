@@ -2,7 +2,7 @@ from typing import Optional
 
 from .match_participation import MatchParticipation
 
-from .time_stamp_entity_mixin import TimeStampEntityMixin
+from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 
 class MatchEntity(TimeStampEntityMixin):

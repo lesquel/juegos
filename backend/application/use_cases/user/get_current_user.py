@@ -8,7 +8,7 @@ from fastapi.security import HTTPAuthorizationCredentials
 from domain.exceptions import InvalidTokenError, AuthenticationError, UserNotFoundError
 from domain.interfaces import ITokenProvider
 from domain.repositories import IUserRepository
-from dtos.response.user_response_dto import UserResponseDTO
+from dtos.response.user.user_response_dto import UserResponseDTO
 from infrastructure.logging import get_logger
 
 # Configurar logger

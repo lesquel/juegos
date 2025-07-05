@@ -1,16 +1,17 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
-from domain.entities.match import MatchEntity
-from domain.entities.user import UserEntity
+if TYPE_CHECKING:
+    from domain.entities.match.match import MatchEntity
+    from domain.entities.user.user import UserEntity
 
-from .time_stamp_entity_mixin import TimeStampEntityMixin
+from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 
 class MatchParticipation(TimeStampEntityMixin):
     def __init__(
         self,
-        match: MatchEntity,
-        user: UserEntity,
+        match: "MatchEntity",
+        user: "UserEntity",
         score: int,
         bet_amount: Optional[float],
         created_at: Optional[str],

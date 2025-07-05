@@ -1,4 +1,4 @@
-from typing import List, TypeVar, Optional, Callable
+from typing import List, TypeVar
 from math import ceil
 from fastapi import Request
 
@@ -56,4 +56,3 @@ def create_paginated_response(
     )
 
     return PaginatedResponseDTO(info=pagination_info, results=items)
-

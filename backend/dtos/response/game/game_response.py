@@ -1,0 +1,25 @@
+from typing import Optional
+from pydantic import Field
+
+
+from ..time_stamp_base import TimeStampBase
+
+
+class GameResponseDTO(TimeStampBase):
+    """DTO para respuesta de juego"""
+
+    game_id: str = Field(..., description="ID único del juego")
+    game_name: str = Field(..., description="Nombre del juego")
+    game_description: Optional[str] = Field(
+        None, description="Descripción del juego"
+    )
+    game_img: Optional[str] = Field(
+        None, description="URL de la imagen del juego"
+    )
+    game_url: Optional[str] = Field(
+        None, description="ID de la categoría del juego"
+    )
+    categories: Optional[list[str]] = Field(
+        None, description="Lista de IDs de categorías asociadas al juego"
+    )
+    

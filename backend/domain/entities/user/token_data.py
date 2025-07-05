@@ -1,6 +1,3 @@
-"""
-Entidad del dominio para datos de token
-"""
 
 from dataclasses import dataclass
 

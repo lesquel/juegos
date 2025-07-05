@@ -1,14 +1,14 @@
-from domain.entities.token_data import TokenData
+from domain.entities.user.token_data import TokenData
 from domain.exceptions import AuthenticationError
 from application.interfaces.password_hasher import IPasswordHasher
 from domain.interfaces.token_provider import ITokenProvider
 from domain.repositories.user_repository import IUserRepository
 from infrastructure.logging import get_logger
-from dtos.response.auth_response_dto import (
+from dtos.response.auth.auth_response_dto import (
     LoginResponseDTO,
     TokenResponseDTO,
 )
-from dtos.response.user_response_dto import UserResponseDTO
+from dtos.response.user.user_response_dto import UserResponseDTO
 from dtos.request.auth_request_dto import LoginRequestDTO
 
 

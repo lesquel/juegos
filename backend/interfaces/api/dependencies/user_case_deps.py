@@ -1,15 +1,15 @@
-from application.use_cases.users import GetAllUsersUseCase, GetUserUseCase, GetCurrentUserUseCase
+from application.use_cases.user import GetAllUsersUseCase, GetUserUseCase, GetCurrentUserUseCase
 from application.use_cases.auth import RegisterUserUseCase, LoginUserUseCase
 
 from domain.interfaces.token_provider import ITokenProvider
-from dtos.response.user_response_dto import UserResponseDTO
+from dtos.response.user.user_response_dto import UserResponseDTO
 from infrastructure.auth import PasswordHasher
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 
 from fastapi import Depends
 
-from domain.entities.user import UserEntity
+from domain.entities.user.user import UserEntity
 from infrastructure.auth.jwt_service import get_token_provider
 from infrastructure.db.connection import get_db
 from sqlalchemy.orm import Session

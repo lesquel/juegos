@@ -3,11 +3,11 @@ from fastapi import APIRouter, Depends, Request, HTTPException
 
 from uuid import UUID
 
-from application.use_cases.users import GetAllUsersUseCase, GetUserUseCase
+from application.use_cases.user import GetAllUsersUseCase, GetUserUseCase
 from domain.exceptions import FailedToRetrieveUserError, UserNotFoundError
 from infrastructure.logging import get_logger
 from dtos import PaginatedResponseDTO
-from dtos.response.user_response_dto import UserResponseDTO
+from dtos.response.user.user_response_dto import UserResponseDTO
 from interfaces.api.dependencies.user_case_deps import (
     get_all_users_use_case,
     get_user_use_case,

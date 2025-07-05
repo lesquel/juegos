@@ -1,7 +1,3 @@
-"""
-Vista de administración para Participaciones en Partidas
-"""
-
 from sqladmin import ModelView
 from infrastructure.db.models.match_participation_model import MatchParticipationModel
 

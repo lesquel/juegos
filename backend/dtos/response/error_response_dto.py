@@ -1,6 +1,3 @@
-"""
-DTOs para respuestas de error estandarizadas
-"""
 from typing import Optional, Dict, Any, List
 from pydantic import BaseModel
 from datetime import datetime

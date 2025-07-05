@@ -1,7 +1,3 @@
-"""
-Configuración de logging para la aplicación
-"""
-
 import logging
 import logging.config
 from typing import Dict, Any

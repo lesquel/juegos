@@ -1,6 +1,3 @@
-"""
-Sistema de manejo de excepciones simplificado - Similar a Django
-"""
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse

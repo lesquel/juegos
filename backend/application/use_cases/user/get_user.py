@@ -2,7 +2,7 @@ from domain.exceptions import UserNotFoundError
 from domain.repositories import IUserRepository
 from infrastructure.logging import get_logger
 
-from dtos.response.user_response_dto import UserResponseDTO
+from dtos.response.user.user_response_dto import UserResponseDTO
 
 # Configurar logger
 logger = get_logger("get_user_use_case")

@@ -1,6 +1,3 @@
-"""
-DTOs para responses/respuestas
-"""
 
 from .error_response_dto import (
     ErrorResponse,
@@ -9,5 +6,10 @@ from .error_response_dto import (
     AuthenticationErrorResponse,
     ErrorDetail
 )
-from .auth_response_dto import *
-from .user_response_dto import *
+from .auth.auth_response_dto import *
+from .user.user_response_dto import *
+from .user.transfer_payment_response_dto import *
+from .game.game_response import *
+from .game.category_response import *
+from .game.game_review_response_dto import *
+from .match import *

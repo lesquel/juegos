@@ -1,10 +1,7 @@
-"""
-Vista de administración para Pagos de Transferencia
-"""
+
 
 from sqladmin import ModelView
 from infrastructure.db.models.transfer_payment_model import TransferPaymentModel
-
 
 class TransferPaymentAdmin(ModelView, model=TransferPaymentModel):
     """Panel de administración para pagos de transferencia"""

@@ -1,1 +1,3 @@
 from .user_filters import UserFilterParams, get_user_filter_params
+from .category_filters import CategoryFilterParams, get_category_filter_params
+from .game_filters import GameFilterParams, get_game_filter_params

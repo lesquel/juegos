@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from datetime import timedelta
 from typing import Optional
 
-from dtos.response.auth_response_dto import TokenResponseDTO
-from domain.entities.token_data import TokenData
+from dtos.response.auth.auth_response_dto import TokenResponseDTO
+from domain.entities.user.token_data import TokenData
 
 
 class ITokenProvider(ABC):

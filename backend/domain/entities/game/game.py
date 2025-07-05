@@ -2,7 +2,7 @@ from typing import Optional
 
 from .category import CategoryEntity
 
-from .time_stamp_entity_mixin import TimeStampEntityMixin
+from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 
 class GameEntity(TimeStampEntityMixin):

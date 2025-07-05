@@ -1,7 +1,3 @@
-"""
-Validadores para DTOs
-"""
-
 import re
 from typing import Any
 from pydantic import ValidationInfo

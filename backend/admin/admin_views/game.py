@@ -1,7 +1,3 @@
-"""
-Vista de administración para Juegos
-"""
-
 from sqladmin import ModelView
 from infrastructure.db.models.game_model import GameModel
 

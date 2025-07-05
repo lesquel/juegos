@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
-from .game import GameEntity
+if TYPE_CHECKING:
+    from .game import GameEntity
 
-from .time_stamp_entity_mixin import TimeStampEntityMixin
+from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 
 class CategoryEntity(TimeStampEntityMixin):
@@ -12,7 +13,7 @@ class CategoryEntity(TimeStampEntityMixin):
         category_name: str,
         category_img: Optional[str],
         category_description: Optional[str],
-        games: Optional[list[GameEntity]],
+        games: Optional[list["GameEntity"]],
         created_at: Optional[str],
         updated_at: Optional[str],
     ):
@@ -24,7 +25,7 @@ class CategoryEntity(TimeStampEntityMixin):
         self.category_description = category_description
         self.games = games if games is not None else []
 
-    def add_game(self, game: GameEntity):
+    def add_game(self, game: "GameEntity"):
         if game not in self.games:
             self.games.append(game)
 

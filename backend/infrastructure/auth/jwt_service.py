@@ -6,8 +6,8 @@ from domain.interfaces.token_provider import ITokenProvider
 from ..core.settings_config import settings
 from infrastructure.logging import get_logger
 
-from dtos.response.auth_response_dto import TokenResponseDTO
-from domain.entities.token_data import TokenData
+from dtos.response.auth.auth_response_dto import TokenResponseDTO
+from domain.entities.user.token_data import TokenData
 
 
 # Configurar logger

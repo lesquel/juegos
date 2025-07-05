@@ -1,7 +1,7 @@
 from typing import Optional
 from application.enums import TransferStateEnum
 
-from .time_stamp_entity_mixin import TimeStampEntityMixin
+from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 
 class TransferPayment(TimeStampEntityMixin):

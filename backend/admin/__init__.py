@@ -1,7 +1,3 @@
-"""
-Módulo de administración para el backend de juegos
-"""
-
 from .admin_views import (
     UserAdmin,
     CategoryAdmin,
