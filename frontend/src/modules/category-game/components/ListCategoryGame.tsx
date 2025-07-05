@@ -16,7 +16,7 @@ const UseListCategoryGame = () => {
   if (isLoading) return <LoadingComponent />;
   if (error) return <div>Error: {error.message}</div>;
   return (
-    <div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl m-auto">
       {data?.results.map((category) => {
         return (
           <CardCategoryGame key={category.category_id} category={category} />

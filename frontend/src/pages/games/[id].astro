@@ -6,5 +6,7 @@ const { id } = Astro.params;
 ---
 
 <Layout>
-  <SingleGame client:load id={parseInt(id as string)} />
+  <main class="h-full flex-grow p-2 md:p-8 flex items-center justify-center">
+    <SingleGame client:load id={parseInt(id as string)} />
+  </main>
 </Layout>
