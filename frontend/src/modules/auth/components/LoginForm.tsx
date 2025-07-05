@@ -17,8 +17,6 @@ export const LoginForm = () => {
 const UseLoginForm = () => {
   const { mutate, error } = AuthClientData.login();
 
-  console.log(error);
-
   const form = useForm({
     defaultValues: {
       email: "",
@@ -45,9 +43,9 @@ const UseLoginForm = () => {
         Bienvenido/a de nuevo
       </h1>
 
-      <div className="relative w-36 h-36 rounded-full bg-red-500 flex items-center justify-center overflow-hidden mb-4 mx-auto">
+      <div className="relative w-36 h-36 rounded-full bg-purple-300 flex items-center justify-center overflow-hidden mb-4 mx-auto">
         <img
-          src="/placeholder-avatar.png"
+          src={undefined}
           alt="Avatar ese de figma"
           className="w-full h-full object-cover"
         />

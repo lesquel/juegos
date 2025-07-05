@@ -11,14 +11,16 @@ export const ListCommentGame = ({
     return <div>No hay comentarios</div>;
   }
   return (
-    <div>
-      <h3>Comentarios</h3>
-      {commentGames?.map((commentGame: CommentGame) => (
-        <CardCommentGame
-          key={commentGame.comment_game_id}
-          commentGame={commentGame}
-        />
-      ))}
+    <div className="flex flex-col gap-4 w-full">
+      <h3 className="text-xl font-medium text-center">Comentarios</h3>
+      <div className="flex flex-col gap-0.5">
+        {commentGames?.map((commentGame: CommentGame) => (
+          <CardCommentGame
+            key={commentGame.comment_game_id}
+            commentGame={commentGame}
+          />
+        ))}
+      </div>
     </div>
   );
 };

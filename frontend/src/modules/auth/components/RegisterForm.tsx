@@ -49,14 +49,14 @@ const UseRegisterForm = () => {
   });
 
   return (
-    <div className="w-full px-4 max-w-sm sm:max-w-md mx-auto">
+    <div className="w-full max-w-sm sm:max-w-md mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-center">
         ¡Regístrate!
       </h1>
 
-      <div className="relative w-36 h-36 rounded-full bg-green-500 flex items-center justify-center overflow-hidden mb-8 mx-auto">
+      <div className="relative w-36 h-36 rounded-full bg-purple-300 flex items-center justify-center overflow-hidden mb-8 mx-auto">
         <img
-          src="/placeholder-avatar-welder.png"
+          src={undefined}
           alt="Avatar ese tambien que estaba en figma"
           className="w-full h-full object-cover"
         />
