@@ -20,7 +20,7 @@ const NewCommentForm = () => (
 
 export const ListCommentGame = ({ commentGames }: { commentGames?: CommentGame[] }) => {
   return (
-    <div className="w-full flex flex-col gap-8 container mx-auto px-6 bg-gray-800 py-6 md:py-20 mb-15 rounded-2xl">
+    <div className="w-full flex flex-col gap-8 container mx-auto px-6 bg-gray-800 py-6 md:py-20 mt-10 rounded-2xl lg:max-w-4xl">
       <NewCommentForm />
       <div>
         <h3 className="text-2xl font-bold text-white mb-6">Comentarios Recientes</h3>

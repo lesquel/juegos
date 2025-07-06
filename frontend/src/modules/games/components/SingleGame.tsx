@@ -19,9 +19,9 @@ const UseSingleGame = ({ id }: { id: number }) => {
   if (error) return <div className="text-center text-red-400">Error: {error.message}</div>;
 
   return (
-    <div className="w-full ">
+    <div className="w-full">
       {/* Game Details Section */}
-      <div className="container mx-auto px-6 py-12 md:py-20">
+      <div className="container mx-auto px-6 lg:max-w-5xl">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
           {/* Left Column: Image & Play Button */}
           <div className="lg:col-span-2 flex flex-col items-center gap-6">
