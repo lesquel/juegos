@@ -25,7 +25,7 @@ const UseLoginForm = () => {
     validators: {
       onChange: z.object({
         email: z.string().email("Correo electrónico inválido"),
-        password: z.string(), // .min(VALIDADOR, "La contraseña debe de tener blah blah blah para que sirva")
+        password: z.string(),
       }),
       onSubmit: z.object({
         email: z.string().email("Por favor, ingresa un correo válido."),
@@ -38,31 +38,19 @@ const UseLoginForm = () => {
   });
 
   return (
-    <div className="w-full max-w-sm sm:max-w-md mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Bienvenido/a de nuevo
-      </h1>
-
-      <div className="relative w-36 h-36 rounded-full bg-purple-300 flex items-center justify-center overflow-hidden mb-4 mx-auto">
-        <img
-          src={undefined}
-          alt="Avatar ese de figma"
-          className="w-full h-full object-cover"
-        />
+    <div className="w-full max-w-md mx-auto bg-gray-900 bg-opacity-50 rounded-2xl p-8 shadow-lg backdrop-blur-lg backdrop-filter border border-gray-700">
+      <div className="flex justify-center mb-6">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+          </svg>
+        </div>
       </div>
-
-      <h2 className="text-xl font-semibold mb-4 text-center">
-        Inicia tu Sesión
-      </h2>
-
-      <p className="text-sm text-gray-500 mb-6 border-b border-gray-300 pb-1 text-center">
-        ¿Aun no tienes una?{" "}
-        <a
-          href={authRoutesConfig.children.register.url}
-          className="text-blue-600 hover:underline"
-        >
-          Creala!
-        </a>
+      <h1 className="text-3xl font-bold mb-2 text-center text-white">
+        Bienvenido de Nuevo
+      </h1>
+      <p className="text-gray-400 mb-8 text-center">
+        Inicia sesión para continuar
       </p>
 
       <form
@@ -74,20 +62,25 @@ const UseLoginForm = () => {
         className="w-full"
       >
         {error && (
-          <p className="text-red-500 text-sm mt-2 block">
+          <p className="text-red-400 text-sm mb-4 text-center bg-red-900 bg-opacity-50 p-3 rounded-lg">
             {error.errors.map((error) => error).join(", ")}
           </p>
         )}
         <form.Field
           name="email"
           children={(field) => (
-            <div className="mb-6">
+            <div className="mb-4 relative">
               <label
                 htmlFor={field.name}
-                className="block text-base font-medium text-gray-800 mb-3"
+                className="sr-only"
               >
-                ¿Cual es tu usuario?
+                Correo Electrónico
               </label>
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                </svg>
+              </div>
               <input
                 id={field.name}
                 type="email"
@@ -95,14 +88,12 @@ const UseLoginForm = () => {
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Ingresa tu correo electrónico"
-                className="w-full px-4 py-3 rounded-xl bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-sm"
+                placeholder="Correo Electrónico"
+                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
               />
               {field.state.meta.errors.length > 0 && (
-                <span className="text-red-500 text-sm mt-2 block">
-                  {field.state.meta.errors
-                    .map((error) => error?.message)
-                    .join(", ")}
+                <span className="text-red-400 text-xs mt-1 block absolute">
+                  {field.state.meta.errors.join(", ")}
                 </span>
               )}
             </div>
@@ -111,13 +102,18 @@ const UseLoginForm = () => {
         <form.Field
           name="password"
           children={(field) => (
-            <div className="mb-6">
+            <div className="mb-6 relative">
               <label
                 htmlFor={field.name}
-                className="block text-base font-medium text-gray-800 mb-3"
+                className="sr-only"
               >
-                ¿Cual es tu contraseña?
+                Contraseña
               </label>
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
               <input
                 id={field.name}
                 type="password"
@@ -125,35 +121,34 @@ const UseLoginForm = () => {
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Ingresa tu contraseña"
-                className="w-full px-4 py-3 rounded-xl bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-sm"
+                placeholder="Contraseña"
+                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
               />
               {field.state.meta.errors.length > 0 && (
-                <span className="text-red-500 text-sm mt-2 block">
-                  {field.state.meta.errors
-                    .map((error) => error?.message)
-                    .join(", ")}
+                <span className="text-red-400 text-xs mt-1 block absolute">
+                  {field.state.meta.errors.join(", ")}
                 </span>
               )}
             </div>
           )}
         />
 
-        {/* En caso que quieran poner lo de olvidaste la motherfucking password, aunque no creo porque como es que dice Bryan "keep it simple" */}
-
-        {/* <p className="text-sm text-gray-500 mb-8 border-b border-gray-300 pb-1 text-center">
-          <a href="#" className="text-blue-600 hover:underline">
-            ¿Olvidaste tu contraseña?
-          </a>
-        </p> */}
-
         <button
           type="submit"
-          className="w-full bg-gray-800 text-white font-semibold py-3 rounded-xl shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 transition duration-300 ease-in-out text-lg cursor-pointer"
+          className="w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold py-3 rounded-lg shadow-lg hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out text-lg"
         >
-          Accede!
+          Acceder
         </button>
       </form>
+      <p className="text-sm text-gray-400 mt-6 text-center">
+        ¿No tienes una cuenta?{" "}
+        <a
+          href={authRoutesConfig.children.register.url}
+          className="text-purple-400 hover:text-purple-300 font-semibold"
+        >
+          Regístrate aquí
+        </a>
+      </p>
     </div>
   );
 };

@@ -25,9 +25,9 @@ export const NarbarAuthLoginRegister = () => {
 
 const ItemAuthLoginRegister = () => {
   return (
-    <>
-      <a href={authRoutesConfig.children.login.url}>Login</a>
-      <a href={authRoutesConfig.children.register.url}>Register</a>
-    </>
+    <div className="space-x-8">
+      <a href={authRoutesConfig.children.login.url} className="text-gray-300 hover:text-white transition-colors duration-300">Login</a>
+      <a href={authRoutesConfig.children.register.url} className="text-gray-300 hover:text-white transition-colors duration-300">Register</a>
+    </div>
   );
 };
