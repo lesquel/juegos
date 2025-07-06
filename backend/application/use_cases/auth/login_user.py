@@ -9,7 +9,7 @@ from dtos.response.auth.auth_response_dto import (
     TokenResponseDTO,
 )
 from dtos.response.user.user_response_dto import UserResponseDTO
-from dtos.request.auth_request_dto import LoginRequestDTO
+from dtos.request.auth.auth_request_dto import LoginRequestDTO
 
 
 # Configurar logger

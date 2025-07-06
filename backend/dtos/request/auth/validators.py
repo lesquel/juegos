@@ -3,7 +3,7 @@ from typing import Any
 from pydantic import ValidationInfo
 
 
-class DTOValidators:
+class AuthDTOValidators:
     """Validadores reutilizables para DTOs"""
 
     @staticmethod
@@ -37,6 +37,6 @@ class DTOValidators:
 
 
 
-def password_validator(cls: Any, v: str, info: ValidationInfo) -> str:
+def password_validator(v: str, info: ValidationInfo) -> str:
     """Field validator para contraseñas"""
-    return DTOValidators.validate_password(v)
+    return AuthDTOValidators.validate_password(v)

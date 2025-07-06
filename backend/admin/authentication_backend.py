@@ -3,7 +3,7 @@ from starlette.requests import Request
 
 # Importar nuestros servicios de autenticación
 from application.use_cases.auth import LoginUserUseCase
-from dtos.request.auth_request_dto import LoginRequestDTO
+from dtos.request.auth.auth_request_dto import LoginRequestDTO
 from application.services import PasswordHasher
 from infrastructure.auth import get_token_provider
 from infrastructure.db.connection import SessionLocal

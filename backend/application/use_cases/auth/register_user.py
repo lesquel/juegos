@@ -4,7 +4,7 @@ from domain.repositories import IUserRepository
 from application.interfaces import IPasswordHasher
 from dtos.response.user.user_response_dto import UserBaseResponseDTO
 from infrastructure.logging import get_logger
-from dtos.request.auth_request_dto import UserCreateRequestDTO
+from dtos.request.auth.auth_request_dto import UserCreateRequestDTO
 
 
 # Configurar logger

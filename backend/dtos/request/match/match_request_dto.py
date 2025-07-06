@@ -1,52 +1,47 @@
 from typing import Optional
-from pydantic import BaseModel, Field, validator
-from datetime import datetime
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+from .validators import (
+    validate_bet_amount_validator,
+    validate_end_after_start_validator,
+)
 
 
 class JoinMatchRequestDTO(BaseModel):
     """DTO para unirse a una partida"""
 
-    bet_amount: Optional[float] = Field(None, ge=0, description="Monto a apostar (opcional, debe ser mayor o igual a 0)")
+    bet_amount: Optional[float] = Field(
+        None, ge=0, description="Monto a apostar (opcional, debe ser mayor o igual a 0)"
+    )
 
-    @validator('bet_amount')
-    def validate_bet_amount(cls, v):
-        if v is not None and v < 0:
-            raise ValueError('El monto apostado no puede ser negativo')
-        if v is not None:
-            return round(v, 2)  # Redondear a 2 decimales
-        return v
+    @field_validator("bet_amount")
+    @classmethod
+    def validate_bet_amount(cls, v: Optional[float]) -> Optional[float]:
+        """Valida el monto apostado, debe ser mayor o igual a 0 y redondeado a 2 decimales."""
+        return validate_bet_amount_validator(v)
 
 
 class CreateMatchRequestDTO(BaseModel):
     """DTO para crear una nueva partida"""
 
     game_id: str = Field(..., description="ID del juego")
-    start_time: str = Field(..., description="Hora de inicio de la partida (formato ISO)")
-    end_time: str = Field(..., description="Hora de finalización de la partida (formato ISO)")
+    start_time: str = Field(
+        ..., description="Hora de inicio de la partida (formato ISO)"
+    )
+    end_time: str = Field(
+        ..., description="Hora de finalización de la partida (formato ISO)"
+    )
 
-    @validator('start_time', 'end_time')
-    def validate_datetime_format(cls, v):
-        try:
-            datetime.fromisoformat(v.replace('Z', '+00:00'))
-        except ValueError:
-            raise ValueError('El formato de fecha debe ser ISO 8601')
-        return v
-
-    @validator('end_time')
-    def validate_end_after_start(cls, v, values):
-        if 'start_time' in values:
-            try:
-                start = datetime.fromisoformat(values['start_time'].replace('Z', '+00:00'))
-                end = datetime.fromisoformat(v.replace('Z', '+00:00'))
-                if end <= start:
-                    raise ValueError('La hora de finalización debe ser posterior a la hora de inicio')
-            except ValueError as e:
-                if 'formato' not in str(e):  # Si no es error de formato, es error de lógica
-                    raise e
-        return v
+    @model_validator(mode="before")
+    @classmethod
+    def validate_end_time_after_start(cls, values: dict) -> dict:
+        """Valida que la hora de finalización sea posterior a la hora de inicio."""
+        return validate_end_after_start_validator(values)
 
 
 class UpdateMatchScoreRequestDTO(BaseModel):
     """DTO para actualizar puntuación en una partida"""
 
-    score: int = Field(..., ge=0, description="Puntuación obtenida (debe ser mayor o igual a 0)")
+    score: int = Field(
+        ..., ge=0, description="Puntuación obtenida (debe ser mayor o igual a 0)"
+    )

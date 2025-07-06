@@ -11135,3 +11135,5 @@ WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visib
 =======
 >>>>>>> 8e6b0383927df7da12bd4075915f0e7a2f950994
 >>>>>>> 161facf18c86cafc88822b81ff24cf522a2cd2e8
+[2025-07-06 00:04:10] INFO app - Logging system configured successfully
+[2025-07-06 00:04:11] INFO app - Logging system configured successfully

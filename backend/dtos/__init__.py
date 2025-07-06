@@ -1,4 +1,4 @@
-from .request.auth_request_dto import LoginRequestDTO
+from .request.auth.auth_request_dto import LoginRequestDTO
 
 # Response DTOs
 from .response.auth.auth_response_dto import (

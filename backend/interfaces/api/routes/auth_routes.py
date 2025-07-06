@@ -14,8 +14,8 @@ from interfaces.api.dependencies import (
     get_current_user,
     security,
 )
-from dtos.request.auth_request_dto import LoginRequestDTO
-from dtos.request.auth_request_dto import UserCreateRequestDTO
+from dtos.request.auth.auth_request_dto import LoginRequestDTO
+from dtos.request.auth.auth_request_dto import UserCreateRequestDTO
 from dtos.response.user.user_response_dto import UserBaseResponseDTO, UserResponseDTO
 from dtos.response.auth.auth_response_dto import LoginResponseDTO
 from dtos.common.common_responses import SuccessResponse
