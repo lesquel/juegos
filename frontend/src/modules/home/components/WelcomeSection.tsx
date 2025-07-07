@@ -1,14 +1,13 @@
-// src/components/WelcomeSection.tsx
 import React from "react";
 
 const WelcomeSection: React.FC = () => {
   return (
-    <div className="text-center">
-      <h2 className="text-2xl font-bold text-gray-800 mb-2">
-        Bienvenido/a a MiniBet
+    <div className="text-center max-w-3xl mx-auto">
+      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+        Bienvenido a la Plataforma de Juegos con Propósito
       </h2>
-      <p className="text-base text-gray-600">
-        Proyecto generado por los estudiantes de Software de 4to nivel de la ULEAM, con el proposito benefico de todo lo generado con la aplicacion, sera donado a fundaciones en contra del cancer infantil.
+      <p className="text-gray-300 md:text-lg">
+        Este proyecto, creado por estudiantes de 4º nivel de Ingeniería de Software de la ULEAM, tiene como fin donar todas las ganancias a fundaciones que luchan contra el cáncer infantil. ¡Tu juego ayuda!
       </p>
     </div>
   );

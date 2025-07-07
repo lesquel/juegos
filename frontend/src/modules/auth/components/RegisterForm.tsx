@@ -21,7 +21,7 @@ const UseRegisterForm = () => {
     defaultValues: {
       email: "",
       password: "",
-      confirmPassword: "", // aca falto uno para confirmar la contraseña
+      confirmPassword: "",
     },
     validators: {
       onChange: z.object({
@@ -32,12 +32,12 @@ const UseRegisterForm = () => {
       onSubmit: z
         .object({
           email: z.string().email("Por favor, ingresa un correo válido."),
-          password: z.string(), // .min(VALIDADOR, "La contraseña debe de tener blah blah blah para que sirva")
-          confirmPassword: z.string().min(1, "Confirma tu contraseña."), /// minimo un caracter en el de confirmar la contraseña
+          password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres."),
+          confirmPassword: z.string(),
         })
         .refine((data) => data.password === data.confirmPassword, {
           message: "Las contraseñas no coinciden",
-          path: ["confirmPassword"], // Campo al que se asocia el error
+          path: ["confirmPassword"],
         }),
     },
     onSubmit: async ({ value }) => {
@@ -49,27 +49,19 @@ const UseRegisterForm = () => {
   });
 
   return (
-    <div className="w-full max-w-sm sm:max-w-md mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        ¡Regístrate!
-      </h1>
-
-      <div className="relative w-36 h-36 rounded-full bg-purple-300 flex items-center justify-center overflow-hidden mb-8 mx-auto">
-        <img
-          src={undefined}
-          alt="Avatar ese tambien que estaba en figma"
-          className="w-full h-full object-cover"
-        />
+    <div className="w-full max-w-md mx-auto bg-gray-900 bg-opacity-50 rounded-2xl p-8 shadow-lg backdrop-blur-lg backdrop-filter border border-gray-700">
+      <div className="flex justify-center mb-6">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+          </svg>
+        </div>
       </div>
-
-      <p className="text-sm text-gray-500 mb-6 border-b border-gray-300 pb-1 text-center">
-        ¿Ya tienes una cuenta?{" "}
-        <a
-          href={authRoutesConfig.children.login.url}
-          className="text-blue-600 hover:underline"
-        >
-          Inicia sesión
-        </a>
+      <h1 className="text-3xl font-bold mb-2 text-center text-white">
+        Crea tu Cuenta
+      </h1>
+      <p className="text-gray-400 mb-8 text-center">
+        Únete a la comunidad y empieza a jugar.
       </p>
 
       <form
@@ -81,21 +73,18 @@ const UseRegisterForm = () => {
         className="w-full"
       >
         {error && (
-          <p className="text-red-500 text-sm mt-2 block">
+          <p className="text-red-400 text-sm mb-4 text-center bg-red-900 bg-opacity-50 p-3 rounded-lg">
             {error.errors.map((error) => error).join(", ")}
           </p>
         )}
-
         <form.Field
           name="email"
           children={(field) => (
-            <div className="mb-6">
-              <label
-                htmlFor={field.name}
-                className="block text-base font-medium text-gray-800 mb-3"
-              >
-                Correo electrónico
-              </label>
+            <div className="mb-4 relative">
+              <label htmlFor={field.name} className="sr-only">Correo Electrónico</label>
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>
+              </div>
               <input
                 id={field.name}
                 type="email"
@@ -103,29 +92,21 @@ const UseRegisterForm = () => {
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Ingresa tu correo electrónico"
-                className="w-full px-4 py-3 rounded-xl bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-sm"
+                placeholder="Correo Electrónico"
+                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
               />
-              {field.state.meta.errors.length > 0 && (
-                <span className="text-red-500 text-sm mt-2 block">
-                  {field.state.meta.errors
-                    .map((error) => error?.message)
-                    .join(", ")}
-                </span>
-              )}
+              {field.state.meta.errors.length > 0 && <span className="text-red-400 text-xs mt-1 block absolute">{field.state.meta.errors.join(", ")}</span>}
             </div>
           )}
         />
         <form.Field
           name="password"
           children={(field) => (
-            <div className="mb-6">
-              <label
-                htmlFor={field.name}
-                className="block text-base font-medium text-gray-800 mb-3"
-              >
-                Ingresa tu nueva contraseña
-              </label>
+            <div className="mb-4 relative">
+              <label htmlFor={field.name} className="sr-only">Contraseña</label>
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              </div>
               <input
                 id={field.name}
                 type="password"
@@ -133,29 +114,21 @@ const UseRegisterForm = () => {
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Ingresa tu contraseña"
-                className="w-full px-4 py-3 rounded-xl bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-sm"
+                placeholder="Contraseña"
+                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
               />
-              {field.state.meta.errors.length > 0 && (
-                <span className="text-red-500 text-sm mt-2 block">
-                  {field.state.meta.errors
-                    .map((error) => error?.message)
-                    .join(", ")}
-                </span>
-              )}
+              {field.state.meta.errors.length > 0 && <span className="text-red-400 text-xs mt-1 block absolute">{field.state.meta.errors.join(", ")}</span>}
             </div>
           )}
         />
         <form.Field
           name="confirmPassword"
           children={(field) => (
-            <div className="mb-6">
-              <label
-                htmlFor={field.name}
-                className="block text-base font-medium text-gray-800 mb-3"
-              >
-                Confirma tu contraseña
-              </label>
+            <div className="mb-6 relative">
+              <label htmlFor={field.name} className="sr-only">Confirmar Contraseña</label>
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              </div>
               <input
                 id={field.name}
                 type="password"
@@ -163,27 +136,30 @@ const UseRegisterForm = () => {
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Confirma tu contraseña"
-                className="w-full px-4 py-3 rounded-xl bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out text-sm"
+                placeholder="Confirmar Contraseña"
+                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
               />
-              {field.state.meta.errors.length > 0 && (
-                <span className="text-red-500 text-sm mt-2 block">
-                  {field.state.meta.errors
-                    .map((error) => error?.message)
-                    .join(", ")}
-                </span>
-              )}
+              {field.state.meta.errors.length > 0 && <span className="text-red-400 text-xs mt-1 block absolute">{field.state.meta.errors.join(", ")}</span>}
             </div>
           )}
         />
 
         <button
           type="submit"
-          className="w-full bg-gray-800 text-white font-semibold py-3 rounded-xl shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 transition duration-300 ease-in-out text-base cursor-pointer"
+          className="w-full bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-3 rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out text-lg"
         >
-          Regístrate!
+          Registrarse
         </button>
       </form>
+      <p className="text-sm text-gray-400 mt-6 text-center">
+        ¿Ya tienes una cuenta?{" "}
+        <a
+          href={authRoutesConfig.children.login.url}
+          className="text-teal-400 hover:text-teal-300 font-semibold"
+        >
+          Inicia sesión aquí
+        </a>
+      </p>
     </div>
   );
 };
