@@ -1,22 +1,25 @@
-from typing import Optional
-from fastapi import APIRouter, Depends, Request, HTTPException
+from fastapi import APIRouter, Depends, Request
 
 from uuid import UUID
 
 from application.use_cases.user import GetAllUsersUseCase, GetUserUseCase
-from domain.exceptions import FailedToRetrieveUserError, UserNotFoundError
 from infrastructure.logging import get_logger
 from dtos import PaginatedResponseDTO
 from dtos.response.user.user_response_dto import UserResponseDTO
+from interfaces.api.common import (
+    PaginationParams,
+    get_pagination_params,
+    SortParams,
+    get_sort_params,
+    create_paginated_response,
+)
 from interfaces.api.dependencies.user_case_deps import (
     get_all_users_use_case,
     get_user_use_case,
 )
 
-from ..common.pagination import PaginationParams, get_pagination_params
+
 from ..common.filters.specific_filters import UserFilterParams, get_user_filter_params
-from ..common.response_utils import create_paginated_response
-from ..common.sort import SortParams, get_sort_params
 
 
 user_router = APIRouter(
@@ -34,8 +37,8 @@ logger = get_logger("user_routes")
 def get_all_users(
     request: Request,
     pagination: PaginationParams = Depends(get_pagination_params),
-    filters: UserFilterParams = Depends(get_user_filter_params),
     sort_params: SortParams = Depends(get_sort_params),
+    filters: UserFilterParams = Depends(get_user_filter_params),
     use_case: GetAllUsersUseCase = Depends(get_all_users_use_case),
 ) -> PaginatedResponseDTO[UserResponseDTO]:
     """
@@ -57,13 +60,13 @@ def get_all_users(
     logger.info(
         f"GET /users - Request received - page: {pagination.page}, limit: {pagination.limit}"
     )
-    
+
     # ✅ El Use Case maneja toda la lógica y logging interno
     users, total_count = use_case.execute(pagination, filters, sort_params)
 
     # ✅ Log de resultado a nivel HTTP
     logger.info(f"GET /users - Response: {len(users)} users from {total_count} total")
-    
+
     return create_paginated_response(
         items=users,
         total_count=total_count,
@@ -83,9 +86,6 @@ def get_user(
     :param user_id: The ID of the user to retrieve
     :return: UserResponseDTO object
     """
-    # ✅ Solo log de entrada HTTP - nivel INFO
     logger.info(f"GET /users/{user_id} - Request received")
-    
-    # ✅ El Use Case maneja toda la lógica y logging interno
-    # ✅ Los Exception Handlers capturan y convierten excepciones automáticamente
+
     return use_case.execute(str(user_id))

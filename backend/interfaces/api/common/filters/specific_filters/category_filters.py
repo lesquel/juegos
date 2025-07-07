@@ -1,45 +1,48 @@
 from typing import Optional
 from fastapi import Query
+from fastapi.params import Depends
 from pydantic import Field
 
-from ..filter import BaseFilterParams
+from ..filter import BaseFilterParams, get_base_filter_params
 
 
 class CategoryFilterParams(BaseFilterParams):
     """Filtros específicos para usuarios - hereda filtros base + específicos"""
 
-    email: Optional[str] = Field(
-        None, description="Filtrar por email (búsqueda parcial)"
+    game_id: Optional[str] = Field(
+        None, description="ID del juego asociado a la categoría"
     )
-    min_currency: Optional[float] = Field(
-        None, ge=0, description="Moneda virtual mínima"
+    category_name : Optional[str] = Field(
+        None, description="Nombre de la categoría"
     )
-    max_currency: Optional[float] = Field(
-        None, ge=0, description="Moneda virtual máxima"
+    category_description: Optional[str] = Field(
+        None, description="Descripción de la categoría"
     )
+
+    def filter_search(self, query, model, value, fields: Optional[list[str]] = None):
+        if fields is None:
+            fields = ["category_name", "category_description"]
+        return super().filter_search(query, model, value, fields)
 
 
 # Dependencies específicos para cada modelo
 def get_category_filter_params(
-    # Filtros base
-    search: Optional[str] = Query(None, description="Búsqueda general"),
-    created_after: Optional[str] = Query(None, description="Creado después de"),
-    created_before: Optional[str] = Query(None, description="Creado antes de"),
-    # Filtros específicos de usuario
-    email: Optional[str] = Query(None, description="Filtrar por email"),
-    min_currency: Optional[float] = Query(
-        None, ge=0, description="Moneda virtual mínima"
+    base_filters: BaseFilterParams = Depends(get_base_filter_params),
+
+    game_id: Optional[str] = Query(
+        None, description="ID del juego asociado a la categoría"
     ),
-    max_currency: Optional[float] = Query(
-        None, ge=0, description="Moneda virtual máxima"
+    category_name: Optional[str] = Query(
+        None, description="Nombre de la categoría"
+    ),
+    category_description: Optional[str] = Query(
+        None, description="Descripción de la categoría"
     ),
 ) -> CategoryFilterParams:
     """Dependency para obtener filtros de usuario"""
     return CategoryFilterParams(
-        search=search,
-        created_after=created_after,
-        created_before=created_before,
-        email=email,
-        min_currency=min_currency,
-        max_currency=max_currency,
+        **base_filters.model_dump(),
+        game_id=game_id,
+        category_name=category_name,
+        category_description=category_description,
     )

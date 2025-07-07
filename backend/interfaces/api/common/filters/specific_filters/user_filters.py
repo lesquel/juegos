@@ -1,8 +1,8 @@
 from typing import Optional
-from fastapi import Query
+from fastapi import Depends, Query
 from pydantic import Field
 
-from ..filter import BaseFilterParams
+from ..filter import BaseFilterParams, get_base_filter_params
 
 
 class UserFilterParams(BaseFilterParams):
@@ -21,11 +21,7 @@ class UserFilterParams(BaseFilterParams):
 
 # Dependencies específicos para cada modelo
 def get_user_filter_params(
-    # Filtros base
-    search: Optional[str] = Query(None, description="Búsqueda general"),
-    created_after: Optional[str] = Query(None, description="Creado después de"),
-    created_before: Optional[str] = Query(None, description="Creado antes de"),
-    # Filtros específicos de usuario
+    base_filters: BaseFilterParams = Depends(get_base_filter_params),
     email: Optional[str] = Query(None, description="Filtrar por email"),
     min_currency: Optional[float] = Query(
         None, ge=0, description="Moneda virtual mínima"
@@ -36,9 +32,7 @@ def get_user_filter_params(
 ) -> UserFilterParams:
     """Dependency para obtener filtros de usuario"""
     return UserFilterParams(
-        search=search,
-        created_after=created_after,
-        created_before=created_before,
+        **base_filters.model_dump(),
         email=email,
         min_currency=min_currency,
         max_currency=max_currency,

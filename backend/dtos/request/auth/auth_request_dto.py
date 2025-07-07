@@ -16,7 +16,7 @@ class UserCreateRequestDTO(BaseModel):
         return password_validator(value)
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {"email": "usuario@ejemplo.com", "password": "micontraseña123"}
         }
 
@@ -35,6 +35,6 @@ class LoginRequestDTO(BaseModel):
     )
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {"email": "usuario@ejemplo.com", "password": "micontraseña123"}
         }

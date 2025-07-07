@@ -12,10 +12,8 @@ from interfaces.api.dependencies import (
     get_register_user_use_case,
     get_login_use_case,
     get_current_user,
-    security,
 )
-from dtos.request.auth.auth_request_dto import LoginRequestDTO
-from dtos.request.auth.auth_request_dto import UserCreateRequestDTO
+from dtos.request.auth.auth_request_dto import LoginRequestDTO, UserCreateRequestDTO
 from dtos.response.user.user_response_dto import UserBaseResponseDTO, UserResponseDTO
 from dtos.response.auth.auth_response_dto import LoginResponseDTO
 from dtos.common.common_responses import SuccessResponse
@@ -92,9 +90,7 @@ def get_current_user_info(current_user: UserResponseDTO = Depends(get_current_us
         updated_at=current_user.updated_at,
     )
 
-
     logger.debug(f"Successfully retrieved user info for: {current_user.email}")
     return SuccessResponse(
         data=user_data, message="User information retrieved successfully"
     )
-

@@ -7,6 +7,7 @@ from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 class GameEntity(TimeStampEntityMixin):
     def __init__(
+        
         self,
         game_id: Optional[str],
         game_name: str,

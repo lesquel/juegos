@@ -40,6 +40,13 @@ class UserModel(Base, TimeStampModelMixin):
     match_participations = relationship(
         "MatchParticipationModel", back_populates="user", cascade="all, delete-orphan"
     )
+    
+    
+    FILTERS = {
+        "email": lambda query, value: query.filter(UserModel.email.ilike(f"%{value}%")),
+        "min_currency": lambda query, value: query.filter(UserModel.virtual_currency >= value),
+        "max_currency": lambda query, value: query.filter(UserModel.virtual_currency <= value),
+    }
 
     def __repr__(self):
         return f"<UserModel(id={self.user_id}, email='{self.email}')>"

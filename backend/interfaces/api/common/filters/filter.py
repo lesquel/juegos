@@ -1,31 +1,44 @@
+from sqlalchemy import or_
 from typing import Optional, Dict, Any
 from fastapi import Query
 from pydantic import BaseModel, Field
 
 
-
-
 class BaseFilterParams(BaseModel):
-    """Clase base para filtros - Otros modelos pueden heredar de esta"""
+    """Clase base para filtros comunes"""
 
-    # Filtros comunes que muchos modelos pueden tener
     search: Optional[str] = Field(
         None, description="Búsqueda general en campos de texto"
     )
     created_after: Optional[str] = Field(
-        None, description="Filtrar por fecha de creación (después de)"
+        None, description="Creado después de (YYYY-MM-DD)"
     )
     created_before: Optional[str] = Field(
-        None, description="Filtrar por fecha de creación (antes de)"
+        None, description="Creado antes de (YYYY-MM-DD)"
     )
 
     def to_dict(self) -> Dict[str, Any]:
-        """Convierte los filtros a diccionario, excluyendo valores None"""
-        return {k: v for k, v in self.model_dump().items() if v is not None}
+        return self.model_dump(exclude_none=True)
 
+    def filter_created_after(self, query, model, value):
+        if hasattr(model, "created_at"):
+            return query.filter(model.created_at >= value)
+        return query
 
+    def filter_created_before(self, query, model, value):
+        if hasattr(model, "created_at"):
+            return query.filter(model.created_at <= value)
+        return query
 
-
+    def filter_search(self, query, model, value, fields: Optional[list[str]] = []):
+        """Filtra por búsqueda en campos específicos del modelo."""
+        conditions = []
+        for attr in fields:
+            if hasattr(model, attr):
+                conditions.append(getattr(model, attr).ilike(f"%{value}%"))
+        if conditions:
+            return query.filter(or_(*conditions))
+        return query
 
 
 def get_base_filter_params(
@@ -43,4 +56,3 @@ def get_base_filter_params(
         created_after=created_after,
         created_before=created_before,
     )
-

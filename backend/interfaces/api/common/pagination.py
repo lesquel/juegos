@@ -1,4 +1,3 @@
-from typing import Optional, Dict, Any
 from fastapi import Query
 from pydantic import BaseModel, Field
 
@@ -20,6 +19,7 @@ class PaginationParams(BaseModel):
     def offset(self) -> int:
         """Calcula el offset para la base de datos"""
         return (self.page - 1) * self.limit
+
 
 
 def get_pagination_params(

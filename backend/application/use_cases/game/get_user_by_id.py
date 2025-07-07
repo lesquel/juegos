@@ -27,10 +27,8 @@ class GetUserUseCase:
         """
         logger.debug(f"Getting user with ID: {user_id}")
         
-        # El repository retorna None si no encuentra - NO lanza excepción
         user = self.user_repo.get_by_id(user_id)
         
-        # ✅ EL USE CASE valida y lanza la excepción de negocio
         if not user:
             logger.warning(f"User not found with ID: {user_id}")
             raise UserNotFoundError(f"User with ID {user_id} not found")

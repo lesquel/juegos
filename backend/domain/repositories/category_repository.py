@@ -3,18 +3,17 @@ from typing import Optional
 
 from domain.entities.game import CategoryEntity
 from interfaces.api.common.filters.specific_filters import CategoryFilterParams
-from .base_repository import IBaseRepository
+from .base_repository import IReadOnlyRepository
 
 
-class ICategoryRepository(IBaseRepository[CategoryEntity, CategoryFilterParams]):
+class ICategoryRepository(IReadOnlyRepository[CategoryEntity, CategoryFilterParams]):
     """Repositorio específico para categorías"""
-
     @abstractmethod
-    def get_by_name(self, name: str) -> Optional[CategoryEntity]:
+    def get_by_game_id(self, game_id: str) -> Optional[list[CategoryEntity]]:
         """
-        Retrieves a category by its name.
+        Retrieves a list of categories associated with a specific game.
 
-        :param name: The name of the category to retrieve.
-        :return: The Category object corresponding to the given name.
+        :param game_id: The ID of the game to retrieve categories for.
+        :return: A list of Category objects corresponding to the given game.
         """
         pass

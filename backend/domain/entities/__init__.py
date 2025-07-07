@@ -1,2 +1,3 @@
-from .user.user import UserEntity
-from .user.token_data import TokenData
+from .user import UserEntity, TokenData, TransferPaymentEntity
+from .match import MatchEntity
+from .game import GameEntity, CategoryEntity

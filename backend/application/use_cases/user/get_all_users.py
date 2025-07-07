@@ -10,7 +10,7 @@ class GetAllUsersUseCase:
     def __init__(self, user_repo: IUserRepository):
         self.user_repo = user_repo
 
-    def execute(self, pagination, filters, sort_params):
+    def execute(self, pagination, filters, sort_params) -> tuple[list[UserResponseDTO], int]:
         users, count = self.user_repo.get_paginated(pagination, filters, sort_params)
         if not users:
             logger.warning("No users found with the given filters and pagination")

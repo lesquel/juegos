@@ -1,8 +1,7 @@
 import uvicorn
 
-from app_factory import create_app
+from app_setup import create_app
 
-# Crear la aplicación usando el factory
 app = create_app()
 
 

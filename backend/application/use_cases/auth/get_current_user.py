@@ -1,14 +1,9 @@
-"""
-Caso de uso: Obtener usuario actual
-Responsabilidad única: Obtener usuario basado en token
-"""
-
 from fastapi.security import HTTPAuthorizationCredentials
 
-from domain.exceptions import InvalidTokenError, AuthenticationError, UserNotFoundError
+from domain.exceptions import InvalidTokenError, UserNotFoundError
 from domain.interfaces import ITokenProvider
 from domain.repositories import IUserRepository
-from dtos.response.user.user_response_dto import UserResponseDTO
+from dtos.response.user import UserResponseDTO
 from infrastructure.logging import get_logger
 
 # Configurar logger
@@ -72,4 +67,4 @@ class GetCurrentUserUseCase:
             virtual_currency=user.virtual_currency,
             created_at=user.created_at,
             updated_at=user.updated_at,
-        ) 
+        )

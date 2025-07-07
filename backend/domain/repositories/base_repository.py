@@ -1,23 +1,29 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple, TypeVar, Generic, Optional
+from typing import List, Type, TypeVar, Generic, Optional
 
-from interfaces.api.common import PaginationParams, BaseFilterParams
-from interfaces.api.common.sort import SortParams
+from interfaces.api.common import BaseFilterParams
+from interfaces.api.mixins import QueryMixin
 
-T = TypeVar("T")  # Tipo de entidad
-F = TypeVar("F", bound=BaseFilterParams)  # Tipo de filtros
+T = TypeVar("T")
+F = TypeVar("F", bound=BaseFilterParams)
 
 
-class IBaseRepository(ABC, Generic[T, F]):
+
+
+class IReadOnlyRepository(ABC, Generic[T, F], QueryMixin):
     """
-    Repositorio base genérico que define operaciones comunes
-    para cualquier entidad con paginación y filtros.
+    Repositorio de solo lectura para operaciones de consulta.
     """
-
     @abstractmethod
-    def get_all(self) -> List[T]:
-        """Obtiene todas las entidades"""
+    def get_paginated(
+        self,
+        pagination: F,
+        filters: Optional[F] = None,
+        sort_params: Optional[F] = None,
+    ) -> List[T]:
+        """Obtiene entidades paginadas con filtros y ordenamiento"""
         pass
+        
 
     @abstractmethod
     def get_by_id(self, entity_id: str) -> Optional[T]:
@@ -25,19 +31,15 @@ class IBaseRepository(ABC, Generic[T, F]):
         pass
 
     @abstractmethod
-    def get_paginated(
-        self,
-        pagination: PaginationParams,
-        filters: Optional[F] = None,
-        sort_params: Optional[SortParams] = None,
-    ) -> Tuple[List[T], int]:
-        """
-        Obtiene entidades paginadas con filtros opcionales.
-
-        Returns:
-            Tuple[List[T], int]: (entities, total_count)
-        """
+    def _model_to_entity(self, model: T) -> T:
+        """Convierte un modelo a su entidad correspondiente"""
         pass
+
+
+class IWriteOnlyRepository(ABC, Generic[T]):
+    """
+    Repositorio de escritura para operaciones de modificación.
+    """
 
     @abstractmethod
     def save(self, entity: T) -> T:
@@ -59,7 +61,15 @@ class IBaseRepository(ABC, Generic[T, F]):
         """Convierte una entidad a su modelo correspondiente"""
         pass
 
-    @abstractmethod
-    def _model_to_entity(self, model: T) -> T:
-        """Convierte un modelo a su entidad correspondiente"""
-        pass
+
+class IBaseRepository(IReadOnlyRepository[T, F], IWriteOnlyRepository[T], Generic[T, F]):
+    """
+    Repositorio completo que combina operaciones de lectura y escritura.
+    """
+
+    pass
+
+class IConstructorRepository:
+    def __init__(self, db_session, db_model: Type[T]):
+        self.db = db_session
+        self.model = db_model

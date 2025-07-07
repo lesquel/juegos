@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional, Tuple
 import uuid
 
-from domain.repositories import IUserRepository
+from domain.repositories import IUserRepository, IConstructorRepository
 from domain.entities import UserEntity
 from interfaces.api.common.sort import SortParams
 from interfaces.api.common.pagination import PaginationParams
@@ -15,20 +15,13 @@ from ..models.user_model import UserModel
 logger = get_logger("user_repository")
 
 
-class PostgresUserRepository(IUserRepository):
+class PostgresUserRepository(IUserRepository, IConstructorRepository):
     """
     A repository for managing user data in a PostgreSQL database.
     """
 
     def __init__(self, db_session: Session):
-        self.db = db_session
-
-    def get_all(self) -> List[UserEntity]:
-        """Retrieves all users from the repository."""
-        logger.debug("Getting all users from database")
-        user_models = self.db.query(UserModel).all()
-        logger.info(f"Retrieved {len(user_models)} users from database")
-        return [self._model_to_entity(model) for model in user_models]
+        super().__init__(db_session, UserModel)
 
     def get_paginated(
         self,
@@ -36,57 +29,22 @@ class PostgresUserRepository(IUserRepository):
         filters: Optional[UserFilterParams] = None,
         sort_params: Optional[SortParams] = None,
     ) -> Tuple[List[UserEntity], int]:
-        """
-        Retrieves users with pagination and optional filters.
-
-        Returns:
-            Tuple[List[UserEntity], int]: (users, total_count)
-        """
-        query = self.db.query(UserModel)
-
-        # Aplicar filtros si existen
-        if filters:
-            query = self._apply_filters(query, filters)
-
-        if sort_params:
-            query = self._apply_sorting(query, sort_params)
-
-        # Contar total de elementos (antes de aplicar paginación)
-        total_count = query.count()
-
-        # Aplicar paginación
-        users = query.offset(pagination.offset).limit(pagination.limit).all()
-
-        return [self._model_to_entity(model) for model in users], total_count
-
-    def _apply_filters(self, query, filters: UserFilterParams):
-        """Aplica filtros a la consulta SQL"""
-
-        if filters.email:
-            query = query.filter(UserModel.email.ilike(f"%{filters.email}%"))
-
-        if filters.min_currency is not None:
-            query = query.filter(UserModel.virtual_currency >= filters.min_currency)
-
-        if filters.max_currency is not None:
-            query = query.filter(UserModel.virtual_currency <= filters.max_currency)
-
-        return query
-
-    def _apply_sorting(self, query, sort_params: SortParams):
-        """Applies sorting to the query based on sort parameters."""
-        if sort_params.sort_by:
-            if sort_params.sort_order == "desc":
-                query = query.order_by(getattr(UserModel, sort_params.sort_by).desc())
-            else:
-                query = query.order_by(getattr(UserModel, sort_params.sort_by).asc())
-        return query
+        """Get paginated users with optional filtering and sorting."""
+        logger.debug("Getting all users from database")
+        return self.get_paginated_mixin(
+            model=self.model,
+            db_session=self.db,
+            pagination=pagination,
+            filters=filters,
+            sort_params=sort_params,
+            to_entity=self._model_to_entity,
+        )
 
     def get_by_id(self, user_id: str) -> Optional[UserEntity]:
         """Retrieves a user by their ID."""
         logger.debug(f"Getting user by ID: {user_id}")
         user_model = (
-            self.db.query(UserModel).filter(UserModel.user_id == user_id).first()
+            self.db.query(self.model).filter(self.model.user_id == user_id).first()
         )
 
         if user_model:
@@ -99,9 +57,7 @@ class PostgresUserRepository(IUserRepository):
     def get_by_email(self, email: str) -> Optional[UserEntity]:
         """Retrieves a user by their email address."""
         logger.debug(f"Getting user by email: {email}")
-        user_model = (
-            self.db.query(UserModel).filter(UserModel.email == email).first()
-        )
+        user_model = self.db.query(self.model).filter(self.model.email == email).first()
 
         if user_model:
             logger.debug(f"User found with email: {email}")
@@ -111,44 +67,49 @@ class PostgresUserRepository(IUserRepository):
             return None
 
     def save(self, user: UserEntity) -> UserEntity:
-        """Saves a user to the repository."""
-        logger.debug(f"Saving user: {user.email}")
         try:
             if user.user_id is None:
-                logger.debug(f"Creating new user: {user.email}")
-                user_model = UserModel(
+                # Create new user
+                user_model = self.model(
                     email=user.email,
                     hashed_password=user.hashed_password,
                 )
                 self.db.add(user_model)
+                self.db.commit()
+                self.db.refresh(user_model)
+                logger.info(f"Successfully created user: {user.email}")
+                return self._model_to_entity(user_model)
             else:
-                # Update existing user
-                logger.debug(f"Updating existing user: {user.email}")
-                self.update(user.user_id, user_model)
-
-            self.db.commit()
-            self.db.refresh(user_model)
-            logger.info(f"Successfully saved user: {user.email}")
-            return self._model_to_entity(user_model)
+                self.update(user.user_id, user)
+                user_model = (
+                    self.db.query(self.model)
+                    .filter(self.model.user_id == user.user_id)
+                    .first()
+                )
+                if user_model:
+                    return self._model_to_entity(user_model)
+                else:
+                    raise Exception("User not found after update")
         except Exception as e:
             logger.error(f"Error saving user {user.email}: {str(e)}")
             self.db.rollback()
             raise
 
     def update(self, user_id: str, user: UserEntity) -> None:
-        """Updates a user in the repository."""
         user_model = (
-            self.db.query(UserModel).filter(UserModel.user_id == user_id).first()
+            self.db.query(self.model).filter(self.model.user_id == user_id).first()
         )
         if user_model:
             user_model.email = user.email
             user_model.hashed_password = user.hashed_password
             self.db.commit()
+        else:
+            raise Exception(f"User with ID {user_id} not found")
 
     def delete(self, user_id: str) -> None:
         """Deletes a user from the repository by their ID."""
         user_model = (
-            self.db.query(UserModel).filter(UserModel.user_id == user_id).first()
+            self.db.query(self.model).filter(self.model.user_id == user_id).first()
         )
         if user_model:
             self.db.delete(user_model)
@@ -168,7 +129,7 @@ class PostgresUserRepository(IUserRepository):
 
     def _entity_to_model(self, entity: UserEntity) -> UserModel:
         """Converts a User entity to a UserModel."""
-        return UserModel(
+        return self.model(
             user_id=uuid.UUID(entity.user_id) if entity.user_id else None,
             email=entity.email,
             hashed_password=entity.hashed_password,

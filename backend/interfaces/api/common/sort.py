@@ -1,5 +1,5 @@
 from typing import Optional, Dict, Any
-from fastapi import Query
+from fastapi.params import Query
 from pydantic import BaseModel, Field
 
 

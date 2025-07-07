@@ -4,7 +4,7 @@ from application.enums import TransferStateEnum
 from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 
-class TransferPayment(TimeStampEntityMixin):
+class TransferPaymentEntity(TimeStampEntityMixin):
     def __init__(
         self,
         transfer_id: Optional[str],
