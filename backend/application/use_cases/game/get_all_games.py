@@ -20,7 +20,7 @@ class GetAllGamesUseCase:
         games = [
             GameResponseDTO(
                 game_id=str(game.game_id),
-                games_name=game.games_name,
+                game_name=game.game_name,
                 game_description=game.game_description,
                 game_img=game.game_img,
                 game_url=game.game_url,

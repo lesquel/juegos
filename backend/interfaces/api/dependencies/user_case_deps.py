@@ -1,4 +1,5 @@
 from application.use_cases.user import GetAllUsersUseCase, GetUserUseCase
+from domain.repositories import IUserRepository  
 
 from fastapi import Depends
 
@@ -7,12 +8,17 @@ from sqlalchemy.orm import Session
 from infrastructure.db.repositories import PostgresUserRepository
 
 
+def get_user_repository(db: Session = Depends(get_db)) -> IUserRepository:
+    return PostgresUserRepository(db)
 
-def get_all_users_use_case(db: Session = Depends(get_db)) -> GetAllUsersUseCase:
-    user_repo = PostgresUserRepository(db)
+
+def get_all_users_use_case(
+    user_repo: IUserRepository = Depends(get_user_repository),
+) -> GetAllUsersUseCase:
     return GetAllUsersUseCase(user_repo=user_repo)
 
 
-def get_user_use_case(db: Session = Depends(get_db)) -> GetUserUseCase:
-    user_repo = PostgresUserRepository(db)
+def get_user_use_case(
+    user_repo: IUserRepository = Depends(get_user_repository),
+) -> GetUserUseCase:
     return GetUserUseCase(user_repo=user_repo)

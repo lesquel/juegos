@@ -1,5 +1,5 @@
 
-from interfaces.api.common.filters.filter import BaseFilterParams
+from interfaces.api.common.filters.base_filter import BaseFilterParams
 from interfaces.api.common.pagination import PaginationParams
 from interfaces.api.common.sort import SortParams
 

@@ -3,7 +3,7 @@ from .pagination import (
     get_pagination_params,
 )
 
-from .filters.filter import (
+from .filters.base_filter import (
     BaseFilterParams,
     get_base_filter_params,
 )

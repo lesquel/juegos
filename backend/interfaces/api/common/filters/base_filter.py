@@ -40,6 +40,20 @@ class BaseFilterParams(BaseModel):
             return query.filter(or_(*conditions))
         return query
 
+    def ilike_filter(self, query, model_field, value):
+        return query.filter(model_field.ilike(f"%{value}%")) if value else query
+
+    def any_filter(self, query, relationship_field, attr_name, value):
+        if value:
+            return query.filter(relationship_field.any(**{attr_name: value}))
+        return query
+
+    def gte_filter(self, query, model_field, value):
+        return query.filter(model_field >= value) if value is not None else query
+
+    def lte_filter(self, query, model_field, value):
+        return query.filter(model_field <= value) if value is not None else query
+
 
 def get_base_filter_params(
     search: Optional[str] = Query(None, description="Búsqueda general"),

@@ -3,7 +3,8 @@ from fastapi import Query
 from fastapi.params import Depends
 from pydantic import Field
 
-from ..filter import BaseFilterParams, get_base_filter_params
+from ..base_filter import BaseFilterParams, get_base_filter_params
+from ..filter_dependency_factory import build_filter_dependency
 
 
 class CategoryFilterParams(BaseFilterParams):
@@ -12,9 +13,7 @@ class CategoryFilterParams(BaseFilterParams):
     game_id: Optional[str] = Field(
         None, description="ID del juego asociado a la categoría"
     )
-    category_name : Optional[str] = Field(
-        None, description="Nombre de la categoría"
-    )
+    category_name: Optional[str] = Field(None, description="Nombre de la categoría")
     category_description: Optional[str] = Field(
         None, description="Descripción de la categoría"
     )
@@ -24,25 +23,16 @@ class CategoryFilterParams(BaseFilterParams):
             fields = ["category_name", "category_description"]
         return super().filter_search(query, model, value, fields)
 
+    def filter_game_id(self, query, model, value):
+        return self.any_filter(query, model.games, "game_id", value)
 
-# Dependencies específicos para cada modelo
-def get_category_filter_params(
-    base_filters: BaseFilterParams = Depends(get_base_filter_params),
+    def filter_category_name(self, query, model, value):
+        return self.ilike_filter(query, model.category_name, value)
 
-    game_id: Optional[str] = Query(
-        None, description="ID del juego asociado a la categoría"
-    ),
-    category_name: Optional[str] = Query(
-        None, description="Nombre de la categoría"
-    ),
-    category_description: Optional[str] = Query(
-        None, description="Descripción de la categoría"
-    ),
-) -> CategoryFilterParams:
-    """Dependency para obtener filtros de usuario"""
-    return CategoryFilterParams(
-        **base_filters.model_dump(),
-        game_id=game_id,
-        category_name=category_name,
-        category_description=category_description,
-    )
+    def filter_category_description(self, query, model, value):
+        return self.ilike_filter(query, model.category_description, value)
+
+
+get_category_filter_params = build_filter_dependency(
+    CategoryFilterParams,
+)

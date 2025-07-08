@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import Query
 from pydantic import Field
 
-from ..filter import BaseFilterParams
+from ..base_filter import BaseFilterParams
 
 
 class GameReviewFilterParams(BaseFilterParams):

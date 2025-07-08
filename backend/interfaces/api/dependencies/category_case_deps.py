@@ -2,6 +2,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from application.use_cases.game import GetAllCategoriesUseCase, GetCategoryByIdUseCase
+from domain.repositories import ICategoryRepository
 from infrastructure.db.repositories.category_repository import (
     PostgresCategoryRepository,
 )
@@ -9,15 +10,17 @@ from infrastructure.db.repositories.category_repository import (
 from infrastructure.db.connection import get_db
 
 
+def get_category_repository(db: Session = Depends(get_db)) -> ICategoryRepository:
+    return PostgresCategoryRepository(db)
+
+
 def get_all_categories_use_case(
-    db: Session = Depends(get_db),
+    category_repo: ICategoryRepository = Depends(get_category_repository),
 ) -> GetAllCategoriesUseCase:
-    category_repo = PostgresCategoryRepository(db)
     return GetAllCategoriesUseCase(category_repo=category_repo)
 
 
 def get_category_by_id_use_case(
-    db: Session = Depends(get_db),
+    category_repo: ICategoryRepository = Depends(get_category_repository),
 ) -> GetCategoryByIdUseCase:
-    category_repo = PostgresCategoryRepository(db)
     return GetCategoryByIdUseCase(category_repo=category_repo)

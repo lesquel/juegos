@@ -1,5 +1,5 @@
 from typing import Any
-from interfaces.api.common.filters.filter import BaseFilterParams
+from interfaces.api.common.filters.base_filter import BaseFilterParams
 
 class FilterMixin:
     """Mixin para aplicar filtros a las consultas."""

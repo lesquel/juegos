@@ -1,5 +1,3 @@
-from sqlalchemy.orm import Session
-
 from application.use_cases.auth import (
     GetCurrentUserUseCase,
     RegisterUserUseCase,
@@ -7,6 +5,7 @@ from application.use_cases.auth import (
 )
 
 from domain.interfaces.token_provider import ITokenProvider
+from domain.repositories import IUserRepository
 from dtos.response.user.user_response_dto import UserResponseDTO
 from infrastructure.auth import PasswordHasher
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -15,22 +14,28 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Depends
 
 from infrastructure.auth.jwt_service import get_token_provider
-from infrastructure.db.connection import get_db
-from infrastructure.db.repositories import PostgresUserRepository
+
+from .user_case_deps import get_user_repository
 
 security = HTTPBearer()
 
 
-def get_register_user_use_case(db: Session = Depends(get_db)) -> RegisterUserUseCase:
-    user_repo = PostgresUserRepository(db)
-    password_hasher = PasswordHasher()
+def get_password_hasher() -> PasswordHasher:
+    return PasswordHasher()
+
+
+def get_register_user_use_case(
+    user_repo: IUserRepository = Depends(get_user_repository),
+    password_hasher: PasswordHasher = Depends(get_password_hasher),
+) -> RegisterUserUseCase:
     return RegisterUserUseCase(user_repo=user_repo, password_hasher=password_hasher)
 
 
-def get_login_use_case(db: Session = Depends(get_db)) -> LoginUserUseCase:
-    user_repo = PostgresUserRepository(db)
-    password_hasher = PasswordHasher()
-    token_provider = get_token_provider()
+def get_login_use_case(
+    user_repo: IUserRepository = Depends(get_user_repository),
+    password_hasher: PasswordHasher = Depends(get_password_hasher),
+    token_provider: ITokenProvider = Depends(get_token_provider),
+) -> LoginUserUseCase:
     return LoginUserUseCase(
         user_repo=user_repo,
         password_hasher=password_hasher,
@@ -38,15 +43,16 @@ def get_login_use_case(db: Session = Depends(get_db)) -> LoginUserUseCase:
     )
 
 
+def get_current_user_use_case(
+    user_repo: IUserRepository = Depends(get_user_repository),
+    token_provider: ITokenProvider = Depends(get_token_provider),
+) -> GetCurrentUserUseCase:
+    return GetCurrentUserUseCase(user_repo, token_provider)
+
+
 def get_current_user(
     token: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db),
-    token_provider: ITokenProvider = Depends(get_token_provider),
+    use_case: GetCurrentUserUseCase = Depends(get_current_user_use_case),
 ) -> UserResponseDTO:
     """Dependency function para obtener usuario actual"""
-
-    user_repo = PostgresUserRepository(db)
-    use_case = GetCurrentUserUseCase(user_repo, token_provider)
-    current_user = use_case.execute(token)
-
-    return current_user
+    return use_case.execute(token)
