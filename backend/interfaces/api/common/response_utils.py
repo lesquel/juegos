@@ -1,8 +1,10 @@
-from typing import List, TypeVar
+from typing import List, TypeVar, Callable
 from math import ceil
 from fastapi import Request
 
-from dtos import PaginatedResponseDTO, PaginationInfoDTO
+from dtos.common import PaginatedResponseDTO, PaginationInfoDTO
+
+from .sort import SortParams
 from .pagination import PaginationParams
 
 T = TypeVar("T")
@@ -56,3 +58,27 @@ def create_paginated_response(
     )
 
     return PaginatedResponseDTO(info=pagination_info, results=items)
+
+
+def handle_paginated_request(
+    *,
+    endpoint_name: str,
+    request: Request,
+    pagination: PaginationParams,
+    sort_params: SortParams,
+    filters,
+    use_case_execute: Callable,
+    logger,
+):
+    logger.info(
+        f"{endpoint_name} - Request received - page: {pagination.page}, limit: {pagination.limit}"
+    )
+    items, total_count = use_case_execute(pagination, filters, sort_params)
+    logger.info(f"{endpoint_name} - Response: {len(items)} items from {total_count} total")
+    
+    return create_paginated_response(
+        items=items,
+        total_count=total_count,
+        pagination=pagination,
+        request=request,
+    )

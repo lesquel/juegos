@@ -18,7 +18,7 @@ class GameModel(Base, TimeStampModelMixin):
     game_name = Column(String(100), nullable=False, unique=True, index=True)
     game_description = Column(Text, nullable=False)
     game_url = Column(String(255), nullable=False)
-    game_img = Column(String(255), nullable=False)
+    game_img = Column(String(255))
     categories = relationship(
         "CategoryModel", secondary=game_categories, back_populates="games"
     )

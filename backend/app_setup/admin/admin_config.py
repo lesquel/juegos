@@ -9,7 +9,7 @@ logger = get_logger("admin_config")
 def initialize_admin(app: FastAPI):
     """Inicializar el panel de administración SQLAdmin"""
     try:
-        from admin import list_admin_views, authentication_backend
+        from admin import admin_views_by_module, authentication_backend
 
         logger.info("Initializing SQLAdmin for admin interface")
 
@@ -22,10 +22,20 @@ def initialize_admin(app: FastAPI):
             logo_url=None,  # Puedes agregar tu logo aquí
         )
 
-        # Agregar vistas de administración
-        for view in list_admin_views:
-            logger.info(f"Adding admin view: {view.__name__}")
-            admin.add_view(view)
+        # Agregar vistas organizadas por módulos
+        for module_name, views in admin_views_by_module.items():
+            logger.info(f"📁 Adding module: {module_name}")
+            
+            for view in views:
+                # Configurar el nombre del módulo en la vista
+                if hasattr(view, '__module_name__'):
+                    view.__module_name__ = module_name
+                else:
+                    # Si la vista no tiene atributo de módulo, agregarlo dinámicamente
+                    setattr(view, 'category', module_name)
+                
+                logger.info(f"  ├── Adding view: {view.__name__}")
+                admin.add_view(view)
 
         logger.info("✅ Admin interface initialized successfully")
         logger.info("🔗 Admin panel available at: /admin")

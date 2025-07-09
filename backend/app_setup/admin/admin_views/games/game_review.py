@@ -4,6 +4,12 @@ from infrastructure.db.models.game_review_model import GameReviewModel
 
 class GameReviewAdmin(ModelView, model=GameReviewModel):
     """Panel de administración para reseñas de juegos"""
+    
+    # Configuración de categoría/módulo
+    name = "Reseña"
+    name_plural = "Reseñas de Juegos"
+    icon = "fa-solid fa-star"
+    category = "Juegos"
 
     # Configuración de columnas
     column_list = [

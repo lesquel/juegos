@@ -15,9 +15,11 @@ from .auth_case_deps import (
 from .game_case_deps import (
     get_all_games_use_case,
     get_game_by_id_use_case,
+    get_games_by_category_id_use_case
 )
 
 from .category_case_deps import (
     get_all_categories_use_case,
     get_category_by_id_use_case,
+    get_categories_by_game_id_use_case
 )

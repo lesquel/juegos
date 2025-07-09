@@ -1,9 +1,13 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from application.use_cases.game import GetAllGamesUseCase, GetGameByIdUseCase
+from application.use_cases.game import (
+    GetAllGamesUseCase,
+    GetGameByIdUseCase,
+    GetGamesByCategoryIdUseCase,
+    )
 from domain.repositories import IGameRepository
-from infrastructure.db.repositories.game_repository import (
+from infrastructure.db.repositories import (
     PostgresGameRepository,
 )
 
@@ -24,3 +28,9 @@ def get_game_by_id_use_case(
     game_repo: IGameRepository = Depends(get_game_repository),
 ) -> GetGameByIdUseCase:
     return GetGameByIdUseCase(game_repo=game_repo)
+
+
+def get_games_by_category_id_use_case(
+    game_repo: IGameRepository = Depends(get_game_repository),
+) -> GetGamesByCategoryIdUseCase:
+    return GetGamesByCategoryIdUseCase(game_repo=game_repo)

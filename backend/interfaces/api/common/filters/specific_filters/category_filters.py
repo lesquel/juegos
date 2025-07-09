@@ -10,9 +10,6 @@ from ..filter_dependency_factory import build_filter_dependency
 class CategoryFilterParams(BaseFilterParams):
     """Filtros específicos para usuarios - hereda filtros base + específicos"""
 
-    game_id: Optional[str] = Field(
-        None, description="ID del juego asociado a la categoría"
-    )
     category_name: Optional[str] = Field(None, description="Nombre de la categoría")
     category_description: Optional[str] = Field(
         None, description="Descripción de la categoría"
@@ -22,9 +19,6 @@ class CategoryFilterParams(BaseFilterParams):
         if fields is None:
             fields = ["category_name", "category_description"]
         return super().filter_search(query, model, value, fields)
-
-    def filter_game_id(self, query, model, value):
-        return self.any_filter(query, model.games, "game_id", value)
 
     def filter_category_name(self, query, model, value):
         return self.ilike_filter(query, model.category_name, value)

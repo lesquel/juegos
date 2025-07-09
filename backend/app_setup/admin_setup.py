@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from infrastructure.logging import get_logger
-from admin import initialize_admin
+from .admin import initialize_admin
 
 # Configurar logger
 logger = get_logger("admin_setup")

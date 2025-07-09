@@ -1,4 +1,6 @@
+from collections.abc import Callable
 
+from fastapi import Query
 from interfaces.api.common.filters.base_filter import BaseFilterParams
 from interfaces.api.common.pagination import PaginationParams
 from interfaces.api.common.sort import SortParams
@@ -11,6 +13,7 @@ from .pagination_mixin import PaginationMixin
 from typing import Optional, Type, List, Tuple
 from sqlalchemy.orm import Session
 
+
 class QueryMixin(FilterMixin, SortingMixin, PaginationMixin):
     def get_paginated_mixin(
         self,
@@ -20,6 +23,7 @@ class QueryMixin(FilterMixin, SortingMixin, PaginationMixin):
         filters: Optional[BaseFilterParams] = None,
         sort_params: Optional[SortParams] = None,
         to_entity: Optional[callable] = None,
+        custom_filter_fn: Optional[Callable[[Query], Query]] = None,
     ) -> Tuple[List, int]:
         """
         Consulta genérica con filtros, ordenamiento y paginación.
@@ -28,6 +32,8 @@ class QueryMixin(FilterMixin, SortingMixin, PaginationMixin):
 
         if filters:
             query = self.apply_filters(query, model, filters)
+        if custom_filter_fn:
+            query = custom_filter_fn(query)
         if sort_params:
             query = self.apply_sorting(query, model, sort_params)
 

@@ -4,6 +4,12 @@ from infrastructure.db.models.category_model import CategoryModel
 
 class CategoryAdmin(ModelView, model=CategoryModel):
     """Panel de administración para categorías"""
+    
+    # Configuración de categoría/módulo
+    name = "Categoría"
+    name_plural = "Categorías"
+    icon = "fa-solid fa-tags"
+    category = "Juegos"
 
     # Configuración de columnas
     column_list = [

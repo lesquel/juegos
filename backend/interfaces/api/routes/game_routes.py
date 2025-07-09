@@ -1,15 +1,13 @@
 from fastapi import APIRouter, Depends, Request
-
 from uuid import UUID
 
-from application.use_cases.game import GetAllGamesUseCase, GetGameByIdUseCase
-from ..dependencies.game_case_deps import (
-    get_all_games_use_case,
-    get_game_by_id_use_case,
+from application.use_cases.game import (
+    GetAllGamesUseCase,
+    GetGameByIdUseCase,
+    GetCategoriesByGameIdUseCase,
 )
-from infrastructure.logging import get_logger
-from dtos import PaginatedResponseDTO
-from dtos.response.game import GameResponseDTO
+from dtos.response.game import GameResponseDTO, CategoryResponseDTO
+from dtos.common import PaginatedResponseDTO
 
 from interfaces.api.common import (
     PaginationParams,
@@ -18,8 +16,21 @@ from interfaces.api.common import (
     get_sort_params,
     create_paginated_response,
 )
-
-from ..common.filters.specific_filters import GameFilterParams, get_game_filter_params
+from interfaces.api.common.filters.specific_filters import (
+    CategoryFilterParams,
+    get_category_filter_params,
+    GameFilterParams,
+    get_game_filter_params,
+)
+from interfaces.api.common.response_utils import handle_paginated_request
+from interfaces.api.dependencies.game_case_deps import (
+    get_all_games_use_case,
+    get_game_by_id_use_case,
+)
+from interfaces.api.dependencies.category_case_deps import (
+    get_categories_by_game_id_use_case,
+)
+from infrastructure.logging import get_logger
 
 
 game_router = APIRouter(
@@ -56,22 +67,14 @@ def get_all_games(
     :param filters: Filter parameters
     :return: PaginatedResponseDTO with UserResponseDTO objects.
     """
-    # ✅ Solo log de entrada HTTP con parámetros clave
-    logger.info(
-        f"GET /games - Request received - page: {pagination.page}, limit: {pagination.limit}"
-    )
-
-    # ✅ El Use Case maneja toda la lógica y logging interno
-    games, total_count = use_case.execute(pagination, filters, sort_params)
-
-    # ✅ Log de resultado a nivel HTTP
-    logger.info(f"GET /games - Response: {len(games)} games from {total_count} total")
-
-    return create_paginated_response(
-        items=games,
-        total_count=total_count,
-        pagination=pagination,
+    return handle_paginated_request(
+        endpoint_name="GET /games",
         request=request,
+        pagination=pagination,
+        sort_params=sort_params,
+        filters=filters,
+        use_case_execute=use_case.execute,
+        logger=logger,
     )
 
 
@@ -89,3 +92,35 @@ def get_game(
     logger.info(f"GET /games/{game_id} - Request received")
 
     return use_case.execute(str(game_id))
+
+
+@game_router.get(
+    "/{game_id}/categories", response_model=PaginatedResponseDTO[CategoryResponseDTO]
+)
+def get_categories_by_game_id(
+    game_id: UUID,
+    request: Request,
+    pagination: PaginationParams = Depends(get_pagination_params),
+    sort_params: SortParams = Depends(get_sort_params),
+    filters: CategoryFilterParams = Depends(get_category_filter_params),
+    use_case: GetCategoriesByGameIdUseCase = Depends(
+        get_categories_by_game_id_use_case
+    ),
+) -> PaginatedResponseDTO[CategoryResponseDTO]:
+    """
+    Retrieves categories associated with a specific game ID.
+
+    :param game_id: The ID of the game to filter categories by
+    :param request: FastAPI request object for URL building
+    :param pagination: Pagination parameters
+    :return: PaginatedResponseDTO with CategoryResponseDTO objects.
+    """
+    return handle_paginated_request(
+        endpoint_name=f"GET /games/{game_id}/categories",
+        request=request,
+        pagination=pagination,
+        sort_params=sort_params,
+        filters=filters,
+        use_case_execute=lambda p, f, s: use_case.execute(str(game_id), p, f, s),
+        logger=logger,
+    )

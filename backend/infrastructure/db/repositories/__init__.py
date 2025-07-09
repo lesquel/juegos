@@ -1,1 +1,3 @@
 from .user_repository import PostgresUserRepository
+from .game_repository import PostgresGameRepository
+from .game_review_repository import PostgresGameReviewRepository

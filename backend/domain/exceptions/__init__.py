@@ -36,6 +36,7 @@ from .game import (
     CannotDeletePendingEventRentalError,
     CategoryNotFoundError,
     CategoryAlreadyExistsError,
+    GameReviewNotFoundError
 )
 
 # Excepciones de partidas

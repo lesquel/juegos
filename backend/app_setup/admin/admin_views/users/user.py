@@ -4,6 +4,12 @@ from infrastructure.db.models.user_model import UserModel
 
 class UserAdmin(ModelView, model=UserModel):
     """Panel de administración para usuarios"""
+    
+    # Configuración de categoría/módulo
+    name = "Usuarios"
+    name_plural = "Usuarios"
+    icon = "fa-solid fa-users"
+    category = "Usuarios"
 
     # Configuración de columnas
     column_list = [

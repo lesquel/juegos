@@ -4,6 +4,12 @@ from infrastructure.db.models.game_model import GameModel
 
 class GameAdmin(ModelView, model=GameModel):
     """Panel de administración para juegos"""
+    
+    # Configuración de categoría/módulo
+    name = "Juego"
+    name_plural = "Juegos"
+    icon = "fa-solid fa-gamepad"
+    category = "Juegos"
 
     # Configuración de columnas
     column_list = [

@@ -60,3 +60,15 @@ class CategoryAlreadyExistsError(DomainException):
         identifier: str = "category_already_exists",
     ):
         super().__init__(message, 409, identifier)
+
+
+
+class GameReviewNotFoundError(DomainException):
+    """Reseña de juego no encontrada"""
+
+    def __init__(
+        self,
+        message: str = "Game review not found",
+        identifier: str = "game_review_not_found",
+    ):
+        super().__init__(message, 404, identifier)

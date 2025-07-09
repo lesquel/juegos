@@ -1,7 +1,8 @@
 from passlib.context import CryptContext
-from ..interfaces import IPasswordHasher
 from domain.exceptions import DomainException
 from infrastructure.logging import get_logger
+
+from ..interfaces import IPasswordHasher
 
 # Configurar logger
 logger = get_logger("password_hasher")

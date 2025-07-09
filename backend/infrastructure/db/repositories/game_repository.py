@@ -53,20 +53,23 @@ class PostgresGameRepository(IGameRepository, IConstructorRepository):
             logger.debug(f"No game found with ID: {game_id}")
             return None
 
-    def get_by_category_id(self, category_id: str) -> Optional[GameEntity]:
+    def get_by_category_id(
+        self, category_id: str, pagination: PaginationParams, filters: GameFilterParams, sort_params: SortParams
+    ) -> Optional[GameEntity]:
         """Retrieves a game by its category ID."""
         logger.debug(f"Getting game by category ID: {category_id}")
 
-        game_models = self.db.query(self.model).filter(
-            self.model.categories.any(id=category_id)
+        return self.get_paginated_mixin(
+            model=self.model,
+            db_session=self.db,
+            pagination=pagination,
+            filters=filters,
+            sort_params=sort_params,
+            to_entity=self._model_to_entity,
+            custom_filter_fn=lambda q: q.filter(
+                self.model.categories.any(category_id=category_id)
+            ),
         )
-
-        if game_models:
-            logger.debug(f"Game found with category ID: {category_id}")
-            return [self._model_to_entity(model) for model in game_models]
-        else:
-            logger.debug(f"No game found with category ID: {category_id}")
-            return None
 
     def _model_to_entity(self, model: GameModel) -> GameEntity:
         """Converts a GameModel to a Game entity."""

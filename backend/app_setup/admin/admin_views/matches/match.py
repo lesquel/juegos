@@ -4,6 +4,12 @@ from infrastructure.db.models.match_model import MatchModel
 
 class MatchAdmin(ModelView, model=MatchModel):
     """Panel de administración para partidas"""
+    
+    # Configuración de categoría/módulo
+    name = "Partida"
+    name_plural = "Partidas"
+    icon = "fa-solid fa-trophy"
+    category = "Partidas"
 
     # Configuración de columnas
     column_list = [

@@ -23,9 +23,12 @@ class PostgresCategoryRepository(ICategoryRepository, IConstructorRepository):
     def __init__(self, db_session: Session):
         super().__init__(db_session, CategoryModel)
 
-    def get_paginated(self, pagination: PaginationParams,
-                filters: Optional[CategoryFilterParams] = None,
-                sort_params: Optional[SortParams] = None) -> Tuple[List[CategoryEntity], int]:
+    def get_paginated(
+        self,
+        pagination: PaginationParams,
+        filters: Optional[CategoryFilterParams] = None,
+        sort_params: Optional[SortParams] = None,
+    ) -> Tuple[List[CategoryEntity], int]:
         """Get paginated categories with optional filtering and sorting."""
         logger.debug("Getting all categories from database")
         return self.get_paginated_mixin(
@@ -41,7 +44,9 @@ class PostgresCategoryRepository(ICategoryRepository, IConstructorRepository):
         """Retrieves a category by its ID."""
         logger.debug(f"Getting category by ID: {category_id}")
         category_model = (
-            self.db.query(self.model).filter(self.model.category_id == category_id).first()
+            self.db.query(self.model)
+            .filter(self.model.category_id == category_id)
+            .first()
         )
 
         if category_model:
@@ -51,19 +56,24 @@ class PostgresCategoryRepository(ICategoryRepository, IConstructorRepository):
             logger.debug(f"No category found with ID: {category_id}")
             return None
 
-    def get_by_game_id(self, game_id):
+    def get_by_game_id(
+        self,
+        game_id: str,
+        pagination: PaginationParams,
+        filters: Optional[CategoryFilterParams] = None,
+        sort_params: Optional[SortParams] = None,
+    ) -> Tuple[List[CategoryEntity], int]:
         """Retrieves a category by its game ID."""
         logger.debug(f"Getting category by game ID: {game_id}")
-        category_models = (
-            self.db.query(self.model).filter(self.model.games.any(id=game_id)).all()
+        return self.get_paginated_mixin(
+            model=self.model,
+            db_session=self.db,
+            pagination=pagination,
+            filters=filters,
+            sort_params=sort_params,
+            to_entity=self._model_to_entity,
+            custom_filter_fn=lambda q: q.filter(self.model.games.any(game_id=game_id)),
         )
-
-        if category_models:
-            logger.debug(f"Category found with game ID: {game_id}")
-            return [self._model_to_entity(model) for model in category_models]
-        else:
-            logger.debug(f"No category found with game ID: {game_id}")
-            return None
 
     def _model_to_entity(self, model: CategoryModel) -> CategoryEntity:
         """Converts a CategoryModel to a User entity."""
@@ -76,4 +86,3 @@ class PostgresCategoryRepository(ICategoryRepository, IConstructorRepository):
             created_at=model.created_at,
             updated_at=model.updated_at,
         )
-

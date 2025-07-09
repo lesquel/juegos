@@ -37,6 +37,6 @@ class AuthDTOValidators:
 
 
 
-def password_validator(v: str, info: ValidationInfo) -> str:
+def password_validator(v: str) -> str:
     """Field validator para contraseñas"""
     return AuthDTOValidators.validate_password(v)

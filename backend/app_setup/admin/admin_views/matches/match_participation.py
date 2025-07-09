@@ -4,6 +4,12 @@ from infrastructure.db.models.match_participation_model import MatchParticipatio
 
 class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
     """Panel de administración para participaciones en partidas"""
+    
+    # Configuración de categoría/módulo
+    name = "Participación"
+    name_plural = "Participaciones"
+    icon = "fa-solid fa-users-gear"
+    category = "Partidas"
 
     # Configuración de columnas
     column_list = [

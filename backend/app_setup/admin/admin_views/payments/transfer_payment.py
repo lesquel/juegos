@@ -1,10 +1,14 @@
-
-
 from sqladmin import ModelView
 from infrastructure.db.models.transfer_payment_model import TransferPaymentModel
 
 class TransferPaymentAdmin(ModelView, model=TransferPaymentModel):
     """Panel de administración para pagos de transferencia"""
+    
+    # Configuración de categoría/módulo
+    name = "Transferencia"
+    name_plural = "Transferencias"
+    icon = "fa-solid fa-money-bill-transfer"
+    category = "Pagos"
 
     # Configuración de columnas
     column_list = [
