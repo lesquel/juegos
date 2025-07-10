@@ -72,3 +72,13 @@ class GameReviewNotFoundError(DomainException):
         identifier: str = "game_review_not_found",
     ):
         super().__init__(message, 404, identifier)
+
+class GameReviewAlreadyExistsError(DomainException):
+    """Reseña de juego ya existe"""
+
+    def __init__(
+        self,
+        message: str = "Game review already exists",
+        identifier: str = "game_review_already_exists",
+    ):
+        super().__init__(message, 409, identifier)

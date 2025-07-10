@@ -1,6 +1,5 @@
-# infrastructure/auth/jwt_service.py
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, Optional
+from typing import Optional
 import jwt
 from domain.interfaces.token_provider import ITokenProvider
 from ..core.settings_config import settings

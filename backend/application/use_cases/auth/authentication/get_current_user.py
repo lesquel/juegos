@@ -1,5 +1,3 @@
-from fastapi.security import HTTPAuthorizationCredentials
-
 from domain.exceptions import InvalidTokenError, UserNotFoundError
 from domain.interfaces import ITokenProvider
 from domain.repositories import IUserRepository
@@ -21,7 +19,7 @@ class GetCurrentUserUseCase:
         self.user_repo = user_repo
         self.token_provider = token_provider
 
-    def execute(self, token: HTTPAuthorizationCredentials) -> UserResponseDTO:
+    def execute(self, token: str) -> UserResponseDTO:
         """
         Extrae y valida el usuario actual desde el token JWT
         Reemplaza AuthenticationMiddleware.get_current_user_from_token
@@ -40,7 +38,7 @@ class GetCurrentUserUseCase:
 
         # Decodificar token
         logger.debug("Decoding JWT token")
-        payload = self.token_provider.decode_token(token.credentials)
+        payload = self.token_provider.decode_token(token)
         logger.debug("Token decoded successfully")
 
         user_id = payload.sub

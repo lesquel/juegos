@@ -6,7 +6,6 @@ from .validators import game_rating_validator, at_least_one_field_validator
 class CreateGameReviewRequestDTO(BaseModel):
     """DTO para crear una reseña de juego"""
 
-    game_id: str = Field(..., description="ID del juego a reseñar")
     rating: int = Field(..., ge=1, le=5, description="Calificación del 1 al 5")
     comment: Optional[str] = Field(
         None,

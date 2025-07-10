@@ -25,3 +25,5 @@ class GameReviewEntity(TimeStampEntityMixin):
         self.user_id = user_id  
         self.rating = rating
         self.comment = comment
+
+

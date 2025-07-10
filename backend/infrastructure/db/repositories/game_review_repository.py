@@ -72,6 +72,96 @@ class PostgresGameReviewRepository(IGameReviewRepository, IConstructorRepository
             custom_filter_fn=lambda q: q.filter(self.model.game_id == game_id),
         )
 
+    def _get_by_user_and_game_id(self, user_id: str, game_id: str) -> GameReviewEntity:
+        """Obtiene una reseña de un juego específico por el ID del usuario y del juego."""
+        logger.debug(f"Getting review by user ID: {user_id} and game ID: {game_id}")
+        game_review_model = (
+            self.db.query(self.model)
+            .filter(self.model.user_id == user_id, self.model.game_id == game_id)
+            .first()
+        )
+        if game_review_model:
+            logger.debug(
+                f"Game review found for user ID: {user_id} and game ID: {game_id}"
+            )
+            return game_review_model
+        else:
+            logger.debug(
+                f"No game review found for user ID: {user_id} and game ID: {game_id}"
+            )
+            return None
+
+    def save(self, entity: GameReviewEntity) -> GameReviewEntity:
+        """Creates or updates a GameReview: If one exists for the user+game, update it."""
+        try:
+            # Buscar si ya existe una reseña del usuario para el juego
+            existing_review = self._get_by_user_and_game_id(
+                user_id=entity.user_id, game_id=entity.game_id
+            )
+
+            if existing_review:
+                logger.debug(
+                    f"Review already exists for user_id={entity.user_id}, game_id={entity.game_id}. Updating..."
+                )
+                # Actualizar campos
+                if entity.rating is not None:
+                    existing_review.rating = entity.rating
+                if entity.comment is not None:
+                    existing_review.comment = entity.comment
+
+                self.db.commit()
+                self.db.refresh(existing_review)
+                return self._model_to_entity(existing_review)
+
+            logger.debug(f"Saving new game review: {entity}")
+            new_model = self._entity_to_model(entity)
+            self.db.add(new_model)
+            self.db.commit()
+            self.db.refresh(new_model)
+            return self._model_to_entity(new_model)
+
+        except Exception as e:
+            logger.error(f"Error saving game review: {e}")
+            self.db.rollback()
+            raise
+
+    def delete(self, game_review_id: str) -> None:
+        """Deletes a game review by its ID."""
+        logger.debug(f"Deleting game review with ID: {game_review_id}")
+        game_review_model = (
+            self.db.query(self.model)
+            .filter(self.model.review_id == game_review_id)
+            .first()
+        )
+
+        if game_review_model:
+            self.db.delete(game_review_model)
+            self.db.commit()
+            logger.debug(f"Game review deleted with ID: {game_review_id}")
+        else:
+            logger.warning(f"No game review found to delete with ID: {game_review_id}")
+
+    def update(self, game_review_id: str, entity: GameReviewEntity) -> GameReviewEntity:
+        """Updates a game review by its ID."""
+        logger.debug(f"Updating game review with ID: {game_review_id}")
+        game_review_model = (
+            self.db.query(self.model)
+            .filter(self.model.review_id == game_review_id)
+            .first()
+        )
+        if not game_review_model:
+            logger.warning(f"No game review found to update with ID: {game_review_id}")
+            return None
+        # Update fields
+        if entity.rating is not None:
+            game_review_model.rating = entity.rating
+        if entity.comment is not None:
+            game_review_model.comment = entity.comment
+        self.db.commit()
+        self.db.refresh(game_review_model)
+        logger.debug(f"Game review updated with ID: {game_review_id}")
+        return self._model_to_entity(game_review_model)
+
     def _model_to_entity(self, model: GameReviewModel) -> GameReviewEntity:
         """Converts a GameReviewModel to a GameReview entity."""
         return GameReviewEntity(

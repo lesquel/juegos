@@ -1,10 +1,12 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from application.use_cases.game import GetAllCategoriesUseCase, GetCategoryByIdUseCase
-from application.use_cases.game.get_categories_by_game_id import (
+from application.use_cases.game import (
+    GetAllCategoriesUseCase,
+    GetCategoryByIdUseCase,
     GetCategoriesByGameIdUseCase,
 )
+
 from domain.repositories import ICategoryRepository
 from infrastructure.db.repositories.category_repository import (
     PostgresCategoryRepository,

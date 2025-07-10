@@ -1,45 +1,37 @@
 from typing import Optional
-from fastapi import Query
 from pydantic import Field
 
 from ..base_filter import BaseFilterParams
+from ..filter_dependency_factory import build_filter_dependency
 
 
 class GameReviewFilterParams(BaseFilterParams):
     """Filtros específicos para Game Reviews - hereda filtros base + específicos"""
 
-    email: Optional[str] = Field(
-        None, description="Filtrar por email (búsqueda parcial)"
+    user_id: Optional[str] = Field(
+        None, description="ID del usuario que realizó la reseña"
     )
-    min_currency: Optional[float] = Field(
-        None, ge=0, description="Moneda virtual mínima"
+    min_rating: Optional[int] = Field(
+        None, description="Calificación mínima de la reseña"
     )
-    max_currency: Optional[float] = Field(
-        None, ge=0, description="Moneda virtual máxima"
+    max_rating: Optional[int] = Field(
+        None, description="Calificación máxima de la reseña"
     )
+    comment: Optional[str] = Field(None, description="Comentario de la reseña")
+
+    def filter_user_id(self, query, model, value):
+        return self.any_filter(query, model.user_id, "user_id", value)
+
+    def filter_min_rating(self, query, model, value):
+        return self.gte_filter(query, model.rating, value)
+
+    def filter_max_rating(self, query, model, value):
+        return self.lte_filter(query, model.rating, value)
+
+    def filter_comment(self, query, model, value):
+        return self.contains_filter(query, model.comment, value)
 
 
-# Dependencies específicos para cada modelo
-def get_game_review_filter_params(
-    # Filtros base
-    search: Optional[str] = Query(None, description="Búsqueda general"),
-    created_after: Optional[str] = Query(None, description="Creado después de"),
-    created_before: Optional[str] = Query(None, description="Creado antes de"),
-    # Filtros específicos de usuario
-    email: Optional[str] = Query(None, description="Filtrar por email"),
-    min_currency: Optional[float] = Query(
-        None, ge=0, description="Moneda virtual mínima"
-    ),
-    max_currency: Optional[float] = Query(
-        None, ge=0, description="Moneda virtual máxima"
-    ),
-) -> GameReviewFilterParams:
-    """Dependency para obtener filtros de Game Reviews"""
-    return GameReviewFilterParams(
-        search=search,
-        created_after=created_after,
-        created_before=created_before,
-        email=email,
-        min_currency=min_currency,
-        max_currency=max_currency,
-    )
+get_game_review_filter_params = build_filter_dependency(
+    GameReviewFilterParams,
+)
