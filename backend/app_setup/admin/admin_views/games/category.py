@@ -9,7 +9,8 @@ class CategoryAdmin(ModelView, model=CategoryModel):
     name = "Categoría"
     name_plural = "Categorías"
     icon = "fa-solid fa-tags"
-    category = "Juegos"
+
+
 
     # Configuración de columnas
     column_list = [
@@ -61,12 +62,8 @@ class CategoryAdmin(ModelView, model=CategoryModel):
     # Configuración de paginación
     page_size = 25
     page_size_options = [25, 50, 100]
-
-    # Título personalizado
-    name = "Categoría"
-    name_plural = "Categorías"
-    icon = "fa-solid fa-tags"
-
+    
+    
     # Personalizar etiquetas de columnas
     column_labels = {
         CategoryModel.category_id: "ID de Categoría",

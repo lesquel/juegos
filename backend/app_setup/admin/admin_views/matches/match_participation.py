@@ -9,7 +9,7 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
     name = "Participación"
     name_plural = "Participaciones"
     icon = "fa-solid fa-users-gear"
-    category = "Partidas"
+
 
     # Configuración de columnas
     column_list = [
@@ -62,11 +62,6 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
     # Configuración de paginación
     page_size = 25
     page_size_options = [25, 50, 100]
-
-    # Título personalizado
-    name = "Participación en Partida"
-    name_plural = "Participaciones en Partidas"
-    icon = "fa-solid fa-users-gear"
 
     # Personalizar etiquetas de columnas
     column_labels = {

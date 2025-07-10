@@ -9,7 +9,6 @@ class MatchAdmin(ModelView, model=MatchModel):
     name = "Partida"
     name_plural = "Partidas"
     icon = "fa-solid fa-trophy"
-    category = "Partidas"
 
     # Configuración de columnas
     column_list = [
@@ -62,11 +61,6 @@ class MatchAdmin(ModelView, model=MatchModel):
     # Configuración de paginación
     page_size = 25
     page_size_options = [25, 50, 100]
-
-    # Título personalizado
-    name = "Partida"
-    name_plural = "Partidas"
-    icon = "fa-solid fa-trophy"
 
     # Personalizar etiquetas de columnas
     column_labels = {

@@ -4,12 +4,11 @@ from infrastructure.db.models.game_model import GameModel
 
 class GameAdmin(ModelView, model=GameModel):
     """Panel de administración para juegos"""
-    
+
     # Configuración de categoría/módulo
     name = "Juego"
     name_plural = "Juegos"
     icon = "fa-solid fa-gamepad"
-    category = "Juegos"
 
     # Configuración de columnas
     column_list = [
@@ -65,11 +64,6 @@ class GameAdmin(ModelView, model=GameModel):
     page_size = 25
     page_size_options = [25, 50, 100]
 
-    # Título personalizado
-    name = "Juego"
-    name_plural = "Juegos"
-    icon = "fa-solid fa-gamepad"
-
     # Personalizar etiquetas de columnas
     column_labels = {
         GameModel.game_id: "ID del Juego",
@@ -86,9 +80,21 @@ class GameAdmin(ModelView, model=GameModel):
     column_formatters = {
         GameModel.created_at: lambda m, a: m.created_at.strftime("%d/%m/%Y %H:%M"),
         GameModel.updated_at: lambda m, a: m.updated_at.strftime("%d/%m/%Y %H:%M"),
-        GameModel.game_description: lambda m, a: (m.game_description[:50] + "...") if len(m.game_description) > 50 else m.game_description,
-        GameModel.game_url: lambda m, a: f"<a href='{m.game_url}' target='_blank'>{m.game_url[:30]}...</a>" if len(m.game_url) > 30 else f"<a href='{m.game_url}' target='_blank'>{m.game_url}</a>",
-        GameModel.categories: lambda m, a: ", ".join([cat.category_name for cat in m.categories]) if m.categories else "Sin categorías",
+        GameModel.game_description: lambda m, a: (
+            (m.game_description[:50] + "...")
+            if len(m.game_description) > 50
+            else m.game_description
+        ),
+        GameModel.game_url: lambda m, a: (
+            f"<a href='{m.game_url}' target='_blank'>{m.game_url[:30]}...</a>"
+            if len(m.game_url) > 30
+            else f"<a href='{m.game_url}' target='_blank'>{m.game_url}</a>"
+        ),
+        GameModel.categories: lambda m, a: (
+            ", ".join([cat.category_name for cat in m.categories])
+            if m.categories
+            else "Sin categorías"
+        ),
     }
 
     # Configuración de exportación

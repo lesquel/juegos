@@ -9,7 +9,6 @@ class UserAdmin(ModelView, model=UserModel):
     name = "Usuarios"
     name_plural = "Usuarios"
     icon = "fa-solid fa-users"
-    category = "Usuarios"
 
     # Configuración de columnas
     column_list = [
@@ -60,11 +59,6 @@ class UserAdmin(ModelView, model=UserModel):
     # Configuración de paginación
     page_size = 25
     page_size_options = [25, 50, 100]
-
-    # Título personalizado
-    name = "Usuario"
-    name_plural = "Usuarios"
-    icon = "fa-solid fa-users"
 
     # Personalizar etiquetas de columnas
     column_labels = {

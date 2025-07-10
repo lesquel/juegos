@@ -9,7 +9,6 @@ class GameReviewAdmin(ModelView, model=GameReviewModel):
     name = "Reseña"
     name_plural = "Reseñas de Juegos"
     icon = "fa-solid fa-star"
-    category = "Juegos"
 
     # Configuración de columnas
     column_list = [
@@ -63,11 +62,6 @@ class GameReviewAdmin(ModelView, model=GameReviewModel):
     # Configuración de paginación
     page_size = 25
     page_size_options = [25, 50, 100]
-
-    # Título personalizado
-    name = "Reseña de Juego"
-    name_plural = "Reseñas de Juegos"
-    icon = "fa-solid fa-star"
 
     # Personalizar etiquetas de columnas
     column_labels = {

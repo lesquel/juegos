@@ -1,10 +1,8 @@
 import uvicorn
 
-from app_setup import create_app
+from app_setup import AppConfigurator
 
-app = create_app()
-
-
+app = AppConfigurator.create_app()
 
 
 if __name__ == "__main__":
