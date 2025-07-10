@@ -16,7 +16,6 @@ from interfaces.api.dependencies import (
 from dtos.request.auth.auth_request_dto import LoginRequestDTO, UserCreateRequestDTO
 from dtos.response.user.user_response_dto import UserBaseResponseDTO, UserResponseDTO
 from dtos.response.auth.auth_response_dto import LoginResponseDTO
-from dtos.common.common_responses import SuccessResponse
 
 
 auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -24,7 +23,7 @@ auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 logger = get_logger("auth_routes")
 
 
-@auth_router.post("/login", response_model=SuccessResponse[LoginResponseDTO])
+@auth_router.post("/login", response_model=LoginResponseDTO)
 def login(
     user_login: LoginRequestDTO,
     login_use_case: LoginUserUseCase = Depends(get_login_use_case),
@@ -44,10 +43,10 @@ def login(
     response = login_use_case.execute(request)
 
     logger.info(f"Successful login for user: {response.user.email}")
-    return SuccessResponse(data=response, message="Login successful")
+    return response
 
 
-@auth_router.post("/register", response_model=SuccessResponse[UserBaseResponseDTO])
+@auth_router.post("/register", response_model=UserBaseResponseDTO)
 def register(
     user_data: UserCreateRequestDTO,
     register_use_case: RegisterUserUseCase = Depends(get_register_user_use_case),
@@ -68,10 +67,10 @@ def register(
     response = register_use_case.execute(request)
 
     logger.info(f"Successful registration for user: {response.email}")
-    return SuccessResponse(data=response, message="User registered successfully")
+    return response
 
 
-@auth_router.get("/me", response_model=SuccessResponse[UserResponseDTO])
+@auth_router.get("/me", response_model=UserResponseDTO)
 def get_current_user_info(current_user: UserResponseDTO = Depends(get_current_user)):
     """
     Obtener información del usuario autenticado
@@ -91,6 +90,4 @@ def get_current_user_info(current_user: UserResponseDTO = Depends(get_current_us
     )
 
     logger.debug(f"Successfully retrieved user info for: {current_user.email}")
-    return SuccessResponse(
-        data=user_data, message="User information retrieved successfully"
-    )
+    return user_data

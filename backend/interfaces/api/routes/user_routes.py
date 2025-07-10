@@ -11,7 +11,6 @@ from interfaces.api.common import (
     get_pagination_params,
     SortParams,
     get_sort_params,
-    create_paginated_response,
 )
 from interfaces.api.dependencies.user_case_deps import (
     get_all_users_use_case,
@@ -69,8 +68,7 @@ def get_all_users(
         use_case=use_case.execute,
         logger=logger,
     )
-    
-    
+
 
 @user_router.get("/{user_id}", response_model=UserResponseDTO)
 def get_user(
