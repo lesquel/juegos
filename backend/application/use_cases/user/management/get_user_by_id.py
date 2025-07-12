@@ -8,7 +8,7 @@ from dtos.response.user.user_response_dto import UserResponseDTO
 logger = get_logger("get_user_use_case")
 
 
-class GetUserUseCase:
+class GetUserByIdUseCase:
     def __init__(self, user_repo: IUserRepository):
         self.user_repo = user_repo
 

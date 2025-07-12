@@ -4,11 +4,14 @@ from application.use_cases.auth import (
     LoginUserUseCase,
 )
 
+from domain.exceptions.auth import AuthenticationError
 from domain.interfaces.token_provider import ITokenProvider
 from domain.repositories import IUserRepository
 from dtos.response.user.user_response_dto import UserResponseDTO
 from infrastructure.auth import PasswordHasher
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials
+
+from infrastructure.auth.security import CustomHTTPBearer
 
 
 from fastapi import Depends
@@ -17,7 +20,7 @@ from infrastructure.auth.jwt_service import get_token_provider
 
 from .user_case_deps import get_user_repository
 
-security = HTTPBearer()
+security = CustomHTTPBearer()
 
 
 def get_password_hasher() -> PasswordHasher:
@@ -55,4 +58,4 @@ def get_current_user(
     use_case: GetCurrentUserUseCase = Depends(get_current_user_use_case),
 ) -> UserResponseDTO:
     """Dependency function para obtener usuario actual"""
-    return use_case.execute(token)
+    return use_case.execute(token.credentials)

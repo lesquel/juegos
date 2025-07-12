@@ -1,2 +1,5 @@
-from .get_all_users import GetAllUsersUseCase
-from .get_user_by_id import GetUserUseCase
+# User Management Use Cases
+from .management import (
+    GetAllUsersUseCase,
+    GetUserByIdUseCase,
+)

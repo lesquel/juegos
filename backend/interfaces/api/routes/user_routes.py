@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request
 
 from uuid import UUID
 
-from application.use_cases.user import GetAllUsersUseCase, GetUserUseCase
+from application.use_cases.user import GetAllUsersUseCase, GetUserByIdUseCase
 from infrastructure.logging import get_logger
 from dtos import PaginatedResponseDTO
 from dtos.response.user.user_response_dto import UserResponseDTO
@@ -11,12 +11,13 @@ from interfaces.api.common import (
     get_pagination_params,
     SortParams,
     get_sort_params,
-    create_paginated_response,
 )
 from interfaces.api.dependencies.user_case_deps import (
     get_all_users_use_case,
-    get_user_use_case,
+    get_user_by_id_use_case,
 )
+
+from interfaces.api.common.response_utils import handle_paginated_request
 
 
 from ..common.filters.specific_filters import UserFilterParams, get_user_filter_params
@@ -56,29 +57,23 @@ def get_all_users(
     :param filters: Filter parameters
     :return: PaginatedResponseDTO with UserResponseDTO objects.
     """
-    # ✅ Solo log de entrada HTTP con parámetros clave
-    logger.info(
-        f"GET /users - Request received - page: {pagination.page}, limit: {pagination.limit}"
-    )
+    logger.info("GET /users - Request received")
 
-    # ✅ El Use Case maneja toda la lógica y logging interno
-    users, total_count = use_case.execute(pagination, filters, sort_params)
-
-    # ✅ Log de resultado a nivel HTTP
-    logger.info(f"GET /users - Response: {len(users)} users from {total_count} total")
-
-    return create_paginated_response(
-        items=users,
-        total_count=total_count,
-        pagination=pagination,
+    return handle_paginated_request(
+        endpoint_name="GET /users",
         request=request,
+        pagination=pagination,
+        sort_params=sort_params,
+        filters=filters,
+        use_case=use_case.execute,
+        logger=logger,
     )
 
 
 @user_router.get("/{user_id}", response_model=UserResponseDTO)
 def get_user(
     user_id: UUID,
-    use_case: GetUserUseCase = Depends(get_user_use_case),
+    use_case: GetUserByIdUseCase = Depends(get_user_by_id_use_case),
 ) -> UserResponseDTO:
     """
     Retrieve a specific user by ID.

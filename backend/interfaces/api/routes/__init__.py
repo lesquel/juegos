@@ -4,11 +4,12 @@ from .category_routes import category_router
 from .game_routes import game_router
 from .game_review_routes import game_review_router
 
-game_router.include_router(game_review_router, tags=["Game Reviews"])
+game_router.include_router(game_review_router, prefix="/reviews" , tags=["Game Reviews"])
 
 routers = [
     user_router,
     auth_router,
     category_router,
     game_router,
+    # game_review_router
 ]

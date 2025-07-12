@@ -1,4 +1,4 @@
-from application.use_cases.user import GetAllUsersUseCase, GetUserUseCase
+from application.use_cases.user import GetAllUsersUseCase, GetUserByIdUseCase
 from domain.repositories import IUserRepository  
 
 from fastapi import Depends
@@ -18,7 +18,7 @@ def get_all_users_use_case(
     return GetAllUsersUseCase(user_repo=user_repo)
 
 
-def get_user_use_case(
+def get_user_by_id_use_case(
     user_repo: IUserRepository = Depends(get_user_repository),
-) -> GetUserUseCase:
-    return GetUserUseCase(user_repo=user_repo)
+) -> GetUserByIdUseCase:
+    return GetUserByIdUseCase(user_repo=user_repo)

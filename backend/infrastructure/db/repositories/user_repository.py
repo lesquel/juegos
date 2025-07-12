@@ -70,10 +70,7 @@ class PostgresUserRepository(IUserRepository, IConstructorRepository):
         try:
             if user.user_id is None:
                 # Create new user
-                user_model = self.model(
-                    email=user.email,
-                    hashed_password=user.hashed_password,
-                )
+                user_model = self._entity_to_model(user)
                 self.db.add(user_model)
                 self.db.commit()
                 self.db.refresh(user_model)
