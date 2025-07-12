@@ -2,7 +2,7 @@ import { QueryProvider } from "@providers/QueryProvider";
 import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { LoadingComponent } from "@components/LoadingComponent";
 
-export const SingleCategoryGame = ({ id }: { id: number }) => {
+export const SingleCategoryGame = ({ id }: { id: string }) => {
   return (
     <QueryProvider>
       <UseSingleCategoryGame id={id} />
@@ -10,7 +10,7 @@ export const SingleCategoryGame = ({ id }: { id: number }) => {
   );
 };
 
-const UseSingleCategoryGame = ({ id }: { id: number }) => {
+const UseSingleCategoryGame = ({ id }: { id: string }) => {
   const { data, isLoading, error } =
     CategoryGameClientData.getCategoryGameDetail(id);
   if (isLoading) return <LoadingComponent />;

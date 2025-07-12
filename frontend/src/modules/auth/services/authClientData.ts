@@ -16,7 +16,7 @@ import { ErrorResponseAdapter } from "@adapters/errorResponse.adapter";
 import type {
   ErrorResponse,
   ErrorResponseErrorsArray,
-} from "@models/ErrorResponse";
+} from "@models/errorResponse";
 
 export class AuthClientData {
   private static readonly baseUrl = environment.BASE_URL;
@@ -55,9 +55,8 @@ export class AuthClientData {
             `${AuthClientData.baseUrl}/auth/register`,
             data
           );
-          return UserAdapter.adaptMe(response.data);
+          return response.data;
         } catch (error: any) {
-          console.log(error);
           throw ErrorResponseAdapter.adaptErrorResponseErrorsArray(
             ErrorResponseAdapter.adaptErrorResponse(error)
           );

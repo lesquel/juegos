@@ -3,6 +3,9 @@ import { GameClientData } from "../services/gameClientData";
 import { CardGame } from "./CardGame";
 import type { Game } from "../models/game.model";
 import { LoadingComponent } from "@components/LoadingComponent";
+import type { Paguination } from "@models/paguination";
+import { useState } from "react";
+import { PaguinationComponent } from "@components/PaguinationComponent";
 
 export const ListGames = () => {
   return (
@@ -13,11 +16,19 @@ export const ListGames = () => {
 };
 
 const UseListgame = () => {
-  const { data, isLoading, error } = GameClientData.getGames();
+  const [paguination, setPaguination] = useState<Paguination>({
+    page: 1,
+    limit: 10,
+  });
+  const { data, isLoading, error } = GameClientData.getGames(paguination);
 
   if (isLoading) return <LoadingComponent />;
-  if (error) return <div className="text-center text-red-400">Error: {error.message}</div>;
-
+  if (error)
+    return (
+      <div className="text-center text-red-400">Error: {error.message}</div>
+    );
+  if (!data?.results || data.results.length === 0)
+    return <div className="text-center text-red-400">No hay juegos</div>;
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col items-center">
       <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-10 text-white">
@@ -30,6 +41,11 @@ const UseListgame = () => {
           <CardGame key={game.game_id} game={game} />
         ))}
       </div>
+      <PaguinationComponent
+        paguination={paguination}
+        setPaguination={setPaguination}
+        info={data.info}
+      />
     </div>
   );
 };
