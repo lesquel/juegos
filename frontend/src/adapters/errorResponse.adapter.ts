@@ -1,11 +1,19 @@
 import type {
   ErrorResponse,
   ErrorResponseErrorsArray,
-} from "@models/ErrorResponse";
+} from "@models/errorResponse";
 
 export class ErrorResponseAdapter {
   static adaptErrorResponse(error: any): ErrorResponse | undefined {
-    if (!error.response) return;
+    if (!error.response) {
+      if (!error.name) return undefined;
+      return {
+        errors: {
+          [error.name]: [error.message],
+        },
+        code: error.code,
+      };
+    };
     return {
       errors: error.response.data.errors,
       code: error.response.status,

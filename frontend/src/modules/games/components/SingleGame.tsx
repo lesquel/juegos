@@ -4,7 +4,7 @@ import { ListTagCategoryGame } from "@modules/category-game/components/Tags/List
 import { LoadingComponent } from "@components/LoadingComponent";
 import { ListCommentGame } from "@modules/comment-game/components/ListCommentGame";
 
-export const SingleGame = ({ id }: { id: number }) => {
+export const SingleGame = ({ id }: { id: string }) => {
   return (
     <QueryProvider>
       <UseSingleGame id={id} />
@@ -12,7 +12,7 @@ export const SingleGame = ({ id }: { id: number }) => {
   );
 };
 
-const UseSingleGame = ({ id }: { id: number }) => {
+const UseSingleGame = ({ id }: { id: string }) => {
   const { data, isLoading, error } = GameClientData.getGameDetail(id);
 
   if (isLoading) return <LoadingComponent />;

@@ -1,28 +1,35 @@
 import axios from "axios";
 import { CategoryGameGameAdapter } from "../adapters/category-game.adapter";
 import { useQuery } from "@tanstack/react-query";
+import { environment } from "@config/environment";
+import type { PaguinationCategory } from "../models/paguination-category";
+import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 
 export class CategoryGameClientData {
-  private static readonly BASE_URL = "/data/";
+  private static readonly BASE_URL = environment.BASE_URL + "/categories/";
 
-  public static getCategoryGames() {
+  public static getCategoryGames(paguination: PaguinationCategory) {
     return useQuery({
-      queryKey: ["category-games"],
+      queryKey: ["category-games", paguination],
       queryFn: () =>
         axios
-          .get(CategoryGameClientData.BASE_URL + "category-games.json")
+          .get(
+            CategoryGameClientData.BASE_URL +
+              PaguinationCategoryAdapter.adaptPaguinationCategory(paguination)
+          )
           .then((response) => {
             return CategoryGameGameAdapter.adaptList(response.data);
           }),
     });
   }
 
-  public static getCategoryGameDetail(id: number) {
+  public static getCategoryGameDetail(id: string) {
+    console.log(CategoryGameClientData.BASE_URL + id); 
     return useQuery({
       queryKey: ["category-games", id],
       queryFn: () =>
         axios
-          .get(`${CategoryGameClientData.BASE_URL}category-game${id}.json`)
+          .get(`${CategoryGameClientData.BASE_URL}${id}`)
           .then((response) => {
             return CategoryGameGameAdapter.adaptDetail(response.data);
           }),

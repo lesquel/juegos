@@ -2,6 +2,9 @@ import { QueryProvider } from "@providers/QueryProvider";
 import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { CardCategoryGame } from "./CardCategoryGame";
 import { LoadingComponent } from "@components/LoadingComponent";
+import type { PaguinationCategory } from "../models/paguination-category";
+import { useState } from "react";
+import { PaguinationComponent } from "@components/PaguinationComponent";
 
 export const ListCategoryGame = () => {
   return (
@@ -12,11 +15,25 @@ export const ListCategoryGame = () => {
 };
 
 const UseListCategoryGame = () => {
-  const { data, isLoading, error } = CategoryGameClientData.getCategoryGames();
+  const [paguination, setPaguination] = useState<PaguinationCategory>({
+    page: 1,
+    limit: 10,
+  });
+  const { data, isLoading, error } =
+    CategoryGameClientData.getCategoryGames(paguination);
 
   if (isLoading) return <LoadingComponent />;
-  if (error) return <div className="text-center text-red-400">Error: {error.message}</div>;
+  if (error)
+    return (
+      <div className="text-center text-red-400">Error: {error.message}</div>
+    );
 
+  if (!data?.results || data.results.length === 0)
+    return (
+      <div className="text-center text-red-400">
+        No hay categorías de juegos
+      </div>
+    );
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col items-center">
       <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-white">
@@ -29,6 +46,11 @@ const UseListCategoryGame = () => {
           <CardCategoryGame key={category.category_id} category={category} />
         ))}
       </div>
+      <PaguinationComponent
+        paguination={paguination}
+        setPaguination={setPaguination}
+        info={data.info}
+      />
     </div>
   );
 };

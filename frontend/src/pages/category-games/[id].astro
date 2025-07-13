@@ -6,5 +6,5 @@ const { id } = Astro.params;
 ---
 
 <Layout>
-  <SingleCategoryGame client:load id={parseInt(id as string)} />
+  <SingleCategoryGame client:load id={id as string} />
 </Layout>
