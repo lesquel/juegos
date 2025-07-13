@@ -1,9 +1,4 @@
-from typing import Optional, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .game import GameEntity
-    from ..user.user import UserEntity
-
+from typing import Optional
 from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 
@@ -11,8 +6,8 @@ class GameReviewEntity(TimeStampEntityMixin):
     def __init__(
         self,
         review_id: Optional[str],
-        game_id: "GameEntity",
-        user_id: "UserEntity",
+        game_id: str,
+        user_id: str,
         rating: int,
         comment: Optional[str],
         created_at: Optional[str] = None,

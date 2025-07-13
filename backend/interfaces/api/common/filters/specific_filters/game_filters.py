@@ -1,15 +1,15 @@
 from typing import Optional
 from pydantic import Field
 
-from ..base_filter import BaseFilterParams, get_base_filter_params
+from ..base_filter import BaseFilterParams
 from ..filter_dependency_factory import build_filter_dependency
 
 
 class GameFilterParams(BaseFilterParams):
     """Filtros específicos para juegos - hereda filtros base + específicos"""
 
-    category_id: Optional[str] = Field(
-        None, description="Filtrar por ID de categoría del juego"
+    filter_category_id: Optional[str] = Field(
+        None, description="Filtrar por ID de categoría del juego", alias="category_id"
     )
 
     game_name: Optional[str] = Field(None, description="Nombre del juego")
@@ -20,7 +20,7 @@ class GameFilterParams(BaseFilterParams):
             fields = ["game_name", "game_description"]
         return super().filter_search(query, model, value, fields)
 
-    def filter_category_id(self, query, model, value):
+    def filter_filter_category_id(self, query, model, value):
         return self.any_filter(query, model.categories, "category_id", value)
 
     def filter_game_name(self, query, model, value):

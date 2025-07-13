@@ -4,6 +4,8 @@ from fastapi import Query
 from pydantic import BaseModel, Field
 
 
+
+
 class BaseFilterParams(BaseModel):
     """Clase base para filtros comunes"""
 
@@ -70,3 +72,5 @@ def get_base_filter_params(
         created_after=created_after,
         created_before=created_before,
     )
+    
+

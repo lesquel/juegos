@@ -1,12 +1,7 @@
-"""
-Database initialization script.
-Creates all tables defined in SQLAlchemy models.
-"""
-
 from sqlalchemy import create_engine
 from .base import Base
 from .config import get_postgres_url
-from .models import *  # Import all models to register them
+from .models import *  
 
 
 def create_tables():

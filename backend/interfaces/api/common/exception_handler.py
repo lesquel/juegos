@@ -41,7 +41,6 @@ class ErrorHandler:
             f"Validation error: {len(exc.errors())} field(s) - Path: {request.url}"
         )
 
-        # Convertir errores de Pydantic a formato similar a Django
         errors = {}
         for error in exc.errors():
             field = (

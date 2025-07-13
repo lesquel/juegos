@@ -7,15 +7,15 @@ from dtos.common import PaginatedResponseDTO, PaginationInfoDTO
 from .sort import SortParams
 from .pagination import PaginationParams
 
-T = TypeVar("T")
+ItemType = TypeVar("ItemType")
 
 
 def create_paginated_response(
-    items: List[T],
+    items: List[ItemType],
     total_count: int,
     pagination: PaginationParams,
     request: Request,
-) -> PaginatedResponseDTO[T]:
+) -> PaginatedResponseDTO[ItemType]:
     """
     Crea una respuesta paginada genérica para cualquier tipo de modelo.
 
@@ -60,7 +60,7 @@ def create_paginated_response(
     return PaginatedResponseDTO(info=pagination_info, results=items)
 
 
-def handle_paginated_request(
+async def handle_paginated_request(
     *,
     endpoint_name: str,
     request: Request,
@@ -73,9 +73,11 @@ def handle_paginated_request(
     logger.info(
         f"{endpoint_name} - Request received - page: {pagination.page}, limit: {pagination.limit}"
     )
-    items, total_count = use_case_execute(pagination, filters, sort_params)
-    logger.info(f"{endpoint_name} - Response: {len(items)} items from {total_count} total")
-    
+    items, total_count = await use_case_execute(pagination, filters, sort_params)
+    logger.info(
+        f"{endpoint_name} - Response: {len(items)} items from {total_count} total"
+    )
+
     return create_paginated_response(
         items=items,
         total_count=total_count,

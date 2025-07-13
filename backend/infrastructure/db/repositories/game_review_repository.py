@@ -1,60 +1,23 @@
-from sqlalchemy.orm import Session
 from typing import List, Optional, Tuple
+from sqlalchemy import select
 
-from domain.repositories import IGameReviewRepository, IConstructorRepository
+from domain.repositories import IGameReviewRepository
 from domain.entities.game import GameReviewEntity
+from domain.exceptions.game import GameReviewAlreadyExistsError, GameReviewNotFoundError
 from infrastructure.db.models import GameReviewModel
 from interfaces.api.common.sort import SortParams
 from interfaces.api.common.pagination import PaginationParams
 from interfaces.api.common.filters.specific_filters import GameReviewFilterParams
-from infrastructure.logging import get_logger
+from .base_repository import BasePostgresRepository
 
 
-# Configurar logger
-logger = get_logger("game_repository")
+class PostgresGameReviewRepository(
+    BasePostgresRepository[GameReviewEntity, GameReviewModel, GameReviewFilterParams],
+    IGameReviewRepository,
+):
+    """Repositorio de reseñas de juegos para PostgreSQL."""
 
-
-class PostgresGameReviewRepository(IGameReviewRepository, IConstructorRepository):
-    """
-    A repository for managing user data in a PostgreSQL database.
-    """
-
-    def __init__(self, db_session: Session):
-        super().__init__(db_session, GameReviewModel)
-
-    def get_paginated(
-        self,
-        pagination: PaginationParams,
-        filters: Optional[GameReviewFilterParams] = None,
-        sort_params: Optional[SortParams] = None,
-    ) -> Tuple[List[GameReviewEntity], int]:
-        """Get paginated games with optional filtering and sorting."""
-        return self.get_paginated_mixin(
-            model=self.model,
-            db_session=self.db,
-            pagination=pagination,
-            filters=filters,
-            sort_params=sort_params,
-            to_entity=self._model_to_entity,
-        )
-
-    def get_by_id(self, game_review_id: str) -> Optional[GameReviewEntity]:
-        """Retrieves a game by its ID."""
-        logger.debug(f"Getting game by ID: {game_review_id}")
-        game_review_model = (
-            self.db.query(self.model)
-            .filter(self.model.game_review_id == game_review_id)
-            .first()
-        )
-
-        if game_review_model:
-            logger.debug(f"Game review found with ID: {game_review_id}")
-            return self._model_to_entity(game_review_model)
-        else:
-            logger.debug(f"No game review found with ID: {game_review_id}")
-            return None
-
-    def get_by_game_id(
+    async def get_by_game_id(
         self,
         game_id: str,
         pagination: PaginationParams,
@@ -62,108 +25,103 @@ class PostgresGameReviewRepository(IGameReviewRepository, IConstructorRepository
         sort_params: Optional[SortParams] = None,
     ) -> Tuple[List[GameReviewEntity], int]:
         """Obtiene reviews del juego con paginación y ordenamiento."""
-        return self.get_paginated_mixin(
+        return await self.get_paginated_mixin(
             model=self.model,
             db_session=self.db,
             pagination=pagination,
             filters=filters,
             sort_params=sort_params,
             to_entity=self._model_to_entity,
-            custom_filter_fn=lambda q: q.filter(self.model.game_id == game_id),
+            custom_filter_fn=lambda stmt: stmt.where(self.model.game_id == game_id),
         )
 
-    def _get_by_user_and_game_id(self, user_id: str, game_id: str) -> GameReviewEntity:
+    async def get_by_user_and_game_id(
+        self, user_id: str, game_id: str
+    ) -> GameReviewModel:
         """Obtiene una reseña de un juego específico por el ID del usuario y del juego."""
-        logger.debug(f"Getting review by user ID: {user_id} and game ID: {game_id}")
-        game_review_model = (
-            self.db.query(self.model)
-            .filter(self.model.user_id == user_id, self.model.game_id == game_id)
-            .first()
+        self.logger.debug(
+            f"Getting review by user ID: {user_id} and game ID: {game_id}"
         )
+        stmt = select(self.model).where(
+            self.model.user_id == user_id, self.model.game_id == game_id
+        )
+        result = await self.db.execute(stmt)
+        game_review_model = result.scalar_one_or_none()
+
         if game_review_model:
-            logger.debug(
+            self.logger.debug(
                 f"Game review found for user ID: {user_id} and game ID: {game_id}"
             )
             return game_review_model
         else:
-            logger.debug(
+            self.logger.debug(
                 f"No game review found for user ID: {user_id} and game ID: {game_id}"
             )
             return None
 
-    def save(self, entity: GameReviewEntity) -> GameReviewEntity:
-        """Creates or updates a GameReview: If one exists for the user+game, update it."""
+    async def save(self, entity: GameReviewEntity) -> GameReviewEntity:
+        """Creates a new GameReview. Throws exception if review already exists for user+game."""
         try:
-            # Buscar si ya existe una reseña del usuario para el juego
-            existing_review = self._get_by_user_and_game_id(
+            # Verificar si ya existe una reseña del usuario para el juego
+            existing_review = await self.get_by_user_and_game_id(
                 user_id=entity.user_id, game_id=entity.game_id
             )
 
             if existing_review:
-                logger.debug(
-                    f"Review already exists for user_id={entity.user_id}, game_id={entity.game_id}. Updating..."
+                self.logger.error(
+                    f"Review already exists for user_id={entity.user_id}, game_id={entity.game_id}"
                 )
-                # Actualizar campos
-                if entity.rating is not None:
-                    existing_review.rating = entity.rating
-                if entity.comment is not None:
-                    existing_review.comment = entity.comment
+                raise GameReviewAlreadyExistsError(
+                    f"User {entity.user_id} already has a review for game {entity.game_id}"
+                )
 
-                self.db.commit()
-                self.db.refresh(existing_review)
-                return self._model_to_entity(existing_review)
-
-            logger.debug(f"Saving new game review: {entity}")
+            self.logger.debug(f"Creating new game review: {entity}")
             new_model = self._entity_to_model(entity)
             self.db.add(new_model)
-            self.db.commit()
-            self.db.refresh(new_model)
+            await self.db.commit()
+            await self.db.refresh(new_model)
             return self._model_to_entity(new_model)
 
         except Exception as e:
-            logger.error(f"Error saving game review: {e}")
-            self.db.rollback()
+            self.logger.error(f"Error creating game review: {e}")
+            await self.db.rollback()
             raise
 
-    def delete(self, game_review_id: str) -> None:
-        """Deletes a game review by its ID."""
-        logger.debug(f"Deleting game review with ID: {game_review_id}")
-        game_review_model = (
-            self.db.query(self.model)
-            .filter(self.model.review_id == game_review_id)
-            .first()
-        )
+    async def update(self, entity: GameReviewEntity) -> GameReviewEntity:
+        """Actualiza una reseña de juego existente."""
+        try:
+            if not entity.review_id:
+                raise ValueError("Entity must have a review_id for updates")
 
-        if game_review_model:
-            self.db.delete(game_review_model)
-            self.db.commit()
-            logger.debug(f"Game review deleted with ID: {game_review_id}")
-        else:
-            logger.warning(f"No game review found to delete with ID: {game_review_id}")
+            stmt = select(self.model).where(self.model.review_id == entity.review_id)
+            result = await self.db.execute(stmt)
+            game_review_model = result.scalar_one_or_none()
 
-    def update(self, game_review_id: str, entity: GameReviewEntity) -> GameReviewEntity:
-        """Updates a game review by its ID."""
-        logger.debug(f"Updating game review with ID: {game_review_id}")
-        game_review_model = (
-            self.db.query(self.model)
-            .filter(self.model.review_id == game_review_id)
-            .first()
-        )
-        if not game_review_model:
-            logger.warning(f"No game review found to update with ID: {game_review_id}")
-            return None
-        # Update fields
-        if entity.rating is not None:
-            game_review_model.rating = entity.rating
-        if entity.comment is not None:
-            game_review_model.comment = entity.comment
-        self.db.commit()
-        self.db.refresh(game_review_model)
-        logger.debug(f"Game review updated with ID: {game_review_id}")
-        return self._model_to_entity(game_review_model)
+            if not game_review_model:
+                self.logger.error(f"Game review with ID {entity.review_id} not found")
+                raise GameReviewNotFoundError(
+                    f"Game review with ID {entity.review_id} not found"
+                )
+
+            # Actualizar solo los campos que no son None
+            if entity.rating is not None:
+                game_review_model.rating = entity.rating
+            if entity.comment is not None:
+                game_review_model.comment = entity.comment
+
+            await self.db.commit()
+            await self.db.refresh(game_review_model)
+
+            self.logger.info(f"Successfully updated game review: {entity.review_id}")
+            return self._model_to_entity(game_review_model)
+
+        except Exception as e:
+            self.logger.error(f"Error updating game review: {e}")
+            await self.db.rollback()
+            raise
 
     def _model_to_entity(self, model: GameReviewModel) -> GameReviewEntity:
-        """Converts a GameReviewModel to a GameReview entity."""
+        """Convierte GameReviewModel a GameReviewEntity."""
         return GameReviewEntity(
             review_id=str(model.review_id),
             game_id=str(model.game_id),
@@ -175,7 +133,7 @@ class PostgresGameReviewRepository(IGameReviewRepository, IConstructorRepository
         )
 
     def _entity_to_model(self, entity: GameReviewEntity) -> GameReviewModel:
-        """Converts a GameReview entity to a GameReviewModel."""
+        """Convierte GameReviewEntity a GameReviewModel."""
         return GameReviewModel(
             review_id=entity.review_id,
             game_id=entity.game_id,
@@ -185,3 +143,11 @@ class PostgresGameReviewRepository(IGameReviewRepository, IConstructorRepository
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )
+
+    def _get_id_field(self):
+        """Obtiene el campo ID del modelo."""
+        return self.model.review_id
+
+    def _get_entity_id(self, entity: GameReviewEntity) -> Optional[str]:
+        """Obtiene el ID de una entidad."""
+        return entity.review_id

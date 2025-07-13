@@ -1,4 +1,7 @@
+"""Configurador de aplicación FastAPI."""
+
 from fastapi import FastAPI
+from application.mixins.logging_mixin import LoggingMixin
 from infrastructure.core.settings_config import settings
 from infrastructure.logging import get_logger
 
@@ -12,13 +15,13 @@ from .admin_setup import setup_admin
 logger = get_logger("app_configurator")
 
 
-class AppConfigurator:
-    """Clase para configurar la aplicación FastAPI de manera modular"""
-    
+class AppConfigurator(LoggingMixin):
+    """Configurador modular de aplicación FastAPI."""
+
     @staticmethod
     def create_app() -> FastAPI:
-        """Factory function para crear la aplicación FastAPI"""
-        
+        """Crea y configura la aplicación FastAPI."""
+
         app_settings = settings.app_settings
         logger.info(f"Creating FastAPI application: {app_settings.app_name}")
 
@@ -34,25 +37,25 @@ class AppConfigurator:
 
         # Configurar todos los componentes
         AppConfigurator._configure_app(app, app_settings)
-        
+
         logger.info(f"✅ {app_settings.app_name} configured successfully!")
         logger.info(f"📊 Environment: {app_settings.environment}")
         logger.info(f"🔧 Debug mode: {app_settings.debug}")
 
         return app
-    
+
     @staticmethod
     def _configure_app(app: FastAPI, app_settings) -> None:
-        """Configurar todos los componentes de la aplicación"""
-        
+        """Configura todos los componentes de la aplicación."""
+
         # Configurar middlewares
         add_middlewares(app, app_settings)
-        
+
         # Configurar manejo de excepciones
         setup_exception_handlers(app)
-        
+
         # Incluir routers
         add_routers(app)
-        
+
         # Configurar admin
         setup_admin(app)

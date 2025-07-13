@@ -1,3 +1,2 @@
-from application.services import PasswordHasher
-from .jwt_service import JWTService, get_token_provider
+from .jwt_service import JWTService
 from .security import CustomHTTPBearer

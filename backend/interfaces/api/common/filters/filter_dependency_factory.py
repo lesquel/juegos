@@ -1,5 +1,3 @@
-# utils/filter_dependency_factory.py
-
 from typing import Type, get_type_hints
 from fastapi import Depends, Query
 from pydantic import BaseModel

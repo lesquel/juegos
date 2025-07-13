@@ -2,9 +2,44 @@ import logging
 import logging.config
 from typing import Dict, Any
 import sys
+import os
 from pathlib import Path
 
 from infrastructure.core.settings_config import settings
+
+
+def get_relative_path(file_path: str) -> str:
+    """Convierte una ruta absoluta a relativa del proyecto."""
+    try:
+        # Obtener el directorio raíz del proyecto (donde está main.py)
+        project_root = Path(__file__).parent.parent.parent  # backend/
+        file_path_obj = Path(file_path)
+        
+        # Si es una ruta absoluta, convertir a relativa
+        if file_path_obj.is_absolute():
+            try:
+                relative_path = file_path_obj.relative_to(project_root)
+                return str(relative_path).replace("\\", "/")  # Usar / para consistencia
+            except ValueError:
+                # Si no puede ser relativa al proyecto, usar solo el nombre del archivo
+                return file_path_obj.name
+        else:
+            # Ya es relativa
+            return file_path
+    except Exception:
+        # En caso de error, usar solo el nombre del archivo
+        return Path(file_path).name
+
+
+class CustomFormatter(logging.Formatter):
+    """Formatter personalizado que usa rutas relativas."""
+    
+    def format(self, record):
+        # Convertir pathname a ruta relativa
+        if hasattr(record, 'pathname'):
+            record.filename = get_relative_path(record.pathname)
+        
+        return super().format(record)
 
 
 class LoggingConfig:
@@ -25,17 +60,32 @@ class LoggingConfig:
             "disable_existing_loggers": False,
             "formatters": {
                 "detailed": {
-                    "format": "[{asctime}] {levelname} {name} - {message}",
+                    "()": CustomFormatter,
+                    "format": "[{asctime}] {levelname} - {filename}:{lineno} in {funcName}() - {message}",
                     "style": "{",
                     "datefmt": "%Y-%m-%d %H:%M:%S",
                 },
-                "simple": {"format": "{levelname} - {message}", "style": "{"},
+                "development": {
+                    "()": CustomFormatter,
+                    "format": "{levelname} - {filename}:{lineno} - {message}",
+                    "style": "{",
+                },
+                "production": {
+                    "()": CustomFormatter,
+                    "format": "[{asctime}] {levelname} - {message}",
+                    "style": "{",
+                    "datefmt": "%Y-%m-%d %H:%M:%S",
+                },
+                "simple": {
+                    "format": "{levelname} - {message}", 
+                    "style": "{"
+                },
             },
             "handlers": {
                 "console": {
                     "class": "logging.StreamHandler",
                     "level": "INFO" if app_settings.environment == "prod" else "DEBUG",
-                    "formatter": "simple",
+                    "formatter": "development" if app_settings.environment != "prod" else "production",
                     "stream": sys.stdout,
                 },
                 "file": {

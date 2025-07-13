@@ -10,7 +10,7 @@ class IMatchRepository(IBaseRepository[MatchEntity, MatchFilterParams]):
     """Repositorio específico para partidas"""
 
     @abstractmethod
-    def get_by_email(self, email: str) -> Optional[MatchEntity]:
+    async def get_by_email(self, email: str) -> Optional[MatchEntity]:
         """
         Retrieves a match by its email address.
 

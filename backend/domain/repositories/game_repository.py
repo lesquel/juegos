@@ -11,7 +11,7 @@ class IGameRepository(IReadOnlyRepository[GameEntity, GameFilterParams]):
     """Repositorio específico para juegos"""
 
     @abstractmethod
-    def get_by_category_id(
+    async def get_by_category_id(
         self, category_id: str, pagination: PaginationParams, sort_params: SortParams
     ) -> Optional[list[GameEntity]]:
         """

@@ -1,12 +1,14 @@
-from enum import Enum
+"""Entidad de dominio para usuarios."""
+
 from typing import Optional
 
 from ..time_stamp_entity_mixin import TimeStampEntityMixin
 from application.enums import UserRole
 
 
-
 class UserEntity(TimeStampEntityMixin):
+    """Entidad de dominio para usuarios."""
+
     def __init__(
         self,
         user_id: Optional[str],

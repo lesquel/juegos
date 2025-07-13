@@ -14,8 +14,8 @@ from .games import (
 
 # Review Use Cases
 from .review import (
-    GetAllGameReviewsUseCase,
     GetGameReviewsByGameIdUseCase,
     GetGameReviewByIdUseCase,
-    CreateGameReviewUseCase
+    CreateGameReviewUseCase,
+    UpdateGameReviewUseCase
 )

@@ -14,7 +14,6 @@ from interfaces.api.common import (
     get_pagination_params,
     SortParams,
     get_sort_params,
-    create_paginated_response,
 )
 from interfaces.api.common.filters.specific_filters import (
     CategoryFilterParams,
@@ -23,14 +22,15 @@ from interfaces.api.common.filters.specific_filters import (
     get_game_filter_params,
 )
 from interfaces.api.common.response_utils import handle_paginated_request
-from interfaces.api.dependencies.game_case_deps import (
+from infrastructure.dependencies import (
     get_all_games_use_case,
     get_game_by_id_use_case,
-)
-from interfaces.api.dependencies.category_case_deps import (
     get_categories_by_game_id_use_case,
 )
 from infrastructure.logging import get_logger
+
+
+from .game_review_routes import game_review_router
 
 
 game_router = APIRouter(
@@ -40,12 +40,16 @@ game_router = APIRouter(
     ],
 )
 
+game_router.include_router(
+    game_review_router, prefix="/{game_id}/reviews", tags=["Game Reviews"]
+)
+
 # Configurar logger
 logger = get_logger("game_routes")
 
 
 @game_router.get("/", response_model=PaginatedResponseDTO[GameResponseDTO])
-def get_all_games(
+async def get_all_games(
     request: Request,
     pagination: PaginationParams = Depends(get_pagination_params),
     sort_params: SortParams = Depends(get_sort_params),
@@ -67,7 +71,7 @@ def get_all_games(
     :param filters: Filter parameters
     :return: PaginatedResponseDTO with UserResponseDTO objects.
     """
-    return handle_paginated_request(
+    return await handle_paginated_request(
         endpoint_name="GET /games",
         request=request,
         pagination=pagination,
@@ -79,7 +83,7 @@ def get_all_games(
 
 
 @game_router.get("/{game_id}", response_model=GameResponseDTO)
-def get_game(
+async def get_game_by_id(
     game_id: UUID,
     use_case: GetGameByIdUseCase = Depends(get_game_by_id_use_case),
 ) -> GameResponseDTO:
@@ -91,13 +95,13 @@ def get_game(
     """
     logger.info(f"GET /games/{game_id} - Request received")
 
-    return use_case.execute(str(game_id))
+    return await use_case.execute(str(game_id))
 
 
 @game_router.get(
     "/{game_id}/categories", response_model=PaginatedResponseDTO[CategoryResponseDTO]
 )
-def get_categories_by_game_id(
+async def get_categories_by_game_id(
     game_id: UUID,
     request: Request,
     pagination: PaginationParams = Depends(get_pagination_params),
@@ -115,7 +119,7 @@ def get_categories_by_game_id(
     :param pagination: Pagination parameters
     :return: PaginatedResponseDTO with CategoryResponseDTO objects.
     """
-    return handle_paginated_request(
+    return await handle_paginated_request(
         endpoint_name=f"GET /games/{game_id}/categories",
         request=request,
         pagination=pagination,

@@ -3,19 +3,23 @@ from fastapi import Query
 from pydantic import Field
 
 from ..base_filter import BaseFilterParams
+from application.enums import TransferStateEnum
 
 
 class TransferPaymentFilterParams(BaseFilterParams):
     """Filtros específicos para Transfer Payments - hereda filtros base + específicos"""
 
-    email: Optional[str] = Field(
-        None, description="Filtrar por email (búsqueda parcial)"
+    user_id: Optional[str] = Field(
+        None, description="Filtrar por ID de usuario"
     )
-    min_currency: Optional[float] = Field(
-        None, ge=0, description="Moneda virtual mínima"
+    transfer_state: Optional[TransferStateEnum] = Field(
+        None, description="Filtrar por estado de transferencia"
     )
-    max_currency: Optional[float] = Field(
-        None, ge=0, description="Moneda virtual máxima"
+    min_amount: Optional[float] = Field(
+        None, ge=0, description="Monto mínimo de transferencia"
+    )
+    max_amount: Optional[float] = Field(
+        None, ge=0, description="Monto máximo de transferencia"
     )
 
 
@@ -25,13 +29,16 @@ def get_transfer_payment_filter_params(
     search: Optional[str] = Query(None, description="Búsqueda general"),
     created_after: Optional[str] = Query(None, description="Creado después de"),
     created_before: Optional[str] = Query(None, description="Creado antes de"),
-    # Filtros específicos de usuario
-    email: Optional[str] = Query(None, description="Filtrar por email"),
-    min_currency: Optional[float] = Query(
-        None, ge=0, description="Moneda virtual mínima"
+    # Filtros específicos de transferencia
+    user_id: Optional[str] = Query(None, description="Filtrar por ID de usuario"),
+    transfer_state: Optional[TransferStateEnum] = Query(
+        None, description="Filtrar por estado de transferencia"
     ),
-    max_currency: Optional[float] = Query(
-        None, ge=0, description="Moneda virtual máxima"
+    min_amount: Optional[float] = Query(
+        None, ge=0, description="Monto mínimo de transferencia"
+    ),
+    max_amount: Optional[float] = Query(
+        None, ge=0, description="Monto máximo de transferencia"
     ),
 ) -> TransferPaymentFilterParams:
     """Dependency para obtener filtros de Transfer Payments"""
@@ -39,7 +46,8 @@ def get_transfer_payment_filter_params(
         search=search,
         created_after=created_after,
         created_before=created_before,
-        email=email,
-        min_currency=min_currency,
-        max_currency=max_currency,
+        user_id=user_id,
+        transfer_state=transfer_state,
+        min_amount=min_amount,
+        max_amount=max_amount,
     )

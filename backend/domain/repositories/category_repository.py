@@ -10,7 +10,7 @@ from .base_repository import IReadOnlyRepository
 class ICategoryRepository(IReadOnlyRepository[CategoryEntity, CategoryFilterParams]):
     """Repositorio específico para categorías"""
     @abstractmethod
-    def get_by_game_id(self, game_id: str, pagination: PaginationParams, filters: CategoryFilterParams, sort_params: SortParams) -> Optional[list[CategoryEntity]]:
+    async def get_by_game_id(self, game_id: str, pagination: PaginationParams, filters: CategoryFilterParams, sort_params: SortParams) -> Optional[list[CategoryEntity]]:
         """
         Retrieves a list of categories associated with a specific game.
 

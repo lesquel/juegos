@@ -12,7 +12,7 @@ class IGameReviewRepository(IBaseRepository[GameReviewEntity, GameReviewFilterPa
     """Repositorio específico para Game Reviews"""
 
     @abstractmethod
-    def get_by_game_id(
+    async def get_by_game_id(
         self,
         game_id: str,
         pagination: Optional[PaginationParams] = None,
@@ -21,9 +21,9 @@ class IGameReviewRepository(IBaseRepository[GameReviewEntity, GameReviewFilterPa
     ) -> tuple[list[GameReviewEntity], int]:
         """Obtiene reseñas de un juego específico por su ID."""
         pass
-    
+
     @abstractmethod
-    def _get_by_user_and_game_id(
+    async def get_by_user_and_game_id(
         self, user_id: str, game_id: str
     ) -> Optional[GameReviewEntity]:
         """Obtiene una reseña de un juego específico por el ID del usuario y del juego."""

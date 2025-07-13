@@ -8,10 +8,10 @@ from application.use_cases.auth import (
 
 from infrastructure.logging import get_logger
 
-from interfaces.api.dependencies import (
+from infrastructure.dependencies import (
     get_register_user_use_case,
     get_login_use_case,
-    get_current_user,
+    get_current_user_from_request_use_case,
 )
 from dtos.request.auth.auth_request_dto import LoginRequestDTO, UserCreateRequestDTO
 from dtos.response.user.user_response_dto import UserBaseResponseDTO, UserResponseDTO
@@ -24,7 +24,7 @@ logger = get_logger("auth_routes")
 
 
 @auth_router.post("/login", response_model=LoginResponseDTO)
-def login(
+async def login(
     user_login: LoginRequestDTO,
     login_use_case: LoginUserUseCase = Depends(get_login_use_case),
 ):
@@ -40,14 +40,14 @@ def login(
     logger.info(f"Login attempt for email: {user_login.email}")
 
     request = LoginRequestDTO(email=user_login.email, password=user_login.password)
-    response = login_use_case.execute(request)
+    response = await login_use_case.execute(request)
 
     logger.info(f"Successful login for user: {response.user.email}")
     return response
 
 
 @auth_router.post("/register", response_model=UserBaseResponseDTO)
-def register(
+async def register(
     user_data: UserCreateRequestDTO,
     register_use_case: RegisterUserUseCase = Depends(get_register_user_use_case),
 ):
@@ -64,14 +64,16 @@ def register(
         password=user_data.password,
     )
 
-    response = register_use_case.execute(request)
+    response = await register_use_case.execute(request)
 
     logger.info(f"Successful registration for user: {response.email}")
     return response
 
 
 @auth_router.get("/me", response_model=UserResponseDTO)
-def get_current_user_info(current_user: UserResponseDTO = Depends(get_current_user)):
+async def get_current_user_info(
+    current_user: UserResponseDTO = Depends(get_current_user_from_request_use_case),
+):
     """
     Obtener información del usuario autenticado
 
@@ -79,15 +81,5 @@ def get_current_user_info(current_user: UserResponseDTO = Depends(get_current_us
     `Authorization: Bearer <token>`
     """
     logger.info(f"Get current user info for: {current_user.email}")
-
-    user_data = UserResponseDTO(
-        user_id=str(current_user.user_id),
-        email=current_user.email,
-        virtual_currency=current_user.virtual_currency,
-        role=current_user.role,
-        created_at=current_user.created_at,
-        updated_at=current_user.updated_at,
-    )
-
     logger.debug(f"Successfully retrieved user info for: {current_user.email}")
-    return user_data
+    return current_user

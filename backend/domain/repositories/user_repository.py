@@ -11,7 +11,7 @@ class IUserRepository(IBaseRepository[UserEntity, UserFilterParams]):
 
     
     @abstractmethod
-    def get_by_email(self, email: str) -> Optional[UserEntity]:
+    async def get_by_email(self, email: str) -> Optional[UserEntity]:
         """
         Retrieves a user by their email address.
 

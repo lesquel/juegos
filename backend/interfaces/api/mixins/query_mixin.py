@@ -11,14 +11,15 @@ from .sort_mixin import SortingMixin
 from .pagination_mixin import PaginationMixin
 
 from typing import Optional, Type, List, Tuple
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
 
 
 class QueryMixin(FilterMixin, SortingMixin, PaginationMixin):
-    def get_paginated_mixin(
+    async def get_paginated_mixin(
         self,
         model: Type,
-        db_session: Session,
+        db_session: AsyncSession,
         pagination: PaginationParams,
         filters: Optional[BaseFilterParams] = None,
         sort_params: Optional[SortParams] = None,
@@ -28,20 +29,26 @@ class QueryMixin(FilterMixin, SortingMixin, PaginationMixin):
         """
         Consulta genérica con filtros, ordenamiento y paginación.
         """
-        query = db_session.query(model)
+        stmt = select(model)
 
         if filters:
-            query = self.apply_filters(query, model, filters)
+            stmt = self.apply_filters(stmt, model, filters)
         if custom_filter_fn:
-            query = custom_filter_fn(query)
+            stmt = custom_filter_fn(stmt)
         if sort_params:
-            query = self.apply_sorting(query, model, sort_params)
+            stmt = self.apply_sorting(stmt, model, sort_params)
 
-        total_count = query.count()
+        # Count total (before pagination)
+        count_stmt = select(func.count()).select_from(stmt.subquery())
+        count_result = await db_session.execute(count_stmt)
+        total_count = count_result.scalar()
 
-        query = self.apply_pagination(query, pagination)
+        # Apply pagination
+        stmt = self.apply_pagination(stmt, pagination)
 
-        results = query.all()
+        # Execute query
+        result = await db_session.execute(stmt)
+        results = result.scalars().all()
 
         if to_entity:
             results = [to_entity(r) for r in results]

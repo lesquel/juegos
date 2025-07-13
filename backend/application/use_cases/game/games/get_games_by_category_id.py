@@ -1,36 +1,34 @@
+from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.repositories import IGameRepository
 from dtos.response.game import GameResponseDTO
-
-from infrastructure.logging import get_logger
-
-logger = get_logger("get_games_by_category_id_use_case")
+from application.interfaces.base_use_case import BaseUseCase
+from infrastructure.logging import log_execution, log_performance
 
 
-class GetGamesByCategoryIdUseCase:
-    def __init__(self, game_repo: IGameRepository):
+class GetGamesByCategoryIdUseCase(BaseUseCase):
+    def __init__(
+        self, game_repo: IGameRepository, game_converter: EntityToDTOConverter
+    ):
+        super().__init__()
         self.game_repo = game_repo
+        self.converter = game_converter
 
-    def execute(
+    @log_execution(include_args=True, include_result=False, log_level="INFO")
+    @log_performance(threshold_seconds=2.0)
+    async def execute(
         self, game_id, pagination, filters, sort_params
     ) -> tuple[list[GameResponseDTO], int]:
-        games, count = self.game_repo.get_by_category_id(
+        self.logger.info(f"Getting games by category_id: {game_id}")
+        games, count = await self.game_repo.get_by_category_id(
             game_id, pagination, filters, sort_params
         )
+
         if not games:
-            logger.warning(
+            self.logger.warning(
                 "No games found with the given category, filters and pagination"
             )
             return [], 0
-        games = [
-            GameResponseDTO(
-                game_id=game.game_id,
-                game_name=game.game_name,
-                game_description=game.game_description,
-                game_img=game.game_img,
-                game_url=game.game_url,
-                categories=[str(category.category_id) for category in game.categories]
-            )
-            for game in games
-        ]
 
-        return games, count
+        self.logger.info(f"Found {count} games for category_id: {game_id}")
+
+        return self.converter.to_dto_list(games), count

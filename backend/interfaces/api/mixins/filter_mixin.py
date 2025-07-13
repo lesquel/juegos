@@ -4,7 +4,7 @@ from interfaces.api.common.filters.base_filter import BaseFilterParams
 class FilterMixin:
     """Mixin para aplicar filtros a las consultas."""
 
-    def apply_filters(self, query, model, filters: BaseFilterParams) -> Any:
+    def apply_filters(self, stmt, model, filters: BaseFilterParams) -> Any:
         """
         Aplica filtros de forma dinámica usando métodos definidos en la clase de filtros.
         Cada filtro puede tener su propio método `filter_<fieldname>`.
@@ -13,6 +13,6 @@ class FilterMixin:
             method_name = f"filter_{field}"
             if hasattr(filters, method_name):
                 method = getattr(filters, method_name)
-                query = method(query, model, value)
-        return query
+                stmt = method(stmt, model, value)
+        return stmt
 

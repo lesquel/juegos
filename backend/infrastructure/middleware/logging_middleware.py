@@ -2,13 +2,15 @@ import time
 import uuid
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
-from infrastructure.logging import get_logger
 
-logger = get_logger("http_requests")
+from application.mixins.logging_mixin import LoggingMixin
 
 
-class LoggingMiddleware(BaseHTTPMiddleware):
+
+class LoggingMiddleware(BaseHTTPMiddleware, LoggingMixin):
     """Middleware para logging automático de requests HTTP"""
+    def __init__(self, app):
+        super().__init__(app)
 
     async def dispatch(self, request: Request, call_next):
         # Generar ID único para el request
@@ -21,7 +23,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         user_agent = request.headers.get("user-agent", "unknown")
         
         # Log del inicio del request
-        logger.info(
+        self.logger.info(
             f"[{request_id}] {method} {url} - IP: {client_ip} - User-Agent: {user_agent[:50]}..."
         )
         
@@ -36,7 +38,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             process_time = time.time() - start_time
             
             # Log del response exitoso
-            logger.info(
+            self.logger.info(
                 f"[{request_id}] {method} {url} - Status: {response.status_code} - "
                 f"Time: {process_time:.3f}s"
             )
@@ -52,7 +54,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             process_time = time.time() - start_time
             
             # Log del error
-            logger.error(
+            self.logger.error(
                 f"[{request_id}] {method} {url} - ERROR: {str(e)} - Time: {process_time:.3f}s"
             )
             

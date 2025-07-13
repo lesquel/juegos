@@ -4,9 +4,10 @@ from typing import Optional
 
 from dtos.response.auth.auth_response_dto import TokenResponseDTO
 from domain.entities.user.token_data import TokenData
+from application.mixins import LoggingMixin
 
 
-class ITokenProvider(ABC):
+class ITokenProvider(ABC, LoggingMixin):
     """Interfaz para proveedores de tokens de autenticación"""
     
     @abstractmethod
