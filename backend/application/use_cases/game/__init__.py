@@ -17,5 +17,6 @@ from .review import (
     GetGameReviewsByGameIdUseCase,
     GetGameReviewByIdUseCase,
     CreateGameReviewUseCase,
-    UpdateGameReviewUseCase
+    UpdateGameReviewUseCase,
+    DeleteGameReviewUseCase,
 )

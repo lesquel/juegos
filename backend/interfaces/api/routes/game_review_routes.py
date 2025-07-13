@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Response, status
 
 from uuid import UUID
 
@@ -6,20 +6,25 @@ from application.use_cases.game import (
     GetGameReviewsByGameIdUseCase,
     GetGameReviewByIdUseCase,
 )
-from application.use_cases.game.review.create_game_review import CreateGameReviewUseCase
-from application.use_cases.game.review.update_game_review import UpdateGameReviewUseCase
+from application.use_cases.game.review import (
+    CreateGameReviewUseCase,
+    DeleteGameReviewUseCase,
+    UpdateGameReviewUseCase,
+)
+
 from dtos.request.game.game_review_request_dto import (
     CreateGameReviewRequestDTO,
     UpdateGameReviewRequestDTO,
 )
-from infrastructure.dependencies.use_cases.game_review_use_cases import (
-    get_update_game_review_use_case,
-)
+
+
 from interfaces.api.common.response_utils import handle_paginated_request
 from infrastructure.dependencies import (
     get_create_game_review_use_case,
     get_game_reviews_by_game_id_use_case,
     get_game_review_by_id_use_case,
+    get_delete_game_review_use_case,
+    get_update_game_review_use_case,
 )
 from infrastructure.logging import get_logger
 from dtos.common import PaginatedResponseDTO
@@ -115,6 +120,22 @@ async def update_game_review(
     logger.info(f"PUT /{game_review_id} - Request received")
 
     return await use_case.execute(str(game_review_id), review)
+
+
+@game_review_router.delete("/{game_review_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_game_review(
+    game_review_id: UUID,
+    use_case: DeleteGameReviewUseCase = Depends(get_delete_game_review_use_case),
+) -> dict:
+    """
+    Delete a game review.
+
+    :param game_review_id: The ID of the game review to delete
+    :return: Confirmation message
+    """
+    logger.info(f"DELETE /{game_review_id} - Request received")
+    await use_case.execute(str(game_review_id))
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @game_review_router.get("/{game_review_id}", response_model=GameReviewResponseDTO)

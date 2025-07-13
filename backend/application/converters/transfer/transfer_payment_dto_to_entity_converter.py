@@ -6,17 +6,17 @@ from typing import Optional
 from application.mixins.dto_converter_mixin import DTOToEntityConverter
 from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
-from dtos.request.transfer.transfer_payment_request_dto import TransferPaymentRequestDTO
+from dtos.request.transfer.transfer_payment_request_dto import CreateTransferPaymentRequestDTO
 from application.enums import TransferStateEnum
 
 
-class TransferPaymentDTOToEntityConverter(DTOToEntityConverter[TransferPaymentRequestDTO, TransferPaymentEntity], LoggingMixin):
+class TransferPaymentDTOToEntityConverter(DTOToEntityConverter[CreateTransferPaymentRequestDTO, TransferPaymentEntity], LoggingMixin):
     """Convierte TransferPaymentRequestDTO a TransferPaymentEntity."""
 
     def __init__(self):
         super().__init__()
 
-    def to_entity(self, dto: TransferPaymentRequestDTO) -> TransferPaymentEntity:
+    def to_entity(self, dto: CreateTransferPaymentRequestDTO) -> TransferPaymentEntity:
         """
         Implementación del método abstracto requerido.
         
@@ -35,7 +35,7 @@ class TransferPaymentDTOToEntityConverter(DTOToEntityConverter[TransferPaymentRe
 
     def convert_with_context(
         self, 
-        dto: TransferPaymentRequestDTO, 
+        dto: CreateTransferPaymentRequestDTO, 
         user_id: str,
         transfer_id: Optional[str] = None,
         transfer_state: TransferStateEnum = TransferStateEnum.PENDING

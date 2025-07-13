@@ -28,6 +28,7 @@ class TransferPaymentModel(Base, TimeStampModelMixin):
     transfer_state = Column(
         SqlEnum(TransferStateEnum, name="transferstateenum", create_type=True),
         nullable=False,
+        default=TransferStateEnum.PENDING,
     )
     transfer_description = Column(Text, nullable=True)
 

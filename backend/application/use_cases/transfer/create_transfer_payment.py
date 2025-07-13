@@ -1,6 +1,6 @@
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
 from domain.repositories.transfer_payment_repository import ITransferPaymentRepository
-from dtos.request.transfer.transfer_payment_request_dto import TransferPaymentRequestDTO
+from dtos.request.transfer.transfer_payment_request_dto import CreateTransferPaymentRequestDTO
 from dtos.response.user.transfer_payment_response_dto import TransferPaymentResponseDTO
 from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import BidirectionalConverter
@@ -8,7 +8,7 @@ from application.enums import TransferStateEnum
 from infrastructure.logging import log_execution, log_performance
 
 
-class CreateTransferPaymentUseCase(BaseUseCase[TransferPaymentRequestDTO, TransferPaymentResponseDTO]):
+class CreateTransferPaymentUseCase(BaseUseCase[CreateTransferPaymentRequestDTO, TransferPaymentResponseDTO]):
     """Caso de uso para crear una nueva transferencia de pago."""
 
     def __init__(self, transfer_repository: ITransferPaymentRepository, transfer_converter: BidirectionalConverter):
@@ -18,7 +18,7 @@ class CreateTransferPaymentUseCase(BaseUseCase[TransferPaymentRequestDTO, Transf
 
     @log_execution(include_args=False, include_result=True, log_level="INFO")
     @log_performance(threshold_seconds=2.0)
-    async def execute(self, request_dto: TransferPaymentRequestDTO, user_id: str) -> TransferPaymentResponseDTO:
+    async def execute(self, request_dto: CreateTransferPaymentRequestDTO, user_id: str) -> TransferPaymentResponseDTO:
         """
         Crea una nueva transferencia de pago.
 

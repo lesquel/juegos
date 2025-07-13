@@ -2,7 +2,7 @@ from typing import Optional
 from application.mixins.dto_converter_mixin import BidirectionalConverter
 from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
-from dtos.request.transfer.transfer_payment_request_dto import TransferPaymentRequestDTO
+from dtos.request.transfer.transfer_payment_request_dto import CreateTransferPaymentRequestDTO
 from dtos.response.user.transfer_payment_response_dto import TransferPaymentResponseDTO
 from application.enums import TransferStateEnum
 
@@ -62,7 +62,7 @@ class TransferPaymentBidirectionalConverter(
 
     def from_request_dto(
         self,
-        dto: TransferPaymentRequestDTO,
+        dto: CreateTransferPaymentRequestDTO,
         user_id: str,
         transfer_id: Optional[str] = None,
         transfer_state: TransferStateEnum = TransferStateEnum.PENDING,

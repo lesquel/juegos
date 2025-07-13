@@ -63,6 +63,7 @@ class BaseWriteOnlyPostgresRepository(
             self.logger.info(f"Successfully deleted entity with ID: {entity_id}")
         else:
             self.logger.warning(f"Entity not found for deletion: {entity_id}")
+            
 
     @abstractmethod
     async def update(self, entity_id: str, entity: EntityType) -> None:
