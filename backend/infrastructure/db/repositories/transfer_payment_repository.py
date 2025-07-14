@@ -1,7 +1,8 @@
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from sqlalchemy import select
 
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
+from domain.exceptions.transfer import TransferNotFoundError
 from domain.repositories.transfer_payment_repository import ITransferPaymentRepository
 from infrastructure.db.models.transfer_payment_model import TransferPaymentModel
 from infrastructure.db.repositories.base_repository import (
@@ -9,6 +10,8 @@ from infrastructure.db.repositories.base_repository import (
 )
 from interfaces.api.common.filters.specific_filters import TransferPaymentFilterParams
 from application.enums import TransferStateEnum
+from interfaces.api.common.pagination import PaginationParams
+from interfaces.api.common.sort import SortParams
 
 
 class PostgresTransferPaymentRepository(
@@ -18,6 +21,42 @@ class PostgresTransferPaymentRepository(
     ITransferPaymentRepository,
 ):
     """Implementación PostgreSQL del repositorio de transferencias de pago."""
+
+    async def get_by_user_id(
+        self,
+        user_id: str,
+        pagination: PaginationParams,
+        filters: TransferPaymentFilterParams,
+        sort_params: SortParams,
+    ) -> Tuple[List[TransferPaymentEntity], int]:
+        """Obtiene transferencias por ID de usuario con eager loading."""
+        self.logger.debug(f"Getting transfer payments by user ID: {user_id}")
+
+        return await self.get_paginated_mixin(
+            model=self.model,
+            db_session=self.db,
+            pagination=pagination,
+            filters=filters,
+            sort_params=sort_params,
+            to_entity=self._model_to_entity,
+        )
+
+    async def get_by_user_and_transfer_id(self, user_id: str, transfer_id: str):
+        """Obtiene una transferencia de un usuario por su ID."""
+        self.logger.debug(
+            f"Getting transfer payment by user ID: {user_id} and transfer ID: {transfer_id}"
+        )
+        stmt = select(self.model).where(
+            self.model.user_id == user_id,
+            self.model.transfer_id == transfer_id,
+        )
+        result = await self.db.execute(stmt)
+        transfer_model = result.scalar_one_or_none()
+        if not transfer_model:
+            raise TransferNotFoundError(
+                f"Transfer payment with ID {transfer_id} not found for user {user_id}"
+            )
+        return self._model_to_entity(transfer_model)
 
     async def update(self, transfer_id: str, entity: TransferPaymentEntity) -> None:
         """Actualiza una transferencia de pago."""
@@ -79,43 +118,6 @@ class PostgresTransferPaymentRepository(
 
         return model
 
-    def _apply_filters(self, query, filter_params: TransferPaymentFilterParams):
-        """
-        Aplica filtros específicos de transferencia de pago a la consulta.
-
-        Args:
-            query: La consulta SQLAlchemy
-            filter_params: Los parámetros de filtro
-
-        Returns:
-            Query: La consulta con filtros aplicados
-        """
-        # Aplicar filtros base
-        query = super()._apply_filters(query, filter_params)
-
-        # Filtro por usuario
-        if filter_params.user_id:
-            query = query.filter(TransferPaymentModel.user_id == filter_params.user_id)
-
-        # Filtro por estado
-        if filter_params.transfer_state:
-            query = query.filter(
-                TransferPaymentModel.transfer_state == filter_params.transfer_state
-            )
-
-        # Filtro por rango de monto
-        if filter_params.min_amount is not None:
-            query = query.filter(
-                TransferPaymentModel.transfer_amount >= filter_params.min_amount
-            )
-
-        if filter_params.max_amount is not None:
-            query = query.filter(
-                TransferPaymentModel.transfer_amount <= filter_params.max_amount
-            )
-
-        return query
-
     def _get_id_field(self):
         """Obtiene el campo ID del modelo."""
         return self.model.transfer_id
@@ -123,24 +125,6 @@ class PostgresTransferPaymentRepository(
     def _get_entity_id(self, entity: TransferPaymentEntity) -> Optional[str]:
         """Obtiene el ID de una entidad."""
         return entity.transfer_id
-
-    def get_by_user_id(self, user_id: str) -> List[TransferPaymentEntity]:
-        """
-        Obtiene todas las transferencias de un usuario.
-
-        Args:
-            user_id: El ID del usuario
-
-        Returns:
-            List[TransferPaymentEntity]: Lista de transferencias del usuario
-        """
-        models = (
-            self.db.query(TransferPaymentModel)
-            .filter(TransferPaymentModel.user_id == user_id)
-            .all()
-        )
-
-        return [self._model_to_entity(model) for model in models]
 
     def get_by_state(self, state: TransferStateEnum) -> List[TransferPaymentEntity]:
         """

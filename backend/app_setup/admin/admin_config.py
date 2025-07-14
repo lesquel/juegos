@@ -2,42 +2,47 @@ from fastapi import FastAPI
 from sqladmin import Admin
 from infrastructure.db.connection import engine
 from infrastructure.logging import get_logger
+import time
 
 logger = get_logger("admin_config")
 
 
 def initialize_admin(app: FastAPI):
-    """Inicializar el panel de administración SQLAdmin"""
+    """Inicializar el panel de administración SQLAdmin optimizado"""
+    start_time = time.time()
+    
     try:
-        from . import admin_views_by_module, authentication_backend
+        from . import authentication_backend
 
         logger.info("Initializing SQLAdmin for admin interface")
 
-        # Crear instancia del admin con configuración mejorada
+        # Crear instancia del admin con configuración optimizada
         admin = Admin(
             app=app,
             engine=engine,
             authentication_backend=authentication_backend,
             title="Juegos Backend",
-            logo_url=None,  # Puedes agregar tu logo aquí
+            logo_url=None,
+            debug=False,  # Desactivar debug en producción
         )
 
-        # Agregar vistas organizadas por módulos
+        # Obtener vistas directamente para evitar problemas con cache
+        from . import admin_views_by_module
+        
+        # Agregar vistas de forma optimizada
+        total_views = sum(len(views) for views in admin_views_by_module.values())
+        logger.info(f"� Adding {total_views} admin views across {len(admin_views_by_module)} modules")
+
         for module_name, views in admin_views_by_module.items():
-            logger.info(f"📁 Adding module: {module_name}")
-
             for view in views:
-                # Configurar el nombre del módulo en la vista
-                if hasattr(view, "__module_name__"):
-                    view.__module_name__ = module_name
-                else:
-                    # Si la vista no tiene atributo de módulo, agregarlo dinámicamente
+                # Configurar el nombre del módulo en la vista de forma eficiente
+                if not hasattr(view, "category"):
                     setattr(view, "category", module_name)
-
-                logger.info(f"  ├── Adding view: {view.__name__}")
+                
                 admin.add_view(view)
 
-        logger.info("✅ Admin interface initialized successfully")
+        elapsed_time = time.time() - start_time
+        logger.info(f"✅ Admin interface initialized successfully in {elapsed_time:.2f}s")
         logger.info("🔗 Admin panel available at: /admin")
 
     except Exception as e:

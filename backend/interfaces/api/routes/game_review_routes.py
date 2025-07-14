@@ -43,7 +43,7 @@ from ..common.filters.specific_filters import (
 )
 
 
-game_review_router = APIRouter(tags=["Game Reviews"])
+game_review_router = APIRouter()
 
 # Configurar logger
 logger = get_logger("game_review_routes")
@@ -126,12 +126,12 @@ async def update_game_review(
 async def delete_game_review(
     game_review_id: UUID,
     use_case: DeleteGameReviewUseCase = Depends(get_delete_game_review_use_case),
-) -> dict:
+) -> Response:
     """
     Delete a game review.
 
     :param game_review_id: The ID of the game review to delete
-    :return: Confirmation message
+    :return: No content (204)
     """
     logger.info(f"DELETE /{game_review_id} - Request received")
     await use_case.execute(str(game_review_id))

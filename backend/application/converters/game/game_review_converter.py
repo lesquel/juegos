@@ -1,10 +1,7 @@
-"""Conversor DTO para entidad GameReview."""
-
 from typing import Union
 from domain.entities.game.game_review import GameReviewEntity
 from dtos.response.game.game_review_response_dto import (
     GameReviewResponseDTO,
-    GameReviewSummaryResponseDTO,
 )
 from dtos.request.game.game_review_request_dto import (
     CreateGameReviewRequestDTO,
@@ -138,7 +135,7 @@ class GameReviewUpdateDTOToEntityConverter(
     def to_entity(self, dto: UpdateGameReviewRequestDTO) -> GameReviewEntity:
         """Convierte UpdateGameReviewRequestDTO a GameReviewEntity."""
         self.logger.debug("Converting UpdateGameReviewRequestDTO to GameReviewEntity")
-        
+
         try:
             entity = GameReviewEntity(
                 review_id=None,  # Se asigna externamente
@@ -147,10 +144,14 @@ class GameReviewUpdateDTOToEntityConverter(
                 rating=dto.rating,  # Puede ser None si no se actualiza
                 comment=dto.comment,  # Puede ser None si no se actualiza
             )
-            
-            self.logger.debug("Successfully converted UpdateGameReviewRequestDTO to GameReviewEntity")
+
+            self.logger.debug(
+                "Successfully converted UpdateGameReviewRequestDTO to GameReviewEntity"
+            )
             return entity
-            
+
         except Exception as e:
-            self.logger.error(f"Error converting UpdateGameReviewRequestDTO to GameReviewEntity: {str(e)}")
+            self.logger.error(
+                f"Error converting UpdateGameReviewRequestDTO to GameReviewEntity: {str(e)}"
+            )
             raise

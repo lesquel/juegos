@@ -1,14 +1,36 @@
 from sqladmin import ModelView
+from markupsafe import Markup
+from starlette.requests import Request
+
 from infrastructure.db.models.game_model import GameModel
+from app_setup.admin.mixins import ImageUploadAdminMixin
 
 
-class GameAdmin(ModelView, model=GameModel):
+class GameAdmin(ImageUploadAdminMixin, ModelView, model=GameModel):
     """Panel de administración para juegos"""
 
     # Configuración de categoría/módulo
     name = "Juego"
     name_plural = "Juegos"
     icon = "fa-solid fa-gamepad"
+
+    # Propiedades requeridas por ImageUploadMixin
+    @property
+    def image_field_name(self) -> str:
+        return "game_img"
+
+    @property
+    def image_subfolder(self) -> str:
+        return "games"
+
+    @property
+    def primary_key_field(self):
+        return GameModel.game_id
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Configurar manejo de imágenes después de la inicialización
+        self.setup_image_handling()
 
     # Configuración de columnas
     column_list = [

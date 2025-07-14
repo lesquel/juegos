@@ -1,6 +1,7 @@
-"""Configurador de aplicación FastAPI."""
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from application.mixins.logging_mixin import LoggingMixin
 from infrastructure.core.settings_config import settings
 from infrastructure.logging import get_logger
@@ -54,8 +55,26 @@ class AppConfigurator(LoggingMixin):
         # Configurar manejo de excepciones
         setup_exception_handlers(app)
 
+        # Configurar archivos estáticos
+        AppConfigurator._setup_static_files(app)
+
         # Incluir routers
         add_routers(app)
 
         # Configurar admin
         setup_admin(app)
+
+    @staticmethod
+    def _setup_static_files(app: FastAPI) -> None:
+        """Configura el servicio de archivos estáticos."""
+        
+        uploads_dir = Path("uploads")
+        uploads_dir.mkdir(exist_ok=True)
+        
+        app.mount(
+            "/uploads", 
+            StaticFiles(directory="uploads"), 
+            name="uploads"
+        )
+        
+        logger.info("✅ Static files configured for /uploads")

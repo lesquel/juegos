@@ -1,1 +1,2 @@
 from .password_hasher import PasswordHasher
+from .file_upload_service import FileUploadService

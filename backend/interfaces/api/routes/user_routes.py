@@ -18,7 +18,15 @@ from infrastructure.dependencies.use_cases import (
 from interfaces.api.common.response_utils import handle_paginated_request
 from ..common.filters.specific_filters import UserFilterParams, get_user_filter_params
 
+
+from .transfer_payment_routes import transfer_router
+
 user_router = APIRouter(prefix="/users", tags=["Users"])
+
+# Incluir rutas de transferencias
+user_router.include_router(
+    transfer_router,
+)
 
 # Configurar logger
 logger = get_logger("user_routes")

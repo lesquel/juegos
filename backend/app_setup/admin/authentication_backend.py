@@ -1,79 +1,100 @@
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
+from functools import lru_cache
+import time
 
 # Importar nuestros servicios de autenticación
+from application.converters.auth.user_response_converters import (
+    UserEntityToDTOConverter,
+)
 from application.mixins.logging_mixin import LoggingMixin
 from application.use_cases.auth import LoginUserUseCase
-from domain.repositories.user_repository import IUserRepository
 from dtos.request.auth.auth_request_dto import LoginRequestDTO
 from application.services import PasswordHasher
-from infrastructure.db.connection import SessionLocal
-from infrastructure.db.models.user_model import UserModel
+from infrastructure.db.connection import AsyncSessionLocal
 from infrastructure.core.settings_config import settings
 
 from application.enums import UserRole
+from infrastructure.dependencies.converters.auth_converters import get_login_assembler
 from infrastructure.dependencies.repositories.database_repos import get_user_repository
 from infrastructure.dependencies.services.auth_services import get_token_provider
-from infrastructure.dependencies.use_cases.auth_use_cases import get_login_use_case
 
-# Configurar logger
+
+@lru_cache(maxsize=1)
+def _get_cached_services():
+    """Cache de servicios para evitar recrearlos en cada login"""
+    return {
+        'password_hasher': PasswordHasher(),
+        'token_provider': get_token_provider(),
+        'user_converter': UserEntityToDTOConverter(),
+    }
 
 
 class AdminAuth(AuthenticationBackend, LoggingMixin):
-    """Backend de autenticación para el panel de administración usando nuestro sistema"""
+    """Backend de autenticación optimizado para el panel de administración"""
 
     def __init__(self, secret_key: str):
         super().__init__(secret_key)
-        self.password_hasher = PasswordHasher()
-        self.token_provider = get_token_provider()
+        # Usar servicios cacheados
+        cached_services = _get_cached_services()
+        self.password_hasher = cached_services['password_hasher']
+        self.token_provider = cached_services['token_provider']
+        self.user_converter = cached_services['user_converter']
 
     async def login(self, request: Request) -> bool:
-        """Autenticar usuario usando nuestro sistema de login"""
+        """Autenticar usuario usando nuestro sistema de login optimizado"""
+        start_time = time.time()
+        
         try:
             form = await request.form()
             email = form.get("username")
             password = form.get("password")
 
-            self.logger.info(f"Admin login attempt for: {email}")
-
             if not email or not password:
                 self.logger.warning("Admin login failed: missing credentials")
                 return False
 
-            with SessionLocal() as db:
+            # Validación rápida de formato de email
+            if "@" not in email or len(email) < 5:
+                self.logger.warning(f"Admin login failed: invalid email format {email}")
+                return False
+
+            async with AsyncSessionLocal() as db:
                 user_repo = get_user_repository(db)
-                login_use_case = get_login_use_case(
+                login_assembler = get_login_assembler()
+
+                login_use_case = LoginUserUseCase(
                     user_repo=user_repo,
                     password_hasher=self.password_hasher,
                     token_provider=self.token_provider,
+                    user_converter=self.user_converter,
+                    login_assembler=login_assembler,
                 )
 
                 login_request = LoginRequestDTO(email=email, password=password)
-                response = login_use_case.execute(login_request)
+                response = await login_use_case.execute(login_request)
 
                 if response.user.role != UserRole.ADMIN:
-                    self.logger.warning(
-                        f"Admin login failed: user {email} is not an admin"
-                    )
+                    self.logger.warning(f"Admin login failed: user {email} is not an admin")
                     return False
 
-                request.session.update(
-                    {
-                        "token": response.token.access_token,
-                        "user_id": response.user.user_id,
-                        "email": response.user.email,
-                    }
-                )
+                request.session.update({
+                    "token": response.token.access_token,
+                    "user_id": response.user.user_id,
+                    "email": response.user.email,
+                })
 
-                self.logger.info(f"Admin login successful for: {email}")
+                elapsed_time = time.time() - start_time
+                self.logger.info(f"Admin login successful for: {email} ({elapsed_time:.2f}s)")
                 return True
 
         except Exception as e:
-            self.logger.error(f"Admin login error: {str(e)}")
+            elapsed_time = time.time() - start_time
+            self.logger.error(f"Admin login error: {str(e)} ({elapsed_time:.2f}s)")
             return False
 
     async def logout(self, request: Request) -> bool:
-        """Cerrar sesión del administrador"""
+        """Cerrar sesión del administrador optimizado"""
         try:
             user_email = request.session.get("email", "unknown")
             request.session.clear()
@@ -84,37 +105,51 @@ class AdminAuth(AuthenticationBackend, LoggingMixin):
             return False
 
     async def authenticate(self, request: Request) -> bool:
-        """Verificar si el usuario está autenticado"""
+        """Verificar si el usuario está autenticado de forma optimizada"""
         try:
             token = request.session.get("token")
             user_email = request.session.get("email")
 
             if not token or not user_email:
-                self.logger.debug(
-                    "Admin authentication failed: no token or email in session"
-                )
                 return False
 
+            # Verificación rápida del token sin logs innecesarios
             if not self.token_provider.verify_token(token):
-                self.logger.warning(
-                    f"Admin authentication failed: invalid token for {user_email}"
-                )
                 request.session.clear()
                 return False
 
-            with SessionLocal() as db:
-                user_repo = get_user_repository(db)  # ✅ FIX
-                user = user_repo.get_by_email(user_email)
+            # Cache simple en memoria para evitar consultas DB frecuentes
+            cache_key = f"{user_email}_{hash(token) % 1000}"
+            if not hasattr(self, '_auth_cache'):
+                self._auth_cache = {}
+            
+            # Si está en cache y no ha expirado (5 minutos)
+            if cache_key in self._auth_cache:
+                cache_time, is_valid = self._auth_cache[cache_key]
+                if time.time() - cache_time < 300:  # 5 minutos
+                    return is_valid
 
-                if not user:
-                    self.logger.warning(
-                        f"Admin authentication failed: user not found {user_email}"
-                    )
+            # Verificar en base de datos solo si no está en cache
+            async with AsyncSessionLocal() as db:
+                user_repo = get_user_repository(db)
+                user = await user_repo.get_by_email(user_email)
+                
+                is_valid = user is not None and user.role == UserRole.ADMIN
+                
+                # Guardar en cache
+                self._auth_cache[cache_key] = (time.time(), is_valid)
+                
+                # Limpiar cache si crece mucho (mantener solo 100 entradas)
+                if len(self._auth_cache) > 100:
+                    oldest_keys = sorted(self._auth_cache.keys(), 
+                                       key=lambda k: self._auth_cache[k][0])[:50]
+                    for key in oldest_keys:
+                        del self._auth_cache[key]
+
+                if not is_valid:
                     request.session.clear()
-                    return False
 
-            self.logger.debug(f"Admin authentication successful for: {user_email}")
-            return True
+                return is_valid
 
         except Exception as e:
             self.logger.error(f"Admin authentication error: {str(e)}")

@@ -40,9 +40,7 @@ game_router = APIRouter(
     ],
 )
 
-game_router.include_router(
-    game_review_router, prefix="/{game_id}/reviews", tags=["Game Reviews"]
-)
+game_router.include_router(game_review_router, prefix="/{game_id}/reviews")
 
 # Configurar logger
 logger = get_logger("game_routes")

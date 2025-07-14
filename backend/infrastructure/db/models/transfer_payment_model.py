@@ -2,6 +2,8 @@ from sqlalchemy import Column, String, Float, Text, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.types import Enum as SqlEnum
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
+
 import uuid
 
 from application.enums import TransferStateEnum

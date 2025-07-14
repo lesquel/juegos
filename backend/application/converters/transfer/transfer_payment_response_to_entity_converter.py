@@ -4,7 +4,7 @@ Conversor de TransferPaymentResponseDTO a TransferPaymentEntity.
 
 from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
-from dtos.response.user.transfer_payment_response_dto import TransferPaymentResponseDTO
+from dtos.response.transfer.transfer_payment_response_dto import TransferPaymentResponseDTO
 
 
 class TransferPaymentResponseToEntityConverter(LoggingMixin):

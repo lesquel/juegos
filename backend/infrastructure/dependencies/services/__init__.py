@@ -1,7 +1,4 @@
-"""
-Módulo de exportación para proveedores de servicios.
 
-Exporta todos los proveedores de servicios.
-"""
 
 from .auth_services import *
+from .file_upload_service import get_file_upload_service

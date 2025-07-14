@@ -1,16 +1,35 @@
 from sqladmin import ModelView
+from markupsafe import Markup
+from starlette.requests import Request
+
 from infrastructure.db.models.category_model import CategoryModel
+from app_setup.admin.mixins import ImageUploadAdminMixin
 
 
-class CategoryAdmin(ModelView, model=CategoryModel):
+class CategoryAdmin(ImageUploadAdminMixin, ModelView, model=CategoryModel):
     """Panel de administración para categorías"""
-    
+
     # Configuración de categoría/módulo
     name = "Categoría"
     name_plural = "Categorías"
     icon = "fa-solid fa-tags"
 
+    # Propiedades requeridas por ImageUploadMixin
+    @property
+    def image_field_name(self) -> str:
+        return "category_img"
 
+    @property
+    def image_subfolder(self) -> str:
+        return "categories"
+
+    @property
+    def primary_key_field(self):
+        return CategoryModel.category_id
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setup_image_handling()
 
     # Configuración de columnas
     column_list = [
@@ -43,7 +62,10 @@ class CategoryAdmin(ModelView, model=CategoryModel):
     ]
 
     # Columnas para búsqueda
-    column_searchable_list = [CategoryModel.category_name, CategoryModel.category_description]
+    column_searchable_list = [
+        CategoryModel.category_name,
+        CategoryModel.category_description,
+    ]
 
     # Columnas para filtrado
     column_filters = [
@@ -62,8 +84,7 @@ class CategoryAdmin(ModelView, model=CategoryModel):
     # Configuración de paginación
     page_size = 25
     page_size_options = [25, 50, 100]
-    
-    
+
     # Personalizar etiquetas de columnas
     column_labels = {
         CategoryModel.category_id: "ID de Categoría",
@@ -79,8 +100,14 @@ class CategoryAdmin(ModelView, model=CategoryModel):
     column_formatters = {
         CategoryModel.created_at: lambda m, a: m.created_at.strftime("%d/%m/%Y %H:%M"),
         CategoryModel.updated_at: lambda m, a: m.updated_at.strftime("%d/%m/%Y %H:%M"),
-        CategoryModel.category_description: lambda m, a: (m.category_description[:50] + "...") if m.category_description and len(m.category_description) > 50 else m.category_description,
-        CategoryModel.games: lambda m, a: ", ".join([game.game_name for game in m.games]) if m.games else "Sin juegos",
+        CategoryModel.category_description: lambda m, a: (
+            (m.category_description[:50] + "...")
+            if m.category_description and len(m.category_description) > 50
+            else m.category_description
+        ),
+        CategoryModel.games: lambda m, a: (
+            ", ".join([game.game_name for game in m.games]) if m.games else "Sin juegos"
+        ),
     }
 
     # Configuración de exportación

@@ -1,17 +1,27 @@
 from abc import abstractmethod
-from typing import Optional, List
+from typing import Optional, List, Tuple
 
 from domain.entities import TransferPaymentEntity
 from interfaces.api.common.filters.specific_filters import TransferPaymentFilterParams
 from application.enums import TransferStateEnum
+from interfaces.api.common.pagination import PaginationParams
+from interfaces.api.common.sort import SortParams
 from .base_repository import IBaseRepository
 
 
-class ITransferPaymentRepository(IBaseRepository[TransferPaymentEntity, TransferPaymentFilterParams]):
+class ITransferPaymentRepository(
+    IBaseRepository[TransferPaymentEntity, TransferPaymentFilterParams]
+):
     """Repositorio específico para transferencias de pago"""
 
     @abstractmethod
-    async def get_by_user_id(self, user_id: str) -> List[TransferPaymentEntity]:
+    async def get_by_user_id(
+        self,
+        user_id: str,
+        pagination: PaginationParams,
+        filters: TransferPaymentFilterParams,
+        sort_params: SortParams,
+    ) -> Tuple[List[TransferPaymentEntity], int]:
         """
         Obtiene todas las transferencias de un usuario.
 
@@ -24,7 +34,25 @@ class ITransferPaymentRepository(IBaseRepository[TransferPaymentEntity, Transfer
         pass
 
     @abstractmethod
-    async def get_by_state(self, state: TransferStateEnum) -> List[TransferPaymentEntity]:
+    async def get_by_user_and_transfer_id(
+        self, user_id: str, transfer_id: str
+    ) -> Optional[TransferPaymentEntity]:
+        """
+        Obtiene una transferencia de un usuario por su ID.
+
+        Args:
+            user_id: El ID del usuario
+            transfer_id: El ID de la transferencia
+
+        Returns:
+            Optional[TransferPaymentEntity]: La transferencia del usuario o None si no existe
+        """
+        pass
+
+    @abstractmethod
+    async def get_by_state(
+        self, state: TransferStateEnum
+    ) -> List[TransferPaymentEntity]:
         """
         Obtiene todas las transferencias por estado.
 
@@ -37,7 +65,9 @@ class ITransferPaymentRepository(IBaseRepository[TransferPaymentEntity, Transfer
         pass
 
     @abstractmethod
-    async def update_state(self, transfer_id: str, new_state: TransferStateEnum) -> Optional[TransferPaymentEntity]:
+    async def update_state(
+        self, transfer_id: str, new_state: TransferStateEnum
+    ) -> Optional[TransferPaymentEntity]:
         """
         Actualiza el estado de una transferencia.
 
