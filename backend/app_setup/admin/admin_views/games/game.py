@@ -2,7 +2,7 @@ from sqladmin import ModelView
 from markupsafe import Markup
 from starlette.requests import Request
 
-from infrastructure.db.models.game_model import GameModel
+from infrastructure.db.models import GameModel
 from app_setup.admin.mixins import ImageUploadAdminMixin
 
 

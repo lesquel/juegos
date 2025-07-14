@@ -4,10 +4,9 @@ from sqlalchemy.types import Enum as SqlEnum
 from sqlalchemy.orm import relationship
 import uuid
 
-from ..base import Base
+from ...base import Base
 from application.enums import UserRole
-
-from .time_stamp_model_mixin import TimeStampModelMixin
+from ..common import TimeStampModelMixin
 
 
 class UserModel(Base, TimeStampModelMixin):
@@ -40,7 +39,6 @@ class UserModel(Base, TimeStampModelMixin):
     match_participations = relationship(
         "MatchParticipationModel", back_populates="user", cascade="all, delete-orphan"
     )
-    
     
     FILTERS = {
         "email": lambda query, value: query.filter(UserModel.email.ilike(f"%{value}%")),

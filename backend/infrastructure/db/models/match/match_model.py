@@ -3,8 +3,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 import uuid
 
-from ..base import Base
-from .time_stamp_model_mixin import TimeStampModelMixin
+from ...base import Base
+from ..common import TimeStampModelMixin
 
 
 class MatchModel(Base, TimeStampModelMixin):
@@ -27,7 +27,6 @@ class MatchModel(Base, TimeStampModelMixin):
     winner = relationship("UserModel", back_populates="won_matches", foreign_keys=[winner_id])
 
     participants = relationship("MatchParticipationModel", back_populates="match", cascade="all, delete-orphan")
-    
 
     def __repr__(self):
         winner_info = f", winner={self.winner_id}" if self.winner_id else ", no winner"

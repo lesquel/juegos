@@ -7,7 +7,7 @@ from sqlalchemy import select
 from domain.repositories import IUserRepository
 from domain.entities import UserEntity
 from interfaces.api.common.filters.specific_filters import UserFilterParams
-from ..models.user_model import UserModel
+from ..models import UserModel
 from .base_repository import BasePostgresRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 

@@ -1,5 +1,5 @@
 from sqladmin import ModelView
-from infrastructure.db.models.game_review_model import GameReviewModel
+from infrastructure.db.models import GameReviewModel
 
 
 class GameReviewAdmin(ModelView, model=GameReviewModel):

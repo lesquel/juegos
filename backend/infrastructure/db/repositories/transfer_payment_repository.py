@@ -4,7 +4,7 @@ from sqlalchemy import select
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
 from domain.exceptions.transfer import TransferNotFoundError
 from domain.repositories.transfer_payment_repository import ITransferPaymentRepository
-from infrastructure.db.models.transfer_payment_model import TransferPaymentModel
+from infrastructure.db.models import TransferPaymentModel
 from infrastructure.db.repositories.base_repository import (
     BasePostgresRepository,
 )

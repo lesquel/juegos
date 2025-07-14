@@ -1,5 +1,5 @@
 from sqladmin import ModelView
-from infrastructure.db.models.match_model import MatchModel
+from infrastructure.db.models import MatchModel
 
 
 class MatchAdmin(ModelView, model=MatchModel):

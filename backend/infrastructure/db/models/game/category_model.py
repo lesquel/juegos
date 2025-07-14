@@ -3,11 +3,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
-from ..base import Base
-
-
-from .associations import game_categories
-from .time_stamp_model_mixin import TimeStampModelMixin
+from ...base import Base
+from ..common import TimeStampModelMixin, game_categories
 
 
 class CategoryModel(Base, TimeStampModelMixin):

@@ -9,7 +9,7 @@ from interfaces.api.common.sort import SortParams
 from interfaces.api.common.pagination import PaginationParams
 from interfaces.api.common.filters.specific_filters import GameFilterParams
 from .base_repository import BaseReadOnlyPostgresRepository
-from ..models.game_model import GameModel
+from ..models import GameModel
 
 
 class PostgresGameRepository(

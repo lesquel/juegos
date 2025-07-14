@@ -1,5 +1,5 @@
 from sqladmin import ModelView
-from infrastructure.db.models.match_participation_model import MatchParticipationModel
+from infrastructure.db.models import MatchParticipationModel
 
 
 class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):

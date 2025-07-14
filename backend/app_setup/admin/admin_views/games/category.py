@@ -2,7 +2,7 @@ from sqladmin import ModelView
 from markupsafe import Markup
 from starlette.requests import Request
 
-from infrastructure.db.models.category_model import CategoryModel
+from infrastructure.db.models import CategoryModel
 from app_setup.admin.mixins import ImageUploadAdminMixin
 
 

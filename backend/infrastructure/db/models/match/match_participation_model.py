@@ -3,8 +3,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 import uuid
 
-from ..base import Base
-from .time_stamp_model_mixin import TimeStampModelMixin
+from ...base import Base
+from ..common import TimeStampModelMixin
 
 
 class MatchParticipationModel(Base, TimeStampModelMixin):
