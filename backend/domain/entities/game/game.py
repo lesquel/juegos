@@ -16,6 +16,7 @@ class GameEntity(TimeStampEntityMixin):
         game_description: str,
         game_url: str,
         game_img: str,
+        game_capacity: int,
         categories: Optional[list[str]],  # Solo IDs de categorías para eficiencia
         created_at: Optional[str],
         updated_at: Optional[str],
@@ -27,6 +28,7 @@ class GameEntity(TimeStampEntityMixin):
         self.game_description = game_description
         self.game_url = game_url
         self.game_img = game_img
+        self.game_capacity = game_capacity  
         self.categories = categories if categories is not None else []  # Lista de IDs de categorías
 
     def add_category_id(self, category_id: str):

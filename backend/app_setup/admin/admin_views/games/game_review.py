@@ -13,8 +13,8 @@ class GameReviewAdmin(ModelView, model=GameReviewModel):
     # Configuración de columnas
     column_list = [
         GameReviewModel.review_id,
-        GameReviewModel.game_id,
-        GameReviewModel.user_id,
+        GameReviewModel.game,
+        GameReviewModel.user,
         GameReviewModel.rating,
         GameReviewModel.comment,
         GameReviewModel.created_at,
@@ -22,20 +22,12 @@ class GameReviewAdmin(ModelView, model=GameReviewModel):
     ]
 
     # Columnas a mostrar en detalle
-    column_details_list = [
-        GameReviewModel.review_id,
-        GameReviewModel.game_id,
-        GameReviewModel.user_id,
-        GameReviewModel.rating,
-        GameReviewModel.comment,
-        GameReviewModel.created_at,
-        GameReviewModel.updated_at,
-    ]
+    column_details_list = column_list
 
     # Columnas editables
     form_columns = [
-        GameReviewModel.game_id,
-        GameReviewModel.user_id,
+        GameReviewModel.game,
+        GameReviewModel.user,
         GameReviewModel.rating,
         GameReviewModel.comment,
     ]
@@ -46,8 +38,8 @@ class GameReviewAdmin(ModelView, model=GameReviewModel):
     # Columnas para filtrado
     column_filters = [
         GameReviewModel.rating,
-        GameReviewModel.game_id,
-        GameReviewModel.user_id,
+        GameReviewModel.game,
+        GameReviewModel.user,
         GameReviewModel.created_at,
         GameReviewModel.updated_at,
     ]
@@ -66,8 +58,8 @@ class GameReviewAdmin(ModelView, model=GameReviewModel):
     # Personalizar etiquetas de columnas
     column_labels = {
         GameReviewModel.review_id: "ID de Reseña",
-        GameReviewModel.game_id: "ID del Juego",
-        GameReviewModel.user_id: "ID del Usuario",
+        GameReviewModel.game: "Juego",
+        GameReviewModel.user: "Usuario",
         GameReviewModel.rating: "Calificación",
         GameReviewModel.comment: "Comentario",
         GameReviewModel.created_at: "Fecha de Creación",
@@ -76,6 +68,8 @@ class GameReviewAdmin(ModelView, model=GameReviewModel):
 
     # Formatear columnas
     column_formatters = {
+        GameReviewModel.game: lambda m, a: m.game.game_name if m.game else "N/A",
+        GameReviewModel.user: lambda m, a: m.user.email if m.user else "N/A",
         GameReviewModel.created_at: lambda m, a: m.created_at.strftime("%d/%m/%Y %H:%M"),
         GameReviewModel.updated_at: lambda m, a: m.updated_at.strftime("%d/%m/%Y %H:%M"),
         GameReviewModel.comment: lambda m, a: (m.comment[:50] + "...") if m.comment and len(m.comment) > 50 else m.comment,

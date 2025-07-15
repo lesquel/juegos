@@ -40,6 +40,7 @@ class PostgresMatchRepository(
             sort_params=sort_params,
             to_entity=self._model_to_entity,
             custom_filter_fn=lambda stmt: stmt.where(self.model.game_id == game_id),
+            load_options=self.get_load_options(),
         )
 
     async def get_match_participants(self, match_id: str) -> List[str]:

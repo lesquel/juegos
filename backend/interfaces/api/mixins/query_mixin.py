@@ -10,7 +10,7 @@ from .filter_mixin import FilterMixin
 from .sort_mixin import SortingMixin
 from .pagination_mixin import PaginationMixin
 
-from typing import Optional, Type, List, Tuple
+from typing import Any, Optional, Type, List, Tuple
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
@@ -25,12 +25,15 @@ class QueryMixin(FilterMixin, SortingMixin, PaginationMixin):
         sort_params: Optional[SortParams] = None,
         to_entity: Optional[callable] = None,
         custom_filter_fn: Optional[Callable[[Query], Query]] = None,
+        load_options: Optional[List[Any]] = None,
     ) -> Tuple[List, int]:
         """
         Consulta genérica con filtros, ordenamiento y paginación.
         """
         stmt = select(model)
 
+        if load_options:
+            stmt = stmt.options(*load_options)
         if filters:
             stmt = self.apply_filters(stmt, model, filters)
         if custom_filter_fn:

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Text
+from sqlalchemy import Column, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
@@ -17,12 +17,18 @@ class GameModel(Base, TimeStampModelMixin):
     game_description = Column(Text, nullable=False)
     game_url = Column(String(255), nullable=False)
     game_img = Column(String(255))
-    
+
+    game_capacity = Column(Integer, nullable=False, default=1, index=True)
+
     categories = relationship(
         "CategoryModel", secondary=game_categories, back_populates="games"
     )
-    reviews = relationship("GameReviewModel", back_populates="game", cascade="all, delete-orphan")
-    matches = relationship("MatchModel", back_populates="game", cascade="all, delete-orphan")
+    reviews = relationship(
+        "GameReviewModel", back_populates="game", cascade="all, delete-orphan"
+    )
+    matches = relationship(
+        "MatchModel", back_populates="game", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<GameModel(id={self.game_id}, name='{self.game_name}')>"

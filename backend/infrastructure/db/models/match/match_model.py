@@ -3,6 +3,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 import uuid
 
+from infrastructure.db.models import user
+
 from ...base import Base
 from ..common import TimeStampModelMixin
 
@@ -28,7 +30,6 @@ class MatchModel(Base, TimeStampModelMixin):
         nullable=True,
     )
 
-
     base_bet_amount = Column(
         Float, default=0.0, comment="Monto base apostado en la partida"
     )
@@ -40,6 +41,10 @@ class MatchModel(Base, TimeStampModelMixin):
 
     participants = relationship(
         "MatchParticipationModel", back_populates="match", cascade="all, delete-orphan"
+    )
+
+    creator = relationship(
+        "UserModel", back_populates="created_matches", foreign_keys=[created_by_id]
     )
 
     def __repr__(self):

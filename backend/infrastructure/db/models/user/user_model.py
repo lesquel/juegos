@@ -40,6 +40,11 @@ class UserModel(Base, TimeStampModelMixin):
         "MatchParticipationModel", back_populates="user", cascade="all, delete-orphan"
     )
 
+    created_matches = relationship(
+        "MatchModel",
+        back_populates="creator",
+        foreign_keys="[MatchModel.created_by_id]",
+    )
 
     def __repr__(self):
         return f"{self.email}"

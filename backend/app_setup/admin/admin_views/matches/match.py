@@ -4,7 +4,7 @@ from infrastructure.db.models import MatchModel
 
 class MatchAdmin(ModelView, model=MatchModel):
     """Panel de administración para partidas"""
-    
+
     # Configuración de categoría/módulo
     name = "Partida"
     name_plural = "Partidas"
@@ -13,36 +13,27 @@ class MatchAdmin(ModelView, model=MatchModel):
     # Configuración de columnas
     column_list = [
         MatchModel.match_id,
-        MatchModel.game_id,
-        MatchModel.winner_id,
-        MatchModel.created_by_id,
+        MatchModel.game,
+        MatchModel.winner,
+        MatchModel.creator,
         MatchModel.created_at,
         MatchModel.updated_at,
     ]
 
     # Columnas a mostrar en detalle
-    column_details_list = [
-        MatchModel.match_id,
-        MatchModel.game_id,
-        MatchModel.winner_id,
-        MatchModel.created_by_id,
-        
-        MatchModel.created_at,
-        MatchModel.updated_at,
-    ]
+    column_details_list = column_list
 
     # Columnas editables
     form_columns = [
-        MatchModel.game_id,
-        MatchModel.winner_id,
+        MatchModel.game,
+        MatchModel.winner,
     ]
 
     # Columnas para filtrado
     column_filters = [
-        MatchModel.game_id,
-        MatchModel.winner_id,
-        MatchModel.created_by_id,
-
+        MatchModel.game,
+        MatchModel.winner,
+        MatchModel.creator,
         MatchModel.created_at,
         MatchModel.updated_at,
     ]
@@ -60,15 +51,18 @@ class MatchAdmin(ModelView, model=MatchModel):
     # Personalizar etiquetas de columnas
     column_labels = {
         MatchModel.match_id: "ID de Partida",
-        MatchModel.game_id: "ID del Juego",
-        MatchModel.winner_id: "ID del Ganador",
-        MatchModel.created_by_id: "Creado por",
+        MatchModel.game: "Juego",
+        MatchModel.winner: "Ganador",
+        MatchModel.creator: "Creador",
         MatchModel.created_at: "Fecha de Creación",
         MatchModel.updated_at: "Última Actualización",
     }
 
     # Formatear columnas
     column_formatters = {
+        MatchModel.winner: lambda m, a: m.winner.email if m.winner else "N/A",
+        MatchModel.creator: lambda m, a: m.creator.email if m.creator else "N/A",
+        MatchModel.game: lambda m, a: m.game.game_name if m.game else "N/A",
         MatchModel.created_at: lambda m, a: m.created_at.strftime("%d/%m/%Y %H:%M"),
         MatchModel.updated_at: lambda m, a: m.updated_at.strftime("%d/%m/%Y %H:%M"),
     }
