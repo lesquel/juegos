@@ -100,6 +100,7 @@ class PostgresGameRepository(
             game_description=model.game_description,
             game_img=model.game_img,
             game_url=model.game_url,
+            game_capacity=model.game_capacity,
             categories=category_ids,
             created_at=model.created_at,
             updated_at=model.updated_at,
