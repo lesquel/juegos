@@ -1,7 +1,8 @@
 from domain.repositories.match_repository import IMatchRepository
 from domain.repositories.user_repository import IUserRepository
+from domain.services.user_balance_service import UserBalanceService
 from domain.exceptions.match import MatchNotFoundError, MatchJoinError
-from domain.exceptions.user import UserNotFoundError
+from domain.exceptions.user import UserNotFoundError, InsufficientBalanceError
 from dtos.request.match.match_request_dto import JoinMatchRequestDTO
 from dtos.response.match.match_response_dto import MatchResponseDTO
 from dtos.response.user.user_response_dto import UserBaseResponseDTO
@@ -46,6 +47,7 @@ class JoinMatchUseCase(BaseUseCase[JoinMatchRequestDTO, MatchResponseDTO]):
         Raises:
             MatchNotFoundError: Si la partida no existe
             UserNotFoundError: Si el usuario no existe
+            InsufficientBalanceError: Si el usuario no tiene saldo suficiente
             MatchJoinError: Si no se puede unir a la partida
         """
         self.logger.info(f"User {current_user.user_id} joining match {match_id}")
@@ -68,11 +70,26 @@ class JoinMatchUseCase(BaseUseCase[JoinMatchRequestDTO, MatchResponseDTO]):
             self.logger.warning(f"User {current_user.user_id} already participating in match {match_id}")
             raise MatchJoinError("User is already participating in this match")
 
-        # Validar apuesta si se especifica
+        # Validar saldo para la apuesta
         bet_amount = join_data.bet_amount if join_data.bet_amount is not None else 0.0
-        if bet_amount > 0 and user.virtual_currency < bet_amount:
-            self.logger.warning(f"Insufficient balance for user {current_user.user_id}")
-            raise MatchJoinError("Insufficient virtual currency for bet")
+        
+        if bet_amount > 0:
+            if not UserBalanceService.has_sufficient_balance(user, bet_amount):
+                self.logger.warning(
+                    f"User {current_user.user_id} has insufficient balance. "
+                    f"Required: {bet_amount}, Available: {user.virtual_currency}"
+                )
+                raise InsufficientBalanceError(
+                    user.virtual_currency,
+                    bet_amount,
+                    f"Insufficient balance to join match. Required: {bet_amount}, Available: {user.virtual_currency}"
+                )
+            
+            # Deducir el monto de la apuesta del balance del usuario
+            UserBalanceService.deduct_balance(user, bet_amount)
+            await self.user_repo.update(user)
+            
+            self.logger.info(f"Deducted {bet_amount} from user {current_user.user_id} balance")
 
         # Unirse a la partida
         updated_match = await self.match_repo.join_match(

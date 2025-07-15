@@ -31,6 +31,7 @@ from infrastructure.logging import get_logger
 
 
 from .game_review_routes import game_review_router
+from .match_routes import match_router
 
 
 game_router = APIRouter(
@@ -41,7 +42,7 @@ game_router = APIRouter(
 )
 
 game_router.include_router(game_review_router, prefix="/{game_id}/reviews")
-
+game_router.include_router(match_router, prefix="/{game_id}/matches")
 # Configurar logger
 logger = get_logger("game_routes")
 

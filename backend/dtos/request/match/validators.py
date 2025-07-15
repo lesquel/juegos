@@ -15,21 +15,7 @@ class MatchDTOValidators:
             return round(value, 2)
         return value
 
-    @staticmethod
-    def validate_end_after_start(end_time: str, start_time: str) -> str:
-        """Valida que la hora de finalización sea posterior a la hora de inicio."""
-        if start_time and end_time:
-            try:
-                start = datetime.fromisoformat(start_time.replace("Z", "+00:00"))
-                end = datetime.fromisoformat(end_time.replace("Z", "+00:00"))
-                if end <= start:
-                    raise ValueError(
-                        "La hora de finalización debe ser posterior a la hora de inicio"
-                    )
-            except ValueError as e:
-                if "formato" not in str(e):
-                    raise e
-        return end_time
+
 
 
 # Funciones compatibles con field_validator de Pydantic v2

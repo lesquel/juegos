@@ -4,3 +4,4 @@ from .game_repository import PostgresGameRepository
 from .category_repository import PostgresCategoryRepository
 from .game_review_repository import PostgresGameReviewRepository
 from .transfer_payment_repository import PostgresTransferPaymentRepository
+from .match_repository import PostgresMatchRepository

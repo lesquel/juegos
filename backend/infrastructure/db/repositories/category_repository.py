@@ -56,7 +56,6 @@ class PostgresCategoryRepository(
             ).where(self.model.games.any(game_id=game_id)),
         )
 
-
     async def get_by_id(self, entity_id: str) -> Optional[CategoryEntity]:
         """Obtiene una categoría por ID con eager loading."""
         self.logger.debug(f"Getting category by ID: {entity_id}")
@@ -74,8 +73,6 @@ class PostgresCategoryRepository(
         else:
             self.logger.debug(f"No category found with ID: {entity_id}")
             return None
-
-
 
     def _model_to_entity(self, model: CategoryModel) -> CategoryEntity:
         """Convierte CategoryModel a CategoryEntity."""

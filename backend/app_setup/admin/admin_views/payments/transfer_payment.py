@@ -49,7 +49,6 @@ class TransferPaymentAdmin(
     # Campos editables
     form_columns = [
         TransferPaymentModel.user_id,
-        TransferPaymentModel.transfer_img,
         TransferPaymentModel.transfer_amount,
         TransferPaymentModel.transfer_state,
         TransferPaymentModel.transfer_description,
@@ -75,7 +74,6 @@ class TransferPaymentAdmin(
     column_labels = {
         TransferPaymentModel.transfer_id: "ID de Transferencia",
         TransferPaymentModel.user: "Email del Usuario",
-        TransferPaymentModel.transfer_img: "Imagen de Transferencia",
         TransferPaymentModel.transfer_amount: "Cantidad",
         TransferPaymentModel.transfer_state: "Estado",
         TransferPaymentModel.transfer_description: "Descripción",

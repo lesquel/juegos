@@ -10,7 +10,9 @@ from infrastructure.logging import log_execution, log_performance
 
 class GetGameReviewsByGameIdUseCase(BaseUseCase):
     def __init__(
-        self, game_review_repo: IGameReviewRepository, game_review_converter: EntityToDTOConverter
+        self,
+        game_review_repo: IGameReviewRepository,
+        game_review_converter: EntityToDTOConverter,
     ):
         super().__init__()
         self.game_review_repo = game_review_repo

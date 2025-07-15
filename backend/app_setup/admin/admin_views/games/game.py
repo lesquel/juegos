@@ -107,7 +107,7 @@ class GameAdmin(ImageUploadAdminMixin, ModelView, model=GameModel):
             if len(m.game_description) > 50
             else m.game_description
         ),
-        GameModel.game_url: lambda m, a: (
+        GameModel.game_url: lambda m, a: Markup(
             f"<a href='{m.game_url}' target='_blank'>{m.game_url[:30]}...</a>"
             if len(m.game_url) > 30
             else f"<a href='{m.game_url}' target='_blank'>{m.game_url}</a>"

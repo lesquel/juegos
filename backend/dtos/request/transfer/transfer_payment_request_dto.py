@@ -3,7 +3,6 @@ from pydantic import BaseModel, Field, field_validator
 from fastapi import UploadFile, File, Form
 
 
-from application.enums.transfer_state import TransferStateEnum
 
 
 class CreateTransferPaymentRequestDTO(BaseModel):

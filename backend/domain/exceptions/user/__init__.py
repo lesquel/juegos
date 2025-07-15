@@ -28,7 +28,7 @@ class UserNotFoundError(DomainException):
 class FailedToRetrieveUserError(DomainException):
     """Error al recuperar usuario"""
 
-    def __init__(
+    def __init(
         self,
         message: str = "Failed to retrieve user",
         identifier: str = "failed_to_retrieve_user",
@@ -60,3 +60,27 @@ class WeakPasswordError(ValidationError):
 
     def __init__(self, message: str = "Password does not meet security requirements"):
         super().__init__(message, "weak_password")
+
+
+class InsufficientBalanceError(DomainException):
+    """Error cuando el usuario no tiene suficiente saldo"""
+
+    def __init__(self, current_balance: float, required_amount: float, message: str = None):
+        self.current_balance = current_balance
+        self.required_amount = required_amount
+
+        if message is None:
+            message = f"Saldo insuficiente. Saldo actual: {current_balance}, cantidad requerida: {required_amount}"
+
+        super().__init__(message)
+
+
+__all__ = [
+    "UserAlreadyExistsError",
+    "UserNotFoundError",
+    "FailedToRetrieveUserError",
+    "InsufficientFundsError",
+    "InvalidEmailFormatError",
+    "WeakPasswordError",
+    "InsufficientBalanceError",
+]

@@ -1,1 +1,2 @@
 from .token_provider import ITokenProvider
+from .balance_validator import IBalanceValidator

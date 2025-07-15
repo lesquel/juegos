@@ -1,4 +1,5 @@
 from typing import Optional
+from decimal import Decimal
 from pydantic import BaseModel, Field, EmailStr, field_validator
 from application.enums import UserRole
 
@@ -35,3 +36,20 @@ class UserChangePasswordRequestDTO(BaseModel):
         if 'new_password' in values and value != values['new_password']:
             raise ValueError('Las contraseñas no coinciden')
         return value
+
+
+class TransferMoneyRequestDTO(BaseModel):
+    """DTO para transferir dinero entre usuarios"""
+
+    from_user_id: str = Field(..., description="ID del usuario que envía el dinero")
+    to_user_id: str = Field(..., description="ID del usuario que recibe el dinero")
+    amount: Decimal = Field(..., gt=0, description="Cantidad a transferir (debe ser mayor a 0)")
+    description: Optional[str] = Field(None, max_length=255, description="Descripción opcional de la transferencia")
+
+    @field_validator('amount')
+    @classmethod
+    def validate_amount(cls, v: Decimal) -> Decimal:
+        """Valida que la cantidad tenga máximo 2 decimales"""
+        if v.as_tuple().exponent < -2:
+            raise ValueError('Amount cannot have more than 2 decimal places')
+        return v

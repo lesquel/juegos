@@ -45,3 +45,34 @@ class AlreadyParticipatingError(DomainException):
         identifier: str = "already_participating",
     ):
         super().__init__(message, 409, identifier)
+
+
+class MatchJoinError(DomainException):
+    """Error al unirse a la partida"""
+
+    def __init__(
+        self,
+        message: str = "Error joining match",
+        identifier: str = "match_join_error",
+    ):
+        super().__init__(message, 400, identifier)
+        
+class MatchValidationError(DomainException):
+    """Error de validación de partida"""
+
+    def __init__(
+        self,
+        message: str = "Match validation error",
+        identifier: str = "match_validation_error",
+    ):
+        super().__init__(message, 422, identifier)
+
+class MatchScoreError(DomainException):
+    """Error al actualizar la puntuación de la partida"""
+
+    def __init__(
+        self,
+        message: str = "Error updating match score",
+        identifier: str = "match_score_error",
+    ):
+        super().__init__(message, 400, identifier)

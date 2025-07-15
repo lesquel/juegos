@@ -31,7 +31,7 @@ from infrastructure.db.repositories import (
     PostgresGameRepository,
     PostgresCategoryRepository,
     PostgresGameReviewRepository,
-    # PostgresMatchRepository,
+    PostgresMatchRepository,
     PostgresTransferPaymentRepository,
 )
 
@@ -62,7 +62,9 @@ def get_game_repository(db: AsyncSession = Depends(get_async_db)) -> IGameReposi
     return PostgresGameRepository(db, GameModel)
 
 
-def get_category_repository(db: AsyncSession = Depends(get_async_db)) -> ICategoryRepository:
+def get_category_repository(
+    db: AsyncSession = Depends(get_async_db),
+) -> ICategoryRepository:
     """
     Proveedor para el repositorio de categorías.
 
@@ -75,7 +77,9 @@ def get_category_repository(db: AsyncSession = Depends(get_async_db)) -> ICatego
     return PostgresCategoryRepository(db, CategoryModel)
 
 
-def get_game_review_repository(db: AsyncSession = Depends(get_async_db)) -> IGameReviewRepository:
+def get_game_review_repository(
+    db: AsyncSession = Depends(get_async_db),
+) -> IGameReviewRepository:
     """
     Proveedor para el repositorio de reseñas de juegos.
 
@@ -103,17 +107,17 @@ def get_transfer_payment_repository(
     return PostgresTransferPaymentRepository(db, TransferPaymentModel)
 
 
-# def get_match_repository(db: AsyncSession = Depends(get_async_db)) -> IMatchRepository:
-#     """
-#     Proveedor para el repositorio de partidas.
-# 
-#     Args:
-#         db: Sesión de base de datos inyectada
-# 
-#     Returns:
-#         IMatchRepository: Repositorio de partidas configurado
-#     """
-#     return PostgresMatchRepository(db, MatchModel)
+def get_match_repository(db: AsyncSession = Depends(get_async_db)) -> IMatchRepository:
+    """
+    Proveedor para el repositorio de partidas.
+
+    Args:
+        db: Sesión de base de datos inyectada
+
+    Returns:
+        IMatchRepository: Repositorio de partidas configurado
+    """
+    return PostgresMatchRepository(db, MatchModel)
 
 
 # Exportar todos los proveedores
@@ -122,6 +126,6 @@ __all__ = [
     "get_game_repository",
     "get_category_repository",
     "get_game_review_repository",
-    # "get_match_repository",
+    "get_match_repository",
     "get_transfer_payment_repository",
 ]

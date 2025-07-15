@@ -6,10 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from application.use_cases.match import (
     CreateMatchUseCase,
-    GetAllMatchesUseCase,
+    GetMatchesByGameIdUseCase,
     GetMatchByIdUseCase,
     JoinMatchUseCase,
-    UpdateMatchScoreUseCase,
+    UpdateMatchUseCase,
     GetMatchParticipantsUseCase,
     DeleteMatchUseCase,
 )
@@ -17,8 +17,9 @@ from infrastructure.db.connection import get_async_db
 from infrastructure.dependencies.repositories.database_repos import (
     get_match_repository,
     get_game_repository,
+    get_user_repository,
 )
-from infrastructure.dependencies.converters.match_converters_dependency import (
+from infrastructure.dependencies.converters.match_converters import (
     get_match_converter,
     get_match_participation_converter,
 )
@@ -28,23 +29,24 @@ def get_create_match_use_case(
     session: Annotated[AsyncSession, Depends(get_async_db)],
     match_repository: Annotated[None, Depends(get_match_repository)],
     game_repository: Annotated[None, Depends(get_game_repository)],
+    user_repository: Annotated[None, Depends(get_user_repository)],
     match_converter: Annotated[None, Depends(get_match_converter)],
 ) -> CreateMatchUseCase:
     """Get create match use case dependency."""
     return CreateMatchUseCase(
-        match_repository=match_repository,
-        game_repository=game_repository,
+        match_repo=match_repository,
+        game_repo=game_repository,
+        user_repo=user_repository,
         match_converter=match_converter,
-        session=session,
     )
 
 
 def get_get_all_matches_use_case(
     match_repository: Annotated[None, Depends(get_match_repository)],
     match_converter: Annotated[None, Depends(get_match_converter)],
-) -> GetAllMatchesUseCase:
+) -> GetMatchesByGameIdUseCase:
     """Get all matches use case dependency."""
-    return GetAllMatchesUseCase(
+    return GetMatchesByGameIdUseCase(
         match_repository=match_repository,
         match_converter=match_converter,
     )
@@ -64,13 +66,14 @@ def get_get_match_by_id_use_case(
 def get_join_match_use_case(
     session: Annotated[AsyncSession, Depends(get_async_db)],
     match_repository: Annotated[None, Depends(get_match_repository)],
-    match_participation_converter: Annotated[None, Depends(get_match_participation_converter)],
+    user_repository: Annotated[None, Depends(get_user_repository)],
+    match_converter: Annotated[None, Depends(get_match_converter)],
 ) -> JoinMatchUseCase:
     """Get join match use case dependency."""
     return JoinMatchUseCase(
-        match_repository=match_repository,
-        match_participation_converter=match_participation_converter,
-        session=session,
+        match_repo=match_repository,
+        user_repo=user_repository,
+        match_converter=match_converter,
     )
 
 
@@ -78,9 +81,9 @@ def get_update_match_score_use_case(
     session: Annotated[AsyncSession, Depends(get_async_db)],
     match_repository: Annotated[None, Depends(get_match_repository)],
     match_converter: Annotated[None, Depends(get_match_converter)],
-) -> UpdateMatchScoreUseCase:
+) -> UpdateMatchUseCase:
     """Get update match score use case dependency."""
-    return UpdateMatchScoreUseCase(
+    return UpdateMatchUseCase(
         match_repository=match_repository,
         match_converter=match_converter,
         session=session,

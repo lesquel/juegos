@@ -1,6 +1,6 @@
 from domain.repositories.match_repository import IMatchRepository
 from domain.exceptions.match import MatchNotFoundError, MatchScoreError
-from dtos.request.match.match_request_dto import UpdateMatchScoreRequestDTO
+from dtos.request.match.match_request_dto import UpdateMatchRequestDTO
 from dtos.response.match.match_response_dto import MatchResponseDTO
 from dtos.response.user.user_response_dto import UserBaseResponseDTO
 from application.interfaces.base_use_case import BaseUseCase
@@ -8,7 +8,7 @@ from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from infrastructure.logging import log_execution, log_performance
 
 
-class UpdateMatchScoreUseCase(BaseUseCase[UpdateMatchScoreRequestDTO, MatchResponseDTO]):
+class UpdateMatchUseCase(BaseUseCase[UpdateMatchRequestDTO, MatchResponseDTO]):
     """Caso de uso para actualizar la puntuación en una partida."""
 
     def __init__(
@@ -25,7 +25,7 @@ class UpdateMatchScoreUseCase(BaseUseCase[UpdateMatchScoreRequestDTO, MatchRespo
     async def execute(
         self,
         match_id: str,
-        score_data: UpdateMatchScoreRequestDTO,
+        score_data: UpdateMatchRequestDTO,
         current_user: UserBaseResponseDTO,
     ) -> MatchResponseDTO:
         """

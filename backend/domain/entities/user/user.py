@@ -28,4 +28,4 @@ class UserEntity(TimeStampEntityMixin):
         self.role = role
 
     def __repr__(self):
-        return f"User(user_id={self.user_id}, email='{self.email}')"
+        return f"UserEntity(user_id={self.user_id}, email={self.email})"
