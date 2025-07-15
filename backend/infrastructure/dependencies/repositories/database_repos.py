@@ -13,6 +13,7 @@ from domain.repositories import (
     IGameRepository,
     ICategoryRepository,
     IGameReviewRepository,
+    IMatchRepository,
     ITransferPaymentRepository,
 )
 from infrastructure.db.connection import get_async_db
@@ -22,6 +23,7 @@ from infrastructure.db.models import (
     GameModel,
     CategoryModel,
     GameReviewModel,
+    MatchModel,
     TransferPaymentModel,
 )
 from infrastructure.db.repositories import (
@@ -29,6 +31,7 @@ from infrastructure.db.repositories import (
     PostgresGameRepository,
     PostgresCategoryRepository,
     PostgresGameReviewRepository,
+    # PostgresMatchRepository,
     PostgresTransferPaymentRepository,
 )
 
@@ -100,11 +103,25 @@ def get_transfer_payment_repository(
     return PostgresTransferPaymentRepository(db, TransferPaymentModel)
 
 
+# def get_match_repository(db: AsyncSession = Depends(get_async_db)) -> IMatchRepository:
+#     """
+#     Proveedor para el repositorio de partidas.
+# 
+#     Args:
+#         db: Sesión de base de datos inyectada
+# 
+#     Returns:
+#         IMatchRepository: Repositorio de partidas configurado
+#     """
+#     return PostgresMatchRepository(db, MatchModel)
+
+
 # Exportar todos los proveedores
 __all__ = [
     "get_user_repository",
     "get_game_repository",
     "get_category_repository",
     "get_game_review_repository",
+    # "get_match_repository",
     "get_transfer_payment_repository",
 ]
