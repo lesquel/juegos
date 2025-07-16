@@ -1,0 +1,10 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { ListTransfer } from "@modules/transfers/components/ListTransfer";
+---
+
+<Layout>
+  <main class="h-full flex-grow">
+    <ListTransfer client:load />
+  </main>
+</Layout>

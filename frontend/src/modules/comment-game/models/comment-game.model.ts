@@ -1,11 +1,20 @@
+import type { Info } from "@models/info.model";
+
 export interface CommentGameCreate {
-  comment_game_content: string;
-  game_id: number;
-  user_id: number;
+  comment: string;
 }
 
-export interface CommentGame extends CommentGameCreate {
-  comment_game_id: number;
-  create_at: Date;
-  update_at: Date;
+export interface CommentGame {
+  created_at: Date;
+  updated_at: Date;
+  review_id: string;
+  game_id: string;
+  user_id: string;
+  rating: 1;
+  comment: string;
+}
+
+export interface CommentGameList {
+  info: Info;
+  results: CommentGame[];
 }

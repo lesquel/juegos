@@ -25,10 +25,11 @@ export class AuthClientData {
     return useMutation({
       mutationFn: async (data: LoginModel) => {
         try {
-          const response = await axios.post<UserMe>(
+          const response = await axios.post(
             `${AuthClientData.baseUrl}/auth/login`,
             data
           );
+          console.log(response.data);
           return UserAdapter.adaptMe(response.data);
         } catch (error: any) {
           throw ErrorResponseAdapter.adaptErrorResponseErrorsArray(
