@@ -5,14 +5,14 @@ export class UserAdapter {
     return {
       message: user.message,
       access_token: {
-        access_token: user.data.access_token,
-        token_type: user.data.token_type,
+        access_token: user.token.access_token,
+        token_type: user.token.token_type,
       },
       user: {
-        user_id: user.data.user.user_id,
-        username: user.data.user.username,
-        email: user.data.user.email,
-        role: user.data.user.role,
+        user_id: user.user.user_id,
+        username: user.user.username,
+        email: user.user.email,
+        role: user.user.role,
       },
       success: user.success,
     };

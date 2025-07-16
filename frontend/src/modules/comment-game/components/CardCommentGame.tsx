@@ -1,17 +1,15 @@
 import type { CommentGame } from "../models/comment-game.model";
 
-export const CardCommentGame = ({ commentGame }: { commentGame: CommentGame }) => {
-  const {
-    comment_game_id,
-    comment_game_content,
-    game_id,
-    user_id,
-    create_at,
-    update_at,
-  } = commentGame;
-  
+export const CardCommentGame = ({
+  commentGame,
+}: {
+  commentGame: CommentGame;
+}) => {
+  const { comment, created_at, game_id, rating, review_id, user_id } =
+    commentGame;
+
   const user = (commentGame as any).user; // Cast to any to access user property if not explicitly in CommentGame interface
-  
+
   const userName = user?.user_name || "Usuario Anónimo";
   const userInitial = userName.charAt(0).toUpperCase();
 
@@ -26,14 +24,14 @@ export const CardCommentGame = ({ commentGame }: { commentGame: CommentGame }) =
         <div className="flex items-center justify-between">
           <h4 className="text-lg font-bold text-white">{userName}</h4>
           <span className="text-xs text-gray-400">
-            {new Date(create_at).toLocaleDateString("es-ES", {
-              year: 'numeric', month: 'long', day: 'numeric'
+            {new Date(created_at).toLocaleDateString("es-ES", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             })}
           </span>
         </div>
-        <p className="text-gray-300 mt-1">
-          {comment_game_content}
-        </p>
+        <p className="text-gray-300 mt-1">{comment}</p>
       </div>
     </div>
   );

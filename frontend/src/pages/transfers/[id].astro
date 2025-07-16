@@ -1,0 +1,12 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { SingleTransfer } from "@modules/transfers/components/SingleTransfer";
+
+const { id } = Astro.props;
+---
+
+<Layout>
+  <main class="h-full flex-grow">
+    <SingleTransfer client:load id={id} />
+  </main>
+</Layout>

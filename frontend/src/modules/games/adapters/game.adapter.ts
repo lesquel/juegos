@@ -30,9 +30,6 @@ export class GameAdapter {
             CategoryGameGameAdapter.adapt(category)
           )
         : undefined,
-      comments: game.comments
-        ? game.comments.map((comment: any) => CommentGameAdapter.adapt(comment))
-        : undefined,
     };
   }
 
