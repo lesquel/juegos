@@ -1,4 +1,6 @@
 from typing import List
+from application.interfaces.base_assembler import BaseAssembler
+from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.repositories.match_repository import IMatchRepository
 from domain.exceptions.match import MatchNotFoundError
 from application.interfaces.base_use_case import BaseUseCase
@@ -8,9 +10,15 @@ from infrastructure.logging import log_execution, log_performance
 class GetMatchParticipantsUseCase(BaseUseCase[str, List[str]]):
     """Caso de uso para obtener los participantes de una partida."""
 
-    def __init__(self, match_repo: IMatchRepository):
+    def __init__(
+        self,
+        match_repo: IMatchRepository,
+        match_participants_assambler: BaseAssembler,
+    ):
+
         super().__init__()
         self.match_repo = match_repo
+        self.match_participants_assambler = match_participants_assambler
 
     @log_execution(include_args=True, include_result=False, log_level="INFO")
     @log_performance(threshold_seconds=1.0)
@@ -36,8 +44,13 @@ class GetMatchParticipantsUseCase(BaseUseCase[str, List[str]]):
             raise MatchNotFoundError(f"Match with ID {match_id} not found")
 
         # Obtener participantes
-        participants = await self.match_repo.get_match_participants(match_id)
+        participants = await self.match_repo.get_match_participant_ids(match_id)
 
         self.logger.info(f"Found {len(participants)} participants for match {match_id}")
 
-        return participants
+        print(
+            f"MatchParticipantsUseCase: Found {len(participants)} participants for match {match_id}"
+        )
+        print(f"MatchParticipantsUseCase: Participants: {participants}")
+
+        return self.match_participants_assambler.assemble(match, participants)

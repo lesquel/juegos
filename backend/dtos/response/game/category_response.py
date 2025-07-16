@@ -16,6 +16,6 @@ class CategoryResponseDTO(TimeStampBase):
     category_description: Optional[str] = Field(
         None, description="Descripción de la categoría"
     )
-    games: Optional[list[str]] = Field(
+    game_ids: Optional[list[str]] = Field(
         None, description="Lista de IDs de juegos asociados a la categoría"
     )

@@ -68,11 +68,9 @@ class PostgresGameReviewRepository(
             )
 
             if existing_review:
-                self.logger.error(
-                    f"Review already exists for user_id={entity.user_id}, game_id={entity.game_id}"
-                )
+                self.logger.error(f"Review already exists for this user")
                 raise GameReviewAlreadyExistsError(
-                    f"User {entity.user_id} already has a review for game {entity.game_id}"
+                    f"User already has a review for game this game"
                 )
 
             self.logger.debug(f"Creating new game review: {entity}")

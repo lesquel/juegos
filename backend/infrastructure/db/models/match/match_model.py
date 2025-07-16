@@ -34,7 +34,7 @@ class MatchModel(Base, TimeStampModelMixin):
         Float, default=0.0, comment="Monto base apostado en la partida"
     )
 
-    game = relationship("GameModel", back_populates="matches")
+    game = relationship("GameModel", back_populates="matches", lazy="joined")
     winner = relationship(
         "UserModel", back_populates="won_matches", foreign_keys=[winner_id]
     )
@@ -49,4 +49,4 @@ class MatchModel(Base, TimeStampModelMixin):
 
     def __repr__(self):
         winner_info = f", winner={self.winner_id}" if self.winner_id else ", no winner"
-        return f"<MatchModel(id={self.match_id}{winner_info})>"
+        return f"Match created by {self.created_by_id} with base bet {self.base_bet_amount} {winner_info}"

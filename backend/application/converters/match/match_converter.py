@@ -1,6 +1,5 @@
-"""Conversor DTO para entidad Match."""
-
 from decimal import Decimal
+
 from domain.entities.match.match import MatchEntity
 from dtos.response.match.match_response_dto import (
     MatchResponseDTO,
@@ -13,6 +12,40 @@ from application.mixins.dto_converter_mixin import (
     BidirectionalConverter,
 )
 from application.mixins.logging_mixin import LoggingMixin
+from infrastructure.logging.decorators import log_execution
+
+
+class CreateMatchRequestToEntityConverter(
+    DTOToEntityConverter[CreateMatchRequestDTO, MatchEntity], LoggingMixin
+):
+    """Converter para transformar DTOs de creación de partida a entidades Match."""
+
+    def __init__(self):
+        super().__init__()
+
+    @log_execution(include_args=False, include_result=False, log_level="DEBUG")
+    def to_entity(self, dto: CreateMatchRequestDTO) -> MatchEntity:
+        """
+        Convierte un CreateMatchRequest DTO a entidad Match.
+
+        Args:
+            dto: DTO de request para crear partida
+
+        Returns:
+            Match: Entidad del dominio
+        """
+        self.logger.debug(f"Converting CreateMatchRequestDTO to MatchEntity for game")
+
+        return MatchEntity(
+            match_id=None,  # Se asignará en la base de datos
+            game_id=None,
+            base_bet_amount=(
+                Decimal(str(dto.base_bet_amount)) 
+            ),
+            created_by_id=None,
+            winner_id=None,  # Se asignará cuando termine la partida
+            participant_ids=[],  # Inicialmente sin participantes
+        )
 
 
 class MatchEntityToDTOConverter(
@@ -28,14 +61,16 @@ class MatchEntityToDTOConverter(
         self.logger.debug(
             f"Converting MatchEntity to MatchResponseDTO for match: {entity.match_id}"
         )
-
+        print(entity)
+        print("Participant IDs in entity_to_dto:")
+        print(entity.participant_ids)
         dto = MatchResponseDTO(
             match_id=str(entity.match_id),
             game_id=str(entity.game_id),
             winner_id=str(entity.winner_id) if entity.winner_id else None,
             created_by_id=str(entity.created_by_id),
             base_bet_amount=(
-                float(entity.base_bet_amount) if entity.base_bet_amount else None
+                float(entity.base_bet_amount)
             ),
             participant_ids=entity.participant_ids,
             created_at=entity.created_at,
@@ -46,33 +81,6 @@ class MatchEntityToDTOConverter(
         return dto
 
 
-class CreateMatchDTOToEntityConverter(
-    DTOToEntityConverter[CreateMatchRequestDTO, MatchEntity], LoggingMixin
-):
-    """Convierte CreateMatchRequestDTO a MatchEntity."""
-
-    def __init__(self):
-        super().__init__()
-
-    def to_entity(self, dto: CreateMatchRequestDTO) -> MatchEntity:
-        """Convierte CreateMatchRequestDTO a MatchEntity."""
-        self.logger.debug(f"Converting CreateMatchRequestDTO to MatchEntity for game")
-
-        entity = MatchEntity(
-            match_id=None,  # Se asigna en el repositorio
-            game_id=None,
-            base_bet_amount=(
-                Decimal(str(dto.base_bet_amount)) if dto.base_bet_amount else None
-            ),
-            winner_id=None,  # Se asigna cuando el match termina
-            created_by_id=None,  # Se asigna al crear la partida
-            participant_ids=[],
-        )
-
-        self.logger.debug("Successfully converted CreateMatchRequestDTO to MatchEntity")
-        return entity
-
-
 class MatchBidirectionalConverter(
     BidirectionalConverter[MatchEntity, MatchResponseDTO], LoggingMixin
 ):
@@ -81,7 +89,7 @@ class MatchBidirectionalConverter(
     def __init__(self):
         super().__init__()
         self.entity_to_dto = MatchEntityToDTOConverter()
-        self.dto_to_entity = CreateMatchDTOToEntityConverter()
+        self.dto_to_entity = CreateMatchRequestToEntityConverter()
 
     def to_dto(self, entity: MatchEntity) -> MatchResponseDTO:
         """Convierte entidad a DTO de respuesta."""

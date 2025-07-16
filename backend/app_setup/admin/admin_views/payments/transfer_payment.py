@@ -1,7 +1,8 @@
 from sqladmin import ModelView
 from markupsafe import Markup
 from starlette.requests import Request
-
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload  # I
 from infrastructure.db.models import TransferPaymentModel
 from app_setup.admin.mixins import ImageUploadAdminMixin
 
@@ -55,9 +56,11 @@ class TransferPaymentAdmin(
     ]
 
     # Filtros y búsqueda
-    column_searchable_list = [TransferPaymentModel.transfer_description]
+    column_searchable_list = [
+        TransferPaymentModel.transfer_description,
+        "user.email",  # Permite búsqueda por email del usuario
+    ]
     column_filters = [
-        TransferPaymentModel.user_id,
         TransferPaymentModel.transfer_state,
         TransferPaymentModel.transfer_amount,
         TransferPaymentModel.created_at,
@@ -109,3 +112,19 @@ class TransferPaymentAdmin(
     can_export = True
     export_max_rows = 1000
     export_types = ["csv", "xlsx"]
+
+    async def get_query(self, request: Request):
+        from infrastructure.db.models import (
+            UserModel,
+        ) 
+
+        query = select(self.model).options(selectinload(TransferPaymentModel.user))
+
+        search_term = request.query_params.get("search")
+        if search_term:
+            # Buscar por descripción o email del usuario
+            query = query.join(TransferPaymentModel.user).filter(
+                (TransferPaymentModel.transfer_description.ilike(f"%{search_term}%"))
+                | (UserModel.email.ilike(f"%{search_term}%"))
+            )
+        return query

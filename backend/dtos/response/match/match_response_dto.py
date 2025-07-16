@@ -7,11 +7,11 @@ class MatchParticipationResponseDTO(TimeStampBase):
     """DTO para respuesta de participación en partida"""
 
     user_id: str = Field(..., description="ID del usuario participante")
-    user_email: str = Field(..., description="Email del usuario participante")
     score: int = Field(..., description="Puntuación obtenida por el participante")
     bet_amount: Optional[float] = Field(
         None, description="Monto apostado por el participante"
     )
+    
 
 
 class MatchResponseDTO(TimeStampBase):
@@ -27,7 +27,7 @@ class MatchResponseDTO(TimeStampBase):
         None, description="Monto base de la apuesta para la partida"
     )
 
-    participants: List[str] = Field(
+    participant_ids: List[str] = Field(
         default=[], description="Lista de participantes en la partida"
     )
 

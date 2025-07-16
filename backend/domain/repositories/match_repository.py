@@ -28,7 +28,7 @@ class IMatchRepository(IBaseRepository[MatchEntity, MatchFilterParams]):
         pass
 
     @abstractmethod
-    async def get_match_participants(self, match_id: str) -> List[str]:
+    async def get_match_participant_ids(self, match_id: str) -> List[str]:
         """
         Obtiene la lista de IDs de participantes de una partida.
         

@@ -3,11 +3,18 @@
 from domain.entities.match.match_participation import MatchParticipation
 from dtos.response.match.match_response_dto import MatchParticipationResponseDTO
 from dtos.request.match.match_request_dto import JoinMatchRequestDTO
-from application.mixins.dto_converter_mixin import EntityToDTOConverter, DTOToEntityConverter, BidirectionalConverter
+from application.mixins.dto_converter_mixin import (
+    EntityToDTOConverter,
+    DTOToEntityConverter,
+    BidirectionalConverter,
+)
 from application.mixins.logging_mixin import LoggingMixin
 
 
-class MatchParticipationEntityToDTOConverter(EntityToDTOConverter[MatchParticipation, MatchParticipationResponseDTO], LoggingMixin):
+class MatchParticipationEntityToDTOConverter(
+    EntityToDTOConverter[MatchParticipation, MatchParticipationResponseDTO],
+    LoggingMixin,
+):
     """Convierte MatchParticipation a MatchParticipationResponseDTO."""
 
     def __init__(self):
@@ -15,27 +22,27 @@ class MatchParticipationEntityToDTOConverter(EntityToDTOConverter[MatchParticipa
 
     def to_dto(self, entity: MatchParticipation) -> MatchParticipationResponseDTO:
         """Convierte MatchParticipation a MatchParticipationResponseDTO."""
-        self.logger.debug(f"Converting MatchParticipation to MatchParticipationResponseDTO for user: {entity.user}")
-        
-        try:
-            dto = MatchParticipationResponseDTO(
-                user_id=str(entity.user.user_id) if hasattr(entity.user, 'user_id') else str(entity.user),
-                user_email=entity.user.email if hasattr(entity.user, 'email') else "Unknown",
-                score=entity.score,
-                bet_amount=entity.bet_amount,
-                created_at=entity.created_at,
-                updated_at=entity.updated_at,
-            )
-            
-            self.logger.debug("Successfully converted MatchParticipation to MatchParticipationResponseDTO")
-            return dto
-            
-        except Exception as e:
-            self.logger.error(f"Error converting MatchParticipation to DTO: {str(e)}")
-            raise
+        self.logger.debug(
+            f"Converting MatchParticipation to MatchParticipationResponseDTO for user: {entity.user_id}"
+        )
+
+        dto = MatchParticipationResponseDTO(
+            user_id=str(entity.user_id),
+            score=entity.score,
+            bet_amount=entity.bet_amount,
+            created_at=entity.created_at,
+            updated_at=entity.updated_at,
+        )
+
+        self.logger.debug(
+            "Successfully converted MatchParticipation to MatchParticipationResponseDTO"
+        )
+        return dto
 
 
-class JoinMatchDTOToEntityConverter(DTOToEntityConverter[JoinMatchRequestDTO, MatchParticipation], LoggingMixin):
+class JoinMatchDTOToEntityConverter(
+    DTOToEntityConverter[JoinMatchRequestDTO, MatchParticipation], LoggingMixin
+):
     """Convierte JoinMatchRequestDTO a MatchParticipation."""
 
     def __init__(self):
@@ -44,26 +51,31 @@ class JoinMatchDTOToEntityConverter(DTOToEntityConverter[JoinMatchRequestDTO, Ma
     def to_entity(self, dto: JoinMatchRequestDTO) -> MatchParticipation:
         """Convierte JoinMatchRequestDTO a MatchParticipation."""
         self.logger.debug(f"Converting JoinMatchRequestDTO to MatchParticipation")
-        
+
         try:
             entity = MatchParticipation(
                 match=None,  # Se asigna externamente
-                user=None,   # Se asigna externamente
-                score=0,     # Comienza en 0
+                user=None,  # Se asigna externamente
+                score=0,  # Comienza en 0
                 bet_amount=dto.bet_amount,
                 created_at=None,
                 updated_at=None,
             )
-            
-            self.logger.debug("Successfully converted JoinMatchRequestDTO to MatchParticipation")
+
+            self.logger.debug(
+                "Successfully converted JoinMatchRequestDTO to MatchParticipation"
+            )
             return entity
-            
+
         except Exception as e:
             self.logger.error(f"Error converting DTO to MatchParticipation: {str(e)}")
             raise
 
 
-class MatchParticipationBidirectionalConverter(BidirectionalConverter[MatchParticipation, MatchParticipationResponseDTO], LoggingMixin):
+class MatchParticipationBidirectionalConverter(
+    BidirectionalConverter[MatchParticipation, MatchParticipationResponseDTO],
+    LoggingMixin,
+):
     """Conversor bidireccional para MatchParticipation."""
 
     def __init__(self):
@@ -73,18 +85,15 @@ class MatchParticipationBidirectionalConverter(BidirectionalConverter[MatchParti
 
     def to_dto(self, entity: MatchParticipation) -> MatchParticipationResponseDTO:
         """Convierte entidad a DTO de respuesta."""
-        self.logger.debug(f"Converting MatchParticipation to MatchParticipationResponseDTO (bidirectional) for user: {entity.user}")
+        self.logger.debug(
+            f"Converting MatchParticipation to MatchParticipationResponseDTO (bidirectional) for user: {entity.user_id}"
+        )
         return self.entity_to_dto.to_dto(entity)
 
     def to_entity(self, dto: MatchParticipationResponseDTO) -> MatchParticipation:
         """Convierte DTO de respuesta a entidad."""
-        self.logger.debug(f"Converting MatchParticipationResponseDTO to MatchParticipation for user: {dto.user_id}")
-        # Nota: Esta conversión es limitada ya que convierte desde un DTO de respuesta
-        return MatchParticipation(
-            match=None,  # Se asigna externamente
-            user=None,   # Se asigna externamente
-            score=dto.score,
-            bet_amount=dto.bet_amount,
-            created_at=dto.created_at,
-            updated_at=dto.updated_at
+        self.logger.debug(
+            f"Converting MatchParticipationResponseDTO to MatchParticipation for user: {dto.user_id}"
         )
+        # Nota: Esta conversión es limitada ya que convierte desde un DTO de respuesta
+        return self.dto_to_entity.to_entity(dto)

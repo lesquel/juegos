@@ -22,7 +22,7 @@ class GameResponseDTO(TimeStampBase):
     game_capacity: Optional[int] = Field(
         None, description="Capacidad del juego (número de jugadores)"
     )
-    categories: Optional[list[str]] = Field(
+    category_ids: Optional[list[str]] = Field(
         None, description="Lista de IDs de categorías asociadas al juego"
     )
     

@@ -16,6 +16,8 @@ class MatchAdmin(ModelView, model=MatchModel):
         MatchModel.game,
         MatchModel.winner,
         MatchModel.creator,
+        MatchModel.participants,
+        MatchModel.base_bet_amount,
         MatchModel.created_at,
         MatchModel.updated_at,
     ]
@@ -27,6 +29,7 @@ class MatchAdmin(ModelView, model=MatchModel):
     form_columns = [
         MatchModel.game,
         MatchModel.winner,
+        MatchModel.base_bet_amount,
     ]
 
     # Columnas para filtrado
@@ -40,6 +43,7 @@ class MatchAdmin(ModelView, model=MatchModel):
 
     # Configuración de ordenamiento
     column_sortable_list = [
+        MatchModel.base_bet_amount,
         MatchModel.created_at,
         MatchModel.updated_at,
     ]
@@ -54,6 +58,7 @@ class MatchAdmin(ModelView, model=MatchModel):
         MatchModel.game: "Juego",
         MatchModel.winner: "Ganador",
         MatchModel.creator: "Creador",
+        MatchModel.participants: "Participantes",
         MatchModel.created_at: "Fecha de Creación",
         MatchModel.updated_at: "Última Actualización",
     }
@@ -63,6 +68,9 @@ class MatchAdmin(ModelView, model=MatchModel):
         MatchModel.winner: lambda m, a: m.winner.email if m.winner else "N/A",
         MatchModel.creator: lambda m, a: m.creator.email if m.creator else "N/A",
         MatchModel.game: lambda m, a: m.game.game_name if m.game else "N/A",
+        MatchModel.participants: lambda m, a: (
+            [p.user for p in m.participants] if m.participants else []
+        ),
         MatchModel.created_at: lambda m, a: m.created_at.strftime("%d/%m/%Y %H:%M"),
         MatchModel.updated_at: lambda m, a: m.updated_at.strftime("%d/%m/%Y %H:%M"),
     }

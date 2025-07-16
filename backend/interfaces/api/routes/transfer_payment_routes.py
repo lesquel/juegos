@@ -39,7 +39,8 @@ logger = get_logger("transfer_routes")
 
 
 @transfer_router.get(
-    "/{user_id}/transfers", response_model=PaginatedResponseDTO[TransferPaymentResponseDTO]
+    "/{user_id}/transfers",
+    response_model=PaginatedResponseDTO[TransferPaymentResponseDTO],
 )
 async def get_user_transfer_payments(
     user_id: UUID,
@@ -73,7 +74,9 @@ async def get_user_transfer_payments(
     )
 
 
-@transfer_router.get("/{user_id}/transfers/{transfer_id}", response_model=TransferPaymentResponseDTO)
+@transfer_router.get(
+    "/{user_id}/transfers/{transfer_id}", response_model=TransferPaymentResponseDTO
+)
 async def get_user_transfer_payment_by_id(
     user_id: UUID,
     transfer_id: UUID,

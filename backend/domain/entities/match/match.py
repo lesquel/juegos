@@ -22,7 +22,7 @@ class MatchEntity(TimeStampEntityMixin):
         self.match_id = match_id
         self.game_id = game_id
         self.base_bet_amount = base_bet_amount
-        self.created_by_id = created_by_id  
+        self.created_by_id = created_by_id
         self.winner_id = winner_id
         self.participant_ids = participant_ids if participant_ids is not None else []
 
@@ -30,4 +30,4 @@ class MatchEntity(TimeStampEntityMixin):
         self.participant_ids.append(user_id)
 
     def __repr__(self):
-        return f"Match(match_id={self.match_id}, game_id={self.game_id}, start_time={self.start_time}, end_time={self.end_time}, winner_id={self.winner_id})"
+        return f"Match(match_id={self.match_id}, game_id={self.game_id}, winner_id={self.winner_id})"

@@ -3,7 +3,11 @@ from .match_response_dto import (
     MatchParticipationResponseDTO,
 )
 
+from .match_participants_response_dto import (
+    MatchParticipantsResponseDTO,
+)
 __all__ = [
     "MatchResponseDTO",
     "MatchParticipationResponseDTO", 
+    "MatchParticipantsResponseDTO",
 ]

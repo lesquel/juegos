@@ -1,7 +1,9 @@
 from application.converters.match.match_converter import MatchBidirectionalConverter
-from application.converters.match.match_participation_converter import (
+from application.converters.match import (
     MatchParticipationBidirectionalConverter,
+    MatchParticipantsResponseAssambler,
 )
+
 
 
 from application.mixins.dto_converter_mixin import (
@@ -19,3 +21,9 @@ def get_match_converter() -> BidirectionalConverter:
 def get_match_participation_converter() -> BidirectionalConverter:
     """Get match participation converter dependency."""
     return MatchParticipationBidirectionalConverter()
+
+
+def get_match_participants_response_assembler() -> EntityToDTOConverter:
+    """Get match participants response assembler dependency."""
+
+    return MatchParticipantsResponseAssambler()

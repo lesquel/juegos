@@ -43,7 +43,7 @@ class PostgresMatchRepository(
             load_options=self.get_load_options(),
         )
 
-    async def get_match_participants(self, match_id: str) -> List[str]:
+    async def get_match_participant_ids(self, match_id: str) -> List[str]:
         """Obtiene la lista de IDs de participantes de una partida."""
         try:
             stmt = select(MatchParticipationModel.user_id).where(
@@ -55,6 +55,7 @@ class PostgresMatchRepository(
         except Exception as e:
             self.logger.error(f"Error getting match participants: {e}")
             raise
+        
 
     async def join_match(
         self, match_id: str, user_id: str, bet_amount: Optional[float] = None
@@ -182,9 +183,15 @@ class PostgresMatchRepository(
 
     def _model_to_entity(self, model: MatchModel) -> MatchEntity:
         """Convierte MatchModel a MatchEntity."""
-        participant_ids = [
-            str(p.user_id) for p in model.participants
-        ] if model.participants else []
+        print("Converting MatchModel to MatchEntity:")
+        print(model.participants)
+
+        participant_ids = (
+            [str(p.user_id) for p in model.participants] if model.participants else []
+        )
+
+        print("Participant IDs in model_to_entity:")
+        print(participant_ids)
 
         return MatchEntity(
             match_id=str(model.match_id) if model.match_id else None,
@@ -199,12 +206,27 @@ class PostgresMatchRepository(
 
     def _entity_to_model(self, entity: MatchEntity) -> MatchModel:
         """Convierte MatchEntity a MatchModel."""
+        participants = (
+            [
+                MatchParticipationModel(
+                    match_id=entity.match_id,
+                    user_id=user_id,
+                    score=0,  # Inicializar con score 0 para nuevos participantes
+                    bet_amount=entity.base_bet_amount or 0.0,
+                )
+                for user_id in entity.participant_ids
+            ]
+            if entity.participant_ids
+            else []
+        )
+
         return MatchModel(
             match_id=entity.match_id,
             game_id=entity.game_id,
             base_bet_amount=entity.base_bet_amount,
             created_by_id=entity.created_by_id,
             winner_id=entity.winner_id,
+            participants=participants,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )

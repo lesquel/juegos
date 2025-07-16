@@ -98,8 +98,11 @@ class CreateMatchUseCase(BaseUseCase[CreateMatchRequestDTO, MatchResponseDTO]):
         match_entity.created_by_id = self.user.user_id
         match_entity.game_id = game_id
         # Crear la partida en el repositorio
+
+        match_entity.add_participant(self.user.user_id)
         
-        match_entity.participant_ids = [self.user.user_id]
+        print("Participant IDs after adding user:")
+        print(match_entity.participant_ids)
 
         created_match = await self.match_repo.save(match_entity)
         print(f"Match created with ID: {created_match.match_id}")

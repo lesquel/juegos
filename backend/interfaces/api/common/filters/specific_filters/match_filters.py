@@ -21,6 +21,16 @@ class MatchFilterParams(BaseFilterParams):
         None, ge=0, description="Apuesta base máxima"
     )
     
+    def filter_winner_id(self, query, model, value):
+        return self.any_filter(query, model.winner_id, "winner_id", value)
+
+    
+    def filter_min_base_bet_amount(self, query, model, value):
+        return self.gte_filter(query, model.base_bet_amount, value)
+    
+    def filter_max_base_bet_amount(self, query, model, value):
+        return self.lte_filter(query, model.base_bet_amount, value)
+    
 
 # Dependencies específicos para cada modelo
 get_match_filter_params = build_filter_dependency(

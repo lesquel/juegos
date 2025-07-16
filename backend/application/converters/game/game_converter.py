@@ -25,17 +25,10 @@ class GameEntityToDTOConverter(
 
         try:
             # Convertir categories a IDs si son objetos, mantener si ya son strings
-            categories_ids = []
             if entity.categories:
+                category_ids = []
                 for category in entity.categories:
-                    if hasattr(category, "id"):  # Es un objeto CategoryModel
-                        categories_ids.append(str(category.id))
-                    elif hasattr(
-                        category, "category_id"
-                    ):  # Es una entidad CategoryEntity
-                        categories_ids.append(str(category.category_id))
-                    else:  # Ya es un string (ID)
-                        categories_ids.append(str(category))
+                    category_ids.append(str(category))
 
             dto = GameResponseDTO(
                 game_id=str(entity.game_id),
@@ -44,7 +37,7 @@ class GameEntityToDTOConverter(
                 game_img=entity.game_img,
                 game_url=entity.game_url,
                 game_capacity=entity.game_capacity,
-                categories=categories_ids,  # Siempre IDs de string
+                category_ids=category_ids,  # Siempre IDs de string
                 created_at=entity.created_at,
                 updated_at=entity.updated_at,
             )

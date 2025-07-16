@@ -24,10 +24,6 @@ from .transfer_payment_entity_to_dto_converter import (
 from .transfer_payment_dto_to_entity_converter import (
     TransferPaymentDTOToEntityConverter,
 )
-from .transfer_payment_response_to_entity_converter import (
-    TransferPaymentResponseToEntityConverter,
-)
-
 
 class TransferPaymentBidirectionalConverter(
     BidirectionalConverter[TransferPaymentEntity, TransferPaymentResponseDTO],

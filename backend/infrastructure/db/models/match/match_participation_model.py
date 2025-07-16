@@ -18,8 +18,8 @@ class MatchParticipationModel(Base, TimeStampModelMixin):
     score = Column(Integer, nullable=False)
     bet_amount = Column(Float, default=0.0, nullable=False)
 
-    match = relationship("MatchModel", back_populates="participants")
-    user = relationship("UserModel", back_populates="match_participations")
+    match = relationship("MatchModel", back_populates="participants", lazy="joined")
+    user = relationship("UserModel", back_populates="match_participations", lazy="joined")
 
     def __repr__(self):
-        return f"<MatchParticipationModel(id={self.id}, score={self.score}, bet=${self.bet_amount})>"
+        return f"<{self.user.email} in {self.match.game.game_name} - Score: {self.score}>"

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 import jwt
+from domain.exceptions.auth import ExpiredTokenError, InvalidTokenError
 from domain.interfaces.token_provider import ITokenProvider
 from ..core.settings_config import settings
 
@@ -64,10 +65,10 @@ class JWTService(ITokenProvider):
 
         except jwt.ExpiredSignatureError:
             self.logger.warning("Token decode failed: token has expired")
-            raise
+            raise ExpiredTokenError(message="Token has expired")
         except jwt.InvalidTokenError as e:
             self.logger.warning(f"Token decode failed: invalid token - {str(e)}")
-            raise
+            raise InvalidTokenError("Invalid token")
 
     def verify_token(self, token: str) -> bool:
         """Verifica si un token JWT es válido"""
