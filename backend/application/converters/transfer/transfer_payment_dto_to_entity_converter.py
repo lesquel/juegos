@@ -2,7 +2,7 @@ from typing import Optional
 from application.mixins.dto_converter_mixin import DTOToEntityConverter
 from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
-from dtos.request.transfer.transfer_payment_request_dto import (
+from dtos.request.transfer.transfer_payment_request import (
     CreateTransferPaymentInternalDTO,
 )
 from application.enums import TransferStateEnum

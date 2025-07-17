@@ -41,7 +41,7 @@ class IMatchRepository(IBaseRepository[MatchEntity, MatchFilterParams]):
         pass
 
     @abstractmethod
-    async def join_match(self, match_id: str, user_id: str, bet_amount: Optional[float] = None) -> MatchEntity:
+    async def join_match(self, match_id: str, user_id: str) -> MatchEntity:
         """
         Permite a un usuario unirse a una partida.
         

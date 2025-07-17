@@ -13,7 +13,7 @@ from application.use_cases.payment.get_user_transfer_payment_by_id import (
 )
 from application.services.file_upload_service import FileUploadService
 from domain.repositories import ITransferPaymentRepository
-from dtos.response.user.user_response_dto import UserBaseResponseDTO
+from dtos.response.user.user_response import UserBaseResponseDTO
 from infrastructure.dependencies.services.file_upload_service import (
     get_file_upload_service,
 )

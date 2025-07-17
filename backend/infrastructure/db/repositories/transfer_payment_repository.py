@@ -41,20 +41,17 @@ class PostgresTransferPaymentRepository(
             to_entity=self._model_to_entity,
         )
 
-    async def get_by_user_and_transfer_id(self, user_id: str, transfer_id: str):
+    async def get_transfer_id(self, transfer_id: str) -> TransferPaymentEntity:
         """Obtiene una transferencia de un usuario por su ID."""
-        self.logger.debug(
-            f"Getting transfer payment by user ID: {user_id} and transfer ID: {transfer_id}"
-        )
+        self.logger.debug(f"Getting transfer payment by transfer ID: {transfer_id}")
         stmt = select(self.model).where(
-            self.model.user_id == user_id,
             self.model.transfer_id == transfer_id,
         )
         result = await self.db.execute(stmt)
         transfer_model = result.scalar_one_or_none()
         if not transfer_model:
             raise TransferNotFoundError(
-                f"Transfer payment with ID {transfer_id} not found for user {user_id}"
+                f"Transfer payment with ID {transfer_id} not found"
             )
         return self._model_to_entity(transfer_model)
 
@@ -72,7 +69,9 @@ class PostgresTransferPaymentRepository(
             await self.db.commit()
             self.logger.info(f"Successfully updated transfer payment: {transfer_id}")
         else:
-            raise Exception(f"Transfer payment with ID {transfer_id} not found")
+            raise TransferNotFoundError(
+                f"Transfer payment with ID {transfer_id} not found"
+            )
 
     def _model_to_entity(self, model: TransferPaymentModel) -> TransferPaymentEntity:
         """

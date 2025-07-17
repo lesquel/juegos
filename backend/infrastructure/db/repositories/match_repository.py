@@ -55,11 +55,8 @@ class PostgresMatchRepository(
         except Exception as e:
             self.logger.error(f"Error getting match participants: {e}")
             raise
-        
 
-    async def join_match(
-        self, match_id: str, user_id: str, bet_amount: Optional[float] = None
-    ) -> MatchEntity:
+    async def join_match(self, match_id: str, user_id: str) -> MatchEntity:
         """Permite a un usuario unirse a una partida."""
         try:
             # Verificar que la partida existe
@@ -72,7 +69,6 @@ class PostgresMatchRepository(
                 match_id=match_id,
                 user_id=user_id,
                 score=0,  # Inicializar con score 0
-                bet_amount=bet_amount or 0.0,
             )
 
             self.db.add(participation)
@@ -192,6 +188,7 @@ class PostgresMatchRepository(
 
         print("Participant IDs in model_to_entity:")
         print(participant_ids)
+        print()
 
         return MatchEntity(
             match_id=str(model.match_id) if model.match_id else None,
@@ -212,7 +209,6 @@ class PostgresMatchRepository(
                     match_id=entity.match_id,
                     user_id=user_id,
                     score=0,  # Inicializar con score 0 para nuevos participantes
-                    bet_amount=entity.base_bet_amount or 0.0,
                 )
                 for user_id in entity.participant_ids
             ]

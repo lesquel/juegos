@@ -1,7 +1,9 @@
 from decimal import Decimal
 
+from domain.entities.game.game import GameEntity
 from domain.entities.match.match import MatchEntity
-from dtos.response.match.match_response_dto import (
+from domain.repositories.game_repository import IGameRepository
+from dtos.response.match.match_response import (
     MatchResponseDTO,
     MatchParticipationResponseDTO,
 )
@@ -34,14 +36,12 @@ class CreateMatchRequestToEntityConverter(
         Returns:
             Match: Entidad del dominio
         """
-        self.logger.debug(f"Converting CreateMatchRequestDTO to MatchEntity for game")
+        self.logger.debug("Converting CreateMatchRequestDTO to MatchEntity for game")
 
         return MatchEntity(
             match_id=None,  # Se asignará en la base de datos
             game_id=None,
-            base_bet_amount=(
-                Decimal(str(dto.base_bet_amount)) 
-            ),
+            base_bet_amount=(Decimal(str(dto.base_bet_amount))),
             created_by_id=None,
             winner_id=None,  # Se asignará cuando termine la partida
             participant_ids=[],  # Inicialmente sin participantes
@@ -56,29 +56,34 @@ class MatchEntityToDTOConverter(
     def __init__(self):
         super().__init__()
 
-    def to_dto(self, entity: MatchEntity) -> MatchResponseDTO:
+    def to_dto(self, entity: MatchEntity, game: GameEntity) -> MatchResponseDTO:
         """Convierte MatchEntity a MatchResponseDTO."""
         self.logger.debug(
             f"Converting MatchEntity to MatchResponseDTO for match: {entity.match_id}"
         )
-        print(entity)
-        print("Participant IDs in entity_to_dto:")
-        print(entity.participant_ids)
+        odds = entity.calculate_odds_for_match(game.house_odds)
+
         dto = MatchResponseDTO(
             match_id=str(entity.match_id),
             game_id=str(entity.game_id),
             winner_id=str(entity.winner_id) if entity.winner_id else None,
             created_by_id=str(entity.created_by_id),
-            base_bet_amount=(
-                float(entity.base_bet_amount)
-            ),
+            base_bet_amount=(float(entity.base_bet_amount)),
             participant_ids=entity.participant_ids,
+            odds_for_match=odds,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )
 
         self.logger.debug("Successfully converted MatchEntity to MatchResponseDTO")
         return dto
+
+    def to_dto_list(
+        self, entities: list[MatchEntity], game: GameEntity
+    ) -> list[MatchResponseDTO]:
+        """Convierte una lista de MatchEntity a MatchResponseDTO."""
+        self.logger.debug("Converting list of MatchEntity to MatchResponseDTOs")
+        return [self.to_dto(entity, game) for entity in entities]
 
 
 class MatchBidirectionalConverter(
@@ -91,14 +96,14 @@ class MatchBidirectionalConverter(
         self.entity_to_dto = MatchEntityToDTOConverter()
         self.dto_to_entity = CreateMatchRequestToEntityConverter()
 
-    def to_dto(self, entity: MatchEntity) -> MatchResponseDTO:
+    def to_dto(self, entity: MatchEntity, game: GameEntity) -> MatchResponseDTO:
         """Convierte entidad a DTO de respuesta."""
         self.logger.debug(
             f"Converting MatchEntity to MatchResponseDTO (bidirectional) for match: {entity.match_id}"
         )
-        return self.entity_to_dto.to_dto(entity)
+        return self.entity_to_dto.to_dto(entity, game)
 
     def to_entity(self, dto: MatchResponseDTO) -> MatchEntity:
         """Convierte DTO de respuesta a entidad."""
-        self.logger.debug(f"Converting MatchResponseDTO to MatchEntity for match")
+        self.logger.debug("Converting MatchResponseDTO to MatchEntity for match")
         return self.dto_to_entity.to_entity(dto)

@@ -12,7 +12,7 @@ from application.use_cases.game.review import (
     UpdateGameReviewUseCase,
 )
 
-from dtos.request.game.game_review_request_dto import (
+from dtos.request.game.game_review_request import (
     CreateGameReviewRequestDTO,
     UpdateGameReviewRequestDTO,
 )
@@ -49,7 +49,7 @@ game_review_router = APIRouter()
 logger = get_logger("game_review_routes")
 
 
-@game_review_router.get("/", response_model=PaginatedResponseDTO[GameReviewResponseDTO])
+@game_review_router.get("/{game_id}/reviews/", response_model=PaginatedResponseDTO[GameReviewResponseDTO])
 async def get_game_reviews_by_game_id(
     game_id: UUID,
     request: Request,
@@ -86,7 +86,7 @@ async def get_game_reviews_by_game_id(
     )
 
 
-@game_review_router.post("/", response_model=GameReviewResponseDTO)
+@game_review_router.post("/{game_id}/reviews/", response_model=GameReviewResponseDTO)
 async def create_game_review(
     game_id: UUID,
     review: CreateGameReviewRequestDTO,
@@ -104,7 +104,7 @@ async def create_game_review(
     return await use_case.execute(str(game_id), review)
 
 
-@game_review_router.put("/{game_review_id}", response_model=GameReviewResponseDTO)
+@game_review_router.put("/reviews/{game_review_id}", response_model=GameReviewResponseDTO)
 async def update_game_review(
     game_review_id: UUID,
     review: UpdateGameReviewRequestDTO,
@@ -122,7 +122,7 @@ async def update_game_review(
     return await use_case.execute(str(game_review_id), review)
 
 
-@game_review_router.delete("/{game_review_id}", status_code=status.HTTP_204_NO_CONTENT)
+@game_review_router.delete("/reviews/{game_review_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_game_review(
     game_review_id: UUID,
     use_case: DeleteGameReviewUseCase = Depends(get_delete_game_review_use_case),
@@ -138,7 +138,7 @@ async def delete_game_review(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@game_review_router.get("/{game_review_id}", response_model=GameReviewResponseDTO)
+@game_review_router.get("/reviews/{game_review_id}", response_model=GameReviewResponseDTO)
 async def get_game_review_by_id(
     game_review_id: UUID,
     use_case: GetGameReviewByIdUseCase = Depends(get_game_review_by_id_use_case),

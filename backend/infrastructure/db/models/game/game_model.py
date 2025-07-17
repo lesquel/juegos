@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Float, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
@@ -8,6 +8,7 @@ from ..common import TimeStampModelMixin, game_categories
 
 
 class GameModel(Base, TimeStampModelMixin):
+
     __tablename__ = "games"
 
     game_id = Column(
@@ -20,6 +21,7 @@ class GameModel(Base, TimeStampModelMixin):
 
     game_capacity = Column(Integer, nullable=False, default=1, index=True)
 
+    house_odds = Column(Float, default=1.0, nullable=False)
     categories = relationship(
         "CategoryModel", secondary=game_categories, back_populates="games"
     )
@@ -31,4 +33,4 @@ class GameModel(Base, TimeStampModelMixin):
     )
 
     def __repr__(self):
-        return f"<GameModel(id={self.game_id}, name='{self.game_name}')>"
+        return f"{self.game_name}"

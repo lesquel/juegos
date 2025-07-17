@@ -40,22 +40,13 @@ class GameAdmin(ImageUploadAdminMixin, ModelView, model=GameModel):
         GameModel.game_url,
         GameModel.game_img,
         GameModel.categories,
+        GameModel.game_capacity,
         GameModel.created_at,
         GameModel.updated_at,
     ]
 
     # Columnas a mostrar en detalle
-    column_details_list = [
-        GameModel.game_id,
-        GameModel.game_name,
-        GameModel.game_description,
-        GameModel.game_url,
-        GameModel.game_img,
-        GameModel.categories,
-        GameModel.created_at,
-        GameModel.updated_at,
-    ]
-
+    column_details_list = column_list
     # Columnas editables
     form_columns = [
         GameModel.game_name,
@@ -63,6 +54,7 @@ class GameAdmin(ImageUploadAdminMixin, ModelView, model=GameModel):
         GameModel.game_url,
         GameModel.game_img,
         GameModel.categories,
+        GameModel.game_capacity,
     ]
 
     # Columnas para búsqueda

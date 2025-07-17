@@ -1,8 +1,8 @@
 from domain.repositories.match_repository import IMatchRepository
 from domain.exceptions.match import MatchNotFoundError, MatchScoreError
 from dtos.request.match.match_request_dto import UpdateMatchRequestDTO
-from dtos.response.match.match_response_dto import MatchResponseDTO
-from dtos.response.user.user_response_dto import UserBaseResponseDTO
+from dtos.response.match.match_response import MatchResponseDTO
+from dtos.response.user.user_response import UserBaseResponseDTO
 from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from infrastructure.logging import log_execution, log_performance

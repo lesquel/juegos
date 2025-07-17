@@ -1,9 +1,17 @@
 from pydantic import BaseModel, Field
 
-from domain.entities.user.token_data import TokenData
 
+from ..user.user_response import UserResponseDTO
 
-from ..user.user_response_dto import UserResponseDTO
+from dtos.common.constants import (
+    EXAMPLE_TOKEN,
+    EXAMPLE_EMAIL,
+    EXAMPLE_USER_ID,
+    EXAMPLE_VIRTUAL_CURRENCY,
+    EXAMPLE_USER_ROLE,
+    EXAMPLE_CREATED_AT,
+    EXAMPLE_UPDATED_AT,
+)
 
 
 class TokenResponseDTO(BaseModel):
@@ -12,17 +20,16 @@ class TokenResponseDTO(BaseModel):
     access_token: str = Field(
         ...,
         description="Token de acceso JWT",
-        example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        example=EXAMPLE_TOKEN,
     )
     token_type: str = Field(
         default="bearer", description="Tipo de token", example="bearer"
     )
 
-
     class Config:
         json_schema_extra = {
             "example": {
-                "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                "access_token": EXAMPLE_TOKEN,
                 "token_type": "bearer",
             }
         }
@@ -38,16 +45,16 @@ class LoginResponseDTO(BaseModel):
         json_schema_extra = {
             "example": {
                 "token": {
-                    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                    "access_token": EXAMPLE_TOKEN,
                     "token_type": "bearer",
                 },
                 "user": {
-                    "user_id": "123e4567-e89b-12d3-a456-426614174000",
-                    "email": "usuario@ejemplo.com",
-                    "virtual_currency": 100.0,
-                    "role": "USER",
-                    "created_at": "2025-01-01T00:00:00",
-                    "updated_at": "2025-01-01T00:00:00",
+                    "user_id": EXAMPLE_USER_ID,
+                    "email": EXAMPLE_EMAIL,
+                    "virtual_currency": EXAMPLE_VIRTUAL_CURRENCY,
+                    "role": EXAMPLE_USER_ROLE,
+                    "created_at": EXAMPLE_CREATED_AT,
+                    "updated_at": EXAMPLE_UPDATED_AT,
                 },
             }
         }

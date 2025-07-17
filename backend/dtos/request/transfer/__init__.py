@@ -1,1 +1,1 @@
-from .transfer_payment_request_dto import CreateTransferPaymentRequestDTO
+from .transfer_payment_request import CreateTransferPaymentRequestDTO

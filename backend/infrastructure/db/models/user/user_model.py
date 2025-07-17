@@ -9,6 +9,8 @@ from application.enums import UserRole
 from ..common import TimeStampModelMixin
 
 
+ON_DELETE_CASCADE = "all, delete-orphan"
+
 class UserModel(Base, TimeStampModelMixin):
     __tablename__ = "users"
 
@@ -26,10 +28,10 @@ class UserModel(Base, TimeStampModelMixin):
     )
 
     reviews = relationship(
-        "GameReviewModel", back_populates="user", cascade="all, delete-orphan"
+        "GameReviewModel", back_populates="user", cascade=ON_DELETE_CASCADE
     )
     transfers = relationship(
-        "TransferPaymentModel", back_populates="user", cascade="all, delete-orphan"
+        "TransferPaymentModel", back_populates="user", cascade=ON_DELETE_CASCADE
     )
     won_matches = relationship(
         "MatchModel",
@@ -37,7 +39,7 @@ class UserModel(Base, TimeStampModelMixin):
         foreign_keys="[MatchModel.winner_id]",
     )
     match_participations = relationship(
-        "MatchParticipationModel", back_populates="user", cascade="all, delete-orphan"
+        "MatchParticipationModel", back_populates="user", cascade=ON_DELETE_CASCADE
     )
 
     created_matches = relationship(

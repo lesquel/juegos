@@ -17,7 +17,6 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
         MatchParticipationModel.match_id,
         MatchParticipationModel.user_id,
         MatchParticipationModel.score,
-        MatchParticipationModel.bet_amount,
         MatchParticipationModel.created_at,
         MatchParticipationModel.updated_at,
     ]
@@ -28,7 +27,6 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
         MatchParticipationModel.match_id,
         MatchParticipationModel.user_id,
         MatchParticipationModel.score,
-        MatchParticipationModel.bet_amount,
         MatchParticipationModel.created_at,
         MatchParticipationModel.updated_at,
     ]
@@ -38,7 +36,6 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
         MatchParticipationModel.match_id,
         MatchParticipationModel.user_id,
         MatchParticipationModel.score,
-        MatchParticipationModel.bet_amount,
     ]
 
     # Columnas para filtrado
@@ -46,7 +43,6 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
         MatchParticipationModel.match_id,
         MatchParticipationModel.user_id,
         MatchParticipationModel.score,
-        MatchParticipationModel.bet_amount,
         MatchParticipationModel.created_at,
         MatchParticipationModel.updated_at,
     ]
@@ -54,7 +50,6 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
     # Configuración de ordenamiento
     column_sortable_list = [
         MatchParticipationModel.score,
-        MatchParticipationModel.bet_amount,
         MatchParticipationModel.created_at,
         MatchParticipationModel.updated_at,
     ]
@@ -69,14 +64,12 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
         MatchParticipationModel.match_id: "ID de Partida",
         MatchParticipationModel.user_id: "ID del Usuario",
         MatchParticipationModel.score: "Puntuación",
-        MatchParticipationModel.bet_amount: "Cantidad Apostada",
         MatchParticipationModel.created_at: "Fecha de Creación",
         MatchParticipationModel.updated_at: "Última Actualización",
     }
 
     # Formatear columnas
     column_formatters = {
-        MatchParticipationModel.bet_amount: lambda m, a: f"${m.bet_amount:.2f}",
         MatchParticipationModel.created_at: lambda m, a: m.created_at.strftime("%d/%m/%Y %H:%M"),
         MatchParticipationModel.updated_at: lambda m, a: m.updated_at.strftime("%d/%m/%Y %H:%M"),
     }

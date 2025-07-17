@@ -1,4 +1,4 @@
-from .game_review_request_dto import (
+from .game_review_request import (
     CreateGameReviewRequestDTO,
     UpdateGameReviewRequestDTO
 )

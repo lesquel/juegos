@@ -34,6 +34,7 @@ class MatchModel(Base, TimeStampModelMixin):
         Float, default=0.0, comment="Monto base apostado en la partida"
     )
 
+
     game = relationship("GameModel", back_populates="matches", lazy="joined")
     winner = relationship(
         "UserModel", back_populates="won_matches", foreign_keys=[winner_id]

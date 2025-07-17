@@ -9,7 +9,7 @@ from application.converters.auth.user_response_converters import (
 )
 from application.mixins.logging_mixin import LoggingMixin
 from application.use_cases.auth import LoginUserUseCase
-from dtos.request.auth.auth_request_dto import LoginRequestDTO
+from dtos.request.auth.auth_request import LoginRequestDTO
 from application.services import PasswordHasher
 from infrastructure.db.connection import AsyncSessionLocal
 from infrastructure.core.settings_config import settings

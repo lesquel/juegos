@@ -1,8 +1,9 @@
 """Conversor DTO para entidad MatchParticipation."""
 
+
 from domain.entities.match.match_participation import MatchParticipation
-from dtos.response.match.match_response_dto import MatchParticipationResponseDTO
-from dtos.request.match.match_request_dto import JoinMatchRequestDTO
+from dtos.request.match.match_request_dto import UpdateMatchRequestDTO
+from dtos.response.match.match_response import MatchParticipationResponseDTO
 from application.mixins.dto_converter_mixin import (
     EntityToDTOConverter,
     DTOToEntityConverter,
@@ -40,17 +41,18 @@ class MatchParticipationEntityToDTOConverter(
         return dto
 
 
-class JoinMatchDTOToEntityConverter(
-    DTOToEntityConverter[JoinMatchRequestDTO, MatchParticipation], LoggingMixin
+class MatchParticipationDTOToEntityConverter(
+    DTOToEntityConverter[UpdateMatchRequestDTO, MatchParticipation],
+    LoggingMixin,
 ):
     """Convierte JoinMatchRequestDTO a MatchParticipation."""
 
     def __init__(self):
         super().__init__()
 
-    def to_entity(self, dto: JoinMatchRequestDTO) -> MatchParticipation:
-        """Convierte JoinMatchRequestDTO a MatchParticipation."""
-        self.logger.debug(f"Converting JoinMatchRequestDTO to MatchParticipation")
+    def to_entity(self, dto: UpdateMatchRequestDTO) -> MatchParticipation:
+        """Convierte UpdateMatchRequestDTO a MatchParticipation."""
+        self.logger.debug("Converting UpdateMatchRequestDTO to MatchParticipation")
 
         try:
             entity = MatchParticipation(
@@ -81,7 +83,7 @@ class MatchParticipationBidirectionalConverter(
     def __init__(self):
         super().__init__()
         self.entity_to_dto = MatchParticipationEntityToDTOConverter()
-        self.dto_to_entity = JoinMatchDTOToEntityConverter()
+        self.dto_to_entity = MatchParticipationDTOToEntityConverter()
 
     def to_dto(self, entity: MatchParticipation) -> MatchParticipationResponseDTO:
         """Convierte entidad a DTO de respuesta."""

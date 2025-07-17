@@ -6,7 +6,7 @@ from dtos import PaginatedResponseDTO
 from dtos.request.match.match_request_dto import (
     CreateMatchRequestDTO,
 )
-from dtos.response.match.match_response_dto import (
+from dtos.response.match.match_response import (
     MatchResponseDTO,
 )
 from interfaces.api.common import (
@@ -31,25 +31,20 @@ from infrastructure.dependencies.use_cases.match_use_cases import (
     get_create_match_use_case,
     get_matches_by_game_id_use_case,
     get_match_by_id_use_case,
-
 )
 
-from .match_participations_routes import match_participations_router
+from .match_participation_routes import match_participations_router
 
 
 # )
 
-match_router = APIRouter()
-match_router.include_router(
-    match_participations_router,
-)
+match_router = APIRouter(prefix="/games", tags=["Matches"])
+match_router.include_router(match_participations_router, prefix="/matches")
 # Configurar logger
 logger = get_logger("match_routes")
 
 
-@match_router.post(
-    "/", response_model=MatchResponseDTO, status_code=status.HTTP_201_CREATED
-)
+@match_router.post("/{game_id}/matches", response_model=MatchResponseDTO)
 async def create_match(
     game_id: UUID,
     match_data: CreateMatchRequestDTO,
@@ -70,7 +65,9 @@ async def create_match(
     return result
 
 
-@match_router.get("/", response_model=PaginatedResponseDTO[MatchResponseDTO])
+@match_router.get(
+    "/{game_id}/matches", response_model=PaginatedResponseDTO[MatchResponseDTO]
+)
 async def get_matches_by_game_id(
     game_id: UUID,
     request: Request,
@@ -102,7 +99,7 @@ async def get_matches_by_game_id(
     )
 
 
-@match_router.get("/{match_id}", response_model=MatchResponseDTO)
+@match_router.get("/matches/{match_id}", response_model=MatchResponseDTO)
 async def get_match(
     match_id: UUID,
     use_case: GetMatchByIdUseCase = Depends(get_match_by_id_use_case),

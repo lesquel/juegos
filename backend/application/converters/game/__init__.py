@@ -3,7 +3,6 @@
 # Game converters
 from .game_converter import (
     GameEntityToDTOConverter,
-    GameBidirectionalConverter,
 )
 
 # Category converters

@@ -35,7 +35,3 @@ class GameDTOValidators:
 def game_rating_validator(v: float) -> float:
     """Field validator para calificaciones de juegos"""
     return GameDTOValidators.validate_game_rating(v)
-
-def at_least_one_field_validator(v: Any, values: dict[str, Any], field: str) -> Any:
-    """Field validator para asegurar al menos un campo con valor"""
-    return GameDTOValidators.at_least_one_field(values, field) if v is None else v

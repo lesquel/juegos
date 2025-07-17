@@ -1,9 +1,9 @@
 from typing import Union
 from domain.entities.game.game_review import GameReviewEntity
-from dtos.response.game.game_review_response_dto import (
+from dtos.response.game.game_review_response import (
     GameReviewResponseDTO,
 )
-from dtos.request.game.game_review_request_dto import (
+from dtos.request.game.game_review_request import (
     CreateGameReviewRequestDTO,
     UpdateGameReviewRequestDTO,
 )

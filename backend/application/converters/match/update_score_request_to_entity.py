@@ -3,13 +3,11 @@ from typing import Optional
 from application.enums.match_state import MatchStateEnum
 from domain.entities.match import MatchEntity
 from dtos.request.match import UpdateMatchRequestDTO
-from application.interfaces.base_assembler import BaseAssembler
+from application.interfaces import BaseAssembler
 from infrastructure.logging import log_execution
 
 
-class UpdateMatchScoreRequestToEntityConverter(
-    BaseAssembler[UpdateMatchRequestDTO, dict]
-):
+class UpdateMatchScoreRequestToEntityConverter(BaseAssembler[UpdateMatchRequestDTO]):
     """Converter para transformar DTOs de actualización de score a diccionario de campos."""
 
     @log_execution(include_args=False, include_result=False, log_level="DEBUG")

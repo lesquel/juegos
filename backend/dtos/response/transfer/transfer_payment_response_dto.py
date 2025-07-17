@@ -2,6 +2,16 @@ from typing import Optional
 from pydantic import Field
 from application.enums import TransferStateEnum
 from ..time_stamp_base import TimeStampBase
+from dtos.common.constants import (
+    EXAMPLE_TRANSFER_ID,
+    EXAMPLE_USER_ID,
+    EXAMPLE_TRANSFER_IMG,
+    EXAMPLE_TRANSFER_AMOUNT,
+    EXAMPLE_TRANSFER_STATE,
+    EXAMPLE_TRANSFER_DESCRIPTION,
+    EXAMPLE_CREATED_AT,
+    EXAMPLE_UPDATED_AT,
+)
 
 
 class TransferPaymentResponseDTO(TimeStampBase):
@@ -19,3 +29,17 @@ class TransferPaymentResponseDTO(TimeStampBase):
     transfer_description: Optional[str] = Field(
         None, description="Descripción opcional de la transferencia"
     )
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "transfer_id": EXAMPLE_TRANSFER_ID,
+                "user_id": EXAMPLE_USER_ID,
+                "transfer_img": EXAMPLE_TRANSFER_IMG,
+                "transfer_amount": EXAMPLE_TRANSFER_AMOUNT,
+                "transfer_state": EXAMPLE_TRANSFER_STATE,
+                "transfer_description": EXAMPLE_TRANSFER_DESCRIPTION,
+                "created_at": EXAMPLE_CREATED_AT,
+                "updated_at": EXAMPLE_UPDATED_AT,
+            }
+        }

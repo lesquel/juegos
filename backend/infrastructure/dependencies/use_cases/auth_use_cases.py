@@ -11,7 +11,7 @@ from application.use_cases.auth import (
 from domain.interfaces.token_provider import ITokenProvider
 from domain.repositories import IUserRepository
 from dtos.response.auth.auth_response_dto import LoginResponseDTO
-from dtos.response.user.user_response_dto import UserResponseDTO
+from dtos.response.user.user_response import UserResponseDTO
 from application.interfaces.password_hasher import IPasswordHasher
 from infrastructure.dependencies.converters.auth_converters import get_login_assembler
 from infrastructure.dependencies.converters.auth_converters import get_login_assembler

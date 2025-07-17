@@ -1,7 +1,7 @@
 """Conversores de entidades a DTOs de respuesta para usuarios."""
 
 from domain.entities.user.user import UserEntity
-from dtos.response.user.user_response_dto import UserResponseDTO, UserBaseResponseDTO
+from dtos.response.user.user_response import UserResponseDTO, UserBaseResponseDTO
 from application.mixins import EntityToDTOConverter, LoggingMixin
 
 

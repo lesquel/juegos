@@ -7,7 +7,7 @@ entre entidades del dominio y sus DTOs correspondientes.
 
 from .user import *
 from .game import *
-# from .match import *
+from .match import *
 from .auth import *
 
 __all__ = [

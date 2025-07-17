@@ -12,14 +12,25 @@ class MatchParticipationModel(Base, TimeStampModelMixin):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
 
-    match_id = Column(UUID(as_uuid=True), ForeignKey("matches.match_id", ondelete="CASCADE"), nullable=False)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
+    match_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("matches.match_id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    user_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("users.user_id", ondelete="CASCADE"),
+        nullable=False,
+    )
 
     score = Column(Integer, nullable=False)
-    bet_amount = Column(Float, default=0.0, nullable=False)
 
     match = relationship("MatchModel", back_populates="participants", lazy="joined")
-    user = relationship("UserModel", back_populates="match_participations", lazy="joined")
+    user = relationship(
+        "UserModel", back_populates="match_participations", lazy="joined"
+    )
 
     def __repr__(self):
-        return f"<{self.user.email} in {self.match.game.game_name} - Score: {self.score}>"
+        return (
+            f"<{self.user.email} in {self.match.game.game_name} - Score: {self.score}>"
+        )

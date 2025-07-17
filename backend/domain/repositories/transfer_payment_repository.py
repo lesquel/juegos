@@ -34,8 +34,8 @@ class ITransferPaymentRepository(
         pass
 
     @abstractmethod
-    async def get_by_user_and_transfer_id(
-        self, user_id: str, transfer_id: str
+    async def get_transfer_id(
+        self, transfer_id: str
     ) -> Optional[TransferPaymentEntity]:
         """
         Obtiene una transferencia de un usuario por su ID.

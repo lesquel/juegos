@@ -1,7 +1,7 @@
 """Conversores de DTOs de request a entidades para autenticación."""
 
 from domain.entities.user.user import UserEntity
-from dtos.request.auth.auth_request_dto import UserCreateRequestDTO
+from dtos.request.auth.auth_request import UserCreateRequestDTO
 from application.mixins import DTOToEntityConverter, LoggingMixin
 
 

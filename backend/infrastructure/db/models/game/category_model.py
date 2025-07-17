@@ -23,4 +23,4 @@ class CategoryModel(Base, TimeStampModelMixin):
     )
 
     def __repr__(self):
-        return f"<CategoryModel(id={self.category_id}, name='{self.category_name}')>"
+        return f"{self.category_name}"

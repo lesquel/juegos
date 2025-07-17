@@ -2,6 +2,18 @@ from typing import Optional
 from decimal import Decimal
 from pydantic import BaseModel, Field, EmailStr, field_validator
 from application.enums import UserRole
+from dtos.common.constants import (
+    EXAMPLE_EMAIL,
+    EXAMPLE_PASSWORD,
+    EXAMPLE_CONFIRM_PASSWORD,
+    EXAMPLE_NEW_EMAIL,
+    EXAMPLE_CURRENT_PASSWORD,
+    EXAMPLE_NEW_PASSWORD,
+    EXAMPLE_FROM_USER_ID,
+    EXAMPLE_TO_USER_ID,
+    EXAMPLE_TRANSFER_MONEY_AMOUNT,
+    EXAMPLE_TRANSFER_MONEY_DESCRIPTION,
+)
 
 
 class UserRegistrationRequestDTO(BaseModel):
@@ -18,10 +30,27 @@ class UserRegistrationRequestDTO(BaseModel):
             raise ValueError('Las contraseñas no coinciden')
         return value
 
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "email": EXAMPLE_EMAIL,
+                "password": EXAMPLE_PASSWORD,
+                "confirm_password": EXAMPLE_CONFIRM_PASSWORD,
+            }
+        }
+
+
 class UserUpdateProfileRequestDTO(BaseModel):
     """DTO para actualización de perfil de usuario"""
 
     email: Optional[EmailStr] = Field(None, description="Nuevo email del usuario")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "email": EXAMPLE_NEW_EMAIL,
+            }
+        }
 
 
 class UserChangePasswordRequestDTO(BaseModel):
@@ -36,6 +65,15 @@ class UserChangePasswordRequestDTO(BaseModel):
         if 'new_password' in values and value != values['new_password']:
             raise ValueError('Las contraseñas no coinciden')
         return value
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "current_password": EXAMPLE_CURRENT_PASSWORD,
+                "new_password": EXAMPLE_NEW_PASSWORD,
+                "confirm_new_password": EXAMPLE_NEW_PASSWORD,
+            }
+        }
 
 
 class TransferMoneyRequestDTO(BaseModel):
@@ -53,3 +91,13 @@ class TransferMoneyRequestDTO(BaseModel):
         if v.as_tuple().exponent < -2:
             raise ValueError('Amount cannot have more than 2 decimal places')
         return v
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "from_user_id": EXAMPLE_FROM_USER_ID,
+                "to_user_id": EXAMPLE_TO_USER_ID,
+                "amount": EXAMPLE_TRANSFER_MONEY_AMOUNT,
+                "description": EXAMPLE_TRANSFER_MONEY_DESCRIPTION,
+            }
+        }

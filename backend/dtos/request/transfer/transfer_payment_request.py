@@ -1,8 +1,14 @@
 from typing import Optional
 from pydantic import BaseModel, Field, field_validator
 from fastapi import UploadFile, File, Form
+from dtos.common.constants import (
+    EXAMPLE_TRANSFER_AMOUNT,
+    EXAMPLE_TRANSFER_DESCRIPTION,
+    EXAMPLE_TRANSFER_IMG,
+)
 
 
+ERROR_MESSAGE_VALUE_MUST_BE_GREATER_THAN_ZERO = "El valor debe ser mayor a 0"
 
 
 class CreateTransferPaymentRequestDTO(BaseModel):
@@ -18,8 +24,16 @@ class CreateTransferPaymentRequestDTO(BaseModel):
     @field_validator("transfer_amount")
     def validate_amount(cls, v):
         if v <= 0:
-            raise ValueError("El monto debe ser mayor a 0")
+            raise ValueError(ERROR_MESSAGE_VALUE_MUST_BE_GREATER_THAN_ZERO)
         return round(v, 2)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "transfer_amount": EXAMPLE_TRANSFER_AMOUNT,
+                "transfer_description": EXAMPLE_TRANSFER_DESCRIPTION,
+            }
+        }
 
 
 class CreateTransferPaymentFormDTO:
@@ -46,7 +60,7 @@ class CreateTransferPaymentFormDTO:
 
         # Validar el monto
         if self.transfer_amount <= 0:
-            raise ValueError("El monto debe ser mayor a 0")
+            raise ValueError(ERROR_MESSAGE_VALUE_MUST_BE_GREATER_THAN_ZERO)
         self.transfer_amount = round(self.transfer_amount, 2)
 
     def _validate_image_file(self):
@@ -82,7 +96,7 @@ class CreateTransferPaymentInternalDTO(BaseModel):
         ..., description="URL de la imagen del comprobante de transferencia"
     )
     transfer_amount: float = Field(
-        ..., gt=0, description="Monto de la transferencia (debe ser mayor a 0)"
+        ..., gt=0, description=ERROR_MESSAGE_VALUE_MUST_BE_GREATER_THAN_ZERO
     )
     transfer_description: Optional[str] = Field(
         None, max_length=500, description="Descripción opcional de la transferencia"
@@ -91,5 +105,14 @@ class CreateTransferPaymentInternalDTO(BaseModel):
     @field_validator("transfer_amount")
     def validate_amount(cls, v):
         if v <= 0:
-            raise ValueError("El monto debe ser mayor a 0")
+            raise ValueError(ERROR_MESSAGE_VALUE_MUST_BE_GREATER_THAN_ZERO)
         return round(v, 2)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "transfer_img": EXAMPLE_TRANSFER_IMG,
+                "transfer_amount": EXAMPLE_TRANSFER_AMOUNT,
+                "transfer_description": EXAMPLE_TRANSFER_DESCRIPTION,
+            }
+        }

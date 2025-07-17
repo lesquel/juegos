@@ -41,8 +41,7 @@ game_router = APIRouter(
     ],
 )
 
-game_router.include_router(game_review_router, prefix="/{game_id}/reviews")
-game_router.include_router(match_router, prefix="/{game_id}/matches")
+game_router.include_router(game_review_router)
 # Configurar logger
 logger = get_logger("game_routes")
 

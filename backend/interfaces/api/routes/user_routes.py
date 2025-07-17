@@ -4,7 +4,7 @@ from uuid import UUID
 from application.use_cases.user import GetAllUsersUseCase, GetUserByIdUseCase
 from infrastructure.logging import get_logger
 from dtos import PaginatedResponseDTO
-from dtos.response.user.user_response_dto import UserResponseDTO
+from dtos.response.user.user_response import UserResponseDTO
 from interfaces.api.common import (
     PaginationParams,
     get_pagination_params,
@@ -23,10 +23,6 @@ from .transfer_payment_routes import transfer_router
 
 user_router = APIRouter(prefix="/users", tags=["Users"])
 
-# Incluir rutas de transferencias
-user_router.include_router(
-    transfer_router,
-)
 
 # Configurar logger
 logger = get_logger("user_routes")

@@ -2,7 +2,7 @@
 
 from application.interfaces.base_assembler import BaseAssembler
 from domain.entities.match.match import MatchEntity
-from dtos.response.match.match_participants_response_dto import MatchParticipantsResponseDTO
+from dtos.response.match.match_participants_response import MatchParticipantsResponseDTO
 from application.mixins.logging_mixin import LoggingMixin
 
 

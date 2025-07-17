@@ -25,9 +25,7 @@ class GetTransferPaymentByIdUseCase(BaseUseCase):
 
     @log_execution(include_args=True, include_result=False, log_level="INFO")
     @log_performance(threshold_seconds=2.0)
-    async def execute(
-        self, user_id: str, transfer_id: str
-    ) -> List[TransferPaymentResponseDTO]:
+    async def execute(self, transfer_id: str) -> List[TransferPaymentResponseDTO]:
         """
         Obtiene todas las transferencias de un usuario.
 
@@ -40,8 +38,8 @@ class GetTransferPaymentByIdUseCase(BaseUseCase):
         self.logger.info(f"Getting transfer payments for user {transfer_id}")
 
         # Obtener las transferencias del usuario
-        transfers = await self.transfer_repository.get_by_user_and_transfer_id(
-            user_id, transfer_id
+        transfers = await self.transfer_repository.get_transfer_id(
+            transfer_id
         )
 
         # Convertir entidades a DTOs

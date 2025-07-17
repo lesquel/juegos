@@ -1,9 +1,9 @@
-from .match_response_dto import (
+from .match_response import (
     MatchResponseDTO,
     MatchParticipationResponseDTO,
 )
 
-from .match_participants_response_dto import (
+from .match_participants_response import (
     MatchParticipantsResponseDTO,
 )
 __all__ = [

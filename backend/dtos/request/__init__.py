@@ -1,4 +1,4 @@
-from .auth.auth_request_dto import *
+from .auth.auth_request import *
 from .user import *
 from .match import *
 from .game import *

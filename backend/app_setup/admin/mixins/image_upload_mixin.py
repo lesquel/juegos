@@ -149,7 +149,7 @@ class ImageUploadAdminMixin:
 
                 if current_img and not current_img.startswith("<div"):
                     upload_service = FileUploadService(upload_directory="uploads")
-                    asyncio.create_task(upload_service.delete_image(current_img))
+                    _ = asyncio.create_task(upload_service.delete_image(current_img))
         except Exception:
             pass
 

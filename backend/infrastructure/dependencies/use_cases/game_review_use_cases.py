@@ -14,7 +14,7 @@ from application.use_cases.game import (
 
 
 from domain.repositories import IGameReviewRepository
-from dtos.response.user.user_response_dto import UserBaseResponseDTO
+from dtos.response.user.user_response import UserBaseResponseDTO
 
 from ..repositories import get_game_review_repository
 from ..converters import (

@@ -8,10 +8,10 @@ from domain.exceptions.game import GameNotFoundError
 from domain.exceptions.match import MatchValidationError
 from domain.exceptions.user import UserNotFoundError, InsufficientBalanceError
 from dtos.request.match.match_request_dto import CreateMatchRequestDTO
-from dtos.response.match.match_response_dto import MatchResponseDTO
+from dtos.response.match.match_response import MatchResponseDTO
 from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import BidirectionalConverter
-from dtos.response.user.user_response_dto import UserBaseResponseDTO
+from dtos.response.user.user_response import UserBaseResponseDTO, UserResponseDTO
 from infrastructure.logging import log_execution, log_performance
 from datetime import datetime
 
@@ -21,7 +21,7 @@ class CreateMatchUseCase(BaseUseCase[CreateMatchRequestDTO, MatchResponseDTO]):
 
     def __init__(
         self,
-        user: UserBaseResponseDTO,
+        user: UserResponseDTO,
         match_repo: IMatchRepository,
         game_repo: IGameRepository,
         user_repo: IUserRepository,
@@ -59,23 +59,22 @@ class CreateMatchUseCase(BaseUseCase[CreateMatchRequestDTO, MatchResponseDTO]):
         )
 
         # Validar que el usuario existe
-        user = await self.user_repo.get_by_id(self.user.user_id)
-        if not user:
+        if not self.user:
             self.logger.error(f"User not found: {self.user.user_id}")
             raise UserNotFoundError(f"User with ID {self.user.user_id} not found")
 
         # Validar que el usuario tiene saldo suficiente para crear la partida
         if not UserBalanceService.has_sufficient_balance(
-            user, match_data.base_bet_amount
+            self.user, match_data.base_bet_amount
         ):
             self.logger.warning(
                 f"User {self.user.user_id} has insufficient balance. "
-                f"Required: {match_data.base_bet_amount}, Available: {user.virtual_currency}"
+                f"Required: {match_data.base_bet_amount}, Available: {self.user.virtual_currency}"
             )
             raise InsufficientBalanceError(
-                user.virtual_currency,
+                self.user.virtual_currency,
                 match_data.base_bet_amount,
-                f"Insufficient balance to create match. Required: {match_data.base_bet_amount}, Available: {user.virtual_currency}",
+                f"Insufficient balance to create match. Required: {match_data.base_bet_amount}, Available: {self.user.virtual_currency}",
             )
 
         # Validar que el juego existe
@@ -88,8 +87,13 @@ class CreateMatchUseCase(BaseUseCase[CreateMatchRequestDTO, MatchResponseDTO]):
         match_entity = self.match_converter.to_entity(match_data)
 
         # Deducir el monto de la apuesta del balance del usuario
-        UserBalanceService.deduct_balance(user, match_data.base_bet_amount)
-        await self.user_repo.update(self.user.user_id, user)
+        UserBalanceService.deduct_balance(self.user, match_data.base_bet_amount)
+        
+        # Obtener la entidad completa del usuario para actualizar
+        user_entity = await self.user_repo.get_by_id(self.user.user_id)
+        if user_entity:
+            user_entity.virtual_currency = self.user.virtual_currency
+            await self.user_repo.update(self.user.user_id, user_entity)
 
         self.logger.info(
             f"Deducted {match_data.base_bet_amount} from user {self.user.user_id} balance"
@@ -97,19 +101,14 @@ class CreateMatchUseCase(BaseUseCase[CreateMatchRequestDTO, MatchResponseDTO]):
 
         match_entity.created_by_id = self.user.user_id
         match_entity.game_id = game_id
-        # Crear la partida en el repositorio
 
         match_entity.add_participant(self.user.user_id)
-        
-        print("Participant IDs after adding user:")
-        print(match_entity.participant_ids)
 
         created_match = await self.match_repo.save(match_entity)
-        print(f"Match created with ID: {created_match.match_id}")
 
         self.logger.info(
             f"Match created successfully with ID: {created_match.match_id}"
         )
 
         # Convertir a DTO de respuesta
-        return self.match_converter.to_dto(created_match)
+        return self.match_converter.to_dto(created_match, game)

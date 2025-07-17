@@ -1,6 +1,10 @@
 from typing import Optional
-from pydantic import BaseModel, Field, field_validator, model_validator
-from .validators import game_rating_validator, at_least_one_field_validator
+from pydantic import BaseModel, Field, field_validator
+from .validators import game_rating_validator
+from dtos.common.constants import (
+    EXAMPLE_RATING,
+    EXAMPLE_COMMENT,
+)
 
 
 class CreateGameReviewRequestDTO(BaseModel):
@@ -17,6 +21,14 @@ class CreateGameReviewRequestDTO(BaseModel):
     @classmethod
     def validate_game_rating(cls, v: int) -> int:
         return game_rating_validator(v)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "rating": EXAMPLE_RATING,
+                "comment": EXAMPLE_COMMENT,
+            }
+        }
 
 
 class UpdateGameReviewRequestDTO(BaseModel):
@@ -36,13 +48,10 @@ class UpdateGameReviewRequestDTO(BaseModel):
     def validate_game_rating(cls, v: Optional[int]) -> Optional[int]:
         return game_rating_validator(v) if v is not None else v
 
-    @model_validator(mode="after")
-    @classmethod
-    def validate_at_least_one_field(
-        cls, values: "UpdateGameReviewRequestDTO"
-    ) -> "UpdateGameReviewRequestDTO":
-        return (
-            at_least_one_field_validator(values, "rating")
-            if values.rating is None and values.comment is None
-            else values
-        )
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "rating": EXAMPLE_RATING,
+                "comment": EXAMPLE_COMMENT,
+            }
+        }

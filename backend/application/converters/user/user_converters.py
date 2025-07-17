@@ -14,7 +14,7 @@ from application.mixins.dto_converter_mixin import (
 from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.user.user import UserEntity
 from dtos.request.user.user_request_dto import UserRegistrationRequestDTO
-from dtos.response.user.user_response_dto import UserResponseDTO
+from dtos.response.user.user_response import UserResponseDTO
 from application.enums import UserRole
 
 

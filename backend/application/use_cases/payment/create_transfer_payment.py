@@ -1,6 +1,6 @@
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
 from domain.repositories.transfer_payment_repository import ITransferPaymentRepository
-from dtos.request.transfer.transfer_payment_request_dto import (
+from dtos.request.transfer.transfer_payment_request import (
     CreateTransferPaymentFormDTO,
     CreateTransferPaymentInternalDTO,
 )
@@ -11,7 +11,7 @@ from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import BidirectionalConverter
 from application.services.file_upload_service import FileUploadService
 from application.enums import TransferStateEnum
-from dtos.response.user.user_response_dto import UserBaseResponseDTO
+from dtos.response.user.user_response import UserBaseResponseDTO
 from infrastructure.logging import log_execution, log_performance
 
 

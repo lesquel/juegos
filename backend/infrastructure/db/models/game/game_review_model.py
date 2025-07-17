@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, Text, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 import uuid
@@ -32,4 +32,4 @@ class GameReviewModel(Base, TimeStampModelMixin):
     user = relationship("UserModel", back_populates="reviews")
 
     def __repr__(self):
-        return f"<GameReviewModel(id={self.review_id}, rating={self.rating}/5)>"
+        return f"Review by {self.user.email}: {self.comment[:20]}... on game {self.game.game_name}"

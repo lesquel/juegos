@@ -13,8 +13,8 @@ from infrastructure.dependencies import (
     get_login_use_case,
     get_current_user_from_request_use_case,
 )
-from dtos.request.auth.auth_request_dto import LoginRequestDTO, UserCreateRequestDTO
-from dtos.response.user.user_response_dto import UserBaseResponseDTO, UserResponseDTO
+from dtos.request.auth.auth_request import LoginRequestDTO, UserCreateRequestDTO
+from dtos.response.user.user_response import UserBaseResponseDTO, UserResponseDTO
 from dtos.response.auth.auth_response_dto import LoginResponseDTO
 
 

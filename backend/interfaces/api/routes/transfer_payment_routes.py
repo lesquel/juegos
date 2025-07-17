@@ -8,7 +8,7 @@ from application.use_cases.payment import (
     GetUserTransferPaymentsUseCase,
 )
 
-from dtos.request.transfer.transfer_payment_request_dto import (
+from dtos.request.transfer.transfer_payment_request import (
     CreateTransferPaymentFormDTO,
 )
 from infrastructure.dependencies.use_cases.transfer_payment_use_cases import (
@@ -32,7 +32,7 @@ from ..common.filters.specific_filters import (
     get_transfer_payment_filter_params,
 )
 
-transfer_router = APIRouter()
+transfer_router = APIRouter(prefix="/users", tags=["Transfer Payments"])
 
 # Configurar logger
 logger = get_logger("transfer_routes")
@@ -75,10 +75,9 @@ async def get_user_transfer_payments(
 
 
 @transfer_router.get(
-    "/{user_id}/transfers/{transfer_id}", response_model=TransferPaymentResponseDTO
+    "/transfers/{transfer_id}", response_model=TransferPaymentResponseDTO
 )
 async def get_user_transfer_payment_by_id(
-    user_id: UUID,
     transfer_id: UUID,
     use_case: GetTransferPaymentByIdUseCase = Depends(
         get_user_transfer_payment_for_id_use_case
@@ -91,7 +90,7 @@ async def get_user_transfer_payment_by_id(
         user_id: ID del usuario a obtener
     """
 
-    return await use_case.execute(str(user_id), str(transfer_id))
+    return await use_case.execute(str(transfer_id))
 
 
 @transfer_router.post("/transfers", response_model=TransferPaymentResponseDTO)

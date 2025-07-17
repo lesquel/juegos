@@ -2,7 +2,7 @@
 
 from domain.exceptions import UserNotFoundError
 from domain.repositories import IUserRepository
-from dtos.response.user.user_response_dto import UserResponseDTO
+from dtos.response.user.user_response import UserResponseDTO
 from application.interfaces.base_use_case import BaseGetByIdUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from infrastructure.logging import log_execution, log_performance

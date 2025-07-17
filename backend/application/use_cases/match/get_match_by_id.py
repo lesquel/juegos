@@ -1,6 +1,6 @@
 from domain.repositories.match_repository import IMatchRepository
 from domain.exceptions.match import MatchNotFoundError
-from dtos.response.match.match_response_dto import MatchResponseDTO
+from dtos.response.match.match_response import MatchResponseDTO
 from application.interfaces.base_use_case import BaseGetByIdUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 

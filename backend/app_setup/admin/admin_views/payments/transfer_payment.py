@@ -84,6 +84,13 @@ class TransferPaymentAdmin(
         TransferPaymentModel.updated_at: "Última Actualización",
     }
 
+
+    badge_state = lambda m, a: (
+        "success"
+        if m.transfer_state.value == "APPROVED"
+        else "warning" if m.transfer_state.value == "PENDING" else "danger"
+    )
+
     # Formato de columnas (tabla principal)
     column_formatters = {
         TransferPaymentModel.user: lambda m, a: m.user.email if m.user else "N/A",
@@ -101,8 +108,8 @@ class TransferPaymentAdmin(
         ),
         TransferPaymentModel.transfer_state: lambda m, a: Markup(
             f"""
-            <span class='badge badge-{'success' if m.transfer_state.value == 'APPROVED' else 'warning' if m.transfer_state.value == 'PENDING' else 'danger'}'>
-                {m.transfer_state.value}
+            <span class='badge badge-{TransferPaymentAdmin.badge_state(m,a)}>
+            {m.transfer_state.value}
             </span>
         """
         ),
@@ -116,7 +123,7 @@ class TransferPaymentAdmin(
     async def get_query(self, request: Request):
         from infrastructure.db.models import (
             UserModel,
-        ) 
+        )
 
         query = select(self.model).options(selectinload(TransferPaymentModel.user))
 

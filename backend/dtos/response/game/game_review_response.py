@@ -1,6 +1,16 @@
 from typing import Optional
 from pydantic import Field
 from ..time_stamp_base import TimeStampBase
+from dtos.common.constants import (
+    EXAMPLE_REVIEW_ID,
+    EXAMPLE_GAME_ID,
+    EXAMPLE_USER_ID,
+    EXAMPLE_RATING,
+    EXAMPLE_COMMENT,
+    EXAMPLE_EMAIL,
+    EXAMPLE_CREATED_AT,
+    EXAMPLE_UPDATED_AT,
+)
 
 
 class GameReviewResponseDTO(TimeStampBase):
@@ -12,6 +22,19 @@ class GameReviewResponseDTO(TimeStampBase):
     rating: int = Field(..., description="Calificación del 1 al 5", ge=1, le=5)
     comment: Optional[str] = Field(None, description="Comentario de la reseña")
 
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "review_id": EXAMPLE_REVIEW_ID,
+                "game_id": EXAMPLE_GAME_ID,
+                "user_id": EXAMPLE_USER_ID,
+                "rating": EXAMPLE_RATING,
+                "comment": EXAMPLE_COMMENT,
+                "created_at": EXAMPLE_CREATED_AT,
+                "updated_at": EXAMPLE_UPDATED_AT,
+            }
+        }
+
 
 class GameReviewSummaryResponseDTO(TimeStampBase):
     """DTO para respuesta resumida de reseña (para listados)"""
@@ -20,3 +43,15 @@ class GameReviewSummaryResponseDTO(TimeStampBase):
     user_email: str = Field(..., description="Email del usuario que escribió la reseña")
     rating: int = Field(..., description="Calificación del 1 al 5", ge=1, le=5)
     comment: Optional[str] = Field(None, description="Comentario de la reseña")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "review_id": EXAMPLE_REVIEW_ID,
+                "user_email": EXAMPLE_EMAIL,
+                "rating": EXAMPLE_RATING,
+                "comment": EXAMPLE_COMMENT,
+                "created_at": EXAMPLE_CREATED_AT,
+                "updated_at": EXAMPLE_UPDATED_AT,
+            }
+        }

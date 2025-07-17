@@ -34,4 +34,4 @@ class TransferPaymentModel(Base, TimeStampModelMixin):
     user = relationship("UserModel", back_populates="transfers")
 
     def __repr__(self):
-        return f"<TransferPaymentModel(id={self.transfer_id}, amount=${self.transfer_amount}, status={self.transfer_state.value})>"
+        return f"Transfer by {self.user.email} on {self.created_at} - Amount: {self.transfer_amount}"
