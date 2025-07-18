@@ -7,7 +7,7 @@ from dtos.response.match.match_participants_response import (
 )
 from infrastructure.logging import get_logger
 from dtos.request.match.match_request_dto import (
-    UpdateMatchRequestDTO,
+    MatchParticipationResultsDTO,
 )
 from dtos.response.match.match_response import (
     MatchResponseDTO,
@@ -17,12 +17,12 @@ from dtos.response.match.match_response import (
 # Import use cases
 from application.use_cases.match import (
     JoinMatchUseCase,
-    UpdateMatchUseCase,
+    FinishMatchUseCase,
     GetMatchParticipantsUseCase,
 )
 from infrastructure.dependencies.use_cases.match_participations_use_cases import (
     get_join_match_use_case,
-    get_update_match_use_case,
+    get_finish_match_use_case,
     get_match_participants_use_case,
 )
 
@@ -74,12 +74,11 @@ async def join_match(
     return result
 
 
-@match_participations_router.put("/{match_id}/score", response_model=MatchResponseDTO)
-async def update_match_score(
+@match_participations_router.put("/{match_id}/finish_match", response_model=MatchResponseDTO)
+async def finish_match(
     match_id: UUID,
-    score_data: UpdateMatchRequestDTO,
-    use_case: Annotated[UpdateMatchUseCase, Depends(get_update_match_use_case)],
-    # current_user: UserEntity = Depends(get_current_user),
+    participation_data: MatchParticipationResultsDTO,
+    use_case: FinishMatchUseCase = Depends(get_finish_match_use_case),
 ) -> MatchResponseDTO:
     """
     Actualiza la puntuación de un usuario en una partida.
@@ -91,14 +90,4 @@ async def update_match_score(
     Returns:
         MatchResponseDTO: Datos actualizados de la partida
     """
-    try:
-        # TODO: Get user_id from authentication context
-        user_id = "user_789"  # Placeholder
-        result = await use_case.execute(str(match_id), score_data, user_id)
-        return result
-    except Exception as e:
-        logger.error(f"Error updating match score {match_id}: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error updating match score: {str(e)}",
-        )
+    return await use_case.execute(str(match_id), participation_data)

@@ -94,6 +94,7 @@ class MatchBidirectionalConverter(
     def __init__(self):
         super().__init__()
         self.entity_to_dto = MatchEntityToDTOConverter()
+        
         self.dto_to_entity = CreateMatchRequestToEntityConverter()
 
     def to_dto(self, entity: MatchEntity, game: GameEntity) -> MatchResponseDTO:

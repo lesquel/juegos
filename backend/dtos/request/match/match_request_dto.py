@@ -1,13 +1,10 @@
 from typing import Optional
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator
 
-from .validators import (
-    validate_bet_amount_validator,
-    validate_end_after_start_validator,
-)
+from .validators import validate_bet_amount_validator, validate_user_score_validator
 from dtos.common.constants import (
     EXAMPLE_BASE_BET_AMOUNT,
-    EXAMPLE_WINNER_ID,
+    EXAMPLE_USER_ID,
     EXAMPLE_SCORE,
 )
 
@@ -33,18 +30,29 @@ class CreateMatchRequestDTO(BaseModel):
         }
 
 
-class UpdateMatchRequestDTO(BaseModel):
-    """DTO para actualizar puntuación en una partida"""
+class MatchParticipationInputDTO(BaseModel):
+    """DTO para la entrada de participación en una partida"""
 
-    winner_id: str = Field(None, description="ID del usuario ganador (opcional)")
-    score: int = Field(
-        ..., ge=0, description="Puntuación obtenida (debe ser mayor o igual a 0)"
+    user_id: str = Field(..., description="ID del usuario que participa en la partida")
+    score: Optional[float] = Field(
+        None, description="Puntuación del usuario en la partida, si aplica"
     )
+
+    @field_validator("score")
+    @classmethod
+    def validate_user_score(cls, v: Optional[float]) -> Optional[float]:
+        """Valida que la puntuación del usuario sea un entero no negativo."""
+        return validate_user_score_validator(v)
 
     class Config:
         json_schema_extra = {
-            "example": {
-                "winner_id": EXAMPLE_WINNER_ID,
-                "score": EXAMPLE_SCORE,
-            }
+            "example": {"user_id": EXAMPLE_USER_ID, "score": EXAMPLE_SCORE}
         }
+
+
+class MatchParticipationResultsDTO(BaseModel):
+    """DTO para los resultados de la participación en una partida"""
+
+    participants: list[MatchParticipationInputDTO] = Field(
+        ..., description="Lista de participantes en la partida"
+    )

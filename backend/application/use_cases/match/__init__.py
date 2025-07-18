@@ -4,7 +4,7 @@ from .create_match import CreateMatchUseCase
 from .get_all_matches_by_game_id import GetMatchesByGameIdUseCase
 from .get_match_by_id import GetMatchByIdUseCase
 from .join_match import JoinMatchUseCase
-from .update_match import UpdateMatchUseCase
+from .finish_match import FinishMatchUseCase
 from .get_match_participants import GetMatchParticipantsUseCase
 
 __all__ = [
@@ -12,6 +12,6 @@ __all__ = [
     "GetMatchesByGameIdUseCase",
     "GetMatchByIdUseCase",
     "JoinMatchUseCase",
-    "UpdateMatchUseCase",
+    "FinishMatchUseCase",
     "GetMatchParticipantsUseCase",
 ]

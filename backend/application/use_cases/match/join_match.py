@@ -61,6 +61,18 @@ class JoinMatchUseCase(BaseUseCase[str, MatchResponseDTO]):
 
         game = await self.game_repo.get_by_id(match.game_id)
 
+        # Verificar que el usuario no esté ya participando
+        is_participant = await self.match_repo.is_user_participant(
+            match_id, self.user.user_id
+        )
+        print(is_participant)
+
+        if is_participant:
+            self.logger.warning(
+                f"User {self.user.user_id} already participating in match {match_id}"
+            )
+            raise MatchJoinError("User is already participating in this match")
+
         if len(match.participant_ids) >= game.game_capacity:
             self.logger.error(f"Match {match_id} is full")
             raise MatchJoinError("Match is already full")
@@ -74,18 +86,6 @@ class JoinMatchUseCase(BaseUseCase[str, MatchResponseDTO]):
         if not self.user:
             self.logger.error(f"User not found: {self.user.user_id}")
             raise UserNotFoundError(f"User with ID {self.user.email} not found")
-
-        # Verificar que el usuario no esté ya participando
-        is_participant = await self.match_repo.is_user_participant(
-            match_id, self.user.user_id
-        )
-        print(is_participant)
-
-        if is_participant:
-            self.logger.warning(
-                f"User {self.user.user_id} already participating in match {match_id}"
-            )
-            raise MatchJoinError("User is already participating in this match")
 
         # Validar saldo para la apuesta
 

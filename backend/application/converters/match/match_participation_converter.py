@@ -1,8 +1,7 @@
 """Conversor DTO para entidad MatchParticipation."""
 
-
 from domain.entities.match.match_participation import MatchParticipation
-from dtos.request.match.match_request_dto import UpdateMatchRequestDTO
+from dtos.request.match.match_request_dto import CreateMatchRequestDTO
 from dtos.response.match.match_response import MatchParticipationResponseDTO
 from application.mixins.dto_converter_mixin import (
     EntityToDTOConverter,
@@ -42,7 +41,7 @@ class MatchParticipationEntityToDTOConverter(
 
 
 class MatchParticipationDTOToEntityConverter(
-    DTOToEntityConverter[UpdateMatchRequestDTO, MatchParticipation],
+    DTOToEntityConverter[CreateMatchRequestDTO, MatchParticipation],
     LoggingMixin,
 ):
     """Convierte JoinMatchRequestDTO a MatchParticipation."""
@@ -50,7 +49,7 @@ class MatchParticipationDTOToEntityConverter(
     def __init__(self):
         super().__init__()
 
-    def to_entity(self, dto: UpdateMatchRequestDTO) -> MatchParticipation:
+    def to_entity(self, dto: CreateMatchRequestDTO) -> MatchParticipation:
         """Convierte UpdateMatchRequestDTO a MatchParticipation."""
         self.logger.debug("Converting UpdateMatchRequestDTO to MatchParticipation")
 
@@ -59,7 +58,7 @@ class MatchParticipationDTOToEntityConverter(
                 match=None,  # Se asigna externamente
                 user=None,  # Se asigna externamente
                 score=0,  # Comienza en 0
-                bet_amount=dto.bet_amount,
+                bet_amount=dto.base_bet_amount,
                 created_at=None,
                 updated_at=None,
             )

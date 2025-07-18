@@ -64,4 +64,19 @@ class UserBalanceService(IBalanceValidator):
             raise ValueError("Amount to add must be positive")
 
         user.virtual_currency += amount
+        
+    
+    @staticmethod
+    def calculate_reward(odds: float, base_bet: float) -> float:
+        """
+        Calcula la recompensa basada en las probabilidades y la apuesta base.
+
+        Args:
+            odds: Probabilidades de la partida
+            base_bet: Monto de la apuesta base
+
+        Returns:
+            float: Recompensa calculada
+        """
+        return round(odds * base_bet, 2)
 

@@ -1,10 +1,10 @@
 
 from .match_request_dto import (
     CreateMatchRequestDTO,
-    UpdateMatchRequestDTO
+    MatchParticipationResultsDTO
 )
 
 __all__ = [
     "CreateMatchRequestDTO",
-    "UpdateMatchRequestDTO"
+    "MatchParticipationResultsDTO"
 ]

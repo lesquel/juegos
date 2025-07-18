@@ -56,14 +56,13 @@ class IMatchRepository(IBaseRepository[MatchEntity, MatchFilterParams]):
         pass
 
     @abstractmethod
-    async def update_user_score(self, match_id: str, user_id: str, score: int) -> MatchEntity:
+    async def finish_match(self, match_id: str, participations: list[tuple[str, int]]) -> MatchEntity:
         """
         Actualiza la puntuación de un usuario en una partida.
         
         Args:
             match_id: ID de la partida
-            user_id: ID del usuario
-            score: Nueva puntuación
+            participations: Lista de tuplas con ID de usuario y puntuación
             
         Returns:
             Entidad de partida actualizada

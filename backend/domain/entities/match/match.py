@@ -38,7 +38,11 @@ class MatchEntity(TimeStampEntityMixin):
             # Peer-to-peer
             total_pot = self.base_bet_amount * len(self.participant_ids)
             net_pot = total_pot * (1 - HOUSE_MARGIN)
-            return round(net_pot / self.base_bet_amount, 2)
+            return (
+                round(net_pot / self.base_bet_amount, 2)
+                if self.base_bet_amount > 0
+                else 0.0
+            )
         elif house_odds:
             # Contra la casa
             return house_odds

@@ -1,6 +1,6 @@
 from typing import Any
-from datetime import datetime
-from pydantic import ValidationInfo
+
+from domain.exceptions.match import MatchScoreError
 
 
 class MatchDTOValidators:
@@ -15,7 +15,14 @@ class MatchDTOValidators:
             return round(value, 2)
         return value
 
-
+    @staticmethod
+    def validate_user_score(value: Any) -> float:
+        """Valida que la puntuación del usuario sea un número de punto flotante no negativo."""
+        if value is not None and (not isinstance(value, float) or value < 0):
+            raise MatchScoreError(
+                "La puntuación del usuario debe ser un número de punto flotante no negativo"
+            )
+        return value
 
 
 # Funciones compatibles con field_validator de Pydantic v2
@@ -24,10 +31,6 @@ def validate_bet_amount_validator(v: Any) -> float:
     return MatchDTOValidators.validate_bet_amount(v)
 
 
-def validate_end_after_start_validator(values: dict) -> str:
-    """Field validator para validar que la hora de finalización sea posterior a la hora de inicio."""
-    if values is not None:
-        return MatchDTOValidators.validate_end_after_start(
-            values.get("end_time"), values.get("start_time")
-        )
-    return v
+def validate_user_score_validator(v: Any) -> int:
+    """Field validator para la puntuación del usuario."""
+    return MatchDTOValidators.validate_user_score(v)

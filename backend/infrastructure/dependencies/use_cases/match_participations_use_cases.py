@@ -13,7 +13,8 @@ from application.mixins.dto_converter_mixin import (
 )
 
 
-from application.use_cases.match.update_match import UpdateMatchUseCase
+from application.use_cases.match.finish_match import FinishMatchUseCase
+from domain.repositories.game_repository import IGameRepository
 from domain.repositories.match_repository import IMatchRepository
 from domain.repositories.user_repository import IUserRepository
 
@@ -33,6 +34,19 @@ from infrastructure.dependencies.use_cases.auth_use_cases import (
 )
 
 
+def get_match_participants_use_case(
+    match_repo: IMatchRepository = Depends(get_match_repository),
+    match_participants_assambler: BaseAssembler = Depends(
+        get_match_participants_response_assembler
+    ),
+) -> GetMatchParticipantsUseCase:
+    """Get match participants use case dependency."""
+    return GetMatchParticipantsUseCase(
+        match_repo=match_repo,
+        match_participants_assambler=match_participants_assambler,
+    )
+
+
 def get_join_match_use_case(
     user: UserResponseDTO = Depends(get_current_user_from_request_use_case),
     match_repo: IMatchRepository = Depends(get_match_repository),
@@ -50,33 +64,23 @@ def get_join_match_use_case(
     )
 
 
-def get_update_match_use_case(
+def get_finish_match_use_case(
     match_repo: IMatchRepository = Depends(get_match_repository),
     user_repo: IUserRepository = Depends(get_user_repository),
+    game_repo: IGameRepository = Depends(get_game_repository),
     match_converter: BidirectionalConverter = Depends(get_match_converter),
-) -> UpdateMatchUseCase:
+) -> FinishMatchUseCase:
     """Get update match use case dependency."""
-    return UpdateMatchUseCase(
+    return FinishMatchUseCase(
         match_repo=match_repo,
         user_repo=user_repo,
+        game_repo=game_repo,
         match_converter=match_converter,
-    )
-
-
-def get_match_participants_use_case(
-    match_repo: IMatchRepository = Depends(get_match_repository),
-    match_participants_assambler: BaseAssembler = Depends(
-        get_match_participants_response_assembler
-    ),
-) -> GetMatchParticipantsUseCase:
-    """Get match participants use case dependency."""
-    return GetMatchParticipantsUseCase(
-        match_repo=match_repo,
-        match_participants_assambler=match_participants_assambler,
     )
 
 
 __all__ = [
     "get_join_match_use_case",
     "get_match_participants_use_case",
+    "get_finish_match_use_case",
 ]

@@ -63,11 +63,13 @@ def get_matches_by_game_id_use_case(
 
 def get_match_by_id_use_case(
     match_repo: IMatchRepository = Depends(get_match_repository),
+    game_repo: IGameRepository = Depends(get_game_repository),
     match_converter: BidirectionalConverter = Depends(get_match_converter),
 ) -> GetMatchByIdUseCase:
     """Get match by id use case dependency."""
     return GetMatchByIdUseCase(
         match_repo=match_repo,
+        game_repo=game_repo,
         match_converter=match_converter,
     )
 

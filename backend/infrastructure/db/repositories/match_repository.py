@@ -4,7 +4,7 @@ from sqlalchemy.orm import selectinload
 
 from domain.entities.match.match import MatchEntity
 from domain.entities.match.match_participation import MatchParticipation
-from domain.exceptions.match import MatchNotFoundError
+from domain.exceptions.match import MatchNotFoundError, MatchScoreError
 from domain.repositories.match_repository import IMatchRepository
 from infrastructure.db.models.match.match_model import MatchModel
 from infrastructure.db.models.match.match_participation_model import (
@@ -61,8 +61,12 @@ class PostgresMatchRepository(
         try:
             # Verificar que la partida existe
             match = await self.get_by_id(match_id)
+
             if not match:
                 raise MatchNotFoundError(f"Match with ID {match_id} not found")
+
+            print("Participant IDs before joining:")
+            print(match.participant_ids)
 
             # Crear nueva participación
             participation = MatchParticipationModel(
@@ -75,7 +79,10 @@ class PostgresMatchRepository(
             await self.db.commit()
 
             # Retornar la partida actualizada
-            return await self.get_by_id(match_id)
+            updated_match = await self.get_by_id(match_id)
+            updated_match.participant_ids.append(user_id)
+
+            return updated_match
 
         except Exception as e:
             self.logger.error(f"Error joining match: {e}")
@@ -110,32 +117,51 @@ class PostgresMatchRepository(
             await self.db.rollback()
             raise
 
-    async def update_user_score(
-        self, match_id: str, user_id: str, score: int
+    async def finish_match(
+        self, match_id: str, participations: List[tuple[str, int]]
     ) -> MatchEntity:
-        """Actualiza la puntuación de un usuario en una partida."""
+        """
+        Finaliza una partida actualizando los puntajes y asignando al ganador.
+
+        Args:
+            match_id: ID de la partida.
+            participations: Lista de tuplas (user_id, score).
+
+        Returns:
+            MatchEntity actualizado con los puntajes y ganador.
+
+        Raises:
+            MatchNotFoundError: Si la partida o alguna participación no se encuentra.
+        """
         try:
-            stmt = select(MatchParticipationModel).where(
-                and_(
-                    MatchParticipationModel.match_id == match_id,
-                    MatchParticipationModel.user_id == user_id,
-                )
-            )
-            result = await self.db.execute(stmt)
-            participation = result.scalar_one_or_none()
+            print("PARTICIPATIONS:")
+            print(participations)
+            for user_id, score in participations:
+                if not await self.is_user_participant(match_id, user_id):
+                    self.logger.warning(
+                        f"User {user_id} is not a participant in match {match_id}"
+                    )
+                    raise MatchScoreError("User is not a participant in this match")
 
-            if not participation:
-                raise MatchNotFoundError(
-                    f"Participation not found for user {user_id} in match {match_id}"
-                )
+            # Determinar ganador
+            winner_id = max(participations, key=lambda x: x[1])[0]
 
-            participation.score = score
+            # Actualizar la entidad de la partida con el ganador y estado
+            match_stmt = select(MatchModel).where(MatchModel.match_id == match_id)
+            match_result = await self.db.execute(match_stmt)
+            match = match_result.scalar_one_or_none()
+
+            if not match:
+                raise MatchNotFoundError(f"Match with ID {match_id} not found")
+
+            match.winner_id = winner_id
+
             await self.db.commit()
 
             return await self.get_by_id(match_id)
 
         except Exception as e:
-            self.logger.error(f"Error updating user score: {e}")
+            self.logger.error(f"Unexpected error finishing match: {e}")
             await self.db.rollback()
             raise
 
@@ -179,16 +205,10 @@ class PostgresMatchRepository(
 
     def _model_to_entity(self, model: MatchModel) -> MatchEntity:
         """Convierte MatchModel a MatchEntity."""
-        print("Converting MatchModel to MatchEntity:")
-        print(model.participants)
 
         participant_ids = (
             [str(p.user_id) for p in model.participants] if model.participants else []
         )
-
-        print("Participant IDs in model_to_entity:")
-        print(participant_ids)
-        print()
 
         return MatchEntity(
             match_id=str(model.match_id) if model.match_id else None,
