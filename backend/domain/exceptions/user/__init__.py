@@ -28,7 +28,7 @@ class UserNotFoundError(DomainException):
 class FailedToRetrieveUserError(DomainException):
     """Error al recuperar usuario"""
 
-    def __init(
+    def __init__(
         self,
         message: str = "Failed to retrieve user",
         identifier: str = "failed_to_retrieve_user",

@@ -39,8 +39,8 @@ async def login(
     """
     logger.info(f"Login attempt for email: {user_login.email}")
 
-    request = LoginRequestDTO(email=user_login.email, password=user_login.password)
-    response = await login_use_case.execute(request)
+    # Eliminar duplicación - usar directamente el DTO recibido
+    response = await login_use_case.execute(user_login)
 
     logger.info(f"Successful login for user: {response.user.email}")
     return response
@@ -59,12 +59,8 @@ async def register(
     """
     logger.info(f"Registration attempt for email: {user_data.email}")
 
-    request = UserCreateRequestDTO(
-        email=user_data.email,
-        password=user_data.password,
-    )
-
-    response = await register_use_case.execute(request)
+    # Eliminar duplicación - usar directamente el DTO recibido
+    response = await register_use_case.execute(user_data)
 
     logger.info(f"Successful registration for user: {response.email}")
     return response

@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from .validators import password_validator
 
-from dtos.common.constants import EXAMPLE_EMAIL, EXAMPLE_PASSWORD
+from dtos.common.constants import EXAMPLE_EMAIL, EXAMPLE_PSW
 
 
 class UserCreateRequestDTO(BaseModel):
@@ -19,7 +19,7 @@ class UserCreateRequestDTO(BaseModel):
 
     class Config:
         json_schema_extra = {
-            "example": {"email": EXAMPLE_EMAIL, "password": EXAMPLE_PASSWORD}
+            "example": {"email": EXAMPLE_EMAIL, "password": EXAMPLE_PSW}
         }
 
 
@@ -31,10 +31,10 @@ class LoginRequestDTO(BaseModel):
         ...,
         min_length=6,
         description="Contraseña del usuario",
-        example=EXAMPLE_PASSWORD,
+        example=EXAMPLE_PSW,
     )
 
     class Config:
         json_schema_extra = {
-            "example": {"email": EXAMPLE_EMAIL, "password": EXAMPLE_PASSWORD}
+            "example": {"email": EXAMPLE_EMAIL, "password": EXAMPLE_PSW}
         }

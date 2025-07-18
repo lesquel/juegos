@@ -2,7 +2,7 @@ from sqladmin import ModelView
 from markupsafe import Markup
 from starlette.requests import Request
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload  # I
+from sqlalchemy.orm import selectinload
 from infrastructure.db.models import TransferPaymentModel
 from app_setup.admin.mixins import ImageUploadAdminMixin
 
@@ -58,7 +58,7 @@ class TransferPaymentAdmin(
     # Filtros y búsqueda
     column_searchable_list = [
         TransferPaymentModel.transfer_description,
-        "user.email",  # Permite búsqueda por email del usuario
+        "user.email",
     ]
     column_filters = [
         TransferPaymentModel.transfer_state,
@@ -84,12 +84,14 @@ class TransferPaymentAdmin(
         TransferPaymentModel.updated_at: "Última Actualización",
     }
 
-
-    badge_state = lambda m, a: (
-        "success"
-        if m.transfer_state.value == "APPROVED"
-        else "warning" if m.transfer_state.value == "PENDING" else "danger"
-    )
+    @staticmethod
+    def get_badge_state(state_value: str) -> str:
+        """Devuelve el color del badge según el estado"""
+        if state_value == "APPROVED":
+            return "success"
+        elif state_value == "PENDING":
+            return "warning"
+        return "danger"
 
     # Formato de columnas (tabla principal)
     column_formatters = {
@@ -108,10 +110,10 @@ class TransferPaymentAdmin(
         ),
         TransferPaymentModel.transfer_state: lambda m, a: Markup(
             f"""
-            <span class='badge badge-{TransferPaymentAdmin.badge_state(m,a)}>
-            {m.transfer_state.value}
+            <span class='badge badge-{TransferPaymentAdmin.get_badge_state(m.transfer_state.value)}'>
+                {m.transfer_state.value}
             </span>
-        """
+            """
         ),
     }
 
@@ -121,15 +123,12 @@ class TransferPaymentAdmin(
     export_types = ["csv", "xlsx"]
 
     async def get_query(self, request: Request):
-        from infrastructure.db.models import (
-            UserModel,
-        )
+        from infrastructure.db.models import UserModel
 
         query = select(self.model).options(selectinload(TransferPaymentModel.user))
 
         search_term = request.query_params.get("search")
         if search_term:
-            # Buscar por descripción o email del usuario
             query = query.join(TransferPaymentModel.user).filter(
                 (TransferPaymentModel.transfer_description.ilike(f"%{search_term}%"))
                 | (UserModel.email.ilike(f"%{search_term}%"))

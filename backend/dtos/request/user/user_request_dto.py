@@ -1,14 +1,13 @@
 from typing import Optional
 from decimal import Decimal
 from pydantic import BaseModel, Field, EmailStr, field_validator
-from application.enums import UserRole
 from dtos.common.constants import (
     EXAMPLE_EMAIL,
-    EXAMPLE_PASSWORD,
-    EXAMPLE_CONFIRM_PASSWORD,
+    EXAMPLE_PSW,
+    EXAMPLE_CONFIRM_PSW,
     EXAMPLE_NEW_EMAIL,
-    EXAMPLE_CURRENT_PASSWORD,
-    EXAMPLE_NEW_PASSWORD,
+    EXAMPLE_CURRENT_PSW,
+    EXAMPLE_NEW_PSW,
     EXAMPLE_FROM_USER_ID,
     EXAMPLE_TO_USER_ID,
     EXAMPLE_TRANSFER_MONEY_AMOUNT,
@@ -34,8 +33,8 @@ class UserRegistrationRequestDTO(BaseModel):
         json_schema_extra = {
             "example": {
                 "email": EXAMPLE_EMAIL,
-                "password": EXAMPLE_PASSWORD,
-                "confirm_password": EXAMPLE_CONFIRM_PASSWORD,
+                "password": EXAMPLE_PSW,
+                "confirm_password": EXAMPLE_CONFIRM_PSW,
             }
         }
 
@@ -69,9 +68,9 @@ class UserChangePasswordRequestDTO(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "current_password": EXAMPLE_CURRENT_PASSWORD,
-                "new_password": EXAMPLE_NEW_PASSWORD,
-                "confirm_new_password": EXAMPLE_NEW_PASSWORD,
+                "current_password": EXAMPLE_CURRENT_PSW,
+                "new_password": EXAMPLE_NEW_PSW,
+                "confirm_new_password": EXAMPLE_NEW_PSW,
             }
         }
 

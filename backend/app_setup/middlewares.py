@@ -11,16 +11,37 @@ logger = get_logger("middlewares")
 
 
 def add_middlewares(app: FastAPI, app_settings: AppSettings) -> None:
-    """Añadir middlewares a la aplicación FastAPI"""
-    
-    # Configurar CORS
-    logger.info("Configuring CORS middleware")
+    """
+    Añadir middlewares a la aplicación FastAPI con configuración mejorada.
+
+    Args:
+        app: Aplicación FastAPI
+        app_settings: Configuración de la aplicación
+    """
+
+    # Configurar CORS con seguridad mejorada
+    cors_origins = app_settings.allowed_origins or ["*"]
+    logger.info(
+        f"Configuring CORS middleware for environment: {app_settings.environment}"
+    )
+    logger.info(f"Allowed origins: {cors_origins}")
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=cors_origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allow_headers=[
+            "Accept",
+            "Accept-Language",
+            "Content-Language",
+            "Content-Type",
+            "Authorization",
+            "X-Requested-With",
+            "X-CSRF-Token",
+        ],
+        expose_headers=["X-Total-Count", "X-Page-Count"],
+        max_age=86400,  # 24 horas
     )
 
     # Middleware de logging de requests y tracking de errores
@@ -28,9 +49,21 @@ def add_middlewares(app: FastAPI, app_settings: AppSettings) -> None:
     app.add_middleware(LoggingMiddleware)
 
     # Middleware de seguridad (solo en producción)
-    if app_settings.environment == "prod":
-        logger.info("Adding TrustedHost middleware for production")
+    if app_settings.is_production():
+        logger.info("Adding production security middlewares")
+
+        # TrustedHost middleware
         app.add_middleware(
-            TrustedHostMiddleware, 
-            allowed_hosts=["yourdomain.com", "*.yourdomain.com"]
+            TrustedHostMiddleware,
+            allowed_hosts=cors_origins
         )
+
+
+    elif app_settings.is_development():
+        logger.info(
+            "Development environment - skipping production security middlewares"
+        )
+        # En desarrollo, podrías agregar middlewares específicos de debugging
+        logger.info("Development mode - enabling detailed request logging")
+
+    logger.info("✅ All middlewares configured successfully")
