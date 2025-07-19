@@ -39,6 +39,8 @@ class PostgresTransferPaymentRepository(
             filters=filters,
             sort_params=sort_params,
             to_entity=self._model_to_entity,
+            custom_filter_fn=lambda q: q.where(
+                self.model.user_id == user_id,)
         )
 
     async def get_transfer_id(self, transfer_id: str) -> TransferPaymentEntity:

@@ -25,6 +25,7 @@ from .transfer_payment_dto_to_entity_converter import (
     TransferPaymentDTOToEntityConverter,
 )
 
+
 class TransferPaymentBidirectionalConverter(
     BidirectionalConverter[TransferPaymentEntity, TransferPaymentResponseDTO],
     LoggingMixin,
@@ -35,7 +36,6 @@ class TransferPaymentBidirectionalConverter(
         super().__init__()
         self.entity_to_dto = TransferPaymentEntityToDTOConverter()
         self.dto_to_entity = TransferPaymentDTOToEntityConverter()
-        self.response_to_entity = TransferPaymentResponseToEntityConverter()
 
     def to_dto(self, entity: TransferPaymentEntity) -> TransferPaymentResponseDTO:
         """
@@ -65,7 +65,7 @@ class TransferPaymentBidirectionalConverter(
         self.logger.debug(
             f"Converting TransferPaymentResponseDTO to TransferPaymentEntity for transfer: {dto.transfer_id}"
         )
-        return self.response_to_entity.to_entity(dto)
+        return self.dto_to_entity.to_entity(dto)
 
     def from_request_dto(
         self,
