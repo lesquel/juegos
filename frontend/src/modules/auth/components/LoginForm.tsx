@@ -4,6 +4,7 @@ import { z } from "zod";
 import { AuthClientData } from "../services/authClientData";
 import { MiddlewareAstroProtectUser } from "../middleware/middlewareAstroProtectUser";
 import { authRoutesConfig } from "../config/auth.routes.config";
+import { FormInput } from "@modules/auth/components/FormInputAuth";
 
 export const LoginForm = () => {
   MiddlewareAstroProtectUser.isLogged();
@@ -41,8 +42,19 @@ const UseLoginForm = () => {
     <div className="w-full max-w-md mx-auto bg-gray-900 bg-opacity-50 rounded-2xl p-8 shadow-lg backdrop-blur-lg backdrop-filter border border-gray-700">
       <div className="flex justify-center mb-6">
         <div className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-12 h-12 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            />
           </svg>
         </div>
       </div>
@@ -66,71 +78,51 @@ const UseLoginForm = () => {
             {error.errors.map((error) => error).join(", ")}
           </p>
         )}
-        <form.Field
+        <FormInput
+          form={form}
           name="email"
-          children={(field) => (
-            <div className="mb-4 relative">
-              <label
-                htmlFor={field.name}
-                className="sr-only"
-              >
-                Correo Electrónico
-              </label>
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                </svg>
-              </div>
-              <input
-                id={field.name}
-                type="email"
-                name={field.name}
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                placeholder="Correo Electrónico"
-                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+          type="email"
+          placeholder="Correo Electrónico"
+          label="Correo Electrónico"
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
               />
-              {field.state.meta.errors.length > 0 && (
-                <span className="text-red-400 text-xs mt-1 block absolute">
-                  {field.state.meta.errors.join(", ")}
-                </span>
-              )}
-            </div>
-          )}
+            </svg>
+          }
         />
-        <form.Field
+        <FormInput
+          form={form}
           name="password"
-          children={(field) => (
-            <div className="mb-6 relative">
-              <label
-                htmlFor={field.name}
-                className="sr-only"
-              >
-                Contraseña
-              </label>
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <input
-                id={field.name}
-                type="password"
-                name={field.name}
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                placeholder="Contraseña"
-                className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+          type="password"
+          placeholder="Contraseña"
+          label="Contraseña"
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
               />
-              {field.state.meta.errors.length > 0 && (
-                <span className="text-red-400 text-xs mt-1 block absolute">
-                  {field.state.meta.errors.join(", ")}
-                </span>
-              )}
-            </div>
-          )}
+            </svg>
+          }
         />
 
         <button

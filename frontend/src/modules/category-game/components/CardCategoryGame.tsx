@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import type { CategoryGame } from "../models/category-game.model";
 
 export const CardCategoryGame = ({ category }: { category: CategoryGame }) => {
@@ -23,9 +24,7 @@ export const CardCategoryGame = ({ category }: { category: CategoryGame }) => {
         <p className="text-gray-300 text-sm mb-4 h-10 overflow-hidden">{category_description}</p>
         <div className="flex items-center text-purple-400 font-semibold group-hover:text-purple-300 transition-colors duration-300">
           <span>Explorar Juegos</span>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
+          <ArrowRight className="w-5 h-5 ml-2" />
         </div>
       </div>
     </a>
