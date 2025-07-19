@@ -5,16 +5,20 @@ import type { CommentGameCreate } from "../models/comment-game.model";
 import { ErrorResponseAdapter } from "@adapters/errorResponse.adapter";
 import type { ErrorResponseErrorsArray } from "@models/errorResponse";
 import { useAuthStore } from "@modules/auth/store/auth.store";
+import { endpoints } from "@config/endpoints";
 
 export class CommentGameDataClient {
   private static readonly BASE_URL = environment.BASE_URL;
-  private static user = useAuthStore.getState().user;
   static getCommentGames(gameId: string, hazMounted: boolean) {
     return useQuery({
       queryKey: ["comment-games", gameId, hazMounted],
       queryFn: () =>
         axios
-          .get(`${CommentGameDataClient.BASE_URL}/games/${gameId}/reviews`)
+          .get(
+            `${CommentGameDataClient.BASE_URL}${endpoints.games.reviews.get(
+              gameId
+            )}`
+          )
           .then((response) => {
             return response.data;
           }),
@@ -30,7 +34,9 @@ export class CommentGameDataClient {
       mutationFn: async (data: CommentGameCreate) => {
         try {
           const response = await axios.post(
-            `${CommentGameDataClient.BASE_URL}/games/${gameId}/reviews`,
+            `${CommentGameDataClient.BASE_URL}${endpoints.games.reviews.post(
+              gameId
+            )}`,
             { ...data, rating: 1 },
             {
               headers: {

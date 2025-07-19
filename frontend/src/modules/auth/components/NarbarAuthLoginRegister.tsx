@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/auth.store";
 import { ItemAuthLogout } from "./ItemAuthLogout";
 import { useStore } from "zustand";
 import { useEffect, useState } from "react";
-import { LinkMyTransfer } from "@modules/transfers/components/LinkMyTransfer";
+// import { LinkMyTransfer } from "@modules/transfers/components/LinkMyTransfer";
 
 export const NarbarAuthLoginRegister = () => {
   const [hasMounted, setHasMounted] = useState(false);
@@ -18,7 +18,7 @@ export const NarbarAuthLoginRegister = () => {
     <>
       <ItemAuthLogout />
       <NavbarAvatar />
-      <LinkMyTransfer />
+      {/* <LinkMyTransfer /> */}
     </>
   ) : (
     <ItemAuthLoginRegister />

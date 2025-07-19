@@ -1,9 +1,5 @@
 import { environment } from "@config/environment";
-import type {
-  LoginModel,
-  RegisterModel,
-  RegiterInpustModel,
-} from "../models/auth.model";
+import type { LoginModel, RegiterInpustModel } from "../models/auth.model";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import type { UserMe } from "@modules/user/models/user.model";
@@ -11,12 +7,9 @@ import { UserAdapter } from "@modules/user/adapters/user.adapter";
 import { CookiesSection } from "../utils/cookiesSection";
 import { useAuthStore } from "../store/auth.store";
 import { authRoutesConfig } from "../config/auth.routes.config";
-import { AuthAdapter } from "../adapters/auth.adapter";
 import { ErrorResponseAdapter } from "@adapters/errorResponse.adapter";
-import type {
-  ErrorResponse,
-  ErrorResponseErrorsArray,
-} from "@models/errorResponse";
+import type { ErrorResponseErrorsArray } from "@models/errorResponse";
+import { endpoints } from "@config/endpoints";
 
 export class AuthClientData {
   private static readonly baseUrl = environment.BASE_URL;
@@ -26,7 +19,7 @@ export class AuthClientData {
       mutationFn: async (data: LoginModel) => {
         try {
           const response = await axios.post(
-            `${AuthClientData.baseUrl}/auth/login`,
+            `${AuthClientData.baseUrl}${endpoints.authentication.login}`,
             data
           );
           console.log(response.data);
@@ -53,7 +46,7 @@ export class AuthClientData {
       mutationFn: async (data: RegiterInpustModel) => {
         try {
           const response = await axios.post<UserMe>(
-            `${AuthClientData.baseUrl}/auth/register`,
+            `${AuthClientData.baseUrl}${endpoints.authentication.register}`,
             data
           );
           return response.data;

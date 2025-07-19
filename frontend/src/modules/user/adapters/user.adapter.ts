@@ -20,17 +20,12 @@ export class UserAdapter {
 
   static adaptMeDetail(user: any): UserMeDetail {
     return {
-      message: user.message,
-      data: {
-        user_id: user.data.user_id,
-        username: user.data.username,
-        email: user.data.email,
-        role: user.data.role,
-        virtual_currency: user.data.virtual_currency,
-        created_at: new Date(user.data.created_at),
-        updated_at: new Date(user.data.updated_at),
-      },
-      success: user.success,
+      created_at: user.created_at,
+      email: user.email,
+      role: user.role,
+      updated_at: user.updated_at,
+      user_id: user.user_id,
+      virtual_currency: user.virtual_currency,
     };
   }
 }
