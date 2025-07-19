@@ -4,9 +4,10 @@ import { GameAdapter } from "../adapters/game.adapter";
 import { environment } from "@config/environment";
 import type { Paguination } from "@models/paguination";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
+import { endpoints } from "@config/endpoints";
 
 export class GameClientData {
-  private static readonly BASE_URL = environment.BASE_URL + "/games/";
+  private static readonly BASE_URL = environment.BASE_URL;
 
   public static getGames(paguination: Paguination) {
     return useQuery({
@@ -15,6 +16,7 @@ export class GameClientData {
         axios
           .get(
             GameClientData.BASE_URL +
+              endpoints.games.get +
               PaguinationCategoryAdapter.adaptPaguinationGames(paguination)
           )
           .then((response) => {
@@ -27,9 +29,11 @@ export class GameClientData {
     return useQuery({
       queryKey: ["games", id],
       queryFn: () =>
-        axios.get(`${GameClientData.BASE_URL}${id}`).then((response) => {
-          return GameAdapter.adaptDetail(response.data);
-        }),
+        axios
+          .get(`${GameClientData.BASE_URL}${endpoints.games.getId(id)}`)
+          .then((response) => {
+            return GameAdapter.adaptDetail(response.data);
+          }),
     });
   }
 }

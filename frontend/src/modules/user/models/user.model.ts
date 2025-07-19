@@ -14,15 +14,10 @@ export interface UserMe {
 }
 
 export interface UserMeDetail {
-  message: string;
-  data: {
-    user_id: string;
-    username: string;
-    email: string;
-    role?: string;
-    virtual_currency: number;
-    created_at: Date;
-    updated_at: Date;
-  };
-  success: true;
+  created_at: string; // formato ISO: "2025-07-15T21:32:36.560886Z"
+  email: string;
+  role: string;
+  updated_at: string;
+  user_id: string; // UUID
+  virtual_currency: number;
 }

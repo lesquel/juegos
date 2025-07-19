@@ -17,7 +17,9 @@ const UseMeComponent = () => {
   return (
     <div>
       <h1>Me</h1>
-      <p>{data?.data.email}</p>
+      <p>{data?.email}</p>
+      <p>{data?.virtual_currency}</p>
+      <p>{data?.created_at}</p>
     </div>
   );
 };

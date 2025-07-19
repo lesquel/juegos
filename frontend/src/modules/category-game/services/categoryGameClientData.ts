@@ -4,9 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { environment } from "@config/environment";
 import type { PaguinationCategory } from "../models/paguination-category";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
+import { endpoints } from "@config/endpoints";
 
 export class CategoryGameClientData {
-  private static readonly BASE_URL = environment.BASE_URL + "/categories/";
+  private static readonly BASE_URL = environment.BASE_URL;
 
   public static getCategoryGames(paguination: PaguinationCategory) {
     return useQuery({
@@ -15,6 +16,7 @@ export class CategoryGameClientData {
         axios
           .get(
             CategoryGameClientData.BASE_URL +
+              endpoints.categories.get +
               PaguinationCategoryAdapter.adaptPaguinationCategory(paguination)
           )
           .then((response) => {
@@ -24,12 +26,12 @@ export class CategoryGameClientData {
   }
 
   public static getCategoryGameDetail(id: string) {
-    console.log(CategoryGameClientData.BASE_URL + id); 
+    console.log(CategoryGameClientData.BASE_URL + id);
     return useQuery({
       queryKey: ["category-games", id],
       queryFn: () =>
         axios
-          .get(`${CategoryGameClientData.BASE_URL}${id}`)
+          .get(`${CategoryGameClientData.BASE_URL}${endpoints.games.getId(id)}`)
           .then((response) => {
             return CategoryGameGameAdapter.adaptDetail(response.data);
           }),

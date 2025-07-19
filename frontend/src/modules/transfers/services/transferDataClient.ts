@@ -6,17 +6,20 @@ import { useAuthStore } from "@modules/auth/store/auth.store";
 import { ErrorResponseAdapter } from "@adapters/errorResponse.adapter";
 import type { ErrorResponseErrorsArray } from "@models/errorResponse";
 import type { TransferInputModel } from "../models/transfer.model";
+import { endpoints } from "@config/endpoints";
 
 export class TransferDataClient {
   private static readonly BASE_URL = environment.BASE_URL;
-  private static user = useAuthStore.getState().user;
+  private static readonly user = useAuthStore.getState().user;
   static getTransfers() {
     return useQuery({
       queryKey: ["transfers"],
       queryFn: () =>
         axios
           .get(
-            `${TransferDataClient.BASE_URL}/users/${TransferDataClient.user?.user.user_id}/transfers`
+            `${TransferDataClient.BASE_URL}${endpoints.transferPayment.get(
+              TransferDataClient.user?.user.user_id as string
+            )}`
           )
           .then((response) => {
             return TransferAdapter.adaptTransferList(response.data);
@@ -35,7 +38,7 @@ export class TransferDataClient {
 
         try {
           const response = await axios.post(
-            `${TransferDataClient.BASE_URL}/users/transfers`,
+            `${TransferDataClient.BASE_URL}${endpoints.transferPayment.post}`,
             formData,
             {
               headers: {
@@ -67,7 +70,9 @@ export class TransferDataClient {
       queryFn: () =>
         axios
           .get(
-            `${TransferDataClient.BASE_URL}/users/${TransferDataClient.user?.user.user_id}/transfers/${id}`
+            `${TransferDataClient.BASE_URL}${endpoints.transferPayment.getId(
+              id
+            )}`
           )
           .then((response) => {
             return TransferAdapter.adaptTransferDetail(response.data);
