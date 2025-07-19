@@ -2,6 +2,7 @@ import type { Info } from "@models/info.model";
 
 export interface CommentGameCreate {
   comment: string;
+  rating: number;
 }
 
 export interface CommentGame {

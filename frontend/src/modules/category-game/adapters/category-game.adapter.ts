@@ -34,7 +34,7 @@ export class CategoryGameGameAdapter {
     return {
       info: categoryGames.info,
       results: categoryGames.results.map((categoryGame: any) =>
-        this.adapt(categoryGame)
+        this.adaptDetail(categoryGame)
       ),
     };
   }

@@ -2,11 +2,11 @@
 import Layout from "@layouts/Layout.astro";
 import { SingleTransfer } from "@modules/transfers/components/SingleTransfer";
 
-const { id } = Astro.props;
+const { id } = Astro.params;
 ---
 
 <Layout>
   <main class="h-full flex-grow">
-    <SingleTransfer client:load id={id} />
+    <SingleTransfer id={id as string}  client:load />
   </main>
 </Layout>

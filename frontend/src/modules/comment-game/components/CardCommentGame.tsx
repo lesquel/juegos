@@ -1,17 +1,28 @@
+import { Star, StarOff } from "lucide-react";
+import { UserClientData } from "@modules/user/services/userClientData";
 import type { CommentGame } from "../models/comment-game.model";
+import { DeleteCommentGame } from "./DeleteCommentGame";
+import { useAuthStore } from "@modules/auth/store/auth.store";
+import { useStore } from "zustand";
+import { useEffect, useState } from "react";
+import { EditCommentGame } from "./EditCommentForm";
 
 export const CardCommentGame = ({
   commentGame,
 }: {
   commentGame: CommentGame;
 }) => {
-  const { comment, created_at, game_id, rating, review_id, user_id } =
-    commentGame;
+  const { comment, created_at, review_id, user_id, rating } = commentGame;
+  const [isUserComment, setIsUserComment] = useState(false);
 
-  const user = (commentGame as any).user; // Cast to any to access user property if not explicitly in CommentGame interface
-
-  const userName = user?.user_name || "Usuario Anónimo";
+  const { data: user } = UserClientData.getUser(user_id);
+  const userName = user?.email || "Usuario Anónimo";
   const userInitial = userName.charAt(0).toUpperCase();
+  const meUser = useStore(useAuthStore).user;
+
+  useEffect(() => {
+    setIsUserComment(user?.user_id === meUser?.user.user_id);
+  }, [user]);
 
   return (
     <div className="flex items-start space-x-4 p-5 bg-gray-800 bg-opacity-50 rounded-2xl border border-gray-700">
@@ -31,8 +42,26 @@ export const CardCommentGame = ({
             })}
           </span>
         </div>
-        <p className="text-gray-300 mt-1">{comment}</p>
+
+        {/* Mostrar estrellas */}
+        <div className="flex items-center mt-1 mb-1">
+          {[1, 2, 3, 4, 5].map((i) => {
+            const isActive = i <= rating;
+            const StarIcon = isActive ? Star : StarOff;
+            return (
+              <StarIcon
+                key={i}
+                className="w-5 h-5 mr-1 text-yellow-400"
+                fill={isActive ? "currentColor" : "none"}
+              />
+            );
+          })}
+        </div>
+
+        <p className="text-gray-300">{comment}</p>
       </div>
+      {isUserComment && <DeleteCommentGame commentId={review_id} />}
+      {isUserComment && <EditCommentGame commentId={review_id} />}
     </div>
   );
 };

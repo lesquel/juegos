@@ -5,6 +5,8 @@ import { environment } from "@config/environment";
 import type { PaguinationCategory } from "../models/paguination-category";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 import { endpoints } from "@config/endpoints";
+import { Cat } from "lucide-react";
+import { GameAdapter } from "@modules/games/adapters/game.adapter";
 
 export class CategoryGameClientData {
   private static readonly BASE_URL = environment.BASE_URL;
@@ -26,14 +28,34 @@ export class CategoryGameClientData {
   }
 
   public static getCategoryGameDetail(id: string) {
-    console.log(CategoryGameClientData.BASE_URL + id);
     return useQuery({
       queryKey: ["category-games", id],
       queryFn: () =>
         axios
-          .get(`${CategoryGameClientData.BASE_URL}${endpoints.games.getId(id)}`)
+          .get(
+            `${CategoryGameClientData.BASE_URL}${endpoints.categories.getId(
+              id
+            )}`
+          )
           .then((response) => {
             return CategoryGameGameAdapter.adaptDetail(response.data);
+          }),
+    });
+  }
+
+  public static getCategoriesByGameId(id: string) {
+    return useQuery({
+      queryKey: ["category-games", id],
+      queryFn: () =>
+        axios
+          .get(
+            `${
+              CategoryGameClientData.BASE_URL
+            }${endpoints.games.getCategoriesByGameId(id)}`
+          )
+          .then((response) => {
+            console.log(response.data);
+            return CategoryGameGameAdapter.adaptList(response.data);
           }),
     });
   }
