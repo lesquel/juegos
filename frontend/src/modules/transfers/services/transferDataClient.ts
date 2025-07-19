@@ -72,7 +72,14 @@ export class TransferDataClient {
           .get(
             `${TransferDataClient.BASE_URL}${endpoints.transferPayment.getId(
               id
-            )}`
+            )}`,
+            {
+              headers: {
+                Authorization: `Bearer ${
+                  useAuthStore.getState().user?.access_token.access_token
+                }`,
+              },
+            }
           )
           .then((response) => {
             return TransferAdapter.adaptTransferDetail(response.data);

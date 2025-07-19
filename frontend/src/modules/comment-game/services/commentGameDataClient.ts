@@ -6,12 +6,15 @@ import { ErrorResponseAdapter } from "@adapters/errorResponse.adapter";
 import type { ErrorResponseErrorsArray } from "@models/errorResponse";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 import { endpoints } from "@config/endpoints";
+import { useHasMountedComment } from "../store/hasMountedComment";
 
 export class CommentGameDataClient {
   private static readonly BASE_URL = environment.BASE_URL;
-  static getCommentGames(gameId: string, hazMounted: boolean) {
+
+  static getCommentGames(gameId: string) {
+    const hasMounted = useHasMountedComment().hasMounted;
     return useQuery({
-      queryKey: ["comment-games", gameId, hazMounted],
+      queryKey: ["comment-games", gameId, hasMounted],
       queryFn: () =>
         axios
           .get(
@@ -25,11 +28,9 @@ export class CommentGameDataClient {
     });
   }
 
-  static createCommentGame(
-    gameId: string,
-    hazMounted: boolean,
-    setHasMounted: any
-  ) {
+  static createCommentGame(gameId: string) {
+    const hasMounted = useHasMountedComment().hasMounted;
+    const setHasMounted = useHasMountedComment().setHasMounted;
     return useMutation({
       mutationFn: async (data: CommentGameCreate) => {
         try {
@@ -37,7 +38,7 @@ export class CommentGameDataClient {
             `${CommentGameDataClient.BASE_URL}${endpoints.games.reviews.post(
               gameId
             )}`,
-            { ...data, rating: 1 },
+            data,
             {
               headers: {
                 Authorization: `Bearer ${
@@ -54,8 +55,79 @@ export class CommentGameDataClient {
         }
       },
       onSuccess: (data) => {
-        setHasMounted(true);
+        setHasMounted(!hasMounted);
         console.log("Comentario creado", data);
+      },
+      onError: (error: ErrorResponseErrorsArray) => {
+        console.error("onError:", error);
+      },
+    });
+  }
+
+  static deleteCommentGame(commentId: string) {
+    const hasMounted = useHasMountedComment().hasMounted;
+    const setHasMounted = useHasMountedComment().setHasMounted;
+    return useMutation({
+      mutationFn: async () => {
+        try {
+          const response = await axios.delete(
+            `${CommentGameDataClient.BASE_URL}${endpoints.games.reviews.delete(
+              commentId
+            )}`,
+            {
+              headers: {
+                Authorization: `Bearer ${
+                  useAuthStore.getState().user?.access_token.access_token
+                }`,
+              },
+            }
+          );
+          return response.data;
+        } catch (error: any) {
+          throw ErrorResponseAdapter.adaptErrorResponseErrorsArray(
+            ErrorResponseAdapter.adaptErrorResponse(error)
+          );
+        }
+      },
+      onSuccess: (data) => {
+        setHasMounted(!hasMounted);
+        console.log("Comentario eliminado", data);
+      },
+      onError: (error: ErrorResponseErrorsArray) => {
+        console.error("onError:", error);
+      },
+    });
+  }
+
+  static editCommentGame(commentId: string) {
+    const hasMounted = useHasMountedComment().hasMounted;
+    const setHasMounted = useHasMountedComment().setHasMounted;
+    return useMutation({
+      mutationFn: async (data: CommentGameCreate) => {
+        try {
+          const response = await axios.put(
+            `${CommentGameDataClient.BASE_URL}${endpoints.games.reviews.put(
+              commentId
+            )}`,
+            data,
+            {
+              headers: {
+                Authorization: `Bearer ${
+                  useAuthStore.getState().user?.access_token.access_token
+                }`,
+              },
+            }
+          );
+          return response.data;
+        } catch (error: any) {
+          throw ErrorResponseAdapter.adaptErrorResponseErrorsArray(
+            ErrorResponseAdapter.adaptErrorResponse(error)
+          );
+        }
+      },
+      onSuccess: (data) => {
+        setHasMounted(!hasMounted);
+        console.log("Comentario editado", data);
       },
       onError: (error: ErrorResponseErrorsArray) => {
         console.error("onError:", error);

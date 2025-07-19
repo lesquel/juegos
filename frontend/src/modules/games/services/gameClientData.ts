@@ -5,6 +5,7 @@ import { environment } from "@config/environment";
 import type { Paguination } from "@models/paguination";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 import { endpoints } from "@config/endpoints";
+import { CategoryGameGameAdapter } from "@modules/category-game/adapters/category-game.adapter";
 
 export class GameClientData {
   private static readonly BASE_URL = environment.BASE_URL;
@@ -33,6 +34,22 @@ export class GameClientData {
           .get(`${GameClientData.BASE_URL}${endpoints.games.getId(id)}`)
           .then((response) => {
             return GameAdapter.adaptDetail(response.data);
+          }),
+    });
+  }
+
+  public static getGamesByCategoryId(id: string) {
+    return useQuery({
+      queryKey: ["games", id],
+      queryFn: () =>
+        axios
+          .get(
+            `${GameClientData.BASE_URL}${endpoints.games.getCategoriesByGameId(
+              id
+            )}`
+          )
+          .then((response) => {
+            return CategoryGameGameAdapter.adaptList(response.data);
           }),
     });
   }

@@ -1,14 +1,9 @@
-import { useState } from "react";
 import type { CommentGame } from "../models/comment-game.model";
 import { CommentGameDataClient } from "../services/commentGameDataClient";
+import { useHasMountedComment } from "../store/hasMountedComment";
 import { CardCommentGame } from "./CardCommentGame";
-export const ListCommentGame = ({
-  gameId,
-  hasMounted,
-}: {
-  gameId: string;
-  hasMounted: boolean;
-}) => {
+export const ListCommentGame = ({ gameId }: { gameId: string }) => {
+  const hasMounted = useHasMountedComment((state) => state.hasMounted);
   const { data, isLoading, error } = CommentGameDataClient.getCommentGames(
     gameId,
     hasMounted

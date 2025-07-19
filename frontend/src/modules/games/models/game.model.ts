@@ -1,9 +1,8 @@
 import type { CategoryGame } from "@modules/category-game/models/category-game.model";
-import type { CommentGame } from "@modules/comment-game/models/comment-game.model";
 import type { Info } from "@models/info.model";
 
 export interface GameDetail {
-  game_id: number;
+  game_id: string;
   game_name: string;
   game_img: string;
   game_url: string;
