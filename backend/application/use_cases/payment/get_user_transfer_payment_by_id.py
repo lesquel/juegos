@@ -38,13 +38,8 @@ class GetTransferPaymentByIdUseCase(BaseUseCase):
         self.logger.info(f"Getting transfer payments for user {transfer_id}")
 
         # Obtener las transferencias del usuario
-        transfers = await self.transfer_repository.get_transfer_id(
-            transfer_id
-        )
+        transfer = await self.transfer_repository.get_transfer_id(transfer_id)
 
         # Convertir entidades a DTOs
-
-        self.logger.info(
-            f"Found {len(transfers)} transfer payments for user {transfer_id}"
-        )
-        return self.transfer_converter.to_dto_list(transfers)
+        self.logger.info(f"Found transfer payment for user {transfer.user_id}")
+        return self.transfer_converter.to_dto(transfer)
