@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from domain.common.base_filter import BaseFilterParams as DomainBaseFilterParams
@@ -9,12 +10,32 @@ class BaseFilterParams(DomainBaseFilterParams):
     """Clase base para filtros comunes con extensiones específicas de la API"""
 
     def filter_created_after(self, query, model, value):
-        if hasattr(model, "created_at"):
+        if hasattr(model, "created_at") and value:
+            # Convertir string a datetime si es necesario
+            if isinstance(value, str):
+                try:
+                    value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+                except ValueError:
+                    # Si no se puede parsear, intentar formato de solo fecha
+                    try:
+                        value = datetime.strptime(value, "%Y-%m-%d")
+                    except ValueError:
+                        return query  # Si no se puede parsear, ignorar el filtro
             return query.filter(model.created_at >= value)
         return query
 
     def filter_created_before(self, query, model, value):
-        if hasattr(model, "created_at"):
+        if hasattr(model, "created_at") and value:
+            # Convertir string a datetime si es necesario
+            if isinstance(value, str):
+                try:
+                    value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+                except ValueError:
+                    # Si no se puede parsear, intentar formato de solo fecha
+                    try:
+                        value = datetime.strptime(value, "%Y-%m-%d")
+                    except ValueError:
+                        return query  # Si no se puede parsear, ignorar el filtro
             return query.filter(model.created_at <= value)
         return query
 
