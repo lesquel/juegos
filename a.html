@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect 4 Multijugador</title>
+    <style>
+        #body {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        #gameInfo {
+            margin: 20px 0;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        #playerId {
+            font-weight: bold;
+            color: #f1c40f;
+        }
+
+        #connectionStatus {
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .connected {
+            background-color: #27ae60;
+        }
+
+        .disconnected {
+            background-color: #e74c3c;
+        }
+
+        .waiting {
+            background-color: #f39c12;
+        }
+
+        #message {
+            font-size: 24px;
+            font-weight: bold;
+            height: 40px;
+            margin: 20px 0;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        #board {
+            height: 540px;
+            width: 630px;
+            background: linear-gradient(145deg, #1e3c72, #2a5298);
+            border: 10px solid #0f2557;
+            border-radius: 20px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tile {
+            height: 70px;
+            width: 70px;
+            margin: 5px;
+            background-color: white;
+            border-radius: 50%;
+            border: 3px solid #0f2557;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .tile.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .red-piece {
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #e74c3c);
+            border-color: #c0392b;
+            animation: dropIn 0.5s ease-out;
+        }
+
+        .yellow-piece {
+            background: radial-gradient(circle at 30% 30%, #f1c40f, #f39c12);
+            border-color: #d68910;
+            animation: dropIn 0.5s ease-out;
+        }
+
+        @keyframes dropIn {
+            0% {
+                transform: translateY(-300px) scale(0.8);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: translateY(10px) scale(1.1);
+            }
+
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .winning-piece {
+            animation: winPulse 1s infinite, glow 2s infinite;
+            z-index: 10;
+        }
+
+        @keyframes winPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        .tie-piece {
+            background: linear-gradient(45deg, #95a5a6, #bdc3c7);
+            animation: tieShake 0.5s ease-in-out;
+        }
+
+        @keyframes tieShake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        #restartBtn {
+            font-size: 18px;
+            padding: 12px 25px;
+            margin: 10px;
+            background: linear-gradient(145deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        #restartBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+        }
+
+        #disconnectBtn {
+            font-size: 18px;
+            padding: 12px 25px;
+            margin: 10px;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        #disconnectBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(145deg, #c0392b, #e74c3c);
+        }
+
+        .current-player {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-left: 10px;
+            vertical-align: middle;
+            border: 2px solid white;
+        }
+
+        .current-red {
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #e74c3c);
+        }
+
+        .current-yellow {
+            background: radial-gradient(circle at 30% 30%, #f1c40f, #f39c12);
+        }
+
+        #gameStats {
+            margin-top: 20px;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        #playersList {
+            margin: 20px 0;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="body">
+        <h1>🔴 Connect 4 Multijugador 🟡</h1>
+
+        <div id="gameInfo">
+            Tu color: <span id="playerId">Conectando...</span>
+            <span id="connectionStatus" class="disconnected">Desconectado</span>
+        </div>
+
+        <div id="playersList">
+            <div>Jugadores conectados: <span id="playersCount">0</span></div>
+        </div>
+
+        <div id="message">
+            Esperando conexión...
+        </div>
+
+        <div id="board"></div>
+
+        <button id="restartBtn" onclick="requestRestart()">🎮 Nuevo Juego</button>
+        <button id="disconnectBtn" onclick="disconnect()">🚪 Desconectar</button>
+
+        <div id="gameStats">
+            Movimientos: <span id="moveCount">0</span>
+        </div>
+    </div>
+
+    <script>
+        // Variables del juego
+        var playerRed = "R";
+        var playerYellow = "Y";
+        var currPlayer = playerRed;
+        var gameOver = false;
+        var board;
+        var rows = 6;
+        var columns = 7;
+        var currColumns = [];
+        var moveCount = 0;
+        var winningPositions = [];
+
+        // Variables WebSocket
+        var ws = null;
+        var myPlayer = null;
+        var gameId = null;
+        var playersConnected = 0;
+
+        window.onload = function () {
+            connectToServer();
+        };
+
+        function connectToServer() {
+            // Cambiar por tu URL del servidor
+            ws = new WebSocket('ws://localhost:8000/ws');
+
+            ws.onopen = function (event) {
+                console.log('Conectado al servidor');
+                updateConnectionStatus('connected');
+            };
+
+            ws.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                handleServerMessage(data);
+            };
+
+            ws.onclose = function (event) {
+                console.log('Desconectado del servidor');
+                updateConnectionStatus('disconnected');
+                updateMessage('Desconectado del servidor', '');
+            };
+
+            ws.onerror = function (error) {
+                console.error('Error WebSocket:', error);
+                updateConnectionStatus('disconnected');
+            };
+        }
+
+        function handleServerMessage(data) {
+            switch (data.type) {
+                case 'player_assigned':
+                    myPlayer = data.player;
+                    gameId = data.game_id;
+                    document.getElementById('playerId').textContent =
+                        myPlayer === playerRed ? 'Rojo (R)' : 'Amarillo (Y)';
+                    updateConnectionStatus('waiting');
+                    updateMessage('Esperando otro jugador...', '');
+                    break;
+
+                case 'game_start':
+                    initializeGame(data.board, data.current_player, data.move_count);
+                    updateConnectionStatus('connected');
+                    playersConnected = 2;
+                    updatePlayersCount();
+                    break;
+
+                case 'move_made':
+                    applyMove(data.row, data.col, data.player);
+                    currPlayer = data.next_player;
+                    moveCount = data.move_count;
+                    updateMoveCount();
+                    updateCurrentPlayerMessage();
+                    break;
+
+                case 'game_won':
+                    handleGameWon(data.winner, data.winning_positions);
+                    break;
+
+                case 'game_tied':
+                    handleGameTied();
+                    break;
+
+                case 'game_reset':
+                    resetGame(data.board, data.current_player, data.move_count);
+                    break;
+
+                case 'player_disconnected':
+                    playersConnected = data.players_count;
+                    updatePlayersCount();
+                    if (playersConnected < 2) {
+                        updateMessage('El otro jugador se desconectó. Esperando...', '');
+                        updateConnectionStatus('waiting');
+                        disableBoard();
+                    }
+                    break;
+
+                case 'error':
+                    alert('Error: ' + data.message);
+                    break;
+            }
+        }
+
+        function initializeGame(serverBoard, currentPlayer, serverMoveCount) {
+            board = [];
+            currColumns = [5, 5, 5, 5, 5, 5, 5];
+            moveCount = serverMoveCount;
+            gameOver = false;
+            winningPositions = [];
+            currPlayer = currentPlayer;
+
+            // Limpiar el tablero visual
+            document.getElementById("board").innerHTML = "";
+
+            // Crear tablero visual
+            for (let r = 0; r < rows; r++) {
+                let row = [];
+                for (let c = 0; c < columns; c++) {
+                    row.push(serverBoard[r][c]);
+
+                    let tile = document.createElement("div");
+                    tile.id = r.toString() + "-" + c.toString();
+                    tile.classList.add("tile");
+                    tile.addEventListener("click", setPiece);
+                    document.getElementById("board").append(tile);
+
+                    // Aplicar pieza si existe
+                    if (serverBoard[r][c] !== " ") {
+                        if (serverBoard[r][c] === playerRed) {
+                            tile.classList.add("red-piece");
+                        } else {
+                            tile.classList.add("yellow-piece");
+                        }
+                    }
+                }
+                board.push(row);
+            }
+
+            // Actualizar currColumns basado en el estado del tablero
+            for (let c = 0; c < columns; c++) {
+                for (let r = 0; r < rows; r++) {
+                    if (serverBoard[r][c] !== " ") {
+                        currColumns[c] = r - 1;
+                        break;
+                    }
+                }
+            }
+
+            updateMoveCount();
+            updateCurrentPlayerMessage();
+            enableBoard();
+        }
+
+        function setPiece() {
+            if (gameOver || !canPlay()) {
+                return;
+            }
+
+            let coords = this.id.split("-");
+            let c = parseInt(coords[1]);
+            let r = currColumns[c];
+
+            if (r < 0) {
+                return;
+            }
+
+            // Enviar movimiento al servidor
+            sendMove(r, c);
+        }
+
+        function sendMove(row, col) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'make_move',
+                    game_id: gameId,
+                    row: row,
+                    col: col,
+                    player: myPlayer
+                }));
+            }
+        }
+
+        function applyMove(row, col, player) {
+            board[row][col] = player;
+            let tile = document.getElementById(row.toString() + "-" + col.toString());
+
+            if (player === playerRed) {
+                tile.classList.add("red-piece");
+            } else {
+                tile.classList.add("yellow-piece");
+            }
+
+            currColumns[col] = row - 1;
+        }
+
+        function handleGameWon(winner, positions) {
+            gameOver = true;
+            winningPositions = positions;
+
+            // Resaltar piezas ganadoras
+            positions.forEach((pos) => {
+                let tile = document.getElementById(pos[0] + "-" + pos[1]);
+                tile.classList.add("winning-piece");
+            });
+
+            if (winner === playerRed) {
+                updateMessage("🎉 ¡Jugador Rojo ha ganado! 🎉", "current-red");
+            } else {
+                updateMessage("🎉 ¡Jugador Amarillo ha ganado! 🎉", "current-yellow");
+            }
+
+            disableBoard();
+        }
+
+        function handleGameTied() {
+            gameOver = true;
+            updateMessage("🤝 ¡Es un empate! Tablero lleno 🤝", "");
+
+            // Resaltar todas las piezas para empate
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < columns; c++) {
+                    let tile = document.getElementById(r + "-" + c);
+                    if (board[r][c] !== " ") {
+                        tile.classList.add("tie-piece");
+                    }
+                }
+            }
+
+            disableBoard();
+        }
+
+        function resetGame(serverBoard, currentPlayer, serverMoveCount) {
+            initializeGame(serverBoard, currentPlayer, serverMoveCount);
+            updateMessage('Nuevo juego iniciado', '');
+        }
+
+        function requestRestart() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'restart_game',
+                    game_id: gameId
+                }));
+            }
+        }
+
+        function disconnect() {
+            if (ws) {
+                ws.close();
+            }
+        }
+
+        function canPlay() {
+            return myPlayer === currPlayer && playersConnected === 2;
+        }
+
+        function updateCurrentPlayerMessage() {
+            if (playersConnected < 2) {
+                updateMessage('Esperando otro jugador...', '');
+                return;
+            }
+
+            if (currPlayer === playerRed) {
+                updateMessage("Turno del Jugador Rojo", "current-red");
+            } else {
+                updateMessage("Turno del Jugador Amarillo", "current-yellow");
+            }
+
+            if (!canPlay()) {
+                const tiles = document.querySelectorAll('.tile');
+                tiles.forEach(tile => tile.classList.add('disabled'));
+            }
+        }
+
+        function updateMessage(text, playerClass) {
+            const messageDiv = document.getElementById("message");
+            if (playerClass) {
+                messageDiv.innerHTML = text + ' <span class="current-player ' + playerClass + '"></span>';
+            } else {
+                messageDiv.innerHTML = text;
+            }
+        }
+
+        function updateConnectionStatus(status) {
+            const statusEl = document.getElementById('connectionStatus');
+            statusEl.className = status;
+
+            switch (status) {
+                case 'connected':
+                    statusEl.textContent = 'Conectado';
+                    break;
+                case 'waiting':
+                    statusEl.textContent = 'Esperando';
+                    break;
+                case 'disconnected':
+                    statusEl.textContent = 'Desconectado';
+                    break;
+            }
+        }
+
+        function updateMoveCount() {
+            document.getElementById("moveCount").textContent = moveCount;
+        }
+
+        function updatePlayersCount() {
+            document.getElementById("playersCount").textContent = playersConnected;
+        }
+
+        function enableBoard() {
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach(tile => tile.classList.remove('disabled'));
+        }
+
+        function disableBoard() {
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach(tile => tile.classList.add('disabled'));
+        }
+    </script>
+</body>
+
+</html>

@@ -1,4 +1,8 @@
-import type { UserMe, UserMeDetail } from "../models/user.model";
+import type {
+  MyVirtualCurrency,
+  UserMe,
+  UserMeDetail,
+} from "../models/user.model";
 
 export class UserAdapter {
   static adaptMe(user: any): UserMe {
@@ -25,6 +29,12 @@ export class UserAdapter {
       role: user.role,
       updated_at: user.updated_at,
       user_id: user.user_id,
+      virtual_currency: user.virtual_currency,
+    };
+  }
+
+  static adaptVirtualCurrency(user: any): MyVirtualCurrency {
+    return {
       virtual_currency: user.virtual_currency,
     };
   }

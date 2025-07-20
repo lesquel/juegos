@@ -21,3 +21,8 @@ export interface UserMeDetail {
   user_id: string; // UUID
   virtual_currency: number;
 }
+
+
+export interface MyVirtualCurrency {
+  virtual_currency: number;
+}

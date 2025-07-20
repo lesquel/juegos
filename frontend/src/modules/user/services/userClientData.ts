@@ -38,4 +38,22 @@ export class UserClientData {
           }),
     });
   }
+
+  static getMyVirtualCurrency() {
+    const user = useAuthStore.getState().user;
+    return useQuery({
+      queryKey: ["userVirtualCurrency"],
+      queryFn: () => {
+        return axios
+          .get(`${UserClientData.baseUrl}${endpoints.authentication.me}`, {
+            headers: {
+              Authorization: `Bearer ${user?.access_token.access_token}`,
+            },
+          })
+          .then((response) => {
+            return UserAdapter.adaptVirtualCurrency(response.data);
+          });
+      },
+    });
+  }
 }
