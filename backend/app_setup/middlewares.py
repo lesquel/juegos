@@ -29,18 +29,9 @@ def add_middlewares(app: FastAPI, app_settings: AppSettings) -> None:
         CORSMiddleware,
         allow_origins=cors_origins,
         allow_credentials=True,
-        allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-        allow_headers=[
-            "Accept",
-            "Accept-Language",
-            "Content-Language",
-            "Content-Type",
-            "Authorization",
-            "X-Requested-With",
-            "X-CSRF-Token",
-        ],
-        expose_headers=["X-Total-Count", "X-Page-Count"],
-        max_age=86400,  # 24 horas
+        allow_methods=["*"],
+        allow_headers=["*"],
+        max_age=86400,
     )
 
     # Middleware de logging de requests y tracking de errores
@@ -49,10 +40,11 @@ def add_middlewares(app: FastAPI, app_settings: AppSettings) -> None:
 
     # Middleware de seguridad (solo en producción)
     if app_settings.is_production():
+        trusted_hosts = app_settings.trusted_hosts or ["*"]
         logger.info("Adding production security middlewares")
 
         # TrustedHost middleware
-        app.add_middleware(TrustedHostMiddleware, allowed_hosts=cors_origins)
+        app.add_middleware(TrustedHostMiddleware, allowed_hosts=trusted_hosts)
 
     elif app_settings.is_development():
         logger.info(

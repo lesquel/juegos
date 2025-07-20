@@ -9,6 +9,7 @@ class AppSettings(BaseSettingsConfig):
 
     # CORS
     allowed_origins: list[str]
+    trusted_hosts: list[str]
 
     def is_development(self) -> bool:
         """Verifica si estamos en ambiente de desarrollo"""

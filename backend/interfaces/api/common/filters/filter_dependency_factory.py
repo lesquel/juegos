@@ -48,7 +48,23 @@ def build_filter_dependency(FilterClass: Type[BaseModel]):
     # Crea la función con esa firma
     def dependency_func(**kwargs):
         base_filters = kwargs.pop("base_filters")
-        return FilterClass(**base_filters.model_dump(), **kwargs)
+
+        # Filtrar valores None y inválidos de kwargs
+        cleaned_kwargs = {}
+        for key, value in kwargs.items():
+            if value is not None:
+                # Para campos numéricos, validar que no sean valores extraños
+                if key in ["min_currency", "max_currency"] and isinstance(
+                    value, (int, float)
+                ):
+                    # Filtrar valores negativos extremos que pueden ser errores de parsing
+                    if (
+                        value < -1000000
+                    ):  # Umbral razonable para detectar valores erróneos
+                        continue
+                cleaned_kwargs[key] = value
+
+        return FilterClass(**base_filters.model_dump(), **cleaned_kwargs)
 
     # Actualiza la firma para compatibilidad con OpenAPI
     dependency_func.__signature__ = inspect.Signature(parameters)
