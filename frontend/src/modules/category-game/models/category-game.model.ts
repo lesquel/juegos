@@ -1,7 +1,7 @@
 import type { Info } from "@models/info.model";
 
 export interface CategoryGameDetail {
-  category_id: number;
+  category_id: string;
   category_name: string;
   category_img: string;
   category_description: string;

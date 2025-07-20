@@ -66,9 +66,6 @@ const InternalTransferForm = () => {
       <form.Field name="transfer_img">
         {(field) => (
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Comprobante de Transferencia
-            </label>
             <input
               type="file"
               accept="image/*"
@@ -90,9 +87,6 @@ const InternalTransferForm = () => {
       <form.Field name="transfer_amount">
         {(field) => (
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Monto
-            </label>
             <input
               type="number"
               step="0.01"
@@ -112,9 +106,6 @@ const InternalTransferForm = () => {
       <form.Field name="transfer_description">
         {(field) => (
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Descripción (opcional)
-            </label>
             <textarea
               rows={3}
               value={field.state.value}

@@ -57,6 +57,7 @@ export class TransferDataClient {
         }
       },
       onSuccess: (data) => {
+        window.location.href = "/user/me";
         console.log("Transferencia registrada", data);
       },
       onError: (error: ErrorResponseErrorsArray) => {
