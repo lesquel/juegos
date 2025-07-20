@@ -1,9 +1,9 @@
-import functools
-import inspect
-import time
 import asyncio
+import functools
+import time
 from typing import Any, Callable, Tuple
-from infrastructure.logging import get_logger
+
+from infrastructure.logging.logging_config import get_logger
 
 logger = get_logger("decorators")
 
@@ -17,7 +17,7 @@ def _get_class_name(args: tuple) -> str:
 
 def _should_include_args(include_args: bool, args: tuple, kwargs: dict) -> bool:
     """Check if arguments should be included in logging."""
-    return include_args and (args or kwargs)
+    return include_args and (bool(args) or bool(kwargs))
 
 
 def _format_arguments(args: tuple, kwargs: dict, has_class: bool) -> str:
@@ -49,30 +49,45 @@ def _log_message(logger_instance, level: str, message: str) -> None:
     getattr(logger_instance, level.lower())(message)
 
 
-def _get_execution_context(func: Callable, args: tuple, include_args: bool) -> tuple[str, str, str]:
+def _get_execution_context(
+    func: Callable, args: tuple, include_args: bool
+) -> tuple[str, str, str]:
     """Extract execution context information."""
     func_name = func.__name__
     class_name = _get_class_name(args)
     args_info = ""
-    
+
     if _should_include_args(include_args, args, {}):
         args_info = _format_arguments(args, {}, bool(class_name))
-    
+
     return func_name, class_name, args_info
 
 
-def _log_execution_start(func_name: str, class_name: str, args_info: str, log_level: str) -> None:
+def _log_execution_start(
+    func_name: str, class_name: str, args_info: str, log_level: str
+) -> None:
     """Log the start of function execution."""
     _log_message(logger, log_level, f"→ {class_name}{func_name}{args_info}")
 
 
-def _log_execution_success(func_name: str, class_name: str, result: Any, duration: float, include_result: bool, log_level: str) -> None:
+def _log_execution_success(
+    func_name: str,
+    class_name: str,
+    result: Any,
+    duration: float,
+    include_result: bool,
+    log_level: str,
+) -> None:
     """Log successful function execution."""
     result_info = _format_result(result, include_result)
-    _log_message(logger, log_level, f"← {class_name}{func_name}{result_info} ({duration:.3f}s)")
+    _log_message(
+        logger, log_level, f"← {class_name}{func_name}{result_info} ({duration:.3f}s)"
+    )
 
 
-def _log_execution_error(func_name: str, class_name: str, error: Exception, duration: float) -> None:
+def _log_execution_error(
+    func_name: str, class_name: str, error: Exception, duration: float
+) -> None:
     """Log failed function execution."""
     logger.error(f"✗ {class_name}{func_name} failed: {str(error)} ({duration:.3f}s)")
 
@@ -98,7 +113,9 @@ def _execute_with_logging(
     try:
         result = func(*args, **kwargs)
         duration = time.perf_counter() - start_time
-        _log_execution_success(func_name, class_name, result, duration, include_result, log_level)
+        _log_execution_success(
+            func_name, class_name, result, duration, include_result, log_level
+        )
         return result, duration
     except Exception as e:
         duration = time.perf_counter() - start_time
@@ -127,7 +144,9 @@ async def _async_execute_with_logging(
     try:
         result = await func(*args, **kwargs)
         duration = time.perf_counter() - start_time
-        _log_execution_success(func_name, class_name, result, duration, include_result, log_level)
+        _log_execution_success(
+            func_name, class_name, result, duration, include_result, log_level
+        )
         return result, duration
     except Exception as e:
         duration = time.perf_counter() - start_time
@@ -210,7 +229,7 @@ def _check_and_log_performance(
     """Check performance and log if threshold exceeded."""
     if not _is_slow_execution(duration, threshold):
         return
-        
+
     class_name = _get_class_name(args)
     _log_slow_execution(func.__name__, class_name, duration, threshold)
 

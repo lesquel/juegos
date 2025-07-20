@@ -1,9 +1,6 @@
 from typing import List, Optional, Tuple
-from sqlalchemy import select, and_
-from sqlalchemy.orm import selectinload
 
 from domain.entities.match.match import MatchEntity
-from domain.entities.match.match_participation import MatchParticipation
 from domain.exceptions.match import MatchNotFoundError, MatchScoreError
 from domain.repositories.match_repository import IMatchRepository
 from infrastructure.db.models.match.match_model import MatchModel
@@ -13,8 +10,11 @@ from infrastructure.db.models.match.match_participation_model import (
 from interfaces.api.common.filters.specific_filters.match_filters import (
     MatchFilterParams,
 )
-from interfaces.api.common.sort import SortParams
 from interfaces.api.common.pagination import PaginationParams
+from interfaces.api.common.sort import SortParams
+from sqlalchemy import and_, select
+from sqlalchemy.orm import selectinload
+
 from .base_repository import BasePostgresRepository
 
 
@@ -80,22 +80,24 @@ class PostgresMatchRepository(
 
             # Retornar la partida actualizada
             updated_match = await self.get_by_id(match_id)
-            updated_match.participant_ids.append(user_id)
-
-            return updated_match
+            if updated_match is not None:
+                updated_match.participant_ids.append(user_id)
+                return updated_match
+            else:
+                raise ValueError(f"Match with ID {match_id} not found after update")
 
         except Exception as e:
             self.logger.error(f"Error joining match: {e}")
             await self.db.rollback()
             raise
 
-    async def update(self, entity: MatchEntity) -> MatchEntity:
+    async def update(self, entity_id: str, entity: MatchEntity) -> None:
         """Actualiza una partida existente."""
         try:
-            if not entity.match_id:
-                raise ValueError("Entity must have a match_id for updates")
+            if not entity_id:
+                raise ValueError("Entity ID is required for updates")
 
-            stmt = select(self.model).where(self.model.match_id == entity.match_id)
+            stmt = select(self.model).where(self.model.match_id == entity_id)
             result = await self.db.execute(stmt)
             match_model = result.scalar_one_or_none()
 

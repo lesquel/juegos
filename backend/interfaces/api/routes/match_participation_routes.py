@@ -1,31 +1,22 @@
-from fastapi import APIRouter, Depends, Request, HTTPException, status
+from typing import List
 from uuid import UUID
-from typing import List, Annotated
-
-from dtos.response.match.match_participants_response import (
-    MatchParticipantsResponseDTO,
-)
-from infrastructure.logging import get_logger
-from dtos.request.match.match_request_dto import (
-    MatchParticipationResultsDTO,
-)
-from dtos.response.match.match_response import (
-    MatchResponseDTO,
-)
-
 
 # Import use cases
 from application.use_cases.match import (
-    JoinMatchUseCase,
     FinishMatchUseCase,
     GetMatchParticipantsUseCase,
+    JoinMatchUseCase,
 )
+from dtos.request.match.match_request_dto import MatchParticipationResultsDTO
+from dtos.response.match.match_participants_response import MatchParticipantsResponseDTO
+from dtos.response.match.match_response import MatchResponseDTO
+from fastapi import APIRouter, Depends
 from infrastructure.dependencies.use_cases.match_participations_use_cases import (
-    get_join_match_use_case,
     get_finish_match_use_case,
+    get_join_match_use_case,
     get_match_participants_use_case,
 )
-
+from infrastructure.logging import get_logger
 
 match_participations_router = APIRouter()
 
@@ -74,7 +65,9 @@ async def join_match(
     return result
 
 
-@match_participations_router.put("/{match_id}/finish_match", response_model=MatchResponseDTO)
+@match_participations_router.put(
+    "/{match_id}/finish_match", response_model=MatchResponseDTO
+)
 async def finish_match(
     match_id: UUID,
     participation_data: MatchParticipationResultsDTO,

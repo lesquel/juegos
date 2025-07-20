@@ -1,17 +1,17 @@
 from typing import Optional
-from pydantic import Field
 
-
-from ..time_stamp_base import TimeStampBase
 from dtos.common.constants import (
-    EXAMPLE_CATEGORY_ID,
-    EXAMPLE_CATEGORY_NAME,
-    EXAMPLE_CATEGORY_IMG,
     EXAMPLE_CATEGORY_DESCRIPTION,
-    EXAMPLE_GAME_ID,
+    EXAMPLE_CATEGORY_ID,
+    EXAMPLE_CATEGORY_IMG,
+    EXAMPLE_CATEGORY_NAME,
     EXAMPLE_CREATED_AT,
+    EXAMPLE_GAME_ID,
     EXAMPLE_UPDATED_AT,
 )
+from pydantic import Field
+
+from ..time_stamp_base import TimeStampBase
 
 
 class CategoryResponseDTO(TimeStampBase):

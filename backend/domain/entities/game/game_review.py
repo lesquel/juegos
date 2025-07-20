@@ -1,4 +1,5 @@
 from typing import Optional
+
 from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 
@@ -17,8 +18,6 @@ class GameReviewEntity(TimeStampEntityMixin):
 
         self.review_id = review_id
         self.game_id = game_id
-        self.user_id = user_id  
+        self.user_id = user_id
         self.rating = rating
         self.comment = comment
-
-

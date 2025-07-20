@@ -1,14 +1,14 @@
-from sqlalchemy import Column, Float, Integer, String, Text
-from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
 import uuid
+
+from sqlalchemy import Column, Float, Integer, String, Text
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 from ...base import Base
 from ..common import TimeStampModelMixin, game_categories
 
 
 class GameModel(Base, TimeStampModelMixin):
-
     __tablename__ = "games"
 
     game_id = Column(

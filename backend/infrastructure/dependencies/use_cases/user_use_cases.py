@@ -1,12 +1,11 @@
-from fastapi import Depends
-
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from application.use_cases.user import GetAllUsersUseCase, GetUserByIdUseCase
 from application.use_cases.user.validate_user_balance import ValidateUserBalanceUseCase
 from domain.repositories import IUserRepository
+from fastapi import Depends
 
-from ..repositories import get_user_repository
 from ..converters import get_user_converter
+from ..repositories import get_user_repository
 
 
 def get_all_users_use_case(

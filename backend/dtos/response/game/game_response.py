@@ -1,20 +1,20 @@
 from typing import Optional
-from pydantic import Field
 
-
-from ..time_stamp_base import TimeStampBase
 from dtos.common.constants import (
-    EXAMPLE_GAME_ID,
-    EXAMPLE_GAME_NAME,
-    EXAMPLE_GAME_DESCRIPTION,
-    EXAMPLE_GAME_IMG,
-    EXAMPLE_GAME_URL,
-    EXAMPLE_GAME_CAPACITY,
     EXAMPLE_CATEGORY_ID,
-    EXAMPLE_HOUSE_ODDS,
     EXAMPLE_CREATED_AT,
+    EXAMPLE_GAME_CAPACITY,
+    EXAMPLE_GAME_DESCRIPTION,
+    EXAMPLE_GAME_ID,
+    EXAMPLE_GAME_IMG,
+    EXAMPLE_GAME_NAME,
+    EXAMPLE_GAME_URL,
+    EXAMPLE_HOUSE_ODDS,
     EXAMPLE_UPDATED_AT,
 )
+from pydantic import Field
+
+from ..time_stamp_base import TimeStampBase
 
 
 class GameResponseDTO(TimeStampBase):

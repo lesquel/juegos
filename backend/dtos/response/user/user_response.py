@@ -1,16 +1,15 @@
-from pydantic import Field
-
-
 from application.enums import UserRole
-from ..time_stamp_base import TimeStampBase
 from dtos.common.constants import (
-    EXAMPLE_USER_ID,
+    EXAMPLE_CREATED_AT,
     EXAMPLE_EMAIL,
+    EXAMPLE_UPDATED_AT,
+    EXAMPLE_USER_ID,
     EXAMPLE_USER_ROLE,
     EXAMPLE_VIRTUAL_CURRENCY,
-    EXAMPLE_CREATED_AT,
-    EXAMPLE_UPDATED_AT,
 )
+from pydantic import Field
+
+from ..time_stamp_base import TimeStampBase
 
 
 class UserBaseResponseDTO(TimeStampBase):

@@ -1,9 +1,8 @@
+import os
 from pathlib import Path
-from pydantic_settings import BaseSettings
-
 
 from dotenv import load_dotenv
-import os
+from pydantic_settings import BaseSettings
 
 ENV = os.getenv("ENVIRONMENT", "dev")
 

@@ -1,17 +1,15 @@
-from typing import Optional, List, Tuple
-from sqlalchemy import select
+from typing import List, Optional, Tuple
 
+from application.enums import TransferStateEnum
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
 from domain.exceptions.transfer import TransferNotFoundError
 from domain.repositories.transfer_payment_repository import ITransferPaymentRepository
 from infrastructure.db.models import TransferPaymentModel
-from infrastructure.db.repositories.base_repository import (
-    BasePostgresRepository,
-)
+from infrastructure.db.repositories.base_repository import BasePostgresRepository
 from interfaces.api.common.filters.specific_filters import TransferPaymentFilterParams
-from application.enums import TransferStateEnum
 from interfaces.api.common.pagination import PaginationParams
 from interfaces.api.common.sort import SortParams
+from sqlalchemy import select
 
 
 class PostgresTransferPaymentRepository(
@@ -40,7 +38,8 @@ class PostgresTransferPaymentRepository(
             sort_params=sort_params,
             to_entity=self._model_to_entity,
             custom_filter_fn=lambda q: q.where(
-                self.model.user_id == user_id,)
+                self.model.user_id == user_id,
+            ),
         )
 
     async def get_transfer_id(self, transfer_id: str) -> TransferPaymentEntity:

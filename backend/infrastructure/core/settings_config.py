@@ -1,4 +1,4 @@
-from .specific_settings import AppSettings, JWTSettings, DatabaseSettings
+from .specific_settings import AppSettings, DatabaseSettings, JWTSettings
 
 
 class Settings:

@@ -1,4 +1,3 @@
-
 from .base_settings_config import BaseSettingsConfig
 
 
@@ -8,4 +7,3 @@ class DatabaseSettings(BaseSettingsConfig):
     postgres_user: str
     postgres_password: str
     postgres_db: str
-

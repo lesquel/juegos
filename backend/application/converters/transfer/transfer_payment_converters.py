@@ -6,6 +6,8 @@ las conversiones entre TransferPaymentEntity y los DTOs correspondientes.
 """
 
 from typing import Optional
+
+from application.enums import TransferStateEnum
 from application.mixins.dto_converter_mixin import BidirectionalConverter
 from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
@@ -15,14 +17,14 @@ from dtos.request.transfer.transfer_payment_request import (
 from dtos.response.transfer.transfer_payment_response_dto import (
     TransferPaymentResponseDTO,
 )
-from application.enums import TransferStateEnum
+
+from .transfer_payment_dto_to_entity_converter import (
+    TransferPaymentDTOToEntityConverter,
+)
 
 # Import the modularized converters
 from .transfer_payment_entity_to_dto_converter import (
     TransferPaymentEntityToDTOConverter,
-)
-from .transfer_payment_dto_to_entity_converter import (
-    TransferPaymentDTOToEntityConverter,
 )
 
 

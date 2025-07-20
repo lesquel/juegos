@@ -1,8 +1,10 @@
+import inspect
 from typing import Type, get_type_hints
+
 from fastapi import Depends, Query
 from pydantic import BaseModel
+
 from .base_filter import BaseFilterParams, get_base_filter_params
-import inspect
 
 
 def build_filter_dependency(FilterClass: Type[BaseModel]):
@@ -49,7 +51,8 @@ def build_filter_dependency(FilterClass: Type[BaseModel]):
         return FilterClass(**base_filters.model_dump(), **kwargs)
 
     # Actualiza la firma para compatibilidad con OpenAPI
-    dependency_func.__signature__ = inspect.Signature(parameters)
+    if hasattr(dependency_func, "__signature__"):
+        dependency_func.__signature__ = inspect.Signature(parameters)
     dependency_func.__annotations__ = {
         "return": FilterClass,
         **{p.name: p.annotation for p in parameters},

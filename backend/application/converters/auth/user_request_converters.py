@@ -1,11 +1,13 @@
 """Conversores de DTOs de request a entidades para autenticación."""
 
+from application.mixins import DTOToEntityConverter, LoggingMixin
 from domain.entities.user.user import UserEntity
 from dtos.request.auth.auth_request import UserCreateRequestDTO
-from application.mixins import DTOToEntityConverter, LoggingMixin
 
 
-class UserCreateDTOToEntityConverter(DTOToEntityConverter[UserCreateRequestDTO, UserEntity], LoggingMixin):
+class UserCreateDTOToEntityConverter(
+    DTOToEntityConverter[UserCreateRequestDTO, UserEntity], LoggingMixin
+):
     """Convierte UserCreateRequestDTO a UserEntity."""
 
     def __init__(self):
@@ -13,8 +15,10 @@ class UserCreateDTOToEntityConverter(DTOToEntityConverter[UserCreateRequestDTO, 
 
     def to_entity(self, dto: UserCreateRequestDTO) -> UserEntity:
         """Convierte UserCreateRequestDTO a UserEntity."""
-        self.logger.debug(f"Converting UserCreateRequestDTO to UserEntity for email: {dto.email}")
-        
+        self.logger.debug(
+            f"Converting UserCreateRequestDTO to UserEntity for email: {dto.email}"
+        )
+
         try:
             entity = UserEntity(
                 user_id=None,  # Se asigna en el repositorio
@@ -23,10 +27,14 @@ class UserCreateDTOToEntityConverter(DTOToEntityConverter[UserCreateRequestDTO, 
                 virtual_currency=0.0,  # Valor inicial
                 role="USER",  # Rol por defecto
             )
-            
-            self.logger.debug("Successfully converted UserCreateRequestDTO to UserEntity")
+
+            self.logger.debug(
+                "Successfully converted UserCreateRequestDTO to UserEntity"
+            )
             return entity
-            
+
         except Exception as e:
-            self.logger.error(f"Error converting UserCreateRequestDTO to UserEntity: {str(e)}")
+            self.logger.error(
+                f"Error converting UserCreateRequestDTO to UserEntity: {str(e)}"
+            )
             raise

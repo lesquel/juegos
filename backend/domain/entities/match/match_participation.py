@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from domain.entities.match.match import MatchEntity
@@ -25,4 +25,7 @@ class MatchParticipation(TimeStampEntityMixin):
         self.score = score
 
     def __repr__(self):
-        return f"MatchParticipation(match={self.match}, user_id={self.user_id}, score={self.score}, bet_amount={self.bet_amount})"
+        return (
+            f"MatchParticipation(match={self.match}, user_id={self.user_id}, "
+            f"score={self.score}, bet_amount={self.bet_amount})"
+        )

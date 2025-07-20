@@ -1,14 +1,14 @@
+from application.interfaces.base_use_case import BaseUseCase
+from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.exceptions.game import GameNotFoundError
+from domain.exceptions.match import MatchJoinError, MatchNotFoundError
+from domain.exceptions.user import InsufficientBalanceError, UserNotFoundError
 from domain.repositories.game_repository import IGameRepository
 from domain.repositories.match_repository import IMatchRepository
 from domain.repositories.user_repository import IUserRepository
 from domain.services.user_balance_service import UserBalanceService
-from domain.exceptions.match import MatchNotFoundError, MatchJoinError
-from domain.exceptions.user import UserNotFoundError, InsufficientBalanceError
 from dtos.response.match.match_response import MatchResponseDTO
-from dtos.response.user.user_response import UserBaseResponseDTO, UserResponseDTO
-from application.interfaces.base_use_case import BaseUseCase
-from application.mixins.dto_converter_mixin import EntityToDTOConverter
+from dtos.response.user.user_response import UserResponseDTO
 from infrastructure.logging import log_execution, log_performance
 
 
@@ -99,7 +99,8 @@ class JoinMatchUseCase(BaseUseCase[str, MatchResponseDTO]):
             raise InsufficientBalanceError(
                 self.user.virtual_currency,
                 match.base_bet_amount,
-                f"Insufficient balance to join match. Required: {match.base_bet_amount}, Available: {self.user.virtual_currency}",
+                f"Insufficient balance to join match. Required: {match.base_bet_amount}, "
+                f"Available: {self.user.virtual_currency}",
             )
 
         # Deducir el monto de la apuesta del balance del usuario

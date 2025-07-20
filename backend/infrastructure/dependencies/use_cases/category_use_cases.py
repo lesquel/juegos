@@ -1,16 +1,14 @@
-from fastapi import Depends
-
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from application.use_cases.game import (
     GetAllCategoriesUseCase,
-    GetCategoryByIdUseCase,
     GetCategoriesByGameIdUseCase,
+    GetCategoryByIdUseCase,
 )
-
 from domain.repositories import ICategoryRepository
+from fastapi import Depends
 
-from ..repositories import get_category_repository
 from ..converters import get_category_converter
+from ..repositories import get_category_repository
 
 
 def get_all_categories_use_case(

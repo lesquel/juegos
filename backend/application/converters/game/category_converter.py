@@ -1,12 +1,17 @@
 """Conversor DTO para entidad Category."""
 
+from application.mixins import LoggingMixin
+from application.mixins.dto_converter_mixin import (
+    BidirectionalConverter,
+    EntityToDTOConverter,
+)
 from domain.entities.game.category import CategoryEntity
 from dtos.response.game.category_response import CategoryResponseDTO
-from application.mixins.dto_converter_mixin import EntityToDTOConverter, BidirectionalConverter
-from application.mixins import LoggingMixin
 
 
-class CategoryEntityToDTOConverter(EntityToDTOConverter[CategoryEntity, CategoryResponseDTO], LoggingMixin):
+class CategoryEntityToDTOConverter(
+    EntityToDTOConverter[CategoryEntity, CategoryResponseDTO], LoggingMixin
+):
     """Convierte CategoryEntity a CategoryResponseDTO."""
 
     def __init__(self):
@@ -14,15 +19,16 @@ class CategoryEntityToDTOConverter(EntityToDTOConverter[CategoryEntity, Category
 
     def to_dto(self, entity: CategoryEntity) -> CategoryResponseDTO:
         """Convierte CategoryEntity a CategoryResponseDTO."""
-        self.logger.debug(f"Converting CategoryEntity to CategoryResponseDTO for category: {entity.category_id}")
-        
+        self.logger.debug(
+            f"Converting CategoryEntity to CategoryResponseDTO for category: {entity.category_id}"
+        )
+
         try:
             # Convertir games a IDs si son objetos, mantener si ya son strings
             if entity.games:
                 game_ids = []
                 for game in entity.games:  # Es una entidad GameEntity
-                        game_ids.append(str(game))
-
+                    game_ids.append(str(game))
 
             dto = CategoryResponseDTO(
                 category_id=str(entity.category_id),
@@ -33,16 +39,22 @@ class CategoryEntityToDTOConverter(EntityToDTOConverter[CategoryEntity, Category
                 created_at=entity.created_at,
                 updated_at=entity.updated_at,
             )
-            
-            self.logger.debug("Successfully converted CategoryEntity to CategoryResponseDTO")
+
+            self.logger.debug(
+                "Successfully converted CategoryEntity to CategoryResponseDTO"
+            )
             return dto
-            
+
         except Exception as e:
-            self.logger.error(f"Error converting CategoryEntity to CategoryResponseDTO: {str(e)}")
+            self.logger.error(
+                f"Error converting CategoryEntity to CategoryResponseDTO: {str(e)}"
+            )
             raise
 
 
-class CategoryBidirectionalConverter(BidirectionalConverter[CategoryEntity, CategoryResponseDTO], LoggingMixin):
+class CategoryBidirectionalConverter(
+    BidirectionalConverter[CategoryEntity, CategoryResponseDTO], LoggingMixin
+):
     """Convertidor bidireccional para Category."""
 
     def __init__(self):
@@ -50,20 +62,22 @@ class CategoryBidirectionalConverter(BidirectionalConverter[CategoryEntity, Cate
 
     def to_dto(self, entity: CategoryEntity) -> CategoryResponseDTO:
         """Convierte CategoryEntity a CategoryResponseDTO."""
-        self.logger.debug(f"Converting CategoryEntity to CategoryResponseDTO (bidirectional) for category: {entity.category_id}")
-        
+        self.logger.debug(
+            f"Converting CategoryEntity to CategoryResponseDTO (bidirectional) for category: {entity.category_id}"
+        )
+
         try:
             # Convertir games a IDs si son objetos, mantener si ya son strings
             games_ids = []
             if entity.games:
                 for game in entity.games:
-                    if hasattr(game, 'id'):  # Es un objeto GameModel
+                    if hasattr(game, "id"):  # Es un objeto GameModel
                         games_ids.append(str(game.id))
-                    elif hasattr(game, 'game_id'):  # Es una entidad GameEntity
+                    elif hasattr(game, "game_id"):  # Es una entidad GameEntity
                         games_ids.append(str(game.game_id))
                     else:  # Ya es un string (ID)
                         games_ids.append(str(game))
-            
+
             dto = CategoryResponseDTO(
                 category_id=str(entity.category_id),
                 category_name=entity.category_name,
@@ -73,18 +87,22 @@ class CategoryBidirectionalConverter(BidirectionalConverter[CategoryEntity, Cate
                 created_at=entity.created_at,
                 updated_at=entity.updated_at,
             )
-            
-            self.logger.debug("Successfully converted CategoryEntity to CategoryResponseDTO (bidirectional)")
+
+            self.logger.debug(
+                "Successfully converted CategoryEntity to CategoryResponseDTO (bidirectional)"
+            )
             return dto
-            
+
         except Exception as e:
             self.logger.error(f"Error in bidirectional conversion to DTO: {str(e)}")
             raise
 
     def to_entity(self, dto: CategoryResponseDTO) -> CategoryEntity:
         """Convierte CategoryResponseDTO a CategoryEntity."""
-        self.logger.debug(f"Converting CategoryResponseDTO to CategoryEntity for category: {dto.category_id}")
-        
+        self.logger.debug(
+            f"Converting CategoryResponseDTO to CategoryEntity for category: {dto.category_id}"
+        )
+
         try:
             entity = CategoryEntity(
                 category_id=dto.category_id,
@@ -95,10 +113,12 @@ class CategoryBidirectionalConverter(BidirectionalConverter[CategoryEntity, Cate
                 created_at=dto.created_at,
                 updated_at=dto.updated_at,
             )
-            
-            self.logger.debug("Successfully converted CategoryResponseDTO to CategoryEntity")
+
+            self.logger.debug(
+                "Successfully converted CategoryResponseDTO to CategoryEntity"
+            )
             return entity
-            
+
         except Exception as e:
             self.logger.error(f"Error in bidirectional conversion to Entity: {str(e)}")
             raise

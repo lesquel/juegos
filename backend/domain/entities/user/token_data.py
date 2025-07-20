@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 
 
@@ -7,7 +6,7 @@ class TokenData:
     """Entidad que representa los datos internos del token"""
 
     sub: str  # Subject (identificador del usuario)
-    
+
     def __post_init__(self):
         """Validaciones de la entidad"""
         if not self.sub or not isinstance(self.sub, str):

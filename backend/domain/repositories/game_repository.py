@@ -1,13 +1,14 @@
 from abc import abstractmethod
 from typing import Optional
 
+from domain.common import BaseFilterParams, PaginationParams, SortParams
 from domain.entities.game import GameEntity
-from interfaces.api.common.filters.specific_filters import GameFilterParams
-from interfaces.api.common import PaginationParams, SortParams
+
 from .base_repository import IReadOnlyRepository
+from .common import ModelType
 
 
-class IGameRepository(IReadOnlyRepository[GameEntity, GameFilterParams]):
+class IGameRepository(IReadOnlyRepository[GameEntity, BaseFilterParams, ModelType]):
     """Repositorio específico para juegos"""
 
     @abstractmethod
@@ -20,4 +21,3 @@ class IGameRepository(IReadOnlyRepository[GameEntity, GameFilterParams]):
         :param category_id: The ID of the category to retrieve games for.
         :return: A list of Game objects corresponding to the given category.
         """
-        pass

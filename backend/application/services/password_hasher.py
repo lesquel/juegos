@@ -1,6 +1,6 @@
-from passlib.context import CryptContext
-from domain.exceptions import DomainException
 from application.mixins import LoggingMixin
+from domain.exceptions import DomainException
+from passlib.context import CryptContext
 
 from ..interfaces import IPasswordHasher
 
@@ -14,11 +14,15 @@ class PasswordHasher(IPasswordHasher, LoggingMixin):
         self.logger.debug("Verifying password hash")
         try:
             result = self._pwd_context.verify(plain_password, hashed_password)
-            self.logger.debug(f"Password verification result: {'valid' if result else 'invalid'}")
+            self.logger.debug(
+                f"Password verification result: {'valid' if result else 'invalid'}"
+            )
             return result
         except Exception as e:
             self.logger.error(f"Error during password verification: {str(e)}")
-            raise DomainException("Password verification failed", 500, "password_verification_error")
+            raise DomainException(
+                "Password verification failed", 500, "password_verification_error"
+            )
 
     def hash(self, password: str) -> str:
         self.logger.debug("Hashing password")
@@ -28,4 +32,6 @@ class PasswordHasher(IPasswordHasher, LoggingMixin):
             return hashed
         except Exception as e:
             self.logger.error(f"Error during password hashing: {str(e)}")
-            raise DomainException("Password hashing failed", 500, "password_hashing_error")
+            raise DomainException(
+                "Password hashing failed", 500, "password_hashing_error"
+            )

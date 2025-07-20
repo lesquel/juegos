@@ -2,8 +2,9 @@
 
 from typing import Optional
 
-from ..time_stamp_entity_mixin import TimeStampEntityMixin
 from application.enums import UserRole
+
+from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 
 class UserEntity(TimeStampEntityMixin):

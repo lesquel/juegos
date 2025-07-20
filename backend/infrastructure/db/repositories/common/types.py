@@ -1,4 +1,5 @@
 from typing import TypeVar
+
 from interfaces.api.common.filters.base_filter import BaseFilterParams
 
 # Entity type - Representa el tipo de entidad del dominio

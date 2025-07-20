@@ -1,19 +1,16 @@
-from domain.entities.match.match import MatchEntity
-from domain.entities.user.user import UserEntity
-from domain.repositories.match_repository import IMatchRepository
-from domain.repositories.game_repository import IGameRepository
-from domain.repositories.user_repository import IUserRepository
-from domain.services.user_balance_service import UserBalanceService
-from domain.exceptions.game import GameNotFoundError
-from domain.exceptions.match import MatchValidationError
-from domain.exceptions.user import UserNotFoundError, InsufficientBalanceError
-from dtos.request.match.match_request_dto import CreateMatchRequestDTO
-from dtos.response.match.match_response import MatchResponseDTO
 from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import BidirectionalConverter
-from dtos.response.user.user_response import UserBaseResponseDTO, UserResponseDTO
+from domain.entities.match.match import MatchEntity
+from domain.exceptions.game import GameNotFoundError
+from domain.exceptions.user import InsufficientBalanceError, UserNotFoundError
+from domain.repositories.game_repository import IGameRepository
+from domain.repositories.match_repository import IMatchRepository
+from domain.repositories.user_repository import IUserRepository
+from domain.services.user_balance_service import UserBalanceService
+from dtos.request.match.match_request_dto import CreateMatchRequestDTO
+from dtos.response.match.match_response import MatchResponseDTO
+from dtos.response.user.user_response import UserResponseDTO
 from infrastructure.logging import log_execution, log_performance
-from datetime import datetime
 
 
 class CreateMatchUseCase(BaseUseCase[CreateMatchRequestDTO, MatchResponseDTO]):
@@ -74,7 +71,8 @@ class CreateMatchUseCase(BaseUseCase[CreateMatchRequestDTO, MatchResponseDTO]):
             raise InsufficientBalanceError(
                 self.user.virtual_currency,
                 match_data.base_bet_amount,
-                f"Insufficient balance to create match. Required: {match_data.base_bet_amount}, Available: {self.user.virtual_currency}",
+                f"Insufficient balance to create match. Required: {match_data.base_bet_amount}, "
+                f"Available: {self.user.virtual_currency}",
             )
 
         # Validar que el juego existe
@@ -88,7 +86,7 @@ class CreateMatchUseCase(BaseUseCase[CreateMatchRequestDTO, MatchResponseDTO]):
 
         # Deducir el monto de la apuesta del balance del usuario
         UserBalanceService.deduct_balance(self.user, match_data.base_bet_amount)
-        
+
         # Obtener la entidad completa del usuario para actualizar
         user_entity = await self.user_repo.get_by_id(self.user.user_id)
         if user_entity:

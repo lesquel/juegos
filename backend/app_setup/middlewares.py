@@ -1,10 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-
 from infrastructure.core.settings_config import AppSettings
-from infrastructure.middleware import LoggingMiddleware
 from infrastructure.logging import get_logger
+from infrastructure.middleware import LoggingMiddleware
 
 # Configurar logger
 logger = get_logger("middlewares")
@@ -53,11 +52,7 @@ def add_middlewares(app: FastAPI, app_settings: AppSettings) -> None:
         logger.info("Adding production security middlewares")
 
         # TrustedHost middleware
-        app.add_middleware(
-            TrustedHostMiddleware,
-            allowed_hosts=cors_origins
-        )
-
+        app.add_middleware(TrustedHostMiddleware, allowed_hosts=cors_origins)
 
     elif app_settings.is_development():
         logger.info(

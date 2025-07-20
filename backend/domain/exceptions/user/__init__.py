@@ -1,6 +1,4 @@
-"""
-Excepciones relacionadas con usuarios
-"""
+from typing import Optional
 
 from ..base import DomainException, ValidationError
 
@@ -65,7 +63,12 @@ class WeakPasswordError(ValidationError):
 class InsufficientBalanceError(DomainException):
     """Error cuando el usuario no tiene suficiente saldo"""
 
-    def __init__(self, current_balance: float, required_amount: float, message: str = None):
+    def __init__(
+        self,
+        current_balance: float,
+        required_amount: float,
+        message: Optional[str] = None,
+    ):
         self.current_balance = current_balance
         self.required_amount = required_amount
 

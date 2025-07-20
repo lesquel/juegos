@@ -1,33 +1,22 @@
 """Match use cases dependencies."""
 
-from fastapi import Depends
-
 from application.interfaces.base_assembler import BaseAssembler
-from application.use_cases.match import (
-    JoinMatchUseCase,
-    GetMatchParticipantsUseCase,
-)
-
-from application.mixins.dto_converter_mixin import (
-    BidirectionalConverter,
-)
-
-
+from application.mixins.dto_converter_mixin import BidirectionalConverter
+from application.use_cases.match import GetMatchParticipantsUseCase, JoinMatchUseCase
 from application.use_cases.match.finish_match import FinishMatchUseCase
 from domain.repositories.game_repository import IGameRepository
 from domain.repositories.match_repository import IMatchRepository
 from domain.repositories.user_repository import IUserRepository
-
-from dtos.response.user.user_response import UserBaseResponseDTO, UserResponseDTO
-from infrastructure.dependencies.repositories.database_repos import (
-    get_match_repository,
-    get_game_repository,
-    get_user_repository,
-)
+from dtos.response.user.user_response import UserResponseDTO
+from fastapi import Depends
 from infrastructure.dependencies.converters.match_converters import (
     get_match_converter,
-    get_match_participation_converter,
     get_match_participants_response_assembler,
+)
+from infrastructure.dependencies.repositories.database_repos import (
+    get_game_repository,
+    get_match_repository,
+    get_user_repository,
 )
 from infrastructure.dependencies.use_cases.auth_use_cases import (
     get_current_user_from_request_use_case,

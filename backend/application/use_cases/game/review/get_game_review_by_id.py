@@ -1,8 +1,8 @@
+from application.interfaces.base_use_case import BaseGetByIdUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
+from domain.exceptions import GameReviewNotFoundError
 from domain.repositories import IGameReviewRepository
 from dtos.response.game import GameReviewResponseDTO
-from domain.exceptions import GameReviewNotFoundError
-from application.interfaces.base_use_case import BaseGetByIdUseCase
 
 
 class GetGameReviewByIdUseCase(BaseGetByIdUseCase[GameReviewResponseDTO]):

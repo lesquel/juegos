@@ -5,9 +5,9 @@ Este módulo contiene las funciones que crean instancias de servicios
 relacionados con autenticación, hashing de contraseñas y tokens.
 """
 
-from domain.interfaces.token_provider import ITokenProvider
 from application.interfaces.password_hasher import IPasswordHasher
 from application.services import PasswordHasher
+from domain.interfaces.token_provider import ITokenProvider
 from infrastructure.auth.jwt_service import JWTService
 from infrastructure.auth.security import CustomHTTPBearer
 

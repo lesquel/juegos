@@ -1,18 +1,17 @@
 from typing import Union
-from domain.entities.game.game_review import GameReviewEntity
-from dtos.response.game.game_review_response import (
-    GameReviewResponseDTO,
+
+from application.mixins.dto_converter_mixin import (
+    BidirectionalConverter,
+    DTOToEntityConverter,
+    EntityToDTOConverter,
 )
+from application.mixins.logging_mixin import LoggingMixin
+from domain.entities.game.game_review import GameReviewEntity
 from dtos.request.game.game_review_request import (
     CreateGameReviewRequestDTO,
     UpdateGameReviewRequestDTO,
 )
-from application.mixins.dto_converter_mixin import (
-    EntityToDTOConverter,
-    DTOToEntityConverter,
-    BidirectionalConverter,
-)
-from application.mixins.logging_mixin import LoggingMixin
+from dtos.response.game.game_review_response import GameReviewResponseDTO
 
 
 class GameReviewEntityToDTOConverter(
@@ -60,7 +59,7 @@ class GameReviewDTOToEntityConverter(
 
     def to_entity(self, dto: CreateGameReviewRequestDTO) -> GameReviewEntity:
         """Convierte CreateGameReviewRequestDTO a GameReviewEntity."""
-        self.logger.debug(f"Converting CreateGameReviewRequestDTO to GameReviewEntity")
+        self.logger.debug("Converting CreateGameReviewRequestDTO to GameReviewEntity")
 
         try:
             entity = GameReviewEntity(
@@ -94,7 +93,8 @@ class GameReviewBidirectionalConverter(
     def to_dto(self, entity: GameReviewEntity) -> GameReviewResponseDTO:
         """Convierte entidad a DTO de respuesta."""
         self.logger.debug(
-            f"Converting GameReviewEntity to GameReviewResponseDTO (bidirectional) for review: {entity.review_id if entity.review_id else 'N/A'}"
+            "Converting GameReviewEntity to GameReviewResponseDTO (bidirectional) "
+            f"for review: {entity.review_id if entity.review_id else 'N/A'}"
         )
         return self.entity_to_dto.to_dto(entity)
 
@@ -105,7 +105,7 @@ class GameReviewBidirectionalConverter(
         # Si es un CreateGameReviewRequestDTO, usar el converter apropiado
         if hasattr(dto, "rating") and not hasattr(dto, "review_id"):
             self.logger.debug(
-                f"Converting CreateGameReviewRequestDTO to GameReviewEntity"
+                "Converting CreateGameReviewRequestDTO to GameReviewEntity"
             )
             return self.dto_to_entity.to_entity(dto)
 

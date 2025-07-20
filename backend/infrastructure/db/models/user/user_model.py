@@ -1,15 +1,16 @@
-from sqlalchemy import Column, String, Float
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.types import Enum as SqlEnum
-from sqlalchemy.orm import relationship
 import uuid
 
-from ...base import Base
 from application.enums import UserRole
+from sqlalchemy import Column, Float, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
+from sqlalchemy.types import Enum as SqlEnum
+
+from ...base import Base
 from ..common import TimeStampModelMixin
 
-
 ON_DELETE_CASCADE = "all, delete-orphan"
+
 
 class UserModel(Base, TimeStampModelMixin):
     __tablename__ = "users"

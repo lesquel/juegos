@@ -1,18 +1,16 @@
 from collections.abc import Callable
+from typing import Any, List, Optional, Tuple, Type
 
 from fastapi import Query
 from interfaces.api.common.filters.base_filter import BaseFilterParams
 from interfaces.api.common.pagination import PaginationParams
 from interfaces.api.common.sort import SortParams
-
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from .filter_mixin import FilterMixin
-from .sort_mixin import SortingMixin
 from .pagination_mixin import PaginationMixin
-
-from typing import Any, Optional, Type, List, Tuple
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from .sort_mixin import SortingMixin
 
 
 class QueryMixin(FilterMixin, SortingMixin, PaginationMixin):
@@ -23,7 +21,7 @@ class QueryMixin(FilterMixin, SortingMixin, PaginationMixin):
         pagination: PaginationParams,
         filters: Optional[BaseFilterParams] = None,
         sort_params: Optional[SortParams] = None,
-        to_entity: Optional[callable] = None,
+        to_entity: Optional[Callable] = None,
         custom_filter_fn: Optional[Callable[[Query], Query]] = None,
         load_options: Optional[List[Any]] = None,
     ) -> Tuple[List, int]:

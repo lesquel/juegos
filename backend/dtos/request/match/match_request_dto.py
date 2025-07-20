@@ -1,12 +1,13 @@
 from typing import Optional
+
+from dtos.common.constants import (
+    EXAMPLE_BASE_BET_AMOUNT,
+    EXAMPLE_SCORE,
+    EXAMPLE_USER_ID,
+)
 from pydantic import BaseModel, Field, field_validator
 
 from .validators import validate_bet_amount_validator, validate_user_score_validator
-from dtos.common.constants import (
-    EXAMPLE_BASE_BET_AMOUNT,
-    EXAMPLE_USER_ID,
-    EXAMPLE_SCORE,
-)
 
 
 class CreateMatchRequestDTO(BaseModel):

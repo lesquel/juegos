@@ -1,8 +1,7 @@
 from abc import abstractmethod
 from typing import Protocol
+
 from domain.entities.user.user import UserEntity
-
-
 
 
 class IBalanceValidator(Protocol):

@@ -1,16 +1,16 @@
 from abc import abstractmethod
-from typing import Optional, List, Tuple
+from typing import List, Optional, Tuple
 
-from domain.entities import TransferPaymentEntity
-from interfaces.api.common.filters.specific_filters import TransferPaymentFilterParams
 from application.enums import TransferStateEnum
-from interfaces.api.common.pagination import PaginationParams
-from interfaces.api.common.sort import SortParams
+from domain.common import BaseFilterParams, PaginationParams, SortParams
+from domain.entities import TransferPaymentEntity
+
 from .base_repository import IBaseRepository
+from .common import ModelType
 
 
 class ITransferPaymentRepository(
-    IBaseRepository[TransferPaymentEntity, TransferPaymentFilterParams]
+    IBaseRepository[TransferPaymentEntity, BaseFilterParams, ModelType]
 ):
     """Repositorio específico para transferencias de pago"""
 
@@ -19,7 +19,7 @@ class ITransferPaymentRepository(
         self,
         user_id: str,
         pagination: PaginationParams,
-        filters: TransferPaymentFilterParams,
+        filters: BaseFilterParams,
         sort_params: SortParams,
     ) -> Tuple[List[TransferPaymentEntity], int]:
         """
@@ -31,7 +31,6 @@ class ITransferPaymentRepository(
         Returns:
             List[TransferPaymentEntity]: Lista de transferencias del usuario
         """
-        pass
 
     @abstractmethod
     async def get_transfer_id(
@@ -47,7 +46,6 @@ class ITransferPaymentRepository(
         Returns:
             Optional[TransferPaymentEntity]: La transferencia del usuario o None si no existe
         """
-        pass
 
     @abstractmethod
     async def get_by_state(
@@ -62,7 +60,6 @@ class ITransferPaymentRepository(
         Returns:
             List[TransferPaymentEntity]: Lista de transferencias con el estado especificado
         """
-        pass
 
     @abstractmethod
     async def update_state(
@@ -78,4 +75,3 @@ class ITransferPaymentRepository(
         Returns:
             Optional[TransferPaymentEntity]: La transferencia actualizada
         """
-        pass

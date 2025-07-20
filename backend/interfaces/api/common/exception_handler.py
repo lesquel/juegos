@@ -1,12 +1,12 @@
-
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError
-from sqlalchemy.exc import IntegrityError, OperationalError
 import traceback
+from typing import Dict, List
 
 from domain.exceptions import DomainException
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from infrastructure.logging import get_logger
+from sqlalchemy.exc import IntegrityError, OperationalError
 
 logger = get_logger("exception_handler")
 
@@ -41,7 +41,7 @@ class ErrorHandler:
             f"Validation error: {len(exc.errors())} field(s) - Path: {request.url}"
         )
 
-        errors = {}
+        errors: Dict[str, List[str]] = {}
         for error in exc.errors():
             field = (
                 ".".join(str(x) for x in error["loc"]) if error["loc"] else "validation"

@@ -1,26 +1,23 @@
-from fastapi import Depends
-
 from application.mixins.dto_converter_mixin import (
-    EntityToDTOConverter,
     BidirectionalConverter,
+    EntityToDTOConverter,
 )
 from application.use_cases.game import (
+    CreateGameReviewUseCase,
+    DeleteGameReviewUseCase,
     GetGameReviewByIdUseCase,
     GetGameReviewsByGameIdUseCase,
-    CreateGameReviewUseCase,
     UpdateGameReviewUseCase,
-    DeleteGameReviewUseCase,
 )
-
-
 from domain.repositories import IGameReviewRepository
 from dtos.response.user.user_response import UserBaseResponseDTO
+from fastapi import Depends
 
-from ..repositories import get_game_review_repository
 from ..converters import (
     get_game_review_converter,
     get_game_review_entity_to_dto_converter,
 )
+from ..repositories import get_game_review_repository
 from .auth_use_cases import get_current_user_from_request_use_case
 
 

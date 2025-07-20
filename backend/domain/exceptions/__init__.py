@@ -2,56 +2,53 @@
 Excepciones del dominio - Organizadas por módulos
 """
 
-# Excepciones base
-from .base import (
-    DomainException,
-    ValidationError,
-    BusinessRuleViolationError,
-    ConcurrencyError,
-)
-
 # Excepciones de autenticación
 from .auth import (
     AuthenticationError,
-    InvalidTokenError,
     ExpiredTokenError,
     InsufficientPermissionsError,
+    InvalidTokenError,
 )
 
-# Excepciones de usuario
-from .user import (
-    UserAlreadyExistsError,
-    UserNotFoundError,
-    FailedToRetrieveUserError,
-    InsufficientFundsError,
-    InvalidEmailFormatError,
-    WeakPasswordError,
+# Excepciones base
+from .base import (
+    BusinessRuleViolationError,
+    ConcurrencyError,
+    DomainException,
+    ValidationError,
 )
 
 # Excepciones de juegos
 from .game import (
-    GameNotFoundError,
-    GameAlreadyExistsError,
-    ServiceIdRequiredError,
     CannotDeletePendingEventRentalError,
-    CategoryNotFoundError,
     CategoryAlreadyExistsError,
-    GameReviewNotFoundError,
+    CategoryNotFoundError,
+    GameAlreadyExistsError,
+    GameNotFoundError,
     GameReviewAlreadyExistsError,
+    GameReviewNotFoundError,
+    ServiceIdRequiredError,
 )
 
 # Excepciones de partidas
 from .match import (
-    MatchNotFoundError,
-    MatchAlreadyFinishedError,
-    MatchNotStartedError,
     AlreadyParticipatingError,
+    MatchAlreadyFinishedError,
+    MatchNotFoundError,
+    MatchNotStartedError,
 )
 
 # Excepciones de transferencias
-from .transfer import (
-    TransferNotFoundError,
-    InvalidTransferStateError,
+from .transfer import InvalidTransferStateError, TransferNotFoundError
+
+# Excepciones de usuario
+from .user import (
+    FailedToRetrieveUserError,
+    InsufficientFundsError,
+    InvalidEmailFormatError,
+    UserAlreadyExistsError,
+    UserNotFoundError,
+    WeakPasswordError,
 )
 
 __all__ = [

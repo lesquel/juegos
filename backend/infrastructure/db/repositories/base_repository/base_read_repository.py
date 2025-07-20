@@ -1,21 +1,21 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Type, Optional, List, Tuple
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from typing import Generic, List, Optional, Tuple, Type
 
-from domain.repositories.base_repository import (
-    IReadOnlyRepository,
-)
+from application.mixins import LoggingMixin
+from domain.repositories.base_repository import IReadOnlyRepository
 from interfaces.api.common.pagination import PaginationParams
 from interfaces.api.common.sort import SortParams
-from application.mixins import LoggingMixin
+from interfaces.api.mixins import QueryMixin
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..common import EntityType, ModelType, FilterType
+from ..common import EntityType, FilterType, ModelType
 
 
 class BaseReadOnlyPostgresRepository(
     Generic[EntityType, ModelType, FilterType],
-    IReadOnlyRepository[EntityType, FilterType],
+    IReadOnlyRepository[EntityType, FilterType, ModelType],
+    QueryMixin,
     LoggingMixin,
     ABC,
 ):
@@ -24,8 +24,8 @@ class BaseReadOnlyPostgresRepository(
     def __init__(
         self, db_session: AsyncSession, db_model: Type[ModelType], *args, **kwargs
     ):
-        self.db = db_session
-        self.model = db_model
+        # Llamar a super() para permitir que el mixin configure db y model
+        super().__init__(db_session, db_model, *args, **kwargs)
 
     async def get_paginated(
         self,
@@ -60,9 +60,7 @@ class BaseReadOnlyPostgresRepository(
     @abstractmethod
     def _model_to_entity(self, model: ModelType) -> EntityType:
         """Convierte un modelo a entidad."""
-        pass
 
     @abstractmethod
     def _get_id_field(self):
         """Obtiene el campo ID del modelo."""
-        pass

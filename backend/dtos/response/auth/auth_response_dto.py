@@ -1,17 +1,15 @@
+from dtos.common.constants import (
+    EXAMPLE_CREATED_AT,
+    EXAMPLE_EMAIL,
+    EXAMPLE_TOKEN,
+    EXAMPLE_UPDATED_AT,
+    EXAMPLE_USER_ID,
+    EXAMPLE_USER_ROLE,
+    EXAMPLE_VIRTUAL_CURRENCY,
+)
 from pydantic import BaseModel, Field
 
-
 from ..user.user_response import UserResponseDTO
-
-from dtos.common.constants import (
-    EXAMPLE_TOKEN,
-    EXAMPLE_EMAIL,
-    EXAMPLE_USER_ID,
-    EXAMPLE_VIRTUAL_CURRENCY,
-    EXAMPLE_USER_ROLE,
-    EXAMPLE_CREATED_AT,
-    EXAMPLE_UPDATED_AT,
-)
 
 
 class TokenResponseDTO(BaseModel):

@@ -5,35 +5,33 @@ Este módulo contiene las funciones que crean instancias de repositorios
 configurados con las conexiones de base de datos apropiadas.
 """
 
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from domain.repositories import (
-    IUserRepository,
-    IGameRepository,
     ICategoryRepository,
+    IGameRepository,
     IGameReviewRepository,
     IMatchRepository,
     ITransferPaymentRepository,
+    IUserRepository,
 )
+from fastapi import Depends
 from infrastructure.db.connection import get_async_db
-
 from infrastructure.db.models import (
-    UserModel,
-    GameModel,
     CategoryModel,
+    GameModel,
     GameReviewModel,
     MatchModel,
     TransferPaymentModel,
+    UserModel,
 )
 from infrastructure.db.repositories import (
-    PostgresUserRepository,
-    PostgresGameRepository,
     PostgresCategoryRepository,
+    PostgresGameRepository,
     PostgresGameReviewRepository,
     PostgresMatchRepository,
     PostgresTransferPaymentRepository,
+    PostgresUserRepository,
 )
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 def get_user_repository(db: AsyncSession = Depends(get_async_db)) -> IUserRepository:

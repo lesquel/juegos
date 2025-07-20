@@ -6,5 +6,5 @@ __all__ = [
     "CategoryResponseDTO",
     "GameResponseDTO",
     "GameReviewResponseDTO",
-    "GameReviewSummaryResponseDTO"
+    "GameReviewSummaryResponseDTO",
 ]

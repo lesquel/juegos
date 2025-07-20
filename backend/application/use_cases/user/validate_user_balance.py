@@ -1,9 +1,9 @@
 """Use case para validar saldo de usuario antes de apostar."""
 
-from application.use_cases.base_use_case import BaseUseCase
-from domain.repositories.user_repository import IUserRepository
-from domain.exceptions.user import UserNotFoundError, InsufficientBalanceError
 from application.mixins.logging_mixin import LoggingMixin
+from application.use_cases.base_use_case import BaseUseCase
+from domain.exceptions.user import InsufficientBalanceError, UserNotFoundError
+from domain.repositories.user_repository import IUserRepository
 
 
 class ValidateUserBalanceUseCase(BaseUseCase, LoggingMixin):

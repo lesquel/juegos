@@ -1,21 +1,15 @@
-from fastapi import Depends
+from application.converters.match import (
+    MatchParticipantsResponseAssambler,
+    MatchParticipationBidirectionalConverter,
+)
 from application.converters.match.match_converter import (
     MatchBidirectionalConverter,
     MatchEntityToDTOConverter,
 )
-from application.converters.match import (
-    MatchParticipationBidirectionalConverter,
-    MatchParticipantsResponseAssambler,
-)
-
-
 from application.mixins.dto_converter_mixin import (
-    DTOToEntityConverter,
-    EntityToDTOConverter,
     BidirectionalConverter,
+    EntityToDTOConverter,
 )
-from domain.repositories.game_repository import IGameRepository
-from infrastructure.dependencies.repositories.database_repos import get_game_repository
 
 
 def get_match_entity_to_dto_converter() -> EntityToDTOConverter:

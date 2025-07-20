@@ -1,30 +1,25 @@
-from fastapi import Depends
-
+from application.mixins.dto_converter_mixin import (
+    BidirectionalConverter,
+    EntityToDTOConverter,
+)
 from application.use_cases.match import (
     CreateMatchUseCase,
-    GetMatchesByGameIdUseCase,
     GetMatchByIdUseCase,
+    GetMatchesByGameIdUseCase,
 )
-
-from application.mixins.dto_converter_mixin import (
-    EntityToDTOConverter,
-    BidirectionalConverter,
-)
-
-
 from domain.repositories.game_repository import IGameRepository
 from domain.repositories.match_repository import IMatchRepository
 from domain.repositories.user_repository import IUserRepository
 from dtos.response.user.user_response import UserResponseDTO
-from infrastructure.dependencies.repositories.database_repos import (
-    get_match_repository,
-    get_game_repository,
-    get_user_repository,
-)
+from fastapi import Depends
 from infrastructure.dependencies.converters.match_converters import (
     get_match_converter,
     get_match_entity_to_dto_converter,
-    get_match_participation_converter,
+)
+from infrastructure.dependencies.repositories.database_repos import (
+    get_game_repository,
+    get_match_repository,
+    get_user_repository,
 )
 from infrastructure.dependencies.use_cases.auth_use_cases import (
     get_current_user_from_request_use_case,

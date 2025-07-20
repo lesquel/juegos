@@ -1,9 +1,11 @@
-from sqladmin import ModelView
 from infrastructure.db.models import MatchModel
+from sqladmin import ModelView
 
 
-class MatchAdmin(ModelView, model=MatchModel):
+class MatchAdmin(ModelView):
     """Panel de administración para partidas"""
+
+    model = MatchModel
 
     # Configuración de categoría/módulo
     name = "Partida"

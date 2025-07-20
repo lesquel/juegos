@@ -1,16 +1,18 @@
 from typing import Optional
-from pydantic import Field
-from ..time_stamp_base import TimeStampBase
+
 from dtos.common.constants import (
-    EXAMPLE_REVIEW_ID,
-    EXAMPLE_GAME_ID,
-    EXAMPLE_USER_ID,
-    EXAMPLE_RATING,
     EXAMPLE_COMMENT,
-    EXAMPLE_EMAIL,
     EXAMPLE_CREATED_AT,
+    EXAMPLE_EMAIL,
+    EXAMPLE_GAME_ID,
+    EXAMPLE_RATING,
+    EXAMPLE_REVIEW_ID,
     EXAMPLE_UPDATED_AT,
+    EXAMPLE_USER_ID,
 )
+from pydantic import Field
+
+from ..time_stamp_base import TimeStampBase
 
 
 class GameReviewResponseDTO(TimeStampBase):

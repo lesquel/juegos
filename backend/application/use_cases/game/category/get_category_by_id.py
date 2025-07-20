@@ -1,15 +1,17 @@
+from application.interfaces.base_use_case import BaseGetByIdUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.exceptions.game import CategoryNotFoundError
 from domain.repositories import ICategoryRepository
 from dtos.response.game import CategoryResponseDTO
-from application.interfaces.base_use_case import BaseGetByIdUseCase
 
 
 class GetCategoryByIdUseCase(BaseGetByIdUseCase[CategoryResponseDTO]):
     """Caso de uso para obtener una categoría por ID."""
 
     def __init__(
-        self, category_repo: ICategoryRepository, category_converter: EntityToDTOConverter
+        self,
+        category_repo: ICategoryRepository,
+        category_converter: EntityToDTOConverter,
     ):
         super().__init__(category_repo, category_converter)
 

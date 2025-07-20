@@ -3,7 +3,7 @@ const calculateScore = (timeLeft, deathsNo) => {
     const timeScoreRatio = 1 - ((13.00 - timeLeft) / 13.00);
     const timeScore = Math.round(100 * (1 + timeScoreRatio));
     const deathsScore = deathsNo < 10 ? Math.round(100 - (deathsNo * 10)) : 0;
-    
+
     return deathsScore + timeScore;
 }
 
@@ -17,7 +17,7 @@ const getBestScore = () => {
 
 export {
     setBestScore,
-    getBestScore,    
+    getBestScore,
     calculateScore,
     centerSprite
 };

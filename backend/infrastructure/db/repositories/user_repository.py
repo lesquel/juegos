@@ -1,15 +1,16 @@
 """Repositorio de usuarios para PostgreSQL."""
 
-from typing import Optional
 import uuid
-from sqlalchemy import select
+from typing import Optional
 
-from domain.repositories import IUserRepository
 from domain.entities import UserEntity
+from domain.repositories import IUserRepository
 from interfaces.api.common.filters.specific_filters import UserFilterParams
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from ..models import UserModel
 from .base_repository import BasePostgresRepository
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class PostgresUserRepository(

@@ -1,9 +1,9 @@
 import logging
 import logging.config
 import logging.handlers
-from typing import Dict, Any
 import sys
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 from infrastructure.core.settings_config import settings
 
@@ -120,7 +120,7 @@ class LoggingConfig:
         return logger
 
 
-def get_logger(name: str = None) -> logging.Logger:
+def get_logger(name: Optional[str] = None) -> logging.Logger:
     return logging.getLogger(name or "app")
 
 

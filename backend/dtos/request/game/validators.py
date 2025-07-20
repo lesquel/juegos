@@ -1,5 +1,5 @@
 from typing import Any
-from pydantic import ValidationInfo
+
 
 class GameDTOValidators:
     """Validadores reutilizables para DTOs de juegos"""
@@ -9,7 +9,6 @@ class GameDTOValidators:
         if rating < 1 or rating > 5:
             raise ValueError("Game rating must be between 1 and 5")
         return rating
-
 
     @staticmethod
     def at_least_one_field(values: dict[str, Any], field: str) -> Any:

@@ -1,8 +1,9 @@
 from typing import Optional
+
+from application.enums import TransferStateEnum
 from pydantic import Field
 
 from ..base_filter import BaseFilterParams
-from application.enums import TransferStateEnum
 from ..filter_dependency_factory import build_filter_dependency
 
 
@@ -18,13 +19,13 @@ class TransferPaymentFilterParams(BaseFilterParams):
     max_amount: Optional[float] = Field(
         None, ge=0, description="Monto máximo de transferencia"
     )
-    
+
     def filter_transfer_state(self, query, model, value):
         return self.any_filter(query, model.transfer_state, "transfer_state", value)
-    
+
     def filter_min_amount(self, query, model, value):
         return self.gte_filter(query, model.transfer_amount, value)
-    
+
     def filter_max_amount(self, query, model, value):
         return self.lte_filter(query, model.transfer_amount, value)
 

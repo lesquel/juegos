@@ -1,10 +1,3 @@
+from .match_request_dto import CreateMatchRequestDTO, MatchParticipationResultsDTO
 
-from .match_request_dto import (
-    CreateMatchRequestDTO,
-    MatchParticipationResultsDTO
-)
-
-__all__ = [
-    "CreateMatchRequestDTO",
-    "MatchParticipationResultsDTO"
-]
+__all__ = ["CreateMatchRequestDTO", "MatchParticipationResultsDTO"]

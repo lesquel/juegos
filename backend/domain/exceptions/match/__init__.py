@@ -56,7 +56,8 @@ class MatchJoinError(DomainException):
         identifier: str = "match_join_error",
     ):
         super().__init__(message, 400, identifier)
-        
+
+
 class MatchValidationError(DomainException):
     """Error de validación de partida"""
 
@@ -66,6 +67,7 @@ class MatchValidationError(DomainException):
         identifier: str = "match_validation_error",
     ):
         super().__init__(message, 422, identifier)
+
 
 class MatchScoreError(DomainException):
     """Error al actualizar la puntuación de la partida"""

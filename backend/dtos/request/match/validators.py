@@ -1,5 +1,4 @@
-from typing import Any, Union
-from decimal import Decimal
+from typing import Any
 
 from domain.exceptions.match import MatchScoreError, MatchValidationError
 
@@ -15,7 +14,7 @@ class MatchDTOValidators:
         - Se redondea a 2 decimales para evitar problemas de precisión
         """
         if value is None:
-            return value
+            return 0.0
 
         try:
             # Convertir a float para normalizar
@@ -41,7 +40,7 @@ class MatchDTOValidators:
         - Se permite punto flotante para mayor flexibilidad
         """
         if value is None:
-            return value
+            return 0.0
 
         try:
             # Convertir a float

@@ -1,9 +1,9 @@
 from typing import List
+
 from application.interfaces.base_assembler import BaseAssembler
-from application.mixins.dto_converter_mixin import EntityToDTOConverter
-from domain.repositories.match_repository import IMatchRepository
-from domain.exceptions.match import MatchNotFoundError
 from application.interfaces.base_use_case import BaseUseCase
+from domain.exceptions.match import MatchNotFoundError
+from domain.repositories.match_repository import IMatchRepository
 from infrastructure.logging import log_execution, log_performance
 
 
@@ -15,7 +15,6 @@ class GetMatchParticipantsUseCase(BaseUseCase[str, List[str]]):
         match_repo: IMatchRepository,
         match_participants_assambler: BaseAssembler,
     ):
-
         super().__init__()
         self.match_repo = match_repo
         self.match_participants_assambler = match_participants_assambler

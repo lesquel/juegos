@@ -1,7 +1,7 @@
 """Clase base para casos de uso comunes."""
 
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Any
+from typing import Any, Generic, TypeVar
 
 from application.mixins import LoggingMixin
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
@@ -20,7 +20,6 @@ class BaseUseCase(ABC, Generic[InputType, ReturnType], LoggingMixin):
     @abstractmethod
     async def execute(self, *args, **kwargs) -> ReturnType:
         """Ejecuta el caso de uso."""
-        pass
 
 
 class BaseGetByIdUseCase(BaseUseCase[str, ReturnType], Generic[ReturnType]):
@@ -48,7 +47,6 @@ class BaseGetByIdUseCase(BaseUseCase[str, ReturnType], Generic[ReturnType]):
     @abstractmethod
     def _get_not_found_exception(self, entity_id: str) -> Exception:
         """Obtiene la excepción para entidad no encontrada."""
-        pass
 
 
 class BasePaginatedUseCase(BaseUseCase, Generic[ReturnType]):

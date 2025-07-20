@@ -1,13 +1,14 @@
 from typing import List, Optional, Tuple
-from sqlalchemy import select
 
-from domain.repositories import IGameReviewRepository
 from domain.entities.game import GameReviewEntity
 from domain.exceptions.game import GameReviewAlreadyExistsError, GameReviewNotFoundError
+from domain.repositories import IGameReviewRepository
 from infrastructure.db.models import GameReviewModel
-from interfaces.api.common.sort import SortParams
-from interfaces.api.common.pagination import PaginationParams
 from interfaces.api.common.filters.specific_filters import GameReviewFilterParams
+from interfaces.api.common.pagination import PaginationParams
+from interfaces.api.common.sort import SortParams
+from sqlalchemy import select
+
 from .base_repository import BasePostgresRepository
 
 
@@ -68,9 +69,9 @@ class PostgresGameReviewRepository(
             )
 
             if existing_review:
-                self.logger.error(f"Review already exists for this user")
+                self.logger.error("Review already exists for this user")
                 raise GameReviewAlreadyExistsError(
-                    f"User already has a review for game this game"
+                    "User already has a review for this game"
                 )
 
             self.logger.debug(f"Creating new game review: {entity}")
@@ -85,13 +86,13 @@ class PostgresGameReviewRepository(
             await self.db.rollback()
             raise
 
-    async def update(self, entity: GameReviewEntity) -> GameReviewEntity:
+    async def update(self, entity_id: str, entity: GameReviewEntity) -> None:
         """Actualiza una reseña de juego existente."""
         try:
-            if not entity.review_id:
-                raise ValueError("Entity must have a review_id for updates")
+            if not entity_id:
+                raise ValueError("Entity ID is required for updates")
 
-            stmt = select(self.model).where(self.model.review_id == entity.review_id)
+            stmt = select(self.model).where(self.model.review_id == entity_id)
             result = await self.db.execute(stmt)
             game_review_model = result.scalar_one_or_none()
 

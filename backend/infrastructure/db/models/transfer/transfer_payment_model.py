@@ -1,10 +1,11 @@
-from sqlalchemy import Column, String, Float, Text, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.types import Enum as SqlEnum
-from sqlalchemy.orm import relationship
 import uuid
 
 from application.enums import TransferStateEnum
+from sqlalchemy import Column, Float, ForeignKey, String, Text
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
+from sqlalchemy.types import Enum as SqlEnum
+
 from ...base import Base
 from ..common import TimeStampModelMixin
 

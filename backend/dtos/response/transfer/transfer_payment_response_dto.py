@@ -1,17 +1,19 @@
 from typing import Optional
-from pydantic import Field
+
 from application.enums import TransferStateEnum
-from ..time_stamp_base import TimeStampBase
 from dtos.common.constants import (
-    EXAMPLE_TRANSFER_ID,
-    EXAMPLE_USER_ID,
-    EXAMPLE_TRANSFER_IMG,
-    EXAMPLE_TRANSFER_AMOUNT,
-    EXAMPLE_TRANSFER_STATE,
-    EXAMPLE_TRANSFER_DESCRIPTION,
     EXAMPLE_CREATED_AT,
+    EXAMPLE_TRANSFER_AMOUNT,
+    EXAMPLE_TRANSFER_DESCRIPTION,
+    EXAMPLE_TRANSFER_ID,
+    EXAMPLE_TRANSFER_IMG,
+    EXAMPLE_TRANSFER_STATE,
     EXAMPLE_UPDATED_AT,
+    EXAMPLE_USER_ID,
 )
+from pydantic import Field
+
+from ..time_stamp_base import TimeStampBase
 
 
 class TransferPaymentResponseDTO(TimeStampBase):

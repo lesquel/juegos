@@ -1,18 +1,17 @@
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from pathlib import Path
-from typing import Optional, Dict, Any
-from contextlib import asynccontextmanager
+from typing import Any, Dict
 
 from application.mixins.logging_mixin import LoggingMixin
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from infrastructure.core.settings_config import settings
 from infrastructure.logging import get_logger
 
+from .admin_setup import setup_admin
+from .exception_handlers import setup_exception_handlers
 from .lifespan import lifespan
 from .middlewares import add_middlewares
 from .routers import add_routers
-from .exception_handlers import setup_exception_handlers
-from .admin_setup import setup_admin
 
 # Configurar logger
 logger = get_logger("app_configurator")
@@ -150,11 +149,11 @@ class AppConfigurator(LoggingMixin):
         """Genera descripción de la aplicación."""
         return f"""
         Backend API para sistema de juegos con autenticación JWT
-        
+
         **Ambiente**: {self.app_settings.environment}
         **Versión**: 1.0.0
         **Debug**: {self.app_settings.debug}
-        
+
         ## Características principales:
         - Autenticación JWT
         - Sistema de juegos y categorías

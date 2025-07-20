@@ -1,16 +1,16 @@
-from sqladmin import ModelView
+from app_setup.admin.mixins import ImageUploadAdminMixin
+from infrastructure.db.models import TransferPaymentModel
 from markupsafe import Markup
-from starlette.requests import Request
+from sqladmin import ModelView
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from infrastructure.db.models import TransferPaymentModel
-from app_setup.admin.mixins import ImageUploadAdminMixin
+from starlette.requests import Request
 
 
-class TransferPaymentAdmin(
-    ImageUploadAdminMixin, ModelView, model=TransferPaymentModel
-):
+class TransferPaymentAdmin(ImageUploadAdminMixin, ModelView):
     """Panel de administración para pagos de transferencia"""
+
+    model = TransferPaymentModel
 
     name = "Transferencia"
     name_plural = "Transferencias"

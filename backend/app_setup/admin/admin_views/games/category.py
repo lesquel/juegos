@@ -1,13 +1,12 @@
-from sqladmin import ModelView
-from markupsafe import Markup
-from starlette.requests import Request
-
-from infrastructure.db.models import CategoryModel
 from app_setup.admin.mixins import ImageUploadAdminMixin
+from infrastructure.db.models import CategoryModel
+from sqladmin import ModelView
 
 
-class CategoryAdmin(ImageUploadAdminMixin, ModelView, model=CategoryModel):
+class CategoryAdmin(ImageUploadAdminMixin, ModelView):
     """Panel de administración para categorías"""
+
+    model = CategoryModel
 
     # Configuración de categoría/módulo
     name = "Categoría"

@@ -1,6 +1,5 @@
+from typing import Generic, Optional, TypeVar
 
-
-from typing import Generic, TypeVar, Optional, Any, Dict
 from pydantic import BaseModel, ConfigDict
 
 DataType = TypeVar("DataType")
@@ -18,5 +17,3 @@ class SuccessResponse(ApiResponse[DataType]):
 
     success: bool = True
     model_config = ConfigDict(extra="ignore")
-
-

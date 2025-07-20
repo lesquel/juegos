@@ -1,13 +1,15 @@
+from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.repositories import ICategoryRepository
 from dtos.response.game import CategoryResponseDTO
-from application.interfaces.base_use_case import BaseUseCase
 from infrastructure.logging import log_execution, log_performance
 
 
-class GetCategoriesByGameIdUseCase(BaseUseCase[str,CategoryResponseDTO]):
+class GetCategoriesByGameIdUseCase(BaseUseCase[str, CategoryResponseDTO]):
     def __init__(
-        self, category_repo: ICategoryRepository, category_converter: EntityToDTOConverter
+        self,
+        category_repo: ICategoryRepository,
+        category_converter: EntityToDTOConverter,
     ):
         super().__init__()
         self.category_repo = category_repo
@@ -30,6 +32,5 @@ class GetCategoriesByGameIdUseCase(BaseUseCase[str,CategoryResponseDTO]):
             return [], 0
 
         self.logger.info(f"Found {count} categories for game_id: {game_id}")
-
 
         return self.converter.to_dto_list(categories), count

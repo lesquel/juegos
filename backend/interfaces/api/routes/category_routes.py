@@ -1,5 +1,3 @@
-from fastapi import APIRouter, Depends, Request
-
 from uuid import UUID
 
 from application.use_cases.game import (
@@ -7,34 +5,30 @@ from application.use_cases.game import (
     GetCategoryByIdUseCase,
     GetGamesByCategoryIdUseCase,
 )
-from dtos.response.game.game_response import GameResponseDTO
-from interfaces.api.common.filters.specific_filters import GameFilterParams
-from interfaces.api.common.response_utils import handle_paginated_request
-from infrastructure.dependencies import (
-    get_games_by_category_id_use_case,
-    get_all_categories_use_case,
-    get_category_by_id_use_case,
-)
-
-
-from infrastructure.logging import get_logger
 from dtos.common import PaginatedResponseDTO
 from dtos.response.game import CategoryResponseDTO
-
+from dtos.response.game.game_response import GameResponseDTO
+from fastapi import APIRouter, Depends, Request
+from infrastructure.dependencies import (
+    get_all_categories_use_case,
+    get_category_by_id_use_case,
+    get_games_by_category_id_use_case,
+)
+from infrastructure.logging import get_logger
 from interfaces.api.common import (
     PaginationParams,
-    get_pagination_params,
     SortParams,
+    get_pagination_params,
     get_sort_params,
 )
+from interfaces.api.common.response_utils import handle_paginated_request
 
 from ..common.filters.specific_filters import (
     CategoryFilterParams,
-    get_category_filter_params,
     GameFilterParams,
+    get_category_filter_params,
     get_game_filter_params,
 )
-
 
 category_router = APIRouter(
     prefix="/categories",

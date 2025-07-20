@@ -1,12 +1,13 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+
 import jwt
+from domain.entities.user.token_data import TokenData
 from domain.exceptions.auth import ExpiredTokenError, InvalidTokenError
 from domain.interfaces.token_provider import ITokenProvider
-from ..core.settings_config import settings
-
 from dtos.response.auth.auth_response_dto import TokenResponseDTO
-from domain.entities.user.token_data import TokenData
+
+from ..core.settings_config import settings
 
 
 class JWTService(ITokenProvider):

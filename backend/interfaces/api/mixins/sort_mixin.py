@@ -1,11 +1,10 @@
-from typing import Any
 from interfaces.api.common.sort import SortParams
 
 
 class SortingMixin:
     """Mixin para aplicar ordenamiento a las consultas."""
 
-    def apply_sorting(self, stmt, model, sort_params: SortParams) -> None:
+    def apply_sorting(self, stmt, model, sort_params: SortParams):
         """Aplica ordenamiento a la consulta SQL"""
         if sort_params.sort_by:
             if sort_params.sort_order == "desc":

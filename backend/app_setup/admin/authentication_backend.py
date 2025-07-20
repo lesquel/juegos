@@ -1,32 +1,32 @@
-from sqladmin.authentication import AuthenticationBackend
-from starlette.requests import Request
-from functools import lru_cache
 import time
+from functools import lru_cache
+from typing import Dict
 
 # Importar nuestros servicios de autenticación
 from application.converters.auth.user_response_converters import (
     UserEntityToDTOConverter,
 )
+from application.enums import UserRole
 from application.mixins.logging_mixin import LoggingMixin
+from application.services import PasswordHasher
 from application.use_cases.auth import LoginUserUseCase
 from dtos.request.auth.auth_request import LoginRequestDTO
-from application.services import PasswordHasher
-from infrastructure.db.connection import AsyncSessionLocal
 from infrastructure.core.settings_config import settings
-
-from application.enums import UserRole
+from infrastructure.db.connection import AsyncSessionLocal
 from infrastructure.dependencies.converters.auth_converters import get_login_assembler
 from infrastructure.dependencies.repositories.database_repos import get_user_repository
 from infrastructure.dependencies.services.auth_services import get_token_provider
+from sqladmin.authentication import AuthenticationBackend
+from starlette.requests import Request
 
 
 @lru_cache(maxsize=1)
 def _get_cached_services():
     """Cache de servicios para evitar recrearlos en cada login"""
     return {
-        'password_hasher': PasswordHasher(),
-        'token_provider': get_token_provider(),
-        'user_converter': UserEntityToDTOConverter(),
+        "password_hasher": PasswordHasher(),
+        "token_provider": get_token_provider(),
+        "user_converter": UserEntityToDTOConverter(),
     }
 
 
@@ -37,14 +37,14 @@ class AdminAuth(AuthenticationBackend, LoggingMixin):
         super().__init__(secret_key)
         # Usar servicios cacheados
         cached_services = _get_cached_services()
-        self.password_hasher = cached_services['password_hasher']
-        self.token_provider = cached_services['token_provider']
-        self.user_converter = cached_services['user_converter']
+        self.password_hasher = cached_services["password_hasher"]
+        self.token_provider = cached_services["token_provider"]
+        self.user_converter = cached_services["user_converter"]
 
     async def login(self, request: Request) -> bool:
         """Autenticar usuario usando nuestro sistema de login optimizado"""
         start_time = time.time()
-        
+
         try:
             form = await request.form()
             email = form.get("username")
@@ -75,17 +75,23 @@ class AdminAuth(AuthenticationBackend, LoggingMixin):
                 response = await login_use_case.execute(login_request)
 
                 if response.user.role != UserRole.ADMIN:
-                    self.logger.warning(f"Admin login failed: user {email} is not an admin")
+                    self.logger.warning(
+                        f"Admin login failed: user {email} is not an admin"
+                    )
                     return False
 
-                request.session.update({
-                    "token": response.token.access_token,
-                    "user_id": response.user.user_id,
-                    "email": response.user.email,
-                })
+                request.session.update(
+                    {
+                        "token": response.token.access_token,
+                        "user_id": response.user.user_id,
+                        "email": response.user.email,
+                    }
+                )
 
                 elapsed_time = time.time() - start_time
-                self.logger.info(f"Admin login successful for: {email} ({elapsed_time:.2f}s)")
+                self.logger.info(
+                    f"Admin login successful for: {email} ({elapsed_time:.2f}s)"
+                )
                 return True
 
         except Exception as e:
@@ -120,9 +126,9 @@ class AdminAuth(AuthenticationBackend, LoggingMixin):
 
             # Cache simple en memoria para evitar consultas DB frecuentes
             cache_key = f"{user_email}_{hash(token) % 1000}"
-            if not hasattr(self, '_auth_cache'):
-                self._auth_cache = {}
-            
+            if not hasattr(self, "_auth_cache"):
+                self._auth_cache: Dict[str, tuple] = {}
+
             # Si está en cache y no ha expirado (5 minutos)
             if cache_key in self._auth_cache:
                 cache_time, is_valid = self._auth_cache[cache_key]
@@ -133,16 +139,17 @@ class AdminAuth(AuthenticationBackend, LoggingMixin):
             async with AsyncSessionLocal() as db:
                 user_repo = get_user_repository(db)
                 user = await user_repo.get_by_email(user_email)
-                
+
                 is_valid = user is not None and user.role == UserRole.ADMIN
-                
+
                 # Guardar en cache
                 self._auth_cache[cache_key] = (time.time(), is_valid)
-                
+
                 # Limpiar cache si crece mucho (mantener solo 100 entradas)
                 if len(self._auth_cache) > 100:
-                    oldest_keys = sorted(self._auth_cache.keys(), 
-                                       key=lambda k: self._auth_cache[k][0])[:50]
+                    oldest_keys = sorted(
+                        self._auth_cache.keys(), key=lambda k: self._auth_cache[k][0]
+                    )[:50]
                     for key in oldest_keys:
                         del self._auth_cache[key]
 

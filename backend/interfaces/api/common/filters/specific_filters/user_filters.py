@@ -1,8 +1,8 @@
 from typing import Optional
-from fastapi import Depends, Query
+
 from pydantic import Field
 
-from ..base_filter import BaseFilterParams, get_base_filter_params
+from ..base_filter import BaseFilterParams
 from ..filter_dependency_factory import build_filter_dependency
 
 

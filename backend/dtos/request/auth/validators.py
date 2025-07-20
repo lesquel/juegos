@@ -1,6 +1,4 @@
 import re
-from typing import Any
-from pydantic import ValidationInfo
 
 
 class AuthDTOValidators:
@@ -33,8 +31,6 @@ class AuthDTOValidators:
             raise ValueError("Password must contain at least one digit")
 
         return password
-
-
 
 
 def password_validator(v: str) -> str:

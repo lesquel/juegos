@@ -1,9 +1,9 @@
 """Caso de uso para obtener todos los usuarios."""
 
-from domain.repositories import IUserRepository
-from dtos.response.user.user_response import UserResponseDTO
 from application.interfaces.base_use_case import BasePaginatedUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
+from domain.repositories import IUserRepository
+from dtos.response.user.user_response import UserResponseDTO
 
 
 class GetAllUsersUseCase(BasePaginatedUseCase[UserResponseDTO]):

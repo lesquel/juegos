@@ -1,13 +1,8 @@
-from .match_response import (
-    MatchResponseDTO,
-    MatchParticipationResponseDTO,
-)
+from .match_participants_response import MatchParticipantsResponseDTO
+from .match_response import MatchParticipationResponseDTO, MatchResponseDTO
 
-from .match_participants_response import (
-    MatchParticipantsResponseDTO,
-)
 __all__ = [
     "MatchResponseDTO",
-    "MatchParticipationResponseDTO", 
+    "MatchParticipationResponseDTO",
     "MatchParticipantsResponseDTO",
 ]

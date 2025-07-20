@@ -1,16 +1,12 @@
+from application.interfaces.base_use_case import BaseUseCase
+from application.mixins.dto_converter_mixin import BidirectionalConverter
+from domain.exceptions.match import MatchNotFoundError, MatchScoreError
 from domain.repositories.game_repository import IGameRepository
 from domain.repositories.match_repository import IMatchRepository
-from domain.exceptions.match import MatchNotFoundError, MatchScoreError
 from domain.repositories.user_repository import IUserRepository
 from domain.services.user_balance_service import UserBalanceService
 from dtos.request.match.match_request_dto import MatchParticipationResultsDTO
 from dtos.response.match.match_response import MatchResponseDTO
-from dtos.response.user.user_response import UserBaseResponseDTO
-from application.interfaces.base_use_case import BaseUseCase
-from application.mixins.dto_converter_mixin import (
-    BidirectionalConverter,
-    EntityToDTOConverter,
-)
 from infrastructure.logging import log_execution, log_performance
 
 
@@ -60,20 +56,15 @@ class FinishMatchUseCase(BaseUseCase[MatchParticipationResultsDTO, MatchResponse
         if match.winner_id:
             self.logger.error(f"Match {match_id} has already been finished")
             raise MatchScoreError("Match has already been finished")
-        
+
         if not match:
             self.logger.error(f"Match not found: {match_id}")
             raise MatchNotFoundError(f"Match with ID {match_id} not found")
 
-        participations = [
-            (p.user_id, p.score) for p in participation_data.participants
-        ]
-
+        participations = [(p.user_id, p.score) for p in participation_data.participants]
 
         # Actualizar puntuación
-        updated_match = await self.match_repo.finish_match(
-            match_id, participations
-        )
+        updated_match = await self.match_repo.finish_match(match_id, participations)
 
         winner = await self.user_repo.get_by_id(updated_match.winner_id)
 

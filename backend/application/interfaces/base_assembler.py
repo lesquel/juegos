@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Any
+from typing import Generic, TypeVar
 
 # Type variables para hacer la interfaz genérica
-OutputType = TypeVar('OutputType')
+OutputType = TypeVar("OutputType")
 
 
 class BaseAssembler(ABC, Generic[OutputType]):
@@ -26,4 +26,3 @@ class BaseAssembler(ABC, Generic[OutputType]):
         Raises:
             Exception: Si ocurre un error durante el ensamblaje
         """
-        pass

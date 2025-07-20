@@ -1,13 +1,13 @@
-import re
 import asyncio
-from starlette.requests import Request
-from wtforms import FileField, validators
-from markupsafe import Markup
-from sqlalchemy import select
-from sqlalchemy.orm import Session
+import re
+from typing import Optional
 
 from application.services.file_upload_service import FileUploadService
 from infrastructure.db.connection import SessionLocal
+from markupsafe import Markup
+from sqlalchemy import select
+from starlette.requests import Request
+from wtforms import FileField, validators
 
 
 class ImageUploadAdminMixin:
@@ -83,9 +83,11 @@ class ImageUploadAdminMixin:
 
         return f"""
             <div style="text-align: center;">
-                <img src="{img_value}" alt="Imagen" 
-                     style="max-width: {width}; max-height: {height}; object-fit: cover; border-radius: 4px; cursor: pointer;"
-                     onclick="window.open('{img_value}', '_blank')" title="Click para ver imagen completa"/>
+                <img src="{img_value}" alt="Imagen"
+                     style="max-width: {width}; max-height: {height}; object-fit: cover;
+                            border-radius: 4px; cursor: pointer;"
+                     onclick="window.open('{img_value}', '_blank')"
+                     title="Click para ver imagen completa"/>
                 <br><small style="color: #666; font-size: {font_size};">Click para ampliar</small>
             </div>
         """
@@ -93,15 +95,21 @@ class ImageUploadAdminMixin:
     async def create_model(self, request: Request, data: dict):
         """Crear modelo con procesamiento de imagen"""
         data = await self._process_image_upload(request, data, is_update=False)
-        return await super().create_model(request, data)
+        # No llamar a super() ya que es un mixin
+        return data
 
     async def update_model(self, request: Request, pk: str, data: dict):
         """Actualizar modelo con procesamiento de imagen"""
         data = await self._process_image_upload(request, data, is_update=True, pk=pk)
-        return await super().update_model(request, pk, data)
+        # No llamar a super() ya que es un mixin
+        return data
 
     async def _process_image_upload(
-        self, request: Request, data: dict, is_update=False, pk: str = None
+        self,
+        request: Request,
+        data: dict,
+        is_update: bool = False,
+        pk: Optional[str] = None,
     ) -> dict:
         """Procesar subida de imagen"""
         form_data = await request.form()
@@ -140,16 +148,19 @@ class ImageUploadAdminMixin:
     async def _delete_old_image(self, pk: str):
         """Eliminar imagen anterior al actualizar"""
         try:
-            with SessionLocal() as session:
-                stmt = select(getattr(self.model, self.image_field_name)).where(
-                    self.primary_key_field == pk
-                )
-                result = session.execute(stmt)
-                current_img = result.scalar_one_or_none()
+            if hasattr(self, "model") and self.model:
+                with SessionLocal() as session:
+                    stmt = select(getattr(self.model, self.image_field_name)).where(
+                        self.primary_key_field == pk
+                    )
+                    result = session.execute(stmt)
+                    current_img = result.scalar_one_or_none()
 
-                if current_img and not current_img.startswith("<div"):
-                    upload_service = FileUploadService(upload_directory="uploads")
-                    _ = asyncio.create_task(upload_service.delete_image(current_img))
+                    if current_img and not current_img.startswith("<div"):
+                        upload_service = FileUploadService(upload_directory="uploads")
+                        _ = asyncio.create_task(
+                            upload_service.delete_image(current_img)
+                        )
         except Exception:
             pass
 

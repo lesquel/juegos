@@ -2,7 +2,7 @@
 Excepciones relacionadas con juegos
 """
 
-from ..base import DomainException, ValidationError, BusinessRuleViolationError
+from ..base import BusinessRuleViolationError, DomainException, ValidationError
 
 
 class GameNotFoundError(DomainException):
@@ -62,7 +62,6 @@ class CategoryAlreadyExistsError(DomainException):
         super().__init__(message, 409, identifier)
 
 
-
 class GameReviewNotFoundError(DomainException):
     """Reseña de juego no encontrada"""
 
@@ -72,6 +71,7 @@ class GameReviewNotFoundError(DomainException):
         identifier: str = "game_review_not_found",
     ):
         super().__init__(message, 404, identifier)
+
 
 class GameReviewAlreadyExistsError(DomainException):
     """Reseña de juego ya existe"""

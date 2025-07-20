@@ -1,14 +1,14 @@
 """Conversor DTO para entidad MatchParticipation."""
 
+from application.mixins.dto_converter_mixin import (
+    BidirectionalConverter,
+    DTOToEntityConverter,
+    EntityToDTOConverter,
+)
+from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.match.match_participation import MatchParticipation
 from dtos.request.match.match_request_dto import CreateMatchRequestDTO
 from dtos.response.match.match_response import MatchParticipationResponseDTO
-from application.mixins.dto_converter_mixin import (
-    EntityToDTOConverter,
-    DTOToEntityConverter,
-    BidirectionalConverter,
-)
-from application.mixins.logging_mixin import LoggingMixin
 
 
 class MatchParticipationEntityToDTOConverter(

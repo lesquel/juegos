@@ -1,7 +1,8 @@
-from sqlalchemy import Column, String, Text
-from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
 import uuid
+
+from sqlalchemy import Column, String, Text
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 from ...base import Base
 from ..common import TimeStampModelMixin, game_categories

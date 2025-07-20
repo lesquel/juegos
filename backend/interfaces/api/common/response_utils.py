@@ -1,11 +1,9 @@
-from typing import List, TypeVar, Callable
 from math import ceil
-from fastapi import Request
+from typing import Callable, List, TypeVar
 
+from domain.common import PaginationParams, SortParams
 from dtos.common import PaginatedResponseDTO, PaginationInfoDTO
-
-from .sort import SortParams
-from .pagination import PaginationParams
+from fastapi import Request
 
 ItemType = TypeVar("ItemType")
 

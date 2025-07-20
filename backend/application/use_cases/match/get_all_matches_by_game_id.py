@@ -1,8 +1,8 @@
+from application.interfaces.base_use_case import BaseUseCase
+from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.repositories.game_repository import IGameRepository
 from domain.repositories.match_repository import IMatchRepository
 from dtos.response.match.match_response import MatchResponseDTO
-from application.interfaces.base_use_case import BasePaginatedUseCase, BaseUseCase
-from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from infrastructure.logging import log_execution, log_performance
 
 

@@ -1,12 +1,7 @@
 from typing import Optional
 
-from domain.entities.game.game import GameEntity
-
-from .match_participation import MatchParticipation
-
-from ..time_stamp_entity_mixin import TimeStampEntityMixin
-
 from ...constants import HOUSE_MARGIN
+from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
 
 class MatchEntity(TimeStampEntityMixin):
@@ -36,14 +31,11 @@ class MatchEntity(TimeStampEntityMixin):
     def calculate_odds_for_match(self, house_odds: float) -> float:
         if len(self.participant_ids) > 1:
             # Peer-to-peer
-            total_pot = self.base_bet_amount * len(self.participant_ids)
+            base_bet = self.base_bet_amount or 0.0
+            total_pot = base_bet * len(self.participant_ids)
             net_pot = total_pot * (1 - HOUSE_MARGIN)
-            return (
-                round(net_pot / self.base_bet_amount, 2)
-                if self.base_bet_amount > 0
-                else 0.0
-            )
-        elif house_odds:
+            return round(net_pot / base_bet, 2) if base_bet > 0 else 0.0
+        elif house_odds and house_odds > 0:
             # Contra la casa
             return house_odds
         else:

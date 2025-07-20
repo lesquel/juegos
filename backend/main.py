@@ -1,5 +1,4 @@
 import uvicorn
-
 from app_setup import AppConfigurator
 
 configurator = AppConfigurator()

@@ -1,5 +1,7 @@
 from typing import Any
+
 from interfaces.api.common.filters.base_filter import BaseFilterParams
+
 
 class FilterMixin:
     """Mixin para aplicar filtros a las consultas."""
@@ -15,4 +17,3 @@ class FilterMixin:
                 method = getattr(filters, method_name)
                 stmt = method(stmt, model, value)
         return stmt
-

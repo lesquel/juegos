@@ -1,24 +1,17 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-
-from .config import get_postgres_url, get_async_postgres_url
-
+from .config import get_async_postgres_url, get_postgres_url
 
 # Engine síncrono (para migraciones y admin)
 engine = create_engine(get_postgres_url())
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Engine asíncrono (para la aplicación)
-async_engine = create_async_engine(
-    get_async_postgres_url(),
-    echo=False
-)
+async_engine = create_async_engine(get_async_postgres_url(), echo=False)
 AsyncSessionLocal = async_sessionmaker(
-    async_engine,
-    class_=AsyncSession,
-    expire_on_commit=False
+    async_engine, class_=AsyncSession, expire_on_commit=False
 )
 
 

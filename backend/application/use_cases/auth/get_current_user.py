@@ -1,9 +1,9 @@
+from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.exceptions import InvalidTokenError, UserNotFoundError
 from domain.interfaces import ITokenProvider
 from domain.repositories import IUserRepository
 from dtos.response.user import UserResponseDTO
-from application.interfaces.base_use_case import BaseUseCase
 from infrastructure.logging import log_execution, log_performance
 
 

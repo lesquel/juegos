@@ -1,4 +1,4 @@
-from .user import UserEntity, TokenData
-from .transfer import TransferPaymentEntity
+from .game import CategoryEntity, GameEntity
 from .match import MatchEntity
-from .game import GameEntity, CategoryEntity
+from .transfer import TransferPaymentEntity
+from .user import TokenData, UserEntity

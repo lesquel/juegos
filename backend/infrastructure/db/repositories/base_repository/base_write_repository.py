@@ -1,18 +1,17 @@
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Type, Optional
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from typing import Any, Generic, Optional, Type
 
-from domain.repositories.base_repository import (
-    IWriteOnlyRepository,
-)
 from application.mixins import LoggingMixin
+from domain.repositories.base_repository import IWriteOnlyRepository
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from ..common import EntityType, ModelType
 
 
 class BaseWriteOnlyPostgresRepository(
     Generic[EntityType, ModelType],
-    IWriteOnlyRepository[EntityType],
+    IWriteOnlyRepository[EntityType, ModelType],
     LoggingMixin,
     ABC,
 ):
@@ -21,8 +20,8 @@ class BaseWriteOnlyPostgresRepository(
     def __init__(
         self, db_session: AsyncSession, db_model: Type[ModelType], *args, **kwargs
     ):
-        self.db = db_session
-        self.model = db_model
+        # Llamar a super() para permitir que el mixin configure db y model
+        super().__init__(db_session, db_model, *args, **kwargs)
 
     async def save(self, entity: EntityType) -> EntityType:
         """
@@ -51,13 +50,12 @@ class BaseWriteOnlyPostgresRepository(
         await self.db.commit()
         await self.db.refresh(model_instance)
 
+        # Obtener el ID del modelo directamente usando el campo ID
+        entity_id = getattr(model_instance, self._get_id_field().key)
+
         # Recargar con opciones si es necesario
-        model_instance = await self._reload_with_options(
-            self._get_entity_id(model_instance)
-        )
-        self.logger.info(
-            f"Successfully created entity: {self._get_entity_id(model_instance)}"
-        )
+        model_instance = await self._reload_with_options(entity_id)
+        self.logger.info(f"Successfully created entity: {entity_id}")
         return self._model_to_entity(model_instance)
 
     async def _update_entity(self, entity_id: str, entity: EntityType) -> EntityType:
@@ -106,29 +104,24 @@ class BaseWriteOnlyPostgresRepository(
     @abstractmethod
     async def update(self, entity_id: str, entity: EntityType) -> None:
         """Actualiza una entidad."""
-        pass
 
     @abstractmethod
     def _model_to_entity(self, model: ModelType) -> EntityType:
         """Convierte un modelo a entidad."""
-        pass
 
     @abstractmethod
     def _entity_to_model(self, entity: EntityType) -> ModelType:
         """Convierte una entidad a modelo."""
-        pass
 
     @abstractmethod
     def _get_id_field(self):
         """Obtiene el campo ID del modelo."""
-        pass
 
     @abstractmethod
     def _get_entity_id(self, entity: EntityType) -> Optional[str]:
         """Obtiene el ID de una entidad."""
-        pass
 
-    def get_load_options(self) -> dict:
+    def get_load_options(self) -> list:
         """Devuelve las opciones de carga para la entidad."""
         return []
 

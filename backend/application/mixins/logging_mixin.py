@@ -5,7 +5,7 @@ from infrastructure.logging import get_logger
 
 class LoggingMixin:
     """Mixin que proporciona funcionalidad de logging a las clases."""
-    
+
     def __init__(self):
         self._logger = get_logger(self.__class__.__name__)
 

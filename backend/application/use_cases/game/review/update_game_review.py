@@ -1,5 +1,5 @@
-from uuid import UUID
 from application.interfaces.base_use_case import BaseUseCase
+from application.mixins.dto_converter_mixin import BidirectionalConverter
 from domain.entities.game.game_review import GameReviewEntity
 from domain.exceptions.auth import AuthenticationError
 from domain.exceptions.game import GameReviewNotFoundError
@@ -7,13 +7,6 @@ from domain.repositories.game_review_repository import IGameReviewRepository
 from dtos.request.game.game_review_request import UpdateGameReviewRequestDTO
 from dtos.response.game.game_review_response import GameReviewResponseDTO
 from dtos.response.user.user_response import UserBaseResponseDTO
-from application.converters.game.game_review_converter import (
-    GameReviewUpdateDTOToEntityConverter,
-)
-from application.mixins.dto_converter_mixin import (
-    BidirectionalConverter,
-    EntityToDTOConverter,
-)
 from infrastructure.logging import log_execution, log_performance
 
 

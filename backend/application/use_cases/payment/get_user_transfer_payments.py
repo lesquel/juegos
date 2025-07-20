@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Tuple
+
+from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.repositories.transfer_payment_repository import ITransferPaymentRepository
 from dtos.response.transfer.transfer_payment_response_dto import (
     TransferPaymentResponseDTO,
 )
-from application.interfaces.base_use_case import BaseUseCase
-
 from infrastructure.logging import log_execution, log_performance
 
 
@@ -17,7 +17,6 @@ class GetUserTransferPaymentsUseCase(BaseUseCase):
         transfer_repo: ITransferPaymentRepository,
         transfer_converter: EntityToDTOConverter,
     ):
-
         super().__init__()
         self.transfer_repo = transfer_repo
         self.transfer_converter = transfer_converter
@@ -26,7 +25,7 @@ class GetUserTransferPaymentsUseCase(BaseUseCase):
     @log_performance(threshold_seconds=2.0)
     async def execute(
         self, user_id: str, pagination, filters, sort_params
-    ) -> List[TransferPaymentResponseDTO]:
+    ) -> Tuple[List[TransferPaymentResponseDTO], int]:
         """
         Obtiene todas las transferencias de un usuario.
 

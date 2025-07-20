@@ -1,14 +1,16 @@
 from abc import abstractmethod
 from typing import Optional
 
+from domain.common import BaseFilterParams, PaginationParams, SortParams
 from domain.entities.game import GameReviewEntity
-from interfaces.api.common.filters.specific_filters import GameReviewFilterParams
-from interfaces.api.common.pagination import PaginationParams
-from interfaces.api.common.sort import SortParams
+
 from .base_repository import IBaseRepository
+from .common import ModelType
 
 
-class IGameReviewRepository(IBaseRepository[GameReviewEntity, GameReviewFilterParams]):
+class IGameReviewRepository(
+    IBaseRepository[GameReviewEntity, BaseFilterParams, ModelType]
+):
     """Repositorio específico para Game Reviews"""
 
     @abstractmethod
@@ -16,15 +18,13 @@ class IGameReviewRepository(IBaseRepository[GameReviewEntity, GameReviewFilterPa
         self,
         game_id: str,
         pagination: Optional[PaginationParams] = None,
-        filters: Optional[GameReviewFilterParams] = None,
+        filters: Optional[BaseFilterParams] = None,
         sort_params: Optional[SortParams] = None,
     ) -> tuple[list[GameReviewEntity], int]:
         """Obtiene reseñas de un juego específico por su ID."""
-        pass
 
     @abstractmethod
     async def get_by_user_and_game_id(
         self, user_id: str, game_id: str
     ) -> Optional[GameReviewEntity]:
         """Obtiene una reseña de un juego específico por el ID del usuario y del juego."""
-        pass

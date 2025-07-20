@@ -1,15 +1,15 @@
 from typing import List, Optional, Tuple
-import uuid
+
+from domain.entities import CategoryEntity
+from domain.repositories import ICategoryRepository
+from interfaces.api.common.filters.specific_filters import CategoryFilterParams
+from interfaces.api.common.pagination import PaginationParams
+from interfaces.api.common.sort import SortParams
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from domain.repositories import ICategoryRepository
-from domain.entities import CategoryEntity
-from interfaces.api.common.sort import SortParams
-from interfaces.api.common.pagination import PaginationParams
-from interfaces.api.common.filters.specific_filters import CategoryFilterParams
-from .base_repository import BaseReadOnlyPostgresRepository
 from ..models import CategoryModel
+from .base_repository import BaseReadOnlyPostgresRepository
 
 
 class PostgresCategoryRepository(

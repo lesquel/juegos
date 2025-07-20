@@ -189,4 +189,3 @@ function restartGame() {
 document.addEventListener("DOMContentLoaded", function () {
   setGame();
 });
-

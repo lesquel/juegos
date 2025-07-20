@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
 
+from fastapi import FastAPI
 from infrastructure.db import create_tables
 from infrastructure.logging import get_logger
 

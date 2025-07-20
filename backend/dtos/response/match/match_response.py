@@ -1,19 +1,21 @@
-from typing import Optional, List
-from pydantic import Field
-from ..time_stamp_base import TimeStampBase
+from typing import List, Optional
+
 from dtos.common.constants import (
-    EXAMPLE_USER_ID,
-    EXAMPLE_SCORE,
-    EXAMPLE_BET_AMOUNT,
-    EXAMPLE_MATCH_ID,
-    EXAMPLE_GAME_ID,
-    EXAMPLE_WINNER_ID,
-    EXAMPLE_CREATED_BY_ID,
     EXAMPLE_BASE_BET_AMOUNT,
-    EXAMPLE_ODDS_FOR_MATCH,
+    EXAMPLE_BET_AMOUNT,
     EXAMPLE_CREATED_AT,
+    EXAMPLE_CREATED_BY_ID,
+    EXAMPLE_GAME_ID,
+    EXAMPLE_MATCH_ID,
+    EXAMPLE_ODDS_FOR_MATCH,
+    EXAMPLE_SCORE,
     EXAMPLE_UPDATED_AT,
+    EXAMPLE_USER_ID,
+    EXAMPLE_WINNER_ID,
 )
+from pydantic import Field
+
+from ..time_stamp_base import TimeStampBase
 
 
 class MatchParticipationResponseDTO(TimeStampBase):

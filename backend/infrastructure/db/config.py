@@ -17,5 +17,3 @@ def get_async_postgres_url() -> str:
         f"postgresql+asyncpg://{database_settings.postgres_user}:{database_settings.postgres_password}"
         f"@{database_settings.postgres_host}:{database_settings.postgres_port}/{database_settings.postgres_db}"
     )
-
-

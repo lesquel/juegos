@@ -1,9 +1,8 @@
-from sqlalchemy import Column, Float, DateTime, ForeignKey, func
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
 import uuid
 
-from infrastructure.db.models import user
+from sqlalchemy import Column, Float, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 from ...base import Base
 from ..common import TimeStampModelMixin
@@ -33,7 +32,6 @@ class MatchModel(Base, TimeStampModelMixin):
     base_bet_amount = Column(
         Float, default=0.0, comment="Monto base apostado en la partida"
     )
-
 
     game = relationship("GameModel", back_populates="matches", lazy="joined")
     winner = relationship(

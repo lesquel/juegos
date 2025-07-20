@@ -1,3 +1,3 @@
-from .base_repository import BasePostgresRepository
 from .base_read_repository import BaseReadOnlyPostgresRepository
+from .base_repository import BasePostgresRepository
 from .base_write_repository import BaseWriteOnlyPostgresRepository

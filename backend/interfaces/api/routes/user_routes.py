@@ -1,25 +1,23 @@
-from fastapi import APIRouter, Depends, Request
 from uuid import UUID
 
 from application.use_cases.user import GetAllUsersUseCase, GetUserByIdUseCase
-from infrastructure.logging import get_logger
 from dtos import PaginatedResponseDTO
 from dtos.response.user.user_response import UserResponseDTO
-from interfaces.api.common import (
-    PaginationParams,
-    get_pagination_params,
-    SortParams,
-    get_sort_params,
-)
+from fastapi import APIRouter, Depends, Request
 from infrastructure.dependencies.use_cases import (
     get_all_users_use_case,
     get_user_by_id_use_case,
 )
+from infrastructure.logging import get_logger
+from interfaces.api.common import (
+    PaginationParams,
+    SortParams,
+    get_pagination_params,
+    get_sort_params,
+)
 from interfaces.api.common.response_utils import handle_paginated_request
+
 from ..common.filters.specific_filters import UserFilterParams, get_user_filter_params
-
-
-from .transfer_payment_routes import transfer_router
 
 user_router = APIRouter(prefix="/users", tags=["Users"])
 

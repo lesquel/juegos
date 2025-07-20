@@ -5,10 +5,10 @@ Este módulo expone todos los conversores necesarios para transformar
 entre entidades del dominio y sus DTOs correspondientes.
 """
 
-from .user import *
+from .auth import *
 from .game import *
 from .match import *
-from .auth import *
+from .user import *
 
 __all__ = [
     # User converters
@@ -18,7 +18,6 @@ __all__ = [
     "TransferPaymentEntityToDTOConverter",
     "TransferPaymentDTOToEntityConverter",
     "TransferPaymentBidirectionalConverter",
-    
     # Game converters
     "GameEntityToDTOConverter",
     "CategoryEntityToDTOConverter",
@@ -26,7 +25,6 @@ __all__ = [
     "GameReviewEntityToDTOConverter",
     "GameReviewDTOToEntityConverter",
     "GameReviewBidirectionalConverter",
-    
     # Match converters
     "MatchEntityToDTOConverter",
     "MatchSummaryConverter",
@@ -35,7 +33,6 @@ __all__ = [
     "MatchParticipationEntityToDTOConverter",
     "JoinMatchDTOToEntityConverter",
     "MatchParticipationBidirectionalConverter",
-    
     # Auth converters
     "UserRequestToEntityConverter",
     "UserEntityToResponseConverter",

@@ -1,14 +1,14 @@
+from .admin_config import initialize_admin
 from .admin_views import (
-    UserAdmin,
     CategoryAdmin,
     GameAdmin,
     GameReviewAdmin,
     MatchAdmin,
     MatchParticipationAdmin,
-    TransferPaymentAdmin
+    TransferPaymentAdmin,
+    UserAdmin,
 )
-from .authentication_backend import authentication_backend, AdminAuth
-from .admin_config import initialize_admin
+from .authentication_backend import AdminAuth, authentication_backend
 
 # Organización por módulos/categorías
 admin_views_by_module = {
@@ -26,6 +26,5 @@ admin_views_by_module = {
     ],
     "Modulo pagos": [
         TransferPaymentAdmin,
-    ]
+    ],
 }
-

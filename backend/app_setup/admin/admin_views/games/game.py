@@ -1,13 +1,13 @@
-from sqladmin import ModelView
-from markupsafe import Markup
-from starlette.requests import Request
-
-from infrastructure.db.models import GameModel
 from app_setup.admin.mixins import ImageUploadAdminMixin
+from infrastructure.db.models import GameModel
+from markupsafe import Markup
+from sqladmin import ModelView
 
 
-class GameAdmin(ImageUploadAdminMixin, ModelView, model=GameModel):
+class GameAdmin(ImageUploadAdminMixin, ModelView):
     """Panel de administración para juegos"""
+
+    model = GameModel
 
     # Configuración de categoría/módulo
     name = "Juego"

@@ -1,8 +1,7 @@
+from dtos.common.constants import EXAMPLE_EMAIL, EXAMPLE_PSW
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from .validators import password_validator
-
-from dtos.common.constants import EXAMPLE_EMAIL, EXAMPLE_PSW
 
 
 class UserCreateRequestDTO(BaseModel):

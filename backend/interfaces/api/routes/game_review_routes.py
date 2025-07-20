@@ -1,47 +1,41 @@
-from fastapi import APIRouter, Depends, Request, Response, status
-
 from uuid import UUID
 
 from application.use_cases.game import (
-    GetGameReviewsByGameIdUseCase,
     GetGameReviewByIdUseCase,
+    GetGameReviewsByGameIdUseCase,
 )
 from application.use_cases.game.review import (
     CreateGameReviewUseCase,
     DeleteGameReviewUseCase,
     UpdateGameReviewUseCase,
 )
-
+from dtos.common import PaginatedResponseDTO
 from dtos.request.game.game_review_request import (
     CreateGameReviewRequestDTO,
     UpdateGameReviewRequestDTO,
 )
-
-
-from interfaces.api.common.response_utils import handle_paginated_request
+from dtos.response.game import GameReviewResponseDTO
+from fastapi import APIRouter, Depends, Request, Response, status
 from infrastructure.dependencies import (
     get_create_game_review_use_case,
-    get_game_reviews_by_game_id_use_case,
-    get_game_review_by_id_use_case,
     get_delete_game_review_use_case,
+    get_game_review_by_id_use_case,
+    get_game_reviews_by_game_id_use_case,
     get_update_game_review_use_case,
 )
 from infrastructure.logging import get_logger
-from dtos.common import PaginatedResponseDTO
-from dtos.response.game import GameReviewResponseDTO
-
 from interfaces.api.common import (
     PaginationParams,
-    get_pagination_params,
     SortParams,
+    get_pagination_params,
     get_sort_params,
 )
+from interfaces.api.common.response_utils import handle_paginated_request
 
 from ..common.filters.specific_filters import (
     GameReviewFilterParams,
     get_game_review_filter_params,
 )
-
 
 game_review_router = APIRouter()
 
@@ -49,7 +43,9 @@ game_review_router = APIRouter()
 logger = get_logger("game_review_routes")
 
 
-@game_review_router.get("/{game_id}/reviews/", response_model=PaginatedResponseDTO[GameReviewResponseDTO])
+@game_review_router.get(
+    "/{game_id}/reviews/", response_model=PaginatedResponseDTO[GameReviewResponseDTO]
+)
 async def get_game_reviews_by_game_id(
     game_id: UUID,
     request: Request,
@@ -104,7 +100,9 @@ async def create_game_review(
     return await use_case.execute(str(game_id), review)
 
 
-@game_review_router.put("/reviews/{game_review_id}", response_model=GameReviewResponseDTO)
+@game_review_router.put(
+    "/reviews/{game_review_id}", response_model=GameReviewResponseDTO
+)
 async def update_game_review(
     game_review_id: UUID,
     review: UpdateGameReviewRequestDTO,
@@ -122,7 +120,9 @@ async def update_game_review(
     return await use_case.execute(str(game_review_id), review)
 
 
-@game_review_router.delete("/reviews/{game_review_id}", status_code=status.HTTP_204_NO_CONTENT)
+@game_review_router.delete(
+    "/reviews/{game_review_id}", status_code=status.HTTP_204_NO_CONTENT
+)
 async def delete_game_review(
     game_review_id: UUID,
     use_case: DeleteGameReviewUseCase = Depends(get_delete_game_review_use_case),
@@ -138,7 +138,9 @@ async def delete_game_review(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@game_review_router.get("/reviews/{game_review_id}", response_model=GameReviewResponseDTO)
+@game_review_router.get(
+    "/reviews/{game_review_id}", response_model=GameReviewResponseDTO
+)
 async def get_game_review_by_id(
     game_review_id: UUID,
     use_case: GetGameReviewByIdUseCase = Depends(get_game_review_by_id_use_case),

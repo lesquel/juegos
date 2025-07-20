@@ -1,4 +1,5 @@
-from typing import Generic, TypeVar, List, Optional
+from typing import Generic, List, Optional, TypeVar
+
 from pydantic import BaseModel
 
 ResultType = TypeVar("ResultType")

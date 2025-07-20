@@ -1,9 +1,8 @@
-from fastapi import Depends
-
 from application.mixins.dto_converter_mixin import (
-    EntityToDTOConverter,
     BidirectionalConverter,
+    EntityToDTOConverter,
 )
+from application.services.file_upload_service import FileUploadService
 from application.use_cases.payment import (
     CreateTransferPaymentUseCase,
     GetUserTransferPaymentsUseCase,
@@ -11,9 +10,9 @@ from application.use_cases.payment import (
 from application.use_cases.payment.get_user_transfer_payment_by_id import (
     GetTransferPaymentByIdUseCase,
 )
-from application.services.file_upload_service import FileUploadService
 from domain.repositories import ITransferPaymentRepository
 from dtos.response.user.user_response import UserBaseResponseDTO
+from fastapi import Depends
 from infrastructure.dependencies.services.file_upload_service import (
     get_file_upload_service,
 )
@@ -21,12 +20,11 @@ from infrastructure.dependencies.use_cases.auth_use_cases import (
     get_current_user_from_request_use_case,
 )
 
-
-from ..repositories import get_transfer_payment_repository
 from ..converters import (
     get_transfer_payment_bidirectional_converter,
     get_transfer_payment_entity_to_dto_converter,
 )
+from ..repositories import get_transfer_payment_repository
 
 
 def get_user_transfer_payments_use_case(

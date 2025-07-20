@@ -1,5 +1,5 @@
 from .auth.auth_request import *
-from .user import *
-from .match import *
 from .game import *
+from .match import *
 from .transfer import *
+from .user import *

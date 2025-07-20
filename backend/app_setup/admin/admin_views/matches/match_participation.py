@@ -1,15 +1,16 @@
-from sqladmin import ModelView
 from infrastructure.db.models import MatchParticipationModel
+from sqladmin import ModelView
 
 
-class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
+class MatchParticipationAdmin(ModelView):
     """Panel de administración para participaciones en partidas"""
-    
+
+    model = MatchParticipationModel
+
     # Configuración de categoría/módulo
     name = "Participación"
     name_plural = "Participaciones"
     icon = "fa-solid fa-users-gear"
-
 
     # Configuración de columnas
     column_list = [
@@ -70,8 +71,12 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
 
     # Formatear columnas
     column_formatters = {
-        MatchParticipationModel.created_at: lambda m, a: m.created_at.strftime("%d/%m/%Y %H:%M"),
-        MatchParticipationModel.updated_at: lambda m, a: m.updated_at.strftime("%d/%m/%Y %H:%M"),
+        MatchParticipationModel.created_at: lambda m, a: m.created_at.strftime(
+            "%d/%m/%Y %H:%M"
+        ),
+        MatchParticipationModel.updated_at: lambda m, a: m.updated_at.strftime(
+            "%d/%m/%Y %H:%M"
+        ),
     }
 
     # Configuración de exportación

@@ -1,10 +1,12 @@
-from sqladmin import ModelView
 from infrastructure.db.models import GameReviewModel
+from sqladmin import ModelView
 
 
-class GameReviewAdmin(ModelView, model=GameReviewModel):
+class GameReviewAdmin(ModelView):
     """Panel de administración para reseñas de juegos"""
-    
+
+    model = GameReviewModel
+
     # Configuración de categoría/módulo
     name = "Reseña"
     name_plural = "Reseñas de Juegos"
@@ -70,9 +72,15 @@ class GameReviewAdmin(ModelView, model=GameReviewModel):
     column_formatters = {
         GameReviewModel.game: lambda m, a: m.game.game_name if m.game else "N/A",
         GameReviewModel.user: lambda m, a: m.user.email if m.user else "N/A",
-        GameReviewModel.created_at: lambda m, a: m.created_at.strftime("%d/%m/%Y %H:%M"),
-        GameReviewModel.updated_at: lambda m, a: m.updated_at.strftime("%d/%m/%Y %H:%M"),
-        GameReviewModel.comment: lambda m, a: (m.comment[:50] + "...") if m.comment and len(m.comment) > 50 else m.comment,
+        GameReviewModel.created_at: lambda m, a: m.created_at.strftime(
+            "%d/%m/%Y %H:%M"
+        ),
+        GameReviewModel.updated_at: lambda m, a: m.updated_at.strftime(
+            "%d/%m/%Y %H:%M"
+        ),
+        GameReviewModel.comment: lambda m, a: (m.comment[:50] + "...")
+        if m.comment and len(m.comment) > 50
+        else m.comment,
         GameReviewModel.rating: lambda m, a: f"{'⭐' * m.rating} ({m.rating}/5)",
     }
 

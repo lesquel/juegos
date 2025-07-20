@@ -1,19 +1,15 @@
 from decimal import Decimal
 
-from domain.entities.game.game import GameEntity
-from domain.entities.match.match import MatchEntity
-from domain.repositories.game_repository import IGameRepository
-from dtos.response.match.match_response import (
-    MatchResponseDTO,
-    MatchParticipationResponseDTO,
-)
-from dtos.request.match.match_request_dto import CreateMatchRequestDTO
 from application.mixins.dto_converter_mixin import (
-    EntityToDTOConverter,
-    DTOToEntityConverter,
     BidirectionalConverter,
+    DTOToEntityConverter,
+    EntityToDTOConverter,
 )
 from application.mixins.logging_mixin import LoggingMixin
+from domain.entities.game.game import GameEntity
+from domain.entities.match.match import MatchEntity
+from dtos.request.match.match_request_dto import CreateMatchRequestDTO
+from dtos.response.match.match_response import MatchResponseDTO
 from infrastructure.logging.decorators import log_execution
 
 
@@ -94,7 +90,7 @@ class MatchBidirectionalConverter(
     def __init__(self):
         super().__init__()
         self.entity_to_dto = MatchEntityToDTOConverter()
-        
+
         self.dto_to_entity = CreateMatchRequestToEntityConverter()
 
     def to_dto(self, entity: MatchEntity, game: GameEntity) -> MatchResponseDTO:

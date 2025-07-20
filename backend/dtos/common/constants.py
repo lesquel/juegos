@@ -1,7 +1,7 @@
 EXAMPLE_EMAIL = "usuario@ejemplo.com"
 EXAMPLE_PSW = "micontraseña123"
 
-EXAMPLE_TOKEN ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+EXAMPLE_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
 # User Response Constants
 EXAMPLE_USER_ID = "123e4567-e89b-12d3-a456-426614174000"

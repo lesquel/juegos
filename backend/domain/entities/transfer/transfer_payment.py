@@ -1,4 +1,5 @@
 from typing import Optional
+
 from application.enums import TransferStateEnum
 
 from ..time_stamp_entity_mixin import TimeStampEntityMixin
@@ -26,4 +27,7 @@ class TransferPaymentEntity(TimeStampEntityMixin):
         self.transfer_description = transfer_description
 
     def __repr__(self):
-        return f"TransferPayment(transfer_id={self.transfer_id}, user_id={self.user_id}, transfer_amount={self.transfer_amount}, transfer_state='{self.transfer_state}')"
+        return (
+            f"TransferPayment(transfer_id={self.transfer_id}, user_id={self.user_id}, "
+            f"transfer_amount={self.transfer_amount}, transfer_state='{self.transfer_state}')"
+        )

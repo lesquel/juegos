@@ -1,27 +1,22 @@
-from fastapi import Depends
-from fastapi.security import HTTPAuthorizationCredentials
-
 from application.interfaces.base_assembler import BaseAssembler
+from application.interfaces.password_hasher import IPasswordHasher
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from application.use_cases.auth import (
     GetCurrentUserUseCase,
-    RegisterUserUseCase,
     LoginUserUseCase,
+    RegisterUserUseCase,
 )
 from domain.interfaces.token_provider import ITokenProvider
 from domain.repositories import IUserRepository
 from dtos.response.auth.auth_response_dto import LoginResponseDTO
 from dtos.response.user.user_response import UserResponseDTO
-from application.interfaces.password_hasher import IPasswordHasher
-from infrastructure.dependencies.converters.auth_converters import get_login_assembler
+from fastapi import Depends
+from fastapi.security import HTTPAuthorizationCredentials
 from infrastructure.dependencies.converters.auth_converters import get_login_assembler
 
+from ..converters import get_user_converter, get_user_registration_converter
 from ..repositories import get_user_repository
-from ..services import get_password_hasher, get_token_provider, get_security_scheme
-from ..converters import (
-    get_user_converter,
-    get_user_registration_converter,
-)
+from ..services import get_password_hasher, get_security_scheme, get_token_provider
 
 security = get_security_scheme()
 

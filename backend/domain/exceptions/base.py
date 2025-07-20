@@ -2,7 +2,7 @@
 Excepciones base del dominio
 """
 
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 
 class DomainException(Exception):

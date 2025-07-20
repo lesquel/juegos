@@ -1,10 +1,12 @@
-from sqladmin import ModelView
 from infrastructure.db.models import UserModel
+from sqladmin import ModelView
 
 
-class UserAdmin(ModelView, model=UserModel):
+class UserAdmin(ModelView):
     """Panel de administración para usuarios"""
-    
+
+    model = UserModel
+
     # Configuración de categoría/módulo
     name = "Usuarios"
     name_plural = "Usuarios"

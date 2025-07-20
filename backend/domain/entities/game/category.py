@@ -1,7 +1,4 @@
-from typing import Optional, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .game import GameEntity
+from typing import Optional
 
 from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
@@ -40,4 +37,7 @@ class CategoryEntity(TimeStampEntityMixin):
         return game_id in self.games
 
     def __repr__(self):
-        return f"CategoryEntity(category_id={self.category_id}, category_name='{self.category_name}', games_count={len(self.games)})"
+        return (
+            f"CategoryEntity(category_id={self.category_id}, "
+            f"category_name='{self.category_name}', games_count={len(self.games)})"
+        )
