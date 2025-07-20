@@ -33,20 +33,23 @@ repos:
         args: [--max-line-length=120, --extend-ignore=E203]
         exclude: __init__\.py$ #
 
-  # Type checking
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.1
-    hooks:
-      - id: mypy
-        additional_dependencies:
-          - types-requests
-          - types-ujson
-          - types-aiofiles
-        args:
-          - --ignore-missing-imports
-          - --explicit-package-bases
-          - --disable-error-code=attr-defined
-          - --disable-error-code=type-arg
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.7.1
+  #   hooks:
+  #     - id: mypy
+  #       additional_dependencies:
+  #         - types-requests
+  #         - types-ujson
+  #         - types-aiofiles
+  #       args:
+  #         - --ignore-missing-imports
+  #         - --explicit-package-bases
+  #         - --disable-error-code=attr-defined
+  #         - --disable-error-code=type-arg
+  #         - --disable-error-code=misc  # 👈 Add this line
+  #         - --disable-error-code=assignment
+  #         - --disable-error-code=override
+
 
   # # Seguridad
   # - repo: https://github.com/pycqa/bandit

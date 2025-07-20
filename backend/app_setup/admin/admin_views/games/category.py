@@ -3,10 +3,8 @@ from infrastructure.db.models import CategoryModel
 from sqladmin import ModelView
 
 
-class CategoryAdmin(ImageUploadAdminMixin, ModelView):
+class CategoryAdmin(ImageUploadAdminMixin, ModelView, model=CategoryModel):
     """Panel de administración para categorías"""
-
-    model = CategoryModel
 
     # Configuración de categoría/módulo
     name = "Categoría"

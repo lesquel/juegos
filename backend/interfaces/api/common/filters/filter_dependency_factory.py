@@ -51,8 +51,7 @@ def build_filter_dependency(FilterClass: Type[BaseModel]):
         return FilterClass(**base_filters.model_dump(), **kwargs)
 
     # Actualiza la firma para compatibilidad con OpenAPI
-    if hasattr(dependency_func, "__signature__"):
-        dependency_func.__signature__ = inspect.Signature(parameters)
+    dependency_func.__signature__ = inspect.Signature(parameters)
     dependency_func.__annotations__ = {
         "return": FilterClass,
         **{p.name: p.annotation for p in parameters},

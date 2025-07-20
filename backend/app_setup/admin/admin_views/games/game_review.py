@@ -2,10 +2,8 @@ from infrastructure.db.models import GameReviewModel
 from sqladmin import ModelView
 
 
-class GameReviewAdmin(ModelView):
+class GameReviewAdmin(ModelView, model=GameReviewModel):
     """Panel de administración para reseñas de juegos"""
-
-    model = GameReviewModel
 
     # Configuración de categoría/módulo
     name = "Reseña"

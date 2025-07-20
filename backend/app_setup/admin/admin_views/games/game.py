@@ -4,10 +4,8 @@ from markupsafe import Markup
 from sqladmin import ModelView
 
 
-class GameAdmin(ImageUploadAdminMixin, ModelView):
+class GameAdmin(ImageUploadAdminMixin, ModelView, model=GameModel):
     """Panel de administración para juegos"""
-
-    model = GameModel
 
     # Configuración de categoría/módulo
     name = "Juego"

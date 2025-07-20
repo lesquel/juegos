@@ -7,10 +7,10 @@ from sqlalchemy.orm import selectinload
 from starlette.requests import Request
 
 
-class TransferPaymentAdmin(ImageUploadAdminMixin, ModelView):
+class TransferPaymentAdmin(
+    ImageUploadAdminMixin, ModelView, model=TransferPaymentModel
+):
     """Panel de administración para pagos de transferencia"""
-
-    model = TransferPaymentModel
 
     name = "Transferencia"
     name_plural = "Transferencias"

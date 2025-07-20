@@ -2,10 +2,8 @@ from infrastructure.db.models import MatchParticipationModel
 from sqladmin import ModelView
 
 
-class MatchParticipationAdmin(ModelView):
+class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
     """Panel de administración para participaciones en partidas"""
-
-    model = MatchParticipationModel
 
     # Configuración de categoría/módulo
     name = "Participación"

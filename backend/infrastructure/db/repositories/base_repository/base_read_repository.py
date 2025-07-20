@@ -24,8 +24,9 @@ class BaseReadOnlyPostgresRepository(
     def __init__(
         self, db_session: AsyncSession, db_model: Type[ModelType], *args, **kwargs
     ):
-        # Llamar a super() para permitir que el mixin configure db y model
-        super().__init__(db_session, db_model, *args, **kwargs)
+        # Configurar atributos necesarios
+        self.db = db_session
+        self.model = db_model
 
     async def get_paginated(
         self,
