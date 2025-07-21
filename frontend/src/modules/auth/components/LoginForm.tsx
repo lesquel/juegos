@@ -71,7 +71,7 @@ const UseLoginForm = () => {
           e.stopPropagation();
           void form.handleSubmit();
         }}
-        className="w-full"
+        className="w-full flex flex-col items-center gap-2"
       >
         {error && (
           <p className="text-red-400 text-sm mb-4 text-center bg-red-900 bg-opacity-50 p-3 rounded-lg">
