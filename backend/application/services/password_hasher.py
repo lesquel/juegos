@@ -1,14 +1,12 @@
 from application.mixins import LoggingMixin
 from domain.exceptions import DomainException
-from passlib.context import CryptContext
-
-from ..interfaces import IPasswordHasher
+from domain.interfaces import IPasswordHasher
 
 
 class PasswordHasher(IPasswordHasher, LoggingMixin):
-    def __init__(self):
+    def __init__(self, hasher):
         super().__init__()
-        self._pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        self._pwd_context = hasher
 
     def verify(self, plain_password: str, hashed_password: str) -> bool:
         self.logger.debug("Verifying password hash")

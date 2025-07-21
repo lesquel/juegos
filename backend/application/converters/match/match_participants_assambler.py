@@ -1,8 +1,8 @@
 """Conversor DTO para entidad MatchParticipation."""
 
-from application.interfaces.base_assembler import BaseAssembler
 from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.match.match import MatchEntity
+from domain.interfaces.base_assembler import BaseAssembler
 from dtos.response.match.match_participants_response import MatchParticipantsResponseDTO
 
 

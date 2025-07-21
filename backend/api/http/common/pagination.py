@@ -1,4 +1,4 @@
-from domain.common.pagination import PaginationParams
+from application.common.pagination import PaginationParams
 from fastapi import Query
 
 

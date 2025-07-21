@@ -1,6 +1,6 @@
 from typing import Any
 
-from interfaces.api.common.filters.base_filter import BaseFilterParams
+from api.http.common.filters.base_filter import BaseFilterParams
 
 
 class FilterMixin:

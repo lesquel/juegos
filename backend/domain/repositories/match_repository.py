@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import List
 
-from domain.common import BaseFilterParams
+from application.common import BaseFilterParams
 from domain.entities import MatchEntity
 
 from .base_repository import IBaseRepository
@@ -38,46 +38,4 @@ class IMatchRepository(IBaseRepository[MatchEntity, BaseFilterParams, ModelType]
 
         Returns:
             Lista de IDs de usuarios participantes
-        """
-
-    @abstractmethod
-    async def join_match(self, match_id: str, user_id: str) -> MatchEntity:
-        """
-        Permite a un usuario unirse a una partida.
-
-        Args:
-            match_id: ID de la partida
-            user_id: ID del usuario
-            bet_amount: Monto apostado (opcional)
-
-        Returns:
-            Entidad de partida actualizada
-        """
-
-    @abstractmethod
-    async def finish_match(
-        self, match_id: str, participations: list[tuple[str, int]]
-    ) -> MatchEntity:
-        """
-        Actualiza la puntuación de un usuario en una partida.
-
-        Args:
-            match_id: ID de la partida
-            participations: Lista de tuplas con ID de usuario y puntuación
-
-        Returns:
-            Entidad de partida actualizada
-        """
-
-    @abstractmethod
-    async def is_user_participant(self, match_id: str, user_id: str) -> bool:
-        """
-        Verifica si un usuario es participante de una partida.
-
-        Args:
-            match_id: ID de la partida
-            user_id: ID del usuario
-
-        Returns:
-            True si el usuario participa, False en caso contrario
         """

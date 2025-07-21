@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Optional
 
-from domain.common import BaseFilterParams
+from application.common import BaseFilterParams
 from domain.entities import UserEntity
 
 from .base_repository import IBaseRepository

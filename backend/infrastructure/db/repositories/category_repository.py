@@ -1,10 +1,10 @@
 from typing import List, Optional, Tuple
 
+from api.http.common.filters.specific_filters import CategoryFilterParams
+from api.http.common.pagination import PaginationParams
+from api.http.common.sort import SortParams
 from domain.entities import CategoryEntity
 from domain.repositories import ICategoryRepository
-from interfaces.api.common.filters.specific_filters import CategoryFilterParams
-from interfaces.api.common.pagination import PaginationParams
-from interfaces.api.common.sort import SortParams
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 

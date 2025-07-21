@@ -1,16 +1,8 @@
-"""
-Conversor bidireccional para la entidad TransferPayment.
-
-Este módulo contiene el conversor bidireccional principal que coordina
-las conversiones entre TransferPaymentEntity y los DTOs correspondientes.
-"""
-
 from typing import Optional
 
-from application.enums import TransferStateEnum
-from application.mixins.dto_converter_mixin import BidirectionalConverter
-from application.mixins.logging_mixin import LoggingMixin
+from application.mixins import BidirectionalConverter, LoggingMixin
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
+from domain.enums import TransferStateEnum
 from dtos.request.transfer.transfer_payment_request import (
     CreateTransferPaymentInternalDTO,
 )

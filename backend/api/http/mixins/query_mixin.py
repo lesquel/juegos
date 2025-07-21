@@ -1,10 +1,10 @@
 from collections.abc import Callable
 from typing import Any, List, Optional, Tuple, Type
 
+from api.http.common.filters.base_filter import BaseFilterParams
+from api.http.common.pagination import PaginationParams
+from api.http.common.sort import SortParams
 from fastapi import Query
-from interfaces.api.common.filters.base_filter import BaseFilterParams
-from interfaces.api.common.pagination import PaginationParams
-from interfaces.api.common.sort import SortParams
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 

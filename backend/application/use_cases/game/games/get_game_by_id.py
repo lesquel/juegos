@@ -1,6 +1,6 @@
-from application.interfaces.base_use_case import BaseGetByIdUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.exceptions import GameNotFoundError
+from domain.interfaces.base_use_case import BaseGetByIdUseCase
 from domain.repositories import IGameRepository
 from dtos.response.game import GameResponseDTO
 

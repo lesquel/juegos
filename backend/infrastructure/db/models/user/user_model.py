@@ -1,6 +1,6 @@
 import uuid
 
-from application.enums import UserRole
+from domain.enums import UserRole
 from sqlalchemy import Column, Float, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship

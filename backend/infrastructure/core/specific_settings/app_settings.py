@@ -5,7 +5,7 @@ class AppSettings(BaseSettingsConfig):
     app_name: str
     environment: str
     debug: bool = False  # Seguro por defecto - debe activarse explícitamente
-    base_url: str
+    host: str
 
     # CORS
     allowed_origins: list[str]
@@ -22,3 +22,8 @@ class AppSettings(BaseSettingsConfig):
     def should_enable_debug(self) -> bool:
         """Determina si el debug debe estar habilitado"""
         return self.debug and self.is_development()
+
+    @property
+    def base_url(self) -> str:
+        """Devuelve la URL base de la aplicación"""
+        return f"http://{self.host}"

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from application.enums import TransferStateEnum
+from domain.enums import TransferStateEnum
 from dtos.common.constants import (
     EXAMPLE_CREATED_AT,
     EXAMPLE_TRANSFER_AMOUNT,

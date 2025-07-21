@@ -1,5 +1,18 @@
 from uuid import UUID
 
+from api.http.common import (
+    PaginationParams,
+    SortParams,
+    get_pagination_params,
+    get_sort_params,
+)
+from api.http.common.filters.specific_filters import (
+    CategoryFilterParams,
+    GameFilterParams,
+    get_category_filter_params,
+    get_game_filter_params,
+)
+from api.http.common.response_utils import handle_paginated_request
 from application.use_cases.game import (
     GetAllGamesUseCase,
     GetCategoriesByGameIdUseCase,
@@ -14,19 +27,6 @@ from infrastructure.dependencies import (
     get_game_by_id_use_case,
 )
 from infrastructure.logging import get_logger
-from interfaces.api.common import (
-    PaginationParams,
-    SortParams,
-    get_pagination_params,
-    get_sort_params,
-)
-from interfaces.api.common.filters.specific_filters import (
-    CategoryFilterParams,
-    GameFilterParams,
-    get_category_filter_params,
-    get_game_filter_params,
-)
-from interfaces.api.common.response_utils import handle_paginated_request
 
 from .game_review_routes import game_review_router
 

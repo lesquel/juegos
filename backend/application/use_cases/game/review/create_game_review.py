@@ -1,7 +1,6 @@
-from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import BidirectionalConverter
 from domain.entities.game.game_review import GameReviewEntity
-from domain.exceptions.auth import AuthenticationError
+from domain.interfaces.base_use_case import BaseUseCase
 from domain.repositories.game_review_repository import IGameReviewRepository
 from dtos.request.game.game_review_request import CreateGameReviewRequestDTO
 from dtos.response.game.game_review_response import GameReviewResponseDTO
@@ -33,10 +32,6 @@ class CreateGameReviewUseCase(
         self.logger.info(
             f"Creating review for game {game_id} by user {self.user.user_id}"
         )
-
-        if not self.user:
-            self.logger.error("User is not authenticated")
-            raise AuthenticationError("User must be authenticated to create a review")
 
         # Usar converter para transformar DTO a entidad
         new_review = self.converter.to_entity(review_dto)

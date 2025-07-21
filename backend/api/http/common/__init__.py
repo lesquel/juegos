@@ -1,4 +1,4 @@
-from domain.common import PaginationParams, SortParams
+from application.common import PaginationParams, SortParams
 
 from .filters.base_filter import BaseFilterParams, get_base_filter_params
 from .pagination import get_pagination_params

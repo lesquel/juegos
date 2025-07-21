@@ -1,9 +1,9 @@
 """Match use cases dependencies."""
 
-from application.interfaces.base_assembler import BaseAssembler
 from application.mixins.dto_converter_mixin import BidirectionalConverter
 from application.use_cases.match import GetMatchParticipantsUseCase, JoinMatchUseCase
 from application.use_cases.match.finish_match import FinishMatchUseCase
+from domain.interfaces.base_assembler import BaseAssembler
 from domain.repositories.game_repository import IGameRepository
 from domain.repositories.match_repository import IMatchRepository
 from domain.repositories.user_repository import IUserRepository

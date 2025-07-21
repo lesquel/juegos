@@ -1,5 +1,3 @@
-"""Conversor DTO para entidad MatchParticipation."""
-
 from application.mixins.dto_converter_mixin import (
     BidirectionalConverter,
     DTOToEntityConverter,

@@ -1,6 +1,6 @@
+from api.http.common.exception_handler import GlobalExceptionHandler
 from fastapi import FastAPI
 from infrastructure.logging import get_logger
-from interfaces.api.common.exception_handler import GlobalExceptionHandler
 
 # Configurar logger
 logger = get_logger("exception_handlers")

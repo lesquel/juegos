@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from domain.common.base_filter import BaseFilterParams as DomainBaseFilterParams
+from application.common.base_filter import BaseFilterParams as DomainBaseFilterParams
 from fastapi import Query
 from sqlalchemy import or_
 

@@ -1,6 +1,5 @@
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from application.use_cases.user import GetAllUsersUseCase, GetUserByIdUseCase
-from application.use_cases.user.validate_user_balance import ValidateUserBalanceUseCase
 from domain.repositories import IUserRepository
 from fastapi import Depends
 
@@ -40,21 +39,6 @@ def get_user_by_id_use_case(
         GetUserByIdUseCase: Caso de uso configurado
     """
     return GetUserByIdUseCase(user_repo=user_repo, user_converter=user_converter)
-
-
-def get_validate_user_balance_use_case(
-    user_repo: IUserRepository = Depends(get_user_repository),
-) -> ValidateUserBalanceUseCase:
-    """
-    Proveedor para el caso de uso de validar el saldo del usuario.
-
-    Args:
-        user_repo: Repositorio de usuarios inyectado
-
-    Returns:
-        ValidateUserBalanceUseCase: Caso de uso configurado
-    """
-    return ValidateUserBalanceUseCase(user_repo=user_repo)
 
 
 # Exportar todos los proveedores

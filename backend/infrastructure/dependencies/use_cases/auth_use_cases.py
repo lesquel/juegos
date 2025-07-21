@@ -1,12 +1,10 @@
-from application.interfaces.base_assembler import BaseAssembler
-from application.interfaces.password_hasher import IPasswordHasher
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from application.use_cases.auth import (
     GetCurrentUserUseCase,
     LoginUserUseCase,
     RegisterUserUseCase,
 )
-from domain.interfaces.token_provider import ITokenProvider
+from domain.interfaces import BaseAssembler, IPasswordHasher, ITokenProvider
 from domain.repositories import IUserRepository
 from dtos.response.auth.auth_response_dto import LoginResponseDTO
 from dtos.response.user.user_response import UserResponseDTO

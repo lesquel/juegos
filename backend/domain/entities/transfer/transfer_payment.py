@@ -1,6 +1,6 @@
 from typing import Optional
 
-from application.enums import TransferStateEnum
+from domain.enums import TransferStateEnum
 
 from ..time_stamp_entity_mixin import TimeStampEntityMixin
 

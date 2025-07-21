@@ -1,6 +1,6 @@
 import uuid
 
-from application.enums import TransferStateEnum
+from domain.enums import TransferStateEnum
 from sqlalchemy import Column, Float, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship

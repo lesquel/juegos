@@ -1,14 +1,14 @@
 from typing import List, Optional, Tuple
 
-from application.enums import TransferStateEnum
+from api.http.common.filters.specific_filters import TransferPaymentFilterParams
+from api.http.common.pagination import PaginationParams
+from api.http.common.sort import SortParams
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
+from domain.enums import TransferStateEnum
 from domain.exceptions.transfer import TransferNotFoundError
 from domain.repositories.transfer_payment_repository import ITransferPaymentRepository
 from infrastructure.db.models import TransferPaymentModel
 from infrastructure.db.repositories.base_repository import BasePostgresRepository
-from interfaces.api.common.filters.specific_filters import TransferPaymentFilterParams
-from interfaces.api.common.pagination import PaginationParams
-from interfaces.api.common.sort import SortParams
 from sqlalchemy import select
 
 

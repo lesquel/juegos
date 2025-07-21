@@ -1,5 +1,3 @@
-"""Conversor DTO para entidad Game."""
-
 from application.mixins import LoggingMixin
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.entities.game.game import GameEntity

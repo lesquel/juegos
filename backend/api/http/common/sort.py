@@ -1,6 +1,6 @@
 from typing import Optional
 
-from domain.common.sort import SortParams
+from application.common.sort import SortParams
 from fastapi.params import Query
 
 

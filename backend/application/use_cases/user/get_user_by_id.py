@@ -1,8 +1,6 @@
-"""Caso de uso para obtener usuario por ID."""
-
-from application.interfaces.base_use_case import BaseGetByIdUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.exceptions import UserNotFoundError
+from domain.interfaces.base_use_case import BaseGetByIdUseCase
 from domain.repositories import IUserRepository
 from dtos.response.user.user_response import UserResponseDTO
 

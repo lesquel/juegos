@@ -1,11 +1,11 @@
 from decimal import Decimal
 
-from application.mixins.dto_converter_mixin import (
+from application.mixins import (
     BidirectionalConverter,
     DTOToEntityConverter,
     EntityToDTOConverter,
+    LoggingMixin,
 )
-from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.game.game import GameEntity
 from domain.entities.match.match import MatchEntity
 from dtos.request.match.match_request_dto import CreateMatchRequestDTO

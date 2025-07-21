@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, List, Optional, Tuple
 
-from domain.common import SortParams
+from application.common import SortParams
 
 from .common import EntityType, FilterType, ModelType
 
@@ -39,7 +39,7 @@ class IWriteOnlyRepository(ABC, Generic[EntityType, ModelType]):
         """Elimina una entidad por ID."""
 
     @abstractmethod
-    async def update(self, entity_id: str, entity: EntityType) -> None:
+    async def update(self, entity_id: str, entity: EntityType) -> EntityType:
         """Actualiza una entidad."""
 
     @abstractmethod

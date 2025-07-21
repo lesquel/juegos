@@ -1,5 +1,12 @@
 from uuid import UUID
 
+from api.http.common import (
+    PaginationParams,
+    SortParams,
+    get_pagination_params,
+    get_sort_params,
+)
+from api.http.common.response_utils import handle_paginated_request
 from application.use_cases.game import (
     GetGameReviewByIdUseCase,
     GetGameReviewsByGameIdUseCase,
@@ -24,13 +31,6 @@ from infrastructure.dependencies import (
     get_update_game_review_use_case,
 )
 from infrastructure.logging import get_logger
-from interfaces.api.common import (
-    PaginationParams,
-    SortParams,
-    get_pagination_params,
-    get_sort_params,
-)
-from interfaces.api.common.response_utils import handle_paginated_request
 
 from ..common.filters.specific_filters import (
     GameReviewFilterParams,

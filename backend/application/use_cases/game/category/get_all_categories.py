@@ -1,5 +1,5 @@
-from application.interfaces.base_use_case import BasePaginatedUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
+from domain.interfaces.base_use_case import BasePaginatedUseCase
 from domain.repositories import ICategoryRepository
 from dtos.response.game import CategoryResponseDTO
 

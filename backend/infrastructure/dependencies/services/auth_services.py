@@ -1,15 +1,8 @@
-"""
-Proveedores de servicios de autenticación y seguridad.
-
-Este módulo contiene las funciones que crean instancias de servicios
-relacionados con autenticación, hashing de contraseñas y tokens.
-"""
-
-from application.interfaces.password_hasher import IPasswordHasher
 from application.services import PasswordHasher
-from domain.interfaces.token_provider import ITokenProvider
+from domain.interfaces import IPasswordHasher, ITokenProvider
 from infrastructure.auth.jwt_service import JWTService
 from infrastructure.auth.security import CustomHTTPBearer
+from passlib.context import CryptContext
 
 
 def get_password_hasher() -> IPasswordHasher:
@@ -19,7 +12,9 @@ def get_password_hasher() -> IPasswordHasher:
     Returns:
         IPasswordHasher: Servicio de hash de contraseñas
     """
-    return PasswordHasher()
+    hasher = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+    return PasswordHasher(hasher)
 
 
 def get_token_provider() -> ITokenProvider:

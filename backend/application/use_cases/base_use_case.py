@@ -1,5 +1,3 @@
-"""Clase base para casos de uso comunes."""
-
 from abc import ABC, abstractmethod
 from typing import Any, Generic, TypeVar
 

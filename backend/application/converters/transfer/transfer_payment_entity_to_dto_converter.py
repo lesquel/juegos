@@ -1,5 +1,4 @@
-from application.mixins.dto_converter_mixin import EntityToDTOConverter
-from application.mixins.logging_mixin import LoggingMixin
+from application.mixins import EntityToDTOConverter, LoggingMixin
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
 from dtos.response.transfer.transfer_payment_response_dto import (
     TransferPaymentResponseDTO,

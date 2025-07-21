@@ -39,7 +39,10 @@ class MatchModel(Base, TimeStampModelMixin):
     )
 
     participants = relationship(
-        "MatchParticipationModel", back_populates="match", cascade="all, delete-orphan"
+        "MatchParticipationModel",
+        back_populates="match",
+        cascade="all, delete-orphan",
+        lazy="joined",
     )
 
     creator = relationship(

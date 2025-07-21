@@ -1,6 +1,6 @@
-from application.interfaces.base_use_case import BaseUseCase
 from domain.exceptions.auth import AuthenticationError
 from domain.exceptions.game import GameReviewNotFoundError
+from domain.interfaces.base_use_case import BaseUseCase
 from domain.repositories.game_review_repository import IGameReviewRepository
 from dtos.request.game.game_review_request import CreateGameReviewRequestDTO
 from dtos.response.game.game_review_response import GameReviewResponseDTO
@@ -26,10 +26,6 @@ class DeleteGameReviewUseCase(
         self.logger.info(
             f"Deleting review for game {game_review_id} by user {self.user.user_id}"
         )
-
-        if not self.user:
-            self.logger.error("User is not authenticated")
-            raise AuthenticationError("User must be authenticated to delete a review")
 
         existing_review = await self.review_repository.get_by_id(game_review_id)
 

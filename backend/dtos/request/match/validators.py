@@ -24,7 +24,7 @@ class MatchDTOValidators:
                 raise MatchValidationError("El monto apostado debe ser mayor a 0")
 
             # Verificar que no sea un número demasiado grande
-            if float_value > 1000000:  # 1 millón como límite razonable
+            if float_value > 1000:  # Mil como límite razonable
                 raise MatchValidationError("El monto apostado es demasiado grande")
 
             return round(float_value, 2)

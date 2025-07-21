@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Optional
 
-from domain.common import BaseFilterParams, PaginationParams, SortParams
+from application.common import BaseFilterParams, PaginationParams, SortParams
 from domain.entities.game import GameEntity
 
 from .base_repository import IReadOnlyRepository

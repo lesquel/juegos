@@ -1,11 +1,10 @@
-from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.exceptions.game import GameNotFoundError
 from domain.exceptions.match import MatchJoinError, MatchNotFoundError
-from domain.exceptions.user import InsufficientBalanceError, UserNotFoundError
-from domain.repositories.game_repository import IGameRepository
-from domain.repositories.match_repository import IMatchRepository
-from domain.repositories.user_repository import IUserRepository
+from domain.exceptions.user import InsufficientBalanceError
+from domain.interfaces.base_use_case import BaseUseCase
+from domain.repositories import IGameRepository, IMatchRepository, IUserRepository
+from domain.services.match_service import MatchService
 from domain.services.user_balance_service import UserBalanceService
 from dtos.response.match.match_response import MatchResponseDTO
 from dtos.response.user.user_response import UserResponseDTO
@@ -56,38 +55,8 @@ class JoinMatchUseCase(BaseUseCase[str, MatchResponseDTO]):
         # Verificar que la partida existe
         match = await self.match_repo.get_by_id(match_id)
         if not match:
-            self.logger.error(f"Match not found: {match_id}")
+            self.logger.error(f"Match with ID {match_id} not found")
             raise MatchNotFoundError(f"Match with ID {match_id} not found")
-
-        game = await self.game_repo.get_by_id(match.game_id)
-
-        # Verificar que el usuario no esté ya participando
-        is_participant = await self.match_repo.is_user_participant(
-            match_id, self.user.user_id
-        )
-        print(is_participant)
-
-        if is_participant:
-            self.logger.warning(
-                f"User {self.user.user_id} already participating in match {match_id}"
-            )
-            raise MatchJoinError("User is already participating in this match")
-
-        if len(match.participant_ids) >= game.game_capacity:
-            self.logger.error(f"Match {match_id} is full")
-            raise MatchJoinError("Match is already full")
-
-        print(game)
-        if not game:
-            self.logger.error(f"Game not found for match: {match_id}")
-            raise GameNotFoundError(f"Game for match with ID {match_id} not found")
-
-        # Verificar que el usuario existe
-        if not self.user:
-            self.logger.error(f"User not found: {self.user.user_id}")
-            raise UserNotFoundError(f"User with ID {self.user.email} not found")
-
-        # Validar saldo para la apuesta
 
         if not UserBalanceService.has_sufficient_balance(
             self.user, match.base_bet_amount
@@ -103,21 +72,29 @@ class JoinMatchUseCase(BaseUseCase[str, MatchResponseDTO]):
                 f"Available: {self.user.virtual_currency}",
             )
 
-        # Deducir el monto de la apuesta del balance del usuario
-        UserBalanceService.deduct_balance(self.user, match.base_bet_amount)
+        game = await self.game_repo.get_by_id(match.game_id)
+        if not game:
+            self.logger.error(f"Game not found for match: {match_id}")
+            raise GameNotFoundError(f"Game for match with ID {match_id} not found")
+
+        if not MatchService.validate_can_join(match, game.game_capacity):
+            self.logger.error(f"Match {match_id} is full")
+            raise MatchJoinError("Match is already full")
 
         # Obtener la entidad completa del usuario para actualizar
         user_entity = await self.user_repo.get_by_id(self.user.user_id)
-        if user_entity:
-            user_entity.virtual_currency = self.user.virtual_currency
-            await self.user_repo.update(self.user.user_id, user_entity)
+
+        UserBalanceService.deduct_balance(user_entity, match.base_bet_amount)
+
+        await self.user_repo.update(self.user.user_id, user_entity)
 
         self.logger.info(
             f"Deducted {match.base_bet_amount} from self.user {self.user.user_id} balance"
         )
 
-        # Unirse a la partida
-        updated_match = await self.match_repo.join_match(match_id, self.user.user_id)
+        match.add_participant(user_entity.user_id)
+
+        updated_match = await self.match_repo.update(match_id, match)
 
         self.logger.info(
             f"User {self.user.user_id} successfully joined match {match_id}"

@@ -21,10 +21,8 @@ class BaseWriteOnlyPostgresRepository(
         self, db_session: AsyncSession, db_model: Type[ModelType], *args, **kwargs
     ):
         # Solo configurar si no están ya configurados (para evitar conflictos con herencia múltiple)
-        if not hasattr(self, "db"):
-            self.db = db_session
-        if not hasattr(self, "model"):
-            self.model = db_model
+        self.db = db_session
+        self.model = db_model
 
     async def save(self, entity: EntityType) -> EntityType:
         """

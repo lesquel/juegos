@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Generic, List, Optional, Tuple, Type
 
+from api.http.common.pagination import PaginationParams
+from api.http.common.sort import SortParams
+from api.http.mixins import QueryMixin
 from application.mixins import LoggingMixin
 from domain.repositories.base_repository import IReadOnlyRepository
-from interfaces.api.common.pagination import PaginationParams
-from interfaces.api.common.sort import SortParams
-from interfaces.api.mixins import QueryMixin
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 

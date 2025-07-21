@@ -1,8 +1,6 @@
-"""Ensamblador para respuestas de autenticación."""
-
-from application.interfaces.base_assembler import BaseAssembler
 from application.mixins import LoggingMixin
 from domain.entities.user.user import UserEntity
+from domain.interfaces.base_assembler import BaseAssembler
 from dtos.response.auth.auth_response_dto import LoginResponseDTO, TokenResponseDTO
 
 from .user_response_converters import UserEntityToDTOConverter

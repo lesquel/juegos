@@ -1,8 +1,7 @@
 from typing import List
 
-from application.interfaces.base_assembler import BaseAssembler
-from application.interfaces.base_use_case import BaseUseCase
 from domain.exceptions.match import MatchNotFoundError
+from domain.interfaces import BaseAssembler, BaseUseCase
 from domain.repositories.match_repository import IMatchRepository
 from infrastructure.logging import log_execution, log_performance
 

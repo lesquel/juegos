@@ -2,20 +2,21 @@ import time
 from functools import lru_cache
 from typing import Dict
 
-# Importar nuestros servicios de autenticación
-from application.converters.auth.user_response_converters import (
-    UserEntityToDTOConverter,
-)
-from application.enums import UserRole
 from application.mixins.logging_mixin import LoggingMixin
-from application.services import PasswordHasher
 from application.use_cases.auth import LoginUserUseCase
+from domain.enums import UserRole
 from dtos.request.auth.auth_request import LoginRequestDTO
 from infrastructure.core.settings_config import settings
 from infrastructure.db.connection import AsyncSessionLocal
-from infrastructure.dependencies.converters.auth_converters import get_login_assembler
+from infrastructure.dependencies.converters import (
+    get_login_assembler,
+    get_user_converter,
+)
 from infrastructure.dependencies.repositories.database_repos import get_user_repository
-from infrastructure.dependencies.services.auth_services import get_token_provider
+from infrastructure.dependencies.services.auth_services import (
+    get_password_hasher,
+    get_token_provider,
+)
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 
@@ -24,9 +25,9 @@ from starlette.requests import Request
 def _get_cached_services():
     """Cache de servicios para evitar recrearlos en cada login"""
     return {
-        "password_hasher": PasswordHasher(),
+        "password_hasher": get_password_hasher(),
         "token_provider": get_token_provider(),
-        "user_converter": UserEntityToDTOConverter(),
+        "user_converter": get_user_converter(),
     }
 
 

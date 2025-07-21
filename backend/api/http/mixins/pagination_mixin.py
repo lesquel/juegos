@@ -1,4 +1,4 @@
-from interfaces.api.common.pagination import PaginationParams
+from api.http.common.pagination import PaginationParams
 
 
 class PaginationMixin:

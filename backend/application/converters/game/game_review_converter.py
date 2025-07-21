@@ -1,11 +1,11 @@
 from typing import Union
 
-from application.mixins.dto_converter_mixin import (
+from application.mixins import (
     BidirectionalConverter,
     DTOToEntityConverter,
     EntityToDTOConverter,
+    LoggingMixin,
 )
-from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.game.game_review import GameReviewEntity
 from dtos.request.game.game_review_request import (
     CreateGameReviewRequestDTO,

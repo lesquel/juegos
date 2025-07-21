@@ -1,4 +1,4 @@
-from application.enums import UserRole
+from domain.enums import UserRole
 from dtos.common.constants import (
     EXAMPLE_CREATED_AT,
     EXAMPLE_EMAIL,

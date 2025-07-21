@@ -1,4 +1,4 @@
-from interfaces.api.common.sort import SortParams
+from api.http.common.sort import SortParams
 
 
 class SortingMixin:

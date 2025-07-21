@@ -1,9 +1,8 @@
 from typing import Optional
 
-from application.enums import TransferStateEnum
-from application.mixins.dto_converter_mixin import DTOToEntityConverter
-from application.mixins.logging_mixin import LoggingMixin
+from application.mixins import DTOToEntityConverter, LoggingMixin
 from domain.entities.transfer.transfer_payment import TransferPaymentEntity
+from domain.enums import TransferStateEnum
 from dtos.request.transfer.transfer_payment_request import (
     CreateTransferPaymentInternalDTO,
 )

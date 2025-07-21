@@ -1,13 +1,5 @@
-"""
-Conversores para la entidad User.
-
-Este módulo contiene los conversores para transformar entre UserEntity
-y los DTOs correspondientes (UserRegistrationRequestDTO y UserResponseDTO).
-"""
-
 from typing import Optional
 
-from application.enums import UserRole
 from application.mixins.dto_converter_mixin import (
     BidirectionalConverter,
     DTOToEntityConverter,
@@ -15,6 +7,7 @@ from application.mixins.dto_converter_mixin import (
 )
 from application.mixins.logging_mixin import LoggingMixin
 from domain.entities.user.user import UserEntity
+from domain.enums import UserRole
 from dtos.request.user.user_request_dto import UserRegistrationRequestDTO
 from dtos.response.user.user_response import UserResponseDTO
 

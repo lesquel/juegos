@@ -1,12 +1,12 @@
 from typing import List, Optional, Tuple
 
+from api.http.common.filters.specific_filters import GameReviewFilterParams
+from api.http.common.pagination import PaginationParams
+from api.http.common.sort import SortParams
 from domain.entities.game import GameReviewEntity
 from domain.exceptions.game import GameReviewAlreadyExistsError, GameReviewNotFoundError
 from domain.repositories import IGameReviewRepository
 from infrastructure.db.models import GameReviewModel
-from interfaces.api.common.filters.specific_filters import GameReviewFilterParams
-from interfaces.api.common.pagination import PaginationParams
-from interfaces.api.common.sort import SortParams
 from sqlalchemy import select
 
 from .base_repository import BasePostgresRepository

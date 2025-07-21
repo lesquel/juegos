@@ -1,7 +1,7 @@
-from application.enums import TransferStateEnum
-from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import BidirectionalConverter
 from application.services.file_upload_service import FileUploadService
+from domain.enums import TransferStateEnum
+from domain.interfaces.base_use_case import BaseUseCase
 from domain.repositories.transfer_payment_repository import ITransferPaymentRepository
 from dtos.request.transfer.transfer_payment_request import (
     CreateTransferPaymentFormDTO,

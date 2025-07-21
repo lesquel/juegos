@@ -1,10 +1,7 @@
-"""Clase base para casos de uso comunes."""
-
 from abc import ABC, abstractmethod
 from typing import Any, Generic, TypeVar
 
-from application.mixins import LoggingMixin
-from application.mixins.dto_converter_mixin import EntityToDTOConverter
+from application.mixins import EntityToDTOConverter, LoggingMixin
 from infrastructure.logging.decorators import log_execution, log_performance
 
 InputType = TypeVar("InputType")  # Input type

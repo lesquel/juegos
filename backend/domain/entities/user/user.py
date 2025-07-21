@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from application.enums import UserRole
+from domain.enums import UserRole
 
 from ..time_stamp_entity_mixin import TimeStampEntityMixin
 

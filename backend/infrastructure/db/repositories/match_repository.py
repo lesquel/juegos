@@ -1,18 +1,16 @@
 from typing import List, Optional, Tuple
 
+from api.http.common.filters.specific_filters.match_filters import MatchFilterParams
+from api.http.common.pagination import PaginationParams
+from api.http.common.sort import SortParams
 from domain.entities.match.match import MatchEntity
-from domain.exceptions.match import MatchNotFoundError, MatchScoreError
+from domain.exceptions.match import MatchNotFoundError
 from domain.repositories.match_repository import IMatchRepository
 from infrastructure.db.models.match.match_model import MatchModel
 from infrastructure.db.models.match.match_participation_model import (
     MatchParticipationModel,
 )
-from interfaces.api.common.filters.specific_filters.match_filters import (
-    MatchFilterParams,
-)
-from interfaces.api.common.pagination import PaginationParams
-from interfaces.api.common.sort import SortParams
-from sqlalchemy import and_, select
+from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from .base_repository import BasePostgresRepository
@@ -56,42 +54,7 @@ class PostgresMatchRepository(
             self.logger.error(f"Error getting match participants: {e}")
             raise
 
-    async def join_match(self, match_id: str, user_id: str) -> MatchEntity:
-        """Permite a un usuario unirse a una partida."""
-        try:
-            # Verificar que la partida existe
-            match = await self.get_by_id(match_id)
-
-            if not match:
-                raise MatchNotFoundError(f"Match with ID {match_id} not found")
-
-            print("Participant IDs before joining:")
-            print(match.participant_ids)
-
-            # Crear nueva participación
-            participation = MatchParticipationModel(
-                match_id=match_id,
-                user_id=user_id,
-                score=0,  # Inicializar con score 0
-            )
-
-            self.db.add(participation)
-            await self.db.commit()
-
-            # Retornar la partida actualizada
-            updated_match = await self.get_by_id(match_id)
-            if updated_match is not None:
-                updated_match.participant_ids.append(user_id)
-                return updated_match
-            else:
-                raise ValueError(f"Match with ID {match_id} not found after update")
-
-        except Exception as e:
-            self.logger.error(f"Error joining match: {e}")
-            await self.db.rollback()
-            raise
-
-    async def update(self, entity_id: str, entity: MatchEntity) -> None:
+    async def update(self, entity_id: str, entity: MatchEntity) -> MatchEntity:
         """Actualiza una partida existente."""
         try:
             if not entity_id:
@@ -99,14 +62,29 @@ class PostgresMatchRepository(
 
             stmt = select(self.model).where(self.model.match_id == entity_id)
             result = await self.db.execute(stmt)
-            match_model = result.scalar_one_or_none()
+            match_model = result.unique().scalar_one_or_none()
 
             if not match_model:
                 self.logger.error(f"Match with ID {entity.match_id} not found")
                 raise MatchNotFoundError(f"Match with ID {entity.match_id} not found")
 
-            if entity.updated_at is not None:
-                match_model.updated_at = entity.updated_at
+            match_model.winner_id = entity.winner_id
+
+            existing_participants = {
+                str(p.user_id): p for p in match_model.participants
+            }
+            new_participants = []
+            for user_id in entity.participant_ids:
+                user_id_str = str(user_id)
+                if user_id_str in existing_participants:
+                    new_participants.append(existing_participants[user_id_str])
+                else:
+                    new_participants.append(
+                        MatchParticipationModel(
+                            match_id=entity.match_id, user_id=user_id, score=0
+                        )
+                    )
+            match_model.participants = new_participants
 
             await self.db.commit()
             await self.db.refresh(match_model)
@@ -118,71 +96,6 @@ class PostgresMatchRepository(
             self.logger.error(f"Error updating match: {e}")
             await self.db.rollback()
             raise
-
-    async def finish_match(
-        self, match_id: str, participations: List[tuple[str, int]]
-    ) -> MatchEntity:
-        """
-        Finaliza una partida actualizando los puntajes y asignando al ganador.
-
-        Args:
-            match_id: ID de la partida.
-            participations: Lista de tuplas (user_id, score).
-
-        Returns:
-            MatchEntity actualizado con los puntajes y ganador.
-
-        Raises:
-            MatchNotFoundError: Si la partida o alguna participación no se encuentra.
-        """
-        try:
-            print("PARTICIPATIONS:")
-            print(participations)
-            for user_id, score in participations:
-                if not await self.is_user_participant(match_id, user_id):
-                    self.logger.warning(
-                        f"User {user_id} is not a participant in match {match_id}"
-                    )
-                    raise MatchScoreError("User is not a participant in this match")
-
-            # Determinar ganador
-            winner_id = max(participations, key=lambda x: x[1])[0]
-
-            # Actualizar la entidad de la partida con el ganador y estado
-            match_stmt = select(MatchModel).where(MatchModel.match_id == match_id)
-            match_result = await self.db.execute(match_stmt)
-            match = match_result.scalar_one_or_none()
-
-            if not match:
-                raise MatchNotFoundError(f"Match with ID {match_id} not found")
-
-            match.winner_id = winner_id
-
-            await self.db.commit()
-
-            return await self.get_by_id(match_id)
-
-        except Exception as e:
-            self.logger.error(f"Unexpected error finishing match: {e}")
-            await self.db.rollback()
-            raise
-
-    async def is_user_participant(self, match_id: str, user_id: str) -> bool:
-        """Verifica si un usuario es participante de una partida."""
-        try:
-            stmt = select(MatchParticipationModel).where(
-                and_(
-                    MatchParticipationModel.match_id == match_id,
-                    MatchParticipationModel.user_id == user_id,
-                )
-            )
-            result = await self.db.execute(stmt)
-            participation = result.scalar_one_or_none()
-            return participation is not None
-
-        except Exception as e:
-            self.logger.error(f"Error checking user participation: {e}")
-            return False
 
     async def get_by_id(self, entity_id: str) -> Optional[MatchEntity]:
         """Obtiene una partida por ID con sus participaciones."""

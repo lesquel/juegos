@@ -1,7 +1,7 @@
 from math import ceil
 from typing import Callable, List, TypeVar
 
-from domain.common import PaginationParams, SortParams
+from application.common import PaginationParams, SortParams
 from dtos.common import PaginatedResponseDTO, PaginationInfoDTO
 from fastapi import Request
 

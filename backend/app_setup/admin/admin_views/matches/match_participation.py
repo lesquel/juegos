@@ -14,7 +14,7 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
     column_list = [
         MatchParticipationModel.id,
         MatchParticipationModel.match_id,
-        MatchParticipationModel.user_id,
+        MatchParticipationModel.user,
         MatchParticipationModel.score,
         MatchParticipationModel.created_at,
         MatchParticipationModel.updated_at,
@@ -24,7 +24,7 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
     column_details_list = [
         MatchParticipationModel.id,
         MatchParticipationModel.match_id,
-        MatchParticipationModel.user_id,
+        MatchParticipationModel.user,
         MatchParticipationModel.score,
         MatchParticipationModel.created_at,
         MatchParticipationModel.updated_at,
@@ -33,14 +33,14 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
     # Columnas editables
     form_columns = [
         MatchParticipationModel.match_id,
-        MatchParticipationModel.user_id,
+        MatchParticipationModel.user,
         MatchParticipationModel.score,
     ]
 
     # Columnas para filtrado
     column_filters = [
         MatchParticipationModel.match_id,
-        MatchParticipationModel.user_id,
+        MatchParticipationModel.user,
         MatchParticipationModel.score,
         MatchParticipationModel.created_at,
         MatchParticipationModel.updated_at,
@@ -61,7 +61,7 @@ class MatchParticipationAdmin(ModelView, model=MatchParticipationModel):
     column_labels = {
         MatchParticipationModel.id: "ID",
         MatchParticipationModel.match_id: "ID de Partida",
-        MatchParticipationModel.user_id: "ID del Usuario",
+        MatchParticipationModel.user: "Usuario",
         MatchParticipationModel.score: "Puntuación",
         MatchParticipationModel.created_at: "Fecha de Creación",
         MatchParticipationModel.updated_at: "Última Actualización",

@@ -1,5 +1,3 @@
-"""Mixins genéricos para conversiones de DTOs."""
-
 from abc import ABC, abstractmethod
 from typing import Generic, List, TypeVar
 

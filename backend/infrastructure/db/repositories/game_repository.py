@@ -1,10 +1,10 @@
 from typing import List, Optional, Tuple
 
+from api.http.common.filters.specific_filters import GameFilterParams
+from api.http.common.pagination import PaginationParams
+from api.http.common.sort import SortParams
 from domain.entities.game import GameEntity
 from domain.repositories import IGameRepository
-from interfaces.api.common.filters.specific_filters import GameFilterParams
-from interfaces.api.common.pagination import PaginationParams
-from interfaces.api.common.sort import SortParams
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 

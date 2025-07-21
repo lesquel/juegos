@@ -1,9 +1,9 @@
 from abc import abstractmethod
 from typing import List, Optional, Tuple
 
-from application.enums import TransferStateEnum
-from domain.common import BaseFilterParams, PaginationParams, SortParams
+from application.common import BaseFilterParams, PaginationParams, SortParams
 from domain.entities import TransferPaymentEntity
+from domain.enums import TransferStateEnum
 
 from .base_repository import IBaseRepository
 from .common import ModelType

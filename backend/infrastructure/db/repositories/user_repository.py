@@ -3,9 +3,10 @@
 import uuid
 from typing import Optional
 
+from api.http.common.filters.specific_filters import UserFilterParams
 from domain.entities import UserEntity
+from domain.exceptions import UserNotFoundError
 from domain.repositories import IUserRepository
-from interfaces.api.common.filters.specific_filters import UserFilterParams
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -49,7 +50,7 @@ class PostgresUserRepository(
             await self.db.commit()
             self.logger.info(f"Successfully updated user: {user_id}")
         else:
-            raise Exception(f"User with ID {user_id} not found")
+            raise UserNotFoundError(f"User with ID {user_id} not found")
 
     def _model_to_entity(self, model: UserModel) -> UserEntity:
         """Convierte UserModel a UserEntity."""

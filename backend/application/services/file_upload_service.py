@@ -3,8 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 import aiofiles
-from application.interfaces.base_use_case import BaseUseCase
-from fastapi import UploadFile
+from domain.interfaces import BaseUseCase, IFile
 from infrastructure.core import settings
 
 
@@ -19,7 +18,7 @@ class FileUploadService(BaseUseCase):
         # Crear directorio de subida si no existe
         Path(self.upload_directory).mkdir(parents=True, exist_ok=True)
 
-    async def execute(self, file: UploadFile, subfolder: str) -> str:
+    async def execute(self, file: IFile, subfolder: str) -> str:
         """
         Sube una imagen y retorna la URL pública
 

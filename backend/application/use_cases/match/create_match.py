@@ -1,8 +1,8 @@
-from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import BidirectionalConverter
 from domain.entities.match.match import MatchEntity
 from domain.exceptions.game import GameNotFoundError
-from domain.exceptions.user import InsufficientBalanceError, UserNotFoundError
+from domain.exceptions.user import InsufficientBalanceError
+from domain.interfaces.base_use_case import BaseUseCase
 from domain.repositories.game_repository import IGameRepository
 from domain.repositories.match_repository import IMatchRepository
 from domain.repositories.user_repository import IUserRepository
@@ -55,11 +55,6 @@ class CreateMatchUseCase(BaseUseCase[CreateMatchRequestDTO, MatchResponseDTO]):
             f"Creating match for game {match_data} by user {self.user.user_id}"
         )
 
-        # Validar que el usuario existe
-        if not self.user:
-            self.logger.error(f"User not found: {self.user.user_id}")
-            raise UserNotFoundError(f"User with ID {self.user.user_id} not found")
-
         # Validar que el usuario tiene saldo suficiente para crear la partida
         if not UserBalanceService.has_sufficient_balance(
             self.user, match_data.base_bet_amount
@@ -85,22 +80,22 @@ class CreateMatchUseCase(BaseUseCase[CreateMatchRequestDTO, MatchResponseDTO]):
         match_entity = self.match_converter.to_entity(match_data)
 
         # Deducir el monto de la apuesta del balance del usuario
-        UserBalanceService.deduct_balance(self.user, match_data.base_bet_amount)
 
         # Obtener la entidad completa del usuario para actualizar
         user_entity = await self.user_repo.get_by_id(self.user.user_id)
-        if user_entity:
-            user_entity.virtual_currency = self.user.virtual_currency
-            await self.user_repo.update(self.user.user_id, user_entity)
+
+        UserBalanceService.deduct_balance(user_entity, match_data.base_bet_amount)
+
+        await self.user_repo.update(self.user.user_id, user_entity)
 
         self.logger.info(
-            f"Deducted {match_data.base_bet_amount} from user {self.user.user_id} balance"
+            f"Deducted {match_data.base_bet_amount} from user {user_entity.user_id} balance"
         )
 
-        match_entity.created_by_id = self.user.user_id
+        match_entity.created_by_id = user_entity.user_id
         match_entity.game_id = game_id
 
-        match_entity.add_participant(self.user.user_id)
+        match_entity.add_participant(user_entity.user_id)
 
         created_match = await self.match_repo.save(match_entity)
 

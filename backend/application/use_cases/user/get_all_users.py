@@ -1,7 +1,5 @@
-"""Caso de uso para obtener todos los usuarios."""
-
-from application.interfaces.base_use_case import BasePaginatedUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
+from domain.interfaces.base_use_case import BasePaginatedUseCase
 from domain.repositories import IUserRepository
 from dtos.response.user.user_response import UserResponseDTO
 

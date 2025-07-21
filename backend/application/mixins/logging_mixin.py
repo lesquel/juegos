@@ -1,5 +1,3 @@
-"""Mixin para logging reutilizable."""
-
 from infrastructure.logging import get_logger
 
 

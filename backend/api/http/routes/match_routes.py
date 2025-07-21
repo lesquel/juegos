@@ -1,5 +1,17 @@
 from uuid import UUID
 
+from api.http.common import (
+    PaginationParams,
+    SortParams,
+    get_pagination_params,
+    get_sort_params,
+)
+from api.http.common.filters.specific_filters.match_filters import (
+    MatchFilterParams,
+    get_match_filter_params,
+)
+from api.http.common.response_utils import handle_paginated_request
+
 # Import use cases
 from application.use_cases.match import (
     CreateMatchUseCase,
@@ -16,17 +28,6 @@ from infrastructure.dependencies.use_cases.match_use_cases import (
     get_matches_by_game_id_use_case,
 )
 from infrastructure.logging import get_logger
-from interfaces.api.common import (
-    PaginationParams,
-    SortParams,
-    get_pagination_params,
-    get_sort_params,
-)
-from interfaces.api.common.filters.specific_filters.match_filters import (
-    MatchFilterParams,
-    get_match_filter_params,
-)
-from interfaces.api.common.response_utils import handle_paginated_request
 
 from .match_participation_routes import match_participations_router
 

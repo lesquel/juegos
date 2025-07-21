@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
-from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
+from domain.interfaces.base_use_case import BaseUseCase
 from domain.repositories.transfer_payment_repository import ITransferPaymentRepository
 from dtos.response.transfer.transfer_payment_response_dto import (
     TransferPaymentResponseDTO,

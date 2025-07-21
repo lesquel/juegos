@@ -1,5 +1,5 @@
-from application.interfaces.base_use_case import BaseUseCase
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
+from domain.interfaces.base_use_case import BaseUseCase
 from domain.repositories import IGameReviewRepository
 from dtos.response.game import GameReviewResponseDTO
 from infrastructure.logging import log_execution, log_performance

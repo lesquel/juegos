@@ -1,5 +1,3 @@
-"""Conversor DTO para entidad Category."""
-
 from application.mixins import LoggingMixin
 from application.mixins.dto_converter_mixin import (
     BidirectionalConverter,

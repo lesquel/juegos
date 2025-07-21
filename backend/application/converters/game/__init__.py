@@ -1,6 +1,3 @@
-"""Conversores DTO para entidades de juegos."""
-
-# Game converters
 # Category converters
 from .category_converter import (
     CategoryBidirectionalConverter,

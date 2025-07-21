@@ -1,5 +1,7 @@
 from typing import Optional
 
+from domain.exceptions.match import MatchJoinError
+
 from ...constants import HOUSE_MARGIN
 from ..time_stamp_entity_mixin import TimeStampEntityMixin
 
@@ -26,6 +28,10 @@ class MatchEntity(TimeStampEntityMixin):
         self.participant_ids = participant_ids if participant_ids is not None else []
 
     def add_participant(self, user_id: str):
+        if self.is_participant(user_id):
+            raise MatchJoinError(
+                f"User {user_id} is already a participant in this match."
+            )
         self.participant_ids.append(user_id)
 
     def calculate_odds_for_match(self, house_odds: float) -> float:
@@ -40,6 +46,9 @@ class MatchEntity(TimeStampEntityMixin):
             return house_odds
         else:
             return 0.0
+
+    def is_participant(self, user_id: str) -> bool:
+        return user_id in self.participant_ids
 
     def __repr__(self):
         return f"Match(match_id={self.match_id}, game_id={self.game_id}, winner_id={self.winner_id})"
