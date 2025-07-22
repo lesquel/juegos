@@ -5,3 +5,4 @@ from .game_review_repository import IGameReviewRepository
 from .match_repository import IMatchRepository
 from .transfer_payment_repository import ITransferPaymentRepository
 from .user_repository import IUserRepository
+from .app_info_repository import IAppInfoRepository

@@ -15,28 +15,8 @@ from dtos.common.constants import (
 )
 from pydantic import Field
 
-from ..time_stamp_base import TimeStampBase
+from .time_stamp_base import TimeStampBase
 
-
-class MatchParticipationResponseDTO(TimeStampBase):
-    """DTOa para respuesta de participación en partida"""
-
-    user_id: str = Field(..., description="ID del usuario participante")
-    score: int = Field(..., description="Puntuación obtenida por el participante")
-    bet_amount: Optional[float] = Field(
-        None, description="Monto apostado por el participante"
-    )
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "user_id": EXAMPLE_USER_ID,
-                "score": EXAMPLE_SCORE,
-                "bet_amount": EXAMPLE_BET_AMOUNT,
-                "created_at": EXAMPLE_CREATED_AT,
-                "updated_at": EXAMPLE_UPDATED_AT,
-            }
-        }
 
 
 class MatchResponseDTO(TimeStampBase):

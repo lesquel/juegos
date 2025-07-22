@@ -5,3 +5,4 @@ from .game_review_repository import PostgresGameReviewRepository
 from .match_repository import PostgresMatchRepository
 from .transfer_payment_repository import PostgresTransferPaymentRepository
 from .user_repository import PostgresUserRepository
+from .app_info_repository import PostgresAppInfoRepository
