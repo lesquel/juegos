@@ -17,7 +17,7 @@ export const ListCommentGame = ({ gameId }: { gameId: string }) => {
 
   if (!data?.results || data.results.length === 0)
     return (
-      <div>
+      <div className="mt-6">
         <h1 className="text-center text-white">No hay comentarios</h1>
       </div>
     );

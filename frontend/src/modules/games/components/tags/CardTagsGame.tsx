@@ -21,6 +21,11 @@ export const CardTagsGame = ({ game }: { game: Game }) => {
       <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 bg-gradient-to-t from-black via-black/70 to-transparent">
         <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">{game_name}</h2>
         <p className="text-gray-300 text-sm mb-4 h-10 overflow-hidden">{game_description}</p>
+        <div className="flex items-center justify-end">
+          <button className="bg-gradient-to-r from-purple-500 to-teal-400 text-white font-bold py-2 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-300 ease-in-out">
+            Jugar Ahora
+          </button>
+        </div>
       </div>
     </a>
   );
