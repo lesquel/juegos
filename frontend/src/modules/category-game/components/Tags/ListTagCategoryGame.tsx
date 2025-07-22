@@ -6,7 +6,8 @@ export const ListTagCategoryGame = ({ gameId }: { gameId: string }) => {
   const { data, isLoading, error } =
     CategoryGameClientData.getCategoriesByGameId(gameId);
 
-  if (isLoading) return <LoadingComponent />;
+  // if (isLoading) return <LoadingComponent />;
+  if (isLoading) return <div className="text-white texxt-center">Loading...</div>;;
   if (error)
     return (
       <div className="text-center text-red-400">Error: {error.message}</div>

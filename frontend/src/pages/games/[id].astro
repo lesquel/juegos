@@ -6,7 +6,7 @@ const { id } = Astro.params;
 ---
 
 <Layout>
-  <main class="h-full flex-grow flex items-center justify-center bg-gray-900 text-white md:py-10 md:px-10 lg:px-20">
+  <main class="h-full flex-grow flex items-center justify-center bg-gray-900">
     <SingleGame client:load id={id as string} />
   </main>
 </Layout>

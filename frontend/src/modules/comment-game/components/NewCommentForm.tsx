@@ -27,7 +27,7 @@ export const NewCommentForm = ({ gameId }: NewCommentFormProps) => {
   });
 
   return (
-    <div className="bg-gray-800 bg-opacity-50 rounded-2xl p-6 border border-gray-700">
+    <div className="bg-gray-800 bg-opacity-50 rounded-2xl p-6 border border-gray-700 max-w-4xl mx-auto">
       <h3 className="text-xl font-bold text-white mb-4">Deja tu Comentario</h3>
       <div className="flex items-start space-x-4">
         <div className="flex-1">

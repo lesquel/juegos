@@ -25,22 +25,19 @@ export const CardCommentGame = ({
   }, [user]);
 
   return (
-    <div className="flex items-start space-x-4 p-5 bg-gray-800 bg-opacity-50 rounded-2xl border border-gray-700">
+    <div className="flex items-start sm:space-x-4 gap-5 p-5 bg-gray-800 bg-opacity-50 rounded-2xl border border-gray-700 space-y-4 sm:space-y-0">
       <div className="flex-shrink-0">
         <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center text-white font-bold text-xl">
           {userInitial}
         </div>
       </div>
-      <div className="flex-1">
-        <div className="flex items-center justify-between">
-          <h4 className="text-lg font-bold text-white">{userName}</h4>
-          <span className="text-xs text-gray-400">
-            {new Date(created_at).toLocaleDateString("es-ES", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </span>
+      <div className="flex-1 min-w-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <h4 className="text-lg font-bold text-white truncate">{userName}</h4>
+          <div className="flex items-center space-x-2 self-end sm:self-center">
+            {isUserComment && <EditCommentGame commentId={review_id} />}
+            {isUserComment && <DeleteCommentGame commentId={review_id} />}
+          </div>
         </div>
 
         {/* Mostrar estrellas */}
@@ -58,10 +55,18 @@ export const CardCommentGame = ({
           })}
         </div>
 
-        <p className="text-gray-300">{comment}</p>
+        <p className="text-gray-300 mb-2 break-words">{comment}</p>
+        
+        <div className="flex justify-end">
+          <span className="text-xs text-gray-400">
+            {new Date(created_at).toLocaleDateString("es-ES", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </span>
+        </div>
       </div>
-      {isUserComment && <DeleteCommentGame commentId={review_id} />}
-      {isUserComment && <EditCommentGame commentId={review_id} />}
     </div>
   );
 };
