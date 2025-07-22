@@ -25,7 +25,7 @@ export const FormInput = ({
     <form.Field
       name={name}
       children={(field: any) => (
-        <div className={`mb-4 relative ${className}`}>
+        <div className={`mb-4 relative w-full ${className}`}>
           {showLabel && label && (
             <label
               htmlFor={field.name}
