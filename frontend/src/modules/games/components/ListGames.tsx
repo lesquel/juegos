@@ -36,7 +36,7 @@ const UseListgame = () => {
           Explora Nuestros Juegos
         </span>
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mb-6">
         {data?.results.map((game: Game) => (
           <CardGame key={game.game_id} game={game} />
         ))}
@@ -45,6 +45,7 @@ const UseListgame = () => {
         paguination={paguination}
         setPaguination={setPaguination}
         info={data.info}
+        color="bg-teal-600"
       />
     </div>
   );
