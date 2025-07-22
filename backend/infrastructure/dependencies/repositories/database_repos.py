@@ -14,6 +14,7 @@ from domain.repositories import (
     IUserRepository,
 )
 from fastapi import Depends
+from domain.repositories.app_info_repository import IAppInfoRepository
 from infrastructure.db.connection import get_async_db
 from infrastructure.db.models import (
     CategoryModel,
@@ -23,6 +24,7 @@ from infrastructure.db.models import (
     TransferPaymentModel,
     UserModel,
 )
+from infrastructure.db.models.app_info_model import AppInfoModel
 from infrastructure.db.repositories import (
     PostgresCategoryRepository,
     PostgresGameRepository,
@@ -30,6 +32,7 @@ from infrastructure.db.repositories import (
     PostgresMatchRepository,
     PostgresTransferPaymentRepository,
     PostgresUserRepository,
+    PostgresAppInfoRepository
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -118,6 +121,19 @@ def get_match_repository(db: AsyncSession = Depends(get_async_db)) -> IMatchRepo
     return PostgresMatchRepository(db, MatchModel)
 
 
+def get_app_info_repository(db: AsyncSession = Depends(get_async_db)) -> IAppInfoRepository:
+    """
+    Proveedor para el repositorio de información de la aplicación.
+
+    Args:
+        db: Sesión de base de datos inyectada
+
+    Returns:
+        IAppInfoRepository: Repositorio de información de la aplicación configurado
+    """
+    return PostgresAppInfoRepository(db, AppInfoModel)
+
+
 # Exportar todos los proveedores
 __all__ = [
     "get_user_repository",
@@ -126,4 +142,5 @@ __all__ = [
     "get_game_review_repository",
     "get_match_repository",
     "get_transfer_payment_repository",
+    "get_app_info_repository",
 ]

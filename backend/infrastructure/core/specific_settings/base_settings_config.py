@@ -10,7 +10,6 @@ ENV = os.getenv("ENVIRONMENT", "dev")
 class BaseSettingsConfig(BaseSettings):
     @classmethod
     def load_from_env(cls, prefix: str):
-        print(f"Loading environment variables for prefix: {prefix} with ENV '{ENV}'")
         env_file_with_env = Path(f"./infrastructure/core/envs/.{prefix}.{ENV}.env")
         env_file_generic = Path(f"./infrastructure/core/envs/.{prefix}.env")
 

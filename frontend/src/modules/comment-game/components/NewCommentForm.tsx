@@ -27,7 +27,7 @@ export const NewCommentForm = ({ gameId }: NewCommentFormProps) => {
   });
 
   return (
-    <div className="bg-gray-800 bg-opacity-50 rounded-2xl p-6 border border-gray-700">
+    <div className="bg-gray-800 bg-opacity-50 rounded-2xl p-6 border border-gray-700 max-w-4xl mx-auto">
       <h3 className="text-xl font-bold text-white mb-4">Deja tu Comentario</h3>
       <div className="flex items-start space-x-4">
         <div className="flex-1">
@@ -85,7 +85,7 @@ export const NewCommentForm = ({ gameId }: NewCommentFormProps) => {
                           type="button"
                           key={star}
                           onClick={() => field.handleChange(star)}
-                          className="text-yellow-400 hover:scale-110 transition"
+                          className="text-yellow-400 hover:scale-110 transition cursor-pointer"
                         >
                           <StarIcon
                             className="w-6 h-6"
@@ -106,7 +106,7 @@ export const NewCommentForm = ({ gameId }: NewCommentFormProps) => {
 
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition"
+              className="w-full py-2 px-4 cursor-pointer bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition"
             >
               Publicar Comentario
             </button>

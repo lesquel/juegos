@@ -41,15 +41,18 @@ const UseListCategoryGame = () => {
           Categorías de Juegos
         </span>
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mb-6">
         {data?.results.map((category) => (
           <CardCategoryGame key={category.category_id} category={category} />
         ))}
       </div>
+
       <PaguinationComponent
         paguination={paguination}
         setPaguination={setPaguination}
         info={data.info}
+        color="bg-purple-600"
       />
     </div>
   );

@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict
 
-from api.http.routes import routers
+from api import routers
 from fastapi import FastAPI
 from infrastructure.logging import get_logger
 

@@ -71,7 +71,7 @@ const UseLoginForm = () => {
           e.stopPropagation();
           void form.handleSubmit();
         }}
-        className="w-full"
+        className="w-full flex flex-col items-center gap-2"
       >
         {error && (
           <p className="text-red-400 text-sm mb-4 text-center bg-red-900 bg-opacity-50 p-3 rounded-lg">
@@ -127,7 +127,7 @@ const UseLoginForm = () => {
 
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold py-3 rounded-lg shadow-lg hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out text-lg"
+          className="w-full cursor-pointer bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold py-3 rounded-lg shadow-lg hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out text-lg"
         >
           Acceder
         </button>

@@ -5,7 +5,7 @@ from .match_routes import match_router
 from .transfer_payment_routes import transfer_router
 from .user_routes import user_router
 
-routers = [
+http_routers = [
     user_router,
     transfer_router,
     auth_router,

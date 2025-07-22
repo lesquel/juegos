@@ -1,0 +1,43 @@
+"""Conversor DTO para entidad Game."""
+
+from application.mixins import LoggingMixin
+from application.mixins.dto_converter_mixin import EntityToDTOConverter
+from domain.entities.game.game import GameEntity
+from dtos.response.game import GameResponseDTO
+
+
+class AppInfoEntityToDTOConverter(
+    EntityToDTOConverter[GameEntity, GameResponseDTO], LoggingMixin
+):
+    """Convierte GameEntity a GameResponseDTO."""
+
+    def __init__(self):
+        super().__init__()
+
+    def to_dto(self, entity: GameEntity) -> GameResponseDTO:
+        """Convierte GameEntity a GameResponseDTO."""
+        self.logger.debug(
+            f"Converting appInfoEntity to AppInfoResponseDTO for game: {entity.game_id}"
+        )
+
+        # Convertir categories a IDs si son objetos, mantener si ya son strings
+        if entity.categories:
+            category_ids = []
+            for category in entity.categories:
+                category_ids.append(str(category))
+
+        dto = GameResponseDTO(
+            game_id=str(entity.game_id),
+            game_name=entity.game_name,
+            game_description=entity.game_description,
+            game_img=entity.game_img,
+            game_url=entity.game_url,
+            game_capacity=entity.game_capacity,
+            house_odds=entity.house_odds,
+            category_ids=category_ids,  # Siempre IDs de string
+            created_at=entity.created_at,
+            updated_at=entity.updated_at,
+        )
+
+        self.logger.debug("Successfully converted GameEntity to GameResponseDTO")
+        return dto

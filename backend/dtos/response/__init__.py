@@ -5,3 +5,4 @@ from .game.game_review_response import *
 from .match import *
 from .transfer.transfer_payment_response_dto import *
 from .user.user_response import *
+from .app_info_response import MatchResponseDTO

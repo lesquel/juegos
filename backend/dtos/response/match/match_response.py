@@ -19,7 +19,7 @@ from ..time_stamp_base import TimeStampBase
 
 
 class MatchParticipationResponseDTO(TimeStampBase):
-    """DTO para respuesta de participación en partida"""
+    """DTOa para respuesta de participación en partida"""
 
     user_id: str = Field(..., description="ID del usuario participante")
     score: int = Field(..., description="Puntuación obtenida por el participante")
