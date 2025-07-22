@@ -28,7 +28,7 @@ const UseSingleGame = ({ id }: { id: string }) => {
     <div className="w-full p-10">
       {/* Game Details Section */}
       <div className="container mx-auto px-6 lg:max-w-5xl pt-5 pb-10">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
           {/* Left Column: Image & Play Button */}
           <div className="lg:col-span-2 flex flex-col items-center gap-6">
             <div className="w-full aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-gray-800">
@@ -51,8 +51,8 @@ const UseSingleGame = ({ id }: { id: string }) => {
 
           {/* Right Column: Info */}
           <div className="lg:col-span-3 flex flex-col gap-6">
-            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-teal-300">
+            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight break-words">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-teal-300 ">
                 {data?.game_name}
               </span>
             </h1>
@@ -60,14 +60,7 @@ const UseSingleGame = ({ id }: { id: string }) => {
               <ListTagCategoryGame gameId={data?.game_id as string} />{" "}
             </div>
             <p className="text-gray-300 text-lg leading-relaxed">
-              {data?.game_description} Lorem ipsum dolor sit amet consectetur
-              adipisicing elit. Magnam quo id repudiandae soluta ex dolorum ad,
-              tenetur sed aliquam ipsa veniam blanditiis perspiciatis esse
-              facere quos. Repudiandae ducimus et officia. Lorem ipsum dolor sit
-              amet consectetur adipisicing elit. Explicabo nesciunt minus,
-              deserunt id, sint libero culpa vel cupiditate dolorem veniam,
-              debitis odio fuga! Quasi culpa tempora recusandae, expedita sint
-              odit.
+              {data?.game_description}
             </p>
           </div>
         </div>
