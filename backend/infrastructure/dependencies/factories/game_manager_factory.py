@@ -1,5 +1,6 @@
 from typing import Dict, Type
 
+from ...websockets.game_names import CONNECT4_NAME, TICTACTOE_NAME
 from ...websockets.managers.base_game_manager import BaseGameWebSocketManager
 from ...websockets.managers.connect4_manager import Connect4WebSocketManager
 from ...websockets.managers.tictactoe_manager import TictactoeWebSocketManager
@@ -15,9 +16,8 @@ class GameManagerRegistry:
 
     def _register_default_managers(self):
         """Registra los managers por defecto"""
-        self.register("connect4", Connect4WebSocketManager)
-        self.register("conecta4", Connect4WebSocketManager)  # Alias
-        self.register("tictactoe", TictactoeWebSocketManager)
+        self.register(CONNECT4_NAME, Connect4WebSocketManager)
+        self.register(TICTACTOE_NAME, TictactoeWebSocketManager)
 
     def register(self, game_type: str, manager_class: Type[BaseGameWebSocketManager]):
         """Registra un manager para un tipo de juego"""
@@ -45,7 +45,9 @@ class GameManagerRegistry:
 _game_manager_registry = GameManagerRegistry()
 
 
-def get_game_websocket_manager(game_type: str = "connect4") -> BaseGameWebSocketManager:
+def get_game_websocket_manager(
+    game_type: str = CONNECT4_NAME,
+) -> BaseGameWebSocketManager:
     """
     Factory function para obtener el manager apropiado según el tipo de juego
 

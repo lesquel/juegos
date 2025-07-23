@@ -6,6 +6,8 @@ from infrastructure.dependencies.factories.game_manager_factory import (
 )
 from infrastructure.logging.logging_config import get_logger
 
+from .game_names import CONNECT4_NAME
+
 logger = get_logger("websockets.unified_game_manager")
 
 
@@ -21,10 +23,7 @@ class UnifiedGameWebSocketManager:
 
     def _get_game_type_from_message(self, message: dict) -> str:
         """Extrae el tipo de juego del mensaje"""
-        game_type = message.get("game_type", "connect4")
-        # Normalizar tipos de juego
-        if game_type == "connect4":
-            return "conecta4"
+        game_type = message.get("game_type", None)
         return game_type
 
     def _get_manager_for_match(self, match_id: str, game_type: str = None) -> Any:
@@ -37,7 +36,7 @@ class UnifiedGameWebSocketManager:
             self._match_game_types[match_id] = game_type
         else:
             # Por defecto usar connect4
-            game_type = "conecta4"
+            game_type = CONNECT4_NAME
             self._match_game_types[match_id] = game_type
 
         # Usar cache de managers por tipo
@@ -69,7 +68,7 @@ class UnifiedGameWebSocketManager:
             return result
         else:
             # Si no conocemos el tipo, intentar con connect4 por defecto
-            manager = self._get_manager_for_match(match_id, "conecta4")
+            manager = self._get_manager_for_match(match_id, CONNECT4_NAME)
             return manager.disconnect(match_id, websocket, user_id)
 
     async def handle_game_message(
@@ -92,7 +91,7 @@ class UnifiedGameWebSocketManager:
             return await manager.broadcast(match_id, message, sender)
         else:
             # Si no conocemos el tipo, intentar con connect4 por defecto
-            manager = self._get_manager_for_match(match_id, "conecta4")
+            manager = self._get_manager_for_match(match_id, CONNECT4_NAME)
             return await manager.broadcast(match_id, message, sender)
 
     @property
