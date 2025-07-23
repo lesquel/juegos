@@ -566,7 +566,7 @@ function updateTurnMessage() {
   console.log("💬 Mensaje de turno actualizado:", {
     isMyTurn,
     playerColor,
-    message: document.getElementById("winner").textContent
+    message: document.getElementById("message")?.textContent || "Sin mensaje"
   });
 }
 
@@ -686,6 +686,16 @@ function handleMoveMade(data) {
         });
         
         updateTurnMessage();
+        
+        // Información adicional de debugging después del movimiento
+        console.log("🎯 Análisis del movimiento:", {
+          playerWhoMoved: data.player_id,
+          isMyMove: data.player_id === playerId,
+          myPlayerId: playerId,
+          nextPlayerTurn: nextPlayer,
+          myColor: playerColor,
+          nowMyTurn: isMyTurn
+        });
       }
     } else {
       // Si no hay game_state, solicitar el estado actualizado
@@ -854,6 +864,13 @@ function setGame() {
 
 function setPiece() {
   console.log("🎯 setPiece llamado");
+  console.log("📊 Estado actual:", {
+    gameOver,
+    isOnlineMode,
+    isMyTurn,
+    playerColor,
+    playerId
+  });
   
   if (gameOver) {
     console.log("⚠️ Juego terminado, no se permiten movimientos");
@@ -863,6 +880,12 @@ function setPiece() {
   // En modo online, verificar si es mi turno
   if (isOnlineMode && !isMyTurn) {
     console.log("⚠️ No es mi turno en modo online");
+    console.log("🔍 Detalles del turno:", {
+      isOnlineMode,
+      isMyTurn,
+      playerColor,
+      shouldBlock: true
+    });
     updateMessage("❌ No es tu turno", "");
     return;
   }
@@ -922,8 +945,13 @@ function setPiece() {
 
 function updateMessage(text, playerClass) {
   const messageDiv = document.getElementById("message");
-  messageDiv.innerHTML =
-    text + ' <span class="current-player ' + playerClass + '"></span>';
+  if (messageDiv) {
+    messageDiv.innerHTML =
+      text + ' <span class="current-player ' + playerClass + '"></span>';
+    console.log("📝 Mensaje actualizado:", text, "con clase:", playerClass);
+  } else {
+    console.warn("⚠️ Elemento #message no encontrado");
+  }
 }
 
 function checkWinner() {
