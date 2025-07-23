@@ -76,13 +76,10 @@ class WebSocketGameHandler:
             )
 
             # Record metrics
-            from ..utils.connection_monitor import connection_monitor
             from ..utils.message_logger import message_logger
-            from ..utils.websocket_metrics import websocket_metrics
 
-            websocket_metrics.message_received(match_id, str(user.user_id))
             message_logger.log_message_received(match_id, str(user.user_id), data)
-            connection_monitor.update_activity(match_id, str(user.user_id))
+            # connection_monitor.update_activity(match_id, str(user.user_id))  # Disabled monitoring
 
             await self.unified_game_manager.handle_game_message(
                 match_id, websocket, data, str(user.user_id)
@@ -90,9 +87,7 @@ class WebSocketGameHandler:
         except Exception as e:
             # Record error metrics
             from ..utils.message_logger import message_logger
-            from ..utils.websocket_metrics import websocket_metrics
 
-            websocket_metrics.error_occurred(match_id, str(user.user_id))
             message_logger.log_error(
                 match_id, str(user.user_id), e, "game_message_handling"
             )

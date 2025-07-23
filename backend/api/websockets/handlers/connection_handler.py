@@ -49,14 +49,13 @@ class WebSocketConnectionHandler:
             )
 
             # Record metrics
-            from ..utils.connection_monitor import connection_monitor
             from ..utils.message_logger import message_logger
             from ..utils.websocket_metrics import websocket_metrics
 
             if user_id:
                 websocket_metrics.connection_closed(match_id, user_id)
                 message_logger.log_connection_closed(match_id, user_id, code, reason)
-                connection_monitor.unregister_connection(match_id, user_id)
+                # connection_monitor.unregister_connection(match_id, user_id)  # Disabled monitoring
 
         except Exception as e:
             self.logger.error(
@@ -88,14 +87,13 @@ class WebSocketConnectionHandler:
             )
 
             # Record metrics
-            from ..utils.connection_monitor import connection_monitor
             from ..utils.message_logger import message_logger
             from ..utils.websocket_metrics import websocket_metrics
 
             websocket_metrics.connection_established(match_id, user_id)
             websocket_metrics.message_sent(match_id, user_id)
             message_logger.log_message_sent(match_id, user_id, message)
-            connection_monitor.register_connection(match_id, user_id, websocket)
+            # connection_monitor.register_connection(match_id, user_id, websocket)  # Disabled monitoring
 
             return True
         except Exception as e:
