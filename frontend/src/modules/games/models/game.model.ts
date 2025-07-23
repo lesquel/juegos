@@ -1,6 +1,11 @@
 import type { CategoryGame } from "@modules/category-game/models/category-game.model";
 import type { Info } from "@models/info.model";
 
+export enum GameType {
+  offline = "offline",
+  online = "online",
+}
+
 export interface GameDetail {
   game_id: string;
   game_name: string;
@@ -10,7 +15,7 @@ export interface GameDetail {
   create_at: Date;
   update_at: Date;
   categories?: CategoryGame[];
-  game_type: "offline" | "online";
+  game_type: GameType;
 }
 
 export interface Game extends Omit<GameDetail, "categories" | "comments"> {}

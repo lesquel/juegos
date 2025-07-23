@@ -5,6 +5,7 @@ import { LoadingComponent } from "@components/LoadingComponent";
 import { ListCommentGame } from "@modules/comment-game/components/ListCommentGame";
 import { NewCommentForm } from "@modules/comment-game/components/NewCommentForm";
 import { PlayCircle } from "lucide-react";
+import { GameType } from "../models/game.model";
 
 export const SingleGame = ({ id }: { id: string }) => {
   return (
@@ -23,7 +24,6 @@ const UseSingleGame = ({ id }: { id: string }) => {
       <div className="text-center text-red-400">Error: {error.message}</div>
     );
 
-  console.log(data);
   return (
     <div className="w-full p-10">
       {/* Game Details Section */}
@@ -39,7 +39,11 @@ const UseSingleGame = ({ id }: { id: string }) => {
               />
             </div>
             <a
-              href={data?.game_url}
+              href={
+                data?.game_type === GameType.online
+                  ? `${data?.game_id}/matches`
+                  : data?.game_url
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="w-full text-center bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out text-xl transform hover:scale-105 flex items-center justify-center gap-3"
@@ -64,7 +68,8 @@ const UseSingleGame = ({ id }: { id: string }) => {
             </p>
 
             <p>
-              <span className="text-white">Tipo de juego:</span> {data?.game_type}
+              <span className="text-white">Tipo de juego:</span>{" "}
+              {data?.game_type}
             </p>
           </div>
         </div>

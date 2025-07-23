@@ -32,6 +32,7 @@ export class GameClientData {
         axios
           .get(`${GameClientData.BASE_URL}${endpoints.games.getId(id)}`)
           .then((response) => {
+            response.data.game_type = "online";
             return GameAdapter.adaptDetail(response.data);
           }),
     });
@@ -48,9 +49,9 @@ export class GameClientData {
       queryFn: () =>
         axios
           .get(
-            `${GameClientData.BASE_URL}${endpoints.categories.getGamesByCategoryId(
-              id
-            )}`
+            `${
+              GameClientData.BASE_URL
+            }${endpoints.categories.getGamesByCategoryId(id)}`
           )
           .then((response) => {
             console.log("data game", response.data);

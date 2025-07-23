@@ -33,4 +33,12 @@ export const endpoints = {
       getId: (id: string) => `/games/reviews/${id}`,
     },
   },
+  matches: {
+    getPartcipants: (id: string) => `/games/matches/${id}/participants`,
+    joinMatch: (id: string) => `/games/matches/${id}/join`,
+    finisMatch: (id: string) => `/games/matches/${id}/finish_match`,
+    createMatch: (gameId: string) => `/games/${gameId}/matches`,
+    getMatchesByGameId: (gameId: string) => `/games/${gameId}/matches`,
+    getMathes: (id: string) => `/games/matches/${id}`,
+  },
 };
