@@ -9,6 +9,7 @@ import type {
   FinishMatch,
   JoinMatch,
 } from "../models/match.model";
+import { useAuthStore } from "@modules/auth/store/auth.store";
 
 export class MatchClientData {
   private static readonly BASE_URL = environment.BASE_URL;
@@ -48,7 +49,14 @@ export class MatchClientData {
       mutationFn: (data: JoinMatch) => {
         return axios.post(
           `${MatchClientData.BASE_URL}${endpoints.matches.joinMatch(id)}`,
-          data
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${
+                useAuthStore.getState().user?.access_token.access_token
+              }`,
+            },
+          }
         );
       },
       onSuccess: (data) => {
@@ -97,10 +105,19 @@ export class MatchClientData {
       mutationFn: (data: CreateMatch) => {
         return axios.post(
           `${MatchClientData.BASE_URL}${endpoints.matches.createMatch(gameId)}`,
-          data
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${
+                useAuthStore.getState().user?.access_token.access_token
+              }`,
+            },
+          }
         );
       },
       onSuccess: (data) => {
+        // const response = MatchAdapter.adapt(data);
+
         console.log("match create", data);
       },
       onError: (error: ErrorResponseErrorsArray) => {

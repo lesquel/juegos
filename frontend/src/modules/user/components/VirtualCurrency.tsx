@@ -11,7 +11,22 @@ export const VirtualCurrency = () => {
 
 const UseVirtualCurrency = () => {
   const { data, isLoading, error } = UserClientData.getMyVirtualCurrency();
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error</div>;
-  return <div>{data?.virtual_currency}</div>;
+
+  if (isLoading) {
+    return <div className="text-gray-400">Cargando moneda virtual...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-red-500">
+        Ocurrió un error al obtener tu saldo.
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-green-500 font-bold">
+      Moneda virtual: {data?.virtual_currency ?? 0}
+    </div>
+  );
 };

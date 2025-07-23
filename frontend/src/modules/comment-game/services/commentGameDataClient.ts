@@ -15,6 +15,9 @@ export class CommentGameDataClient {
     const hasMounted = useHasMountedComment().hasMounted;
     return useQuery({
       queryKey: ["comment-games", gameId, hasMounted],
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+      gcTime: 1000 * 60 * 10,
       queryFn: () =>
         axios
           .get(

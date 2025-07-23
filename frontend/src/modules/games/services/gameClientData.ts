@@ -12,6 +12,9 @@ export class GameClientData {
   public static getGames(paguination: Paguination) {
     return useQuery({
       queryKey: ["games", paguination],
+      gcTime: 1000 * 60 * 10,
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
       queryFn: () =>
         axios
           .get(
@@ -28,6 +31,9 @@ export class GameClientData {
   public static getGameDetail(id: string) {
     return useQuery({
       queryKey: ["games", id],
+      gcTime: 1000 * 60 * 10,
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
       queryFn: () =>
         axios
           .get(`${GameClientData.BASE_URL}${endpoints.games.getId(id)}`)
@@ -46,6 +52,9 @@ export class GameClientData {
     );
     return useQuery({
       queryKey: ["games", id],
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
       queryFn: () =>
         axios
           .get(

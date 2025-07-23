@@ -15,6 +15,9 @@ export class TransferDataClient {
   static getTransfers() {
     return useQuery({
       queryKey: ["transfers"],
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
       queryFn: () =>
         axios
           .get(
@@ -69,6 +72,9 @@ export class TransferDataClient {
   static getTransferDetail(id: string) {
     return useQuery({
       queryKey: ["transfers", id],
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
       queryFn: () =>
         axios
           .get(
@@ -92,6 +98,9 @@ export class TransferDataClient {
   static getInfoAccounts() {
     return useQuery({
       queryKey: ["infoAccounts"],
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
       queryFn: () =>
         axios
           .get(`${TransferDataClient.BASE_URL}${endpoints.appInfo.get}`)

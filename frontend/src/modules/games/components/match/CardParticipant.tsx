@@ -1,8 +1,12 @@
-export const CardParticipant = ({id}: {id: string}) => {
-    const {} = UserClientData.getUser(id);
-  return (
-    <li key={participant.user_id} className="border-b border-gray-700">
-      <div>{participant.user_id}</div>
-    </li>
-  );
+import { UserClientData } from "@modules/user/services/userClientData";
+
+export const CardParticipant = ({ id }: { id: string }) => {
+  const { data: participant, isLoading, error } = UserClientData.getUser(id);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error)
+    return (
+      <span className="text-center text-red-400">Error: {error.message}</span>
+    );
+  return <div>{participant?.email}</div>;
 };

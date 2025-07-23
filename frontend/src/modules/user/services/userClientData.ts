@@ -11,6 +11,9 @@ export class UserClientData {
     const user = useAuthStore.getState().user;
     return useQuery({
       queryKey: ["userMe"],
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
       queryFn: () => {
         return axios
           .get(`${UserClientData.baseUrl}${endpoints.authentication.me}`, {
@@ -29,6 +32,9 @@ export class UserClientData {
   static getUser(id: string) {
     return useQuery({
       queryKey: ["user", id],
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
       queryFn: () =>
         axios
           .get(`${UserClientData.baseUrl}${endpoints.user.getId(id)}`)
@@ -43,6 +49,9 @@ export class UserClientData {
     const user = useAuthStore.getState().user;
     return useQuery({
       queryKey: ["userVirtualCurrency"],
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
       queryFn: () => {
         return axios
           .get(`${UserClientData.baseUrl}${endpoints.authentication.me}`, {

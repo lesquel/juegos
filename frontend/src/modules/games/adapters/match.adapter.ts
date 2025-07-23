@@ -15,7 +15,7 @@ export class MatchAdapter {
   public static adapt(match: any): Match {
     return {
       base_bet_amount: match.base_bet_amount,
-      created_at: match.created_at,
+      created_at: new Date(match.created_at),
       created_by_id: match.created_by_id,
       game_id: match.game_id,
       match_id: match.match_id,

@@ -5,8 +5,6 @@ import { environment } from "@config/environment";
 import type { PaguinationCategory } from "../models/paguination-category";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 import { endpoints } from "@config/endpoints";
-import { Cat } from "lucide-react";
-import { GameAdapter } from "@modules/games/adapters/game.adapter";
 
 export class CategoryGameClientData {
   private static readonly BASE_URL = environment.BASE_URL;
@@ -14,6 +12,9 @@ export class CategoryGameClientData {
   public static getCategoryGames(paguination: PaguinationCategory) {
     return useQuery({
       queryKey: ["category-games", paguination],
+      gcTime: 1000 * 60 * 10,
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
       queryFn: () =>
         axios
           .get(
@@ -30,6 +31,9 @@ export class CategoryGameClientData {
   public static getCategoryGameDetail(id: string) {
     return useQuery({
       queryKey: ["category-games", id],
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
       queryFn: () =>
         axios
           .get(
@@ -46,6 +50,9 @@ export class CategoryGameClientData {
   public static getCategoriesByGameId(id: string) {
     return useQuery({
       queryKey: ["category-games", id],
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+      gcTime: 1000 * 60 * 10,
       queryFn: () =>
         axios
           .get(

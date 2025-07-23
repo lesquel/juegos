@@ -4,7 +4,6 @@ import { useAuthStore } from "../store/auth.store";
 import { ItemAuthLogout } from "./ItemAuthLogout";
 import { useStore } from "zustand";
 import { useEffect, useState } from "react";
-// import { LinkMyTransfer } from "@modules/transfers/components/LinkMyTransfer";
 
 export const NarbarAuthLoginRegister = () => {
   const [hasMounted, setHasMounted] = useState(false);
@@ -28,8 +27,18 @@ export const NarbarAuthLoginRegister = () => {
 const ItemAuthLoginRegister = () => {
   return (
     <div className="space-x-8">
-      <a href={authRoutesConfig.children.login.url} className="text-gray-300 hover:text-white transition-colors duration-300">Login</a>
-      <a href={authRoutesConfig.children.register.url} className="text-gray-300 hover:text-white transition-colors duration-300">Register</a>
+      <a
+        href={authRoutesConfig.children.login.url}
+        className="text-gray-300 hover:text-white transition-colors duration-300"
+      >
+        Login
+      </a>
+      <a
+        href={authRoutesConfig.children.register.url}
+        className="text-gray-300 hover:text-white transition-colors duration-300"
+      >
+        Register
+      </a>
     </div>
   );
 };

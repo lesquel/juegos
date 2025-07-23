@@ -17,7 +17,7 @@ export interface JoinMatch {
 // define la respuesta de una creacion de match (creacion de match, finalizacion de match, join match)
 export interface Match {
   base_bet_amount: number;
-  created_at: string; // ISO date string
+  created_at: string | Date; // ISO date string
   created_by_id: string;
   game_id: string;
   match_id: string;
