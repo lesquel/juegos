@@ -17,24 +17,24 @@ export const CardMatch = ({ match, game }: { match: Match; game: Game }) => {
   };
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-      <div className="p-6">
+    <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl h-full flex flex-col">
+      <div className="p-6 md:p-8 flex-grow">
         <div className="flex justify-between items-start mb-4">
           <div>
             <div
-              className={`px-3 py-1 text-xs font-bold text-white rounded-full inline-block ${statusColor[matchStatus]}`}>
+              className={`px-3 py-1 text-sm font-bold text-white rounded-full inline-block ${statusColor[matchStatus]}`}>
               {matchStatus}
             </div>
           </div>
           <div className="text-right">
             <div className="text-lg font-semibold text-white">Apuesta Base</div>
-            <div className="text-2xl font-bold text-purple-400">${match.base_bet_amount}</div>
+            <div className="text-3xl font-bold text-purple-400">${match.base_bet_amount}</div>
           </div>
         </div>
 
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-300 mb-3">Jugadores</h3>
-          <div className="space-y-3">
+          <h3 className="text-xl font-semibold text-gray-300 mb-4">Jugadores</h3>
+          <div className="space-y-4">
             {match.participant_ids.length > 0 ? (
               match.participant_ids.map((id) => (
                 <CardParticipant key={id} id={id} />
@@ -47,15 +47,16 @@ export const CardMatch = ({ match, game }: { match: Match; game: Game }) => {
 
         {match.winner_id && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-300 mb-3">Ganador</h3>
+            <h3 className="text-xl font-semibold text-gray-300 mb-4">Ganador</h3>
             <CardParticipant id={match.winner_id} />
           </div>
         )}
-
-        <div className="border-t border-gray-700 pt-4">
-          <JoinMatch match={match} game={game} />
-        </div>
       </div>
+
+      <div className="border-t border-gray-700 p-6">
+        <JoinMatch match={match} game={game} />
+      </div>
+
       <div className="bg-gray-900 px-6 py-2 text-xs text-gray-500">
         <span>ID de la partida: {match.match_id}</span>
       </div>

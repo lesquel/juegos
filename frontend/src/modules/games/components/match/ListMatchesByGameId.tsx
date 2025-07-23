@@ -40,15 +40,19 @@ const UseListMatchesByGameId = ({ id }: { id: string }) => {
 
   return (
     <div className="container mx-auto px-4 py-8 text-white">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">Partidas de {game?.game_name}</h1>
-        <CreateMatch gameId={id} game={game as Game} />
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data?.results.map((match) => (
-          <CardMatch key={match.match_id} match={match} game={game as Game} />
-        ))}
+      <div className="max-w-3xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-0">Partidas de {game?.game_name}</h1>
+          <CreateMatch gameId={id} game={game as Game} />
+        </div>
+        
+        <div className="flex flex-wrap -mx-4">
+          {data?.results.map((match) => (
+            <div key={match.match_id} className="w-full px-4 mb-8">
+              <CardMatch match={match} game={game as Game} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

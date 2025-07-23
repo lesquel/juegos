@@ -45,7 +45,7 @@ export const CreateMatch = ({
     <div>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition"
+        className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition cursor-pointer"
       >
         Crear Partida
       </button>
@@ -75,7 +75,7 @@ export const CreateMatch = ({
                   type="number"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(Number(e.target.value))}
-                  className="mt-1 block w-full border border-gray-600 bg-gray-700 text-white rounded-md shadow-sm focus:ring focus:ring-indigo-500 focus:border-indigo-500"
+                  className="p-2 mt-1 block w-full border border-gray-600 bg-gray-700 text-white rounded-md shadow-sm focus:ring focus:ring-indigo-500 focus:border-indigo-500"
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-red-400 text-sm mt-2">
@@ -90,13 +90,13 @@ export const CreateMatch = ({
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition"
+              className="cursor-pointer px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition"
+              className="cursor-pointer px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition"
             >
               Crear Match
             </button>
