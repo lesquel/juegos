@@ -21,12 +21,12 @@ const UseSingleCategoryGame = ({ id }: { id: string }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-12 items-start container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 min-h-full">
       {/* Left Column (Category Details) */}
-      <aside className="lg:col-span-1 lg:sticky lg:top-24 self-start">
-        <div className="space-y-6 bg-gray-900 text-white rounded-2xl p-6 shadow-xl md:max-w-3xl md:m-auto">
+      <aside className="lg:col-span-1 lg:sticky lg:top-24 self-start ">
+        <div className="space-y-6 bg-gray-800 text-white rounded-2xl p-6 shadow-2xl border border-gray-700 md:max-w-3xl md:m-auto">
           <img 
             src={data?.category_img} 
             alt={`Imagen de la categoría ${data?.category_name}`}
-            className="w-full h-48 object-cover rounded-lg bg-gray-800"
+            className="w-full h-48 object-cover rounded-lg bg-gray-800 transform transition-transform duration-300 hover:scale-105"
           />
           <div className="space-y-3 text-center">
             <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-purple-500 to-teal-400 bg-clip-text text-transparent">
