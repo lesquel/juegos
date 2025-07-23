@@ -64,7 +64,7 @@ const UseSingleGame = ({ id }: { id: string }) => {
             </p>
 
             <p>
-              <span>Tipo de juego:</span> {data?.game_type}
+              <span className="text-white">Tipo de juego:</span> {data?.game_type}
             </p>
           </div>
         </div>
