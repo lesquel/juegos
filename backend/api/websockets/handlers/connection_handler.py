@@ -68,6 +68,13 @@ class WebSocketConnectionHandler:
     ) -> bool:
         """Send connection confirmation message"""
         try:
+            # Check if websocket is in the right state
+            if websocket.client_state.name != "CONNECTED":
+                self.logger.error(
+                    f"WebSocket state is {websocket.client_state.name}, cannot send confirmation"
+                )
+                return False
+
             message = {
                 "type": "connection_established",
                 "match_id": match_id,
@@ -93,7 +100,8 @@ class WebSocketConnectionHandler:
             return True
         except Exception as e:
             self.logger.error(
-                f"Failed to send connection confirmation for match_id: {match_id}, error: {str(e)}"
+                f"Failed to send connection confirmation for match_id: {match_id}, error: {str(e)}",
+                exc_info=True,
             )
             return False
 

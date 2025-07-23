@@ -42,6 +42,16 @@ async def game_socket(
         unified_game_manager: Game manager for WebSocket operations
     """
 
+    # Accept the WebSocket connection first
+    try:
+        await websocket.accept()
+        logger.info(f"WebSocket connection accepted for match_id: {match_id}")
+    except Exception as e:
+        logger.error(
+            f"Failed to accept WebSocket connection for match_id: {match_id}, error: {str(e)}"
+        )
+        return
+
     # Validate connection parameters
     token = websocket.query_params.get("token", "")
     is_valid, error_message = ConnectionValidator.validate_connection_params(

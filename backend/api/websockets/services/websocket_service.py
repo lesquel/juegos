@@ -64,14 +64,14 @@ class WebSocketService:
 
             # Extract handlers from context
             user = context.get("user")
-            game_handler = context.get("game_handler")
-            error_handler = context.get("error_handler", self.error_handler)
+            # game_handler = context.get("game_handler")
+            # error_handler = context.get("error_handler", self.error_handler)
 
-            if user or game_handler or error_handler:
-                self.logger.info(
-                    f"WebSocket connection established for match_id: {match_id}"
-                )
-                self.logger.info(f"User: {user.user_id if user else 'N/A'}")
+            self.logger.info(
+                f"WebSocket connection established for match_id: {match_id}"
+            )
+            if user:
+                self.logger.info(f"User: {user.user_id}")
 
             # Message handling loop
             await self._handle_message_loop(websocket, match_id, context)

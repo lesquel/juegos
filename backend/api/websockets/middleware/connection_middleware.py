@@ -39,9 +39,7 @@ class WebSocketConnectionMiddleware(WebSocketMiddleware):
         )
         error_handler = WebSocketErrorHandler()
 
-        # Accept connection
-        if not await connection_handler.accept_connection(websocket, match_id):
-            raise Exception("Failed to accept connection")
+        # Connection is already accepted in routes.py, so we skip that step here
 
         # Authenticate user
         user = await auth_handler.validate_authentication(websocket, match_id)
@@ -64,10 +62,11 @@ class WebSocketConnectionMiddleware(WebSocketMiddleware):
             )
             raise Exception("Duplicate connection")
 
-        # Send connection confirmation
-        await connection_handler.send_connection_confirmation(
-            websocket, match_id, str(user.user_id)
-        )
+        # Don't send connection confirmation immediately - let the message loop handle it
+        # This avoids timing issues with WebSocket state
+        # await connection_handler.send_connection_confirmation(
+        #     websocket, match_id, str(user.user_id)
+        # )
 
         return {
             "user": user,

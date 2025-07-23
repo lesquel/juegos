@@ -51,6 +51,7 @@ class GameResponseDTO(TimeStampBase):
                 "game_capacity": EXAMPLE_GAME_CAPACITY,
                 "category_ids": [EXAMPLE_CATEGORY_ID],
                 "house_odds": EXAMPLE_HOUSE_ODDS,
+                "game_type": "Online",
                 "created_at": EXAMPLE_CREATED_AT,
                 "updated_at": EXAMPLE_UPDATED_AT,
             }
