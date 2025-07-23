@@ -1,7 +1,6 @@
 import { InfoAdapter } from "@adapters/info.adapter";
 import type { Game, GameDetail, GameList } from "../models/game.model";
 import { CategoryGameGameAdapter } from "@modules/category-game/adapters/category-game.adapter";
-import { CommentGameAdapter } from "@modules/comment-game/adapters/comment-game.adapter";
 
 export class GameAdapter {
   public static adapt(game: any): Game {
@@ -13,6 +12,7 @@ export class GameAdapter {
       game_description: game.game_description,
       create_at: new Date(game.create_at),
       update_at: new Date(game.update_at),
+      game_type: game.game_type,
     };
   }
 
@@ -22,6 +22,7 @@ export class GameAdapter {
       game_name: game.game_name,
       game_img: game.game_img,
       game_url: game.game_url,
+      game_type: game.game_type,
       game_description: game.game_description,
       create_at: new Date(game.create_at),
       update_at: new Date(game.update_at),

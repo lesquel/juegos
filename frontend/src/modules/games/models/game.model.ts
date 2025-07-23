@@ -10,6 +10,7 @@ export interface GameDetail {
   create_at: Date;
   update_at: Date;
   categories?: CategoryGame[];
+  game_type: "offline" | "online";
 }
 
 export interface Game extends Omit<GameDetail, "categories" | "comments"> {}
