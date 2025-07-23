@@ -12,9 +12,17 @@ export const JoinMatch = ({ match, game }: { match: Match; game: Game }) => {
   const handleJoinMatch = async () => {
     if (isJoined) {
       if (match.winner_id === null) {
+        console.log("match.match_id", match.match_id);
         location.href =
-          location.host + "/" + game.game_url + "?match_id=" + match.match_id;
+          location.protocol +
+          "//" +
+          location.host +
+          "/" +
+          game.game_url +
+          "?match_id=" +
+          match.match_id;
       }
+      return;
     }
     mutate({
       bet_amount: match.base_bet_amount,

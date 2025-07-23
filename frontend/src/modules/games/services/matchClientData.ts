@@ -8,6 +8,7 @@ import type {
   CreateMatch,
   FinishMatch,
   JoinMatch,
+  Match,
 } from "../models/match.model";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 
@@ -100,7 +101,7 @@ export class MatchClientData {
     });
   }
 
-  public static createMatch(gameId: string) {
+  public static createMatch(gameId: string, onSuccess?: (data: Match) => void) {
     return useMutation({
       mutationFn: (data: CreateMatch) => {
         return axios.post(
@@ -116,7 +117,7 @@ export class MatchClientData {
         );
       },
       onSuccess: (data) => {
-        // const response = MatchAdapter.adapt(data);
+        onSuccess?.(MatchAdapter.adapt(data.data));
 
         console.log("match create", data);
       },

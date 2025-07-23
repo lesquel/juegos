@@ -1,9 +1,27 @@
+import type { Game } from "@modules/games/models/game.model";
+import type { Match } from "@modules/games/models/match.model";
 import { MatchClientData } from "@modules/games/services/matchClientData";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 
-export const CreateMatch = ({ gameId }: { gameId: string }) => {
-  const { mutate, error } = MatchClientData.createMatch(gameId);
+export const CreateMatch = ({
+  gameId,
+  game,
+}: {
+  gameId: string;
+  game: Game;
+}) => {
+  const onSuccess = (data: Match) => {
+    location.href =
+      location.protocol +
+      "//" +
+      location.host +
+      "/" +
+      game?.game_url +
+      "?match_id=" +
+      data.match_id;
+  };
+  const { mutate, error } = MatchClientData.createMatch(gameId, onSuccess);
 
   const form = useForm({
     defaultValues: {
