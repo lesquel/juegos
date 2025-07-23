@@ -156,6 +156,62 @@
     background: linear-gradient(145deg, #2ecc71, #27ae60);
   }
 
+  .online-controls {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .online-controls button {
+    font-size: 14px;
+    padding: 8px 16px;
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    font-weight: bold;
+  }
+
+  .online-controls button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(145deg, #2980b9, #3498db);
+  }
+
+  .online-controls button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  #reconnectBtn {
+    background: linear-gradient(145deg, #e67e22, #d35400);
+  }
+
+  #reconnectBtn:hover {
+    background: linear-gradient(145deg, #d35400, #e67e22);
+  }
+
+  #resetBtn {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+  }
+
+  #resetBtn:hover {
+    background: linear-gradient(145deg, #c0392b, #e74c3c);
+  }
+
+  #diagnosticBtn {
+    background: linear-gradient(145deg, #9b59b6, #8e44ad);
+  }
+
+  #diagnosticBtn:hover {
+    background: linear-gradient(145deg, #8e44ad, #9b59b6);
+  }
+
   .current-player {
     display: inline-block;
     width: 20px;
@@ -179,6 +235,136 @@
     font-size: 16px;
     color: rgba(255, 255, 255, 0.8);
   }
+
+  .connection-status {
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .status-connected {
+    background-color: rgba(39, 174, 96, 0.3);
+    color: #2ecc71;
+  }
+
+  .status-disconnected {
+    background-color: rgba(231, 76, 60, 0.3);
+    color: #e74c3c;
+  }
+
+  .status-waiting {
+    background-color: rgba(241, 196, 15, 0.3);
+    color: #f1c40f;
+  }
+
+  .user-info {
+    margin: 15px 0;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .user-details {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 14px;
+  }
+
+  .user-email {
+    color: #3498db;
+    font-weight: bold;
+  }
+
+  .user-role {
+    color: #e67e22;
+    font-weight: bold;
+  }
+
+  @media (max-width: 768px) {
+    .user-details {
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .online-controls {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .online-controls button {
+      width: 200px;
+      margin: 5px 0;
+    }
+  }
+
+  .debug-panel {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+  }
+
+  .debug-panel h4 {
+    margin: 0 0 10px 0;
+    color: #f39c12;
+    font-size: 16px;
+  }
+
+  .debug-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .debug-actions button {
+    font-size: 12px;
+    padding: 6px 12px;
+    background: linear-gradient(145deg, #34495e, #2c3e50);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .debug-actions button:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(145deg, #2c3e50, #34495e);
+  }
+
+  .debug-info {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    margin-top: 10px;
+  }
+
+  .toggle-debug {
+    margin-top: 10px;
+    font-size: 12px;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .toggle-debug:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
 </style>
 
 <div id="body">
@@ -190,6 +376,38 @@
     </div>
     <div id="board"></div>
     <button id="restartBtn" onclick="restartGame()">🎮 Jugar de Nuevo</button>
+    <div class="online-controls">
+      <button id="getStateBtn" onclick="getGameState()">📊 Estado del Juego</button>
+      <button id="reconnectBtn" onclick="forceReconnect()">🔄 Reconectar</button>
+      <button id="configBtn" onclick="showGameConfig()">⚙️ Configurar</button>
+      <button id="diagnosticBtn" onclick="runAdvancedDiagnostic()">🔍 Diagnóstico</button>
+      <button id="resetBtn" onclick="resetGameState()">🔄 Reset Completo</button>
+      <button id="statusBtn" onclick="console.log(connectFour.status())">📋 Estado Conexión</button>
+    </div>
     <div id="gameStats">Movimientos: <span id="moveCount">0</span></div>
+    <div id="connectionStatus" class="connection-status status-disconnected">
+      🔴 Desconectado
+    </div>
+    
+    <button id="toggleDebug" class="toggle-debug" onclick="toggleDebugPanel()">
+      🔧 Mostrar Debug
+    </button>
+    
+    <!-- Panel de debug opcional -->
+    <div id="debugPanel" class="debug-panel" style="display: none;">
+      <h4>🔧 Panel de Debug</h4>
+      <div class="debug-actions">
+        <button onclick="connectFour.loadUserFromStorage(); updateMessage('🔄 Usuario recargado desde localStorage', '')">🔄 Recargar Usuario</button>
+        <button onclick="connectFour.debugStorage()">🔍 Debug localStorage</button>
+        <button onclick="connectFour.setTestUser(); updateMessage('🧪 Usuario de prueba configurado', '')">👤 Usuario Test</button>
+        <button onclick="connectFour.testConnection(); updateMessage('🧪 Probando conexión...', '')">🔌 Test Conexión</button>
+        <button onclick="connectFour.boardInfo()">📋 Info Tablero</button>
+        <button onclick="getBoardInfo()">📊 Estado Detallado</button>
+      </div>
+      <div class="debug-info">
+        <small>Usar F12 (consola) para ver logs detallados</small>
+      </div>
+    </div>
+    
     <script src="./connect4.js"></script>
 </div>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cliente WebSocket - Sistema de Juegos</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .game-board {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+        max-width: 300px;
+        margin: 20px auto;
+      }
+
+      .cell {
+        width: 80px;
+        height: 80px;
+        border: 2px solid #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        background: #fff;
+      }
+
+      .cell:hover {
+        background: #f0f0f0;
+      }
+
+      .controls {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .controls button {
+        margin: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background: #007bff;
+        color: white;
+      }
+
+      .controls button:hover {
+        background: #0056b3;
+      }
+
+      .controls input {
+        margin: 5px;
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .controls input[type="text"]#token-input {
+        font-family: monospace;
+        font-size: 12px;
+        background-color: #f8f9fa;
+      }
+
+      .status {
+        text-align: center;
+        margin: 10px 0;
+        font-size: 18px;
+      }
+
+      .status.error {
+        color: #dc3545;
+      }
+
+      .status.success {
+        color: #28a745;
+      }
+
+      .log {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 10px;
+        height: 200px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 12px;
+      }
+
+      .connect4-board {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+        max-width: 420px;
+        margin: 20px auto;
+      }
+
+      .connect4-cell {
+        width: 50px;
+        height: 50px;
+        border: 2px solid #333;
+        border-radius: 50%;
+        cursor: pointer;
+        background: #fff;
+      }
+
+      .connect4-cell.red {
+        background: #dc3545;
+      }
+
+      .connect4-cell.yellow {
+        background: #ffc107;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎮 Cliente WebSocket - Sistema de Juegos</h1>
+
+      <div class="controls">
+        <h3>Conexión</h3>
+        <input
+          type="text"
+          id="match-id-input"
+          placeholder="ID del Match"
+          value="test_match_123"
+        />
+        <input
+          type="text"
+          id="player-id-input"
+          placeholder="ID del Jugador"
+          value=""
+        />
+        <br />
+        <input
+          type="text"
+          id="token-input"
+          placeholder="JWT Token (opcional)"
+          value=""
+          style="width: 300px"
+        />
+        <button onclick="generateTestToken()" style="font-size: 12px; padding: 4px 8px;">🔑 Generar Token de Prueba</button>
+        <br />
+        <button id="connect-btn">🔗 Conectar</button>
+        <button id="disconnect-btn">🔌 Desconectar</button>
+        <button id="join-game-btn">🎮 Unirse al Juego</button>
+      </div>
+
+      <div class="status" id="connection-status">❌ Desconectado</div>
+    </div>
+
+    <div class="container">
+      <h3>🎲 Controles del Juego</h3>
+      <div class="controls">
+        <button id="get-state-btn">📊 Obtener Estado</button>
+        <button id="restart-btn">🔄 Reiniciar Juego</button>
+      </div>
+
+      <div class="status" id="game-status">Estado: Desconocido</div>
+      <div class="status" id="current-turn">Turno: -</div>
+      <div class="status" id="players-count">Jugadores: 0</div>
+      <div class="status" id="winner-message" style="display: none"></div>
+    </div>
+
+    <div class="container">
+      <h3>🎯 TicTacToe (3 en Raya)</h3>
+      <div class="game-board" id="tictactoe-board">
+        <div class="cell" id="cell-0-0" data-row="0" data-col="0"></div>
+        <div class="cell" id="cell-0-1" data-row="0" data-col="1"></div>
+        <div class="cell" id="cell-0-2" data-row="0" data-col="2"></div>
+        <div class="cell" id="cell-1-0" data-row="1" data-col="0"></div>
+        <div class="cell" id="cell-1-1" data-row="1" data-col="1"></div>
+        <div class="cell" id="cell-1-2" data-row="1" data-col="2"></div>
+        <div class="cell" id="cell-2-0" data-row="2" data-col="0"></div>
+        <div class="cell" id="cell-2-1" data-row="2" data-col="1"></div>
+        <div class="cell" id="cell-2-2" data-row="2" data-col="2"></div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h3>🔴 Connect4 (4 en Línea)</h3>
+      <div class="controls">
+        <button onclick="makeConnect4Move(0)">Col 1</button>
+        <button onclick="makeConnect4Move(1)">Col 2</button>
+        <button onclick="makeConnect4Move(2)">Col 3</button>
+        <button onclick="makeConnect4Move(3)">Col 4</button>
+        <button onclick="makeConnect4Move(4)">Col 5</button>
+        <button onclick="makeConnect4Move(5)">Col 6</button>
+        <button onclick="makeConnect4Move(6)">Col 7</button>
+      </div>
+      <div class="connect4-board" id="connect4-board">
+        <!-- Se generará dinámicamente -->
+      </div>
+    </div>
+
+    <div class="container">
+      <h3>📋 Log de Mensajes</h3>
+      <div class="log" id="message-log"></div>
+      <button onclick="clearLog()">🗑️ Limpiar Log</button>
+    </div>
+
+    <script>
+      // Cliente WebSocket embebido (versión simplificada)
+      class GameWebSocketClient {
+        constructor() {
+          this.ws = null;
+          this.matchId = null;
+          this.playerId = null;
+          this.playerColor = null;
+          this.token = null;
+        }
+
+        connect(matchId, token = null) {
+          this.matchId = matchId;
+          this.token = token;
+          
+          // Construir URL con token si está disponible
+          let wsUrl = `ws://localhost:8000/ws/games/${matchId}`;
+          
+          // Si hay token, agregarlo como query parameter para autenticación
+          if (token) {
+            wsUrl += `?token=${encodeURIComponent(token)}`;
+          }
+          
+          this.log(`🔗 Conectando a: ${wsUrl.replace(/token=[^&]+/, 'token=***')}`);
+
+          this.ws = new WebSocket(wsUrl);
+
+          this.ws.onopen = () => {
+            this.log("🔗 Conectado al servidor");
+            this.updateConnectionStatus("✅ Conectado", "success");
+            
+            // Authentication is handled automatically via token in query parameters
+            if (this.token) {
+              this.log("🔐 Autenticación procesada automáticamente");
+            }
+          };
+
+          this.ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            this.log(`📨 Recibido: ${JSON.stringify(message, null, 2)}`);
+            this.handleMessage(message);
+          };
+
+          this.ws.onclose = (event) => {
+            this.log(`🔌 Desconectado del servidor. Código: ${event.code}, Razón: ${event.reason}`);
+            this.updateConnectionStatus("❌ Desconectado", "error");
+          };
+
+          this.ws.onerror = (error) => {
+            this.log(`❌ Error: ${error}`);
+            this.updateConnectionStatus("❌ Error de conexión", "error");
+          };
+        }
+
+        sendMessage(message) {
+          if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify(message));
+            this.log(`📤 Enviado: ${JSON.stringify(message, null, 2)}`);
+          } else {
+            this.log("❌ WebSocket no está conectado");
+          }
+        }
+
+        joinGame(playerId) {
+          this.playerId = playerId || `player_${Date.now()}`;
+          this.sendMessage({
+            type: "join_game",
+            player_id: this.playerId,
+            game_type: "connect4", // Especificar el tipo de juego
+          });
+        }
+
+        makeTicTacToeMove(row, col) {
+          this.sendMessage({
+            type: "make_move",
+            player_id: this.playerId,
+            game_type: "tictactoe",
+            move: { row: row, col: col },
+          });
+        }
+
+        makeConnect4Move(column) {
+          this.sendMessage({
+            type: "make_move",
+            player_id: this.playerId,
+            game_type: "connect4",
+            move: { column: column },
+          });
+        }
+
+        restartGame() {
+          this.sendMessage({ type: "restart_game" });
+        }
+
+        getGameState() {
+          this.sendMessage({ type: "get_game_state" });
+        }
+
+        handleMessage(message) {
+          switch (message.type) {
+            case "game_state":
+              this.handleGameState(message);
+              break;
+            case "player_joined":
+              this.handlePlayerJoined(message);
+              break;
+            case "move_made":
+              this.handleMoveMade(message);
+              break;
+            case "game_restarted":
+              this.handleGameRestarted(message);
+              break;
+            case "error":
+              this.handleError(message);
+              break;
+            default:
+              this.log(`📢 Mensaje no reconocido: ${message.type}`);
+          }
+          
+          // Actualizar tableros automáticamente
+          this.autoUpdateBoards(message);
+        }
+
+        autoUpdateBoards(message) {
+          // Actualizar tableros automáticamente basado en el contenido del mensaje
+          let board = null;
+          
+          if (message.game_state && message.game_state.board) {
+            board = message.game_state.board;
+          } else if (message.board) {
+            board = message.board;
+          }
+          
+          if (board && Array.isArray(board)) {
+            // Detectar tipo de juego basado en el tamaño del tablero
+            const rows = board.length;
+            const cols = board[0] ? board[0].length : 0;
+            
+            this.log(`📋 Tablero detectado: ${rows}x${cols}`);
+            
+            if (rows === 3 && cols === 3) {
+              // TicTacToe
+              this.updateTicTacToeBoard(board);
+              this.log(`🎯 Actualizando tablero TicTacToe (3x3)`);
+            } else if (rows === 6 && cols === 7) {
+              // Connect4
+              this.updateConnect4Board(board);
+              this.log(`🔴 Actualizando tablero Connect4 (6x7)`);
+            } else {
+              this.log(`❓ Tamaño de tablero no reconocido: ${rows}x${cols}`);
+            }
+          }
+        }
+
+        handleGameState(message) {
+          this.playerColor = message.player_color;
+
+          document.getElementById("game-status").textContent = `Estado: ${
+            message.state === "waiting_for_players"
+              ? "Esperando jugadores"
+              : "Jugando"
+          }`;
+
+          document.getElementById("current-turn").textContent = `Turno: ${
+            message.current_player || "-"
+          }`;
+        }
+
+        handlePlayerJoined(message) {
+          document.getElementById(
+            "players-count"
+          ).textContent = `Jugadores: ${message.players_count}`;
+        }
+
+        handleMoveMade(message) {
+          if (message.result && message.result.winner) {
+            this.showWinner(message.result.winner);
+          }
+        }
+
+        handleGameRestarted(message) {
+          document.getElementById("winner-message").style.display = "none";
+        }
+
+        handleError(message) {
+          this.log(`❌ Error del servidor: ${message.message}`);
+          alert(`Error: ${message.message}`);
+        }
+
+        updateTicTacToeBoard(board) {
+          for (let row = 0; row < board.length; row++) {
+            for (let col = 0; col < board[row].length; col++) {
+              const cell = document.getElementById(`cell-${row}-${col}`);
+              if (cell) {
+                cell.textContent = board[row][col];
+              }
+            }
+          }
+        }
+
+        updateConnect4Board(board) {
+          // Connect4 tiene un tablero de 6x7
+          if (!board || !Array.isArray(board)) return;
+          
+          this.log(`🔍 Actualizando tablero Connect4 con ${board.length} filas`);
+          
+          for (let row = 0; row < Math.min(board.length, 6); row++) {
+            for (let col = 0; col < Math.min(board[row].length, 7); col++) {
+              const cell = document.getElementById(`connect4-${row}-${col}`);
+              if (cell) {
+                const value = board[row][col];
+                // Limpiar clases anteriores
+                cell.classList.remove('red', 'yellow');
+                
+                // Agregar clase según el valor
+                if (value === 'R' || value === 'r' || value === 1 || value === '1') {
+                  cell.classList.add('red');
+                  this.log(`🔴 Celda [${row}][${col}] = ROJO (${value})`);
+                } else if (value === 'Y' || value === 'y' || value === 2 || value === '2') {
+                  cell.classList.add('yellow');
+                  this.log(`🟡 Celda [${row}][${col}] = AMARILLO (${value})`);
+                } else if (value !== '' && value !== null && value !== undefined && value !== 0 && value !== '0') {
+                  this.log(`❓ Celda [${row}][${col}] valor desconocido: ${value} (tipo: ${typeof value})`);
+                }
+              }
+            }
+          }
+        }
+
+        showWinner(winner) {
+          const winnerMessage = document.getElementById("winner-message");
+          winnerMessage.textContent = `🏆 ¡Ganador: ${winner}!`;
+          winnerMessage.style.display = "block";
+          winnerMessage.className = "status success";
+        }
+
+        updateConnectionStatus(text, className = "") {
+          const status = document.getElementById("connection-status");
+          status.textContent = text;
+          status.className = `status ${className}`;
+        }
+
+        log(message) {
+          const logDiv = document.getElementById("message-log");
+          const timestamp = new Date().toLocaleTimeString();
+          logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+          logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        disconnect() {
+          if (this.ws) {
+            this.ws.close();
+          }
+        }
+      }
+
+      // Instancia global del cliente
+      const gameClient = new GameWebSocketClient();
+
+      // Event listeners
+      document.addEventListener("DOMContentLoaded", () => {
+        // Botones de conexión
+        document.getElementById("connect-btn").addEventListener("click", () => {
+          const matchId = document.getElementById("match-id-input").value;
+          const token = document.getElementById("token-input").value.trim();
+          
+          if (matchId) {
+            gameClient.connect(matchId, token || null);
+          } else {
+            alert("Por favor ingrese un ID de match");
+          }
+        });
+
+        document
+          .getElementById("disconnect-btn")
+          .addEventListener("click", () => {
+            gameClient.disconnect();
+          });
+
+        document
+          .getElementById("join-game-btn")
+          .addEventListener("click", () => {
+            const playerId = document.getElementById("player-id-input").value;
+            gameClient.joinGame(playerId);
+          });
+
+        // Botones de juego
+        document
+          .getElementById("get-state-btn")
+          .addEventListener("click", () => {
+            gameClient.getGameState();
+          });
+
+        document.getElementById("restart-btn").addEventListener("click", () => {
+          gameClient.restartGame();
+        });
+
+        // Tablero TicTacToe
+        document.querySelectorAll(".cell").forEach((cell) => {
+          cell.addEventListener("click", () => {
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            gameClient.makeTicTacToeMove(row, col);
+          });
+        });
+
+        // Generar tablero Connect4
+        generateConnect4Board();
+      });
+
+      // Funciones auxiliares
+      function makeConnect4Move(column) {
+        gameClient.makeConnect4Move(column);
+      }
+
+      function generateConnect4Board() {
+        const board = document.getElementById("connect4-board");
+        board.innerHTML = "";
+
+        for (let row = 0; row < 6; row++) {
+          for (let col = 0; col < 7; col++) {
+            const cell = document.createElement("div");
+            cell.className = "connect4-cell";
+            cell.id = `connect4-${row}-${col}`;
+            board.appendChild(cell);
+          }
+        }
+      }
+
+      function clearLog() {
+        document.getElementById("message-log").innerHTML = "";
+      }
+
+      // Generar un token JWT de prueba (solo para testing)
+      function generateTestToken() {
+        const header = {
+          "alg": "HS256",
+          "typ": "JWT"
+        };
+        
+        const payload = {
+          "user_id": `test_user_${Math.random().toString(36).substr(2, 9)}`,
+          "username": `TestUser${Math.floor(Math.random() * 1000)}`,
+          "exp": Math.floor(Date.now() / 1000) + (60 * 60), // 1 hora
+          "iat": Math.floor(Date.now() / 1000)
+        };
+
+        // Esto es solo para demostración - en producción el token viene del servidor
+        const encodedHeader = btoa(JSON.stringify(header)).replace(/[+/]/g, (c) => c === '+' ? '-' : '_').replace(/=+$/, '');
+        const encodedPayload = btoa(JSON.stringify(payload)).replace(/[+/]/g, (c) => c === '+' ? '-' : '_').replace(/=+$/, '');
+        const signature = "fake_signature_for_testing";
+        
+        const testToken = `${encodedHeader}.${encodedPayload}.${signature}`;
+        
+        document.getElementById("token-input").value = testToken;
+        document.getElementById("player-id-input").value = payload.user_id;
+        
+        gameClient.log(`🔑 Token de prueba generado para usuario: ${payload.user_id}`);
+        alert(`Token de prueba generado!\nUsuario: ${payload.user_id}\n\nEl token se enviará automáticamente en la conexión WebSocket.`);
+      }
+
+      // Generar player ID aleatorio al cargar
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById(
+          "player-id-input"
+        ).value = `player_${Math.random().toString(36).substr(2, 9)}`;
+      });
+    </script>
+  </body>
+</html>
