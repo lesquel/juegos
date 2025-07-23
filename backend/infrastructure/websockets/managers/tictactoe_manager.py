@@ -3,6 +3,7 @@ from typing import Any
 from domain.enums.online_game_type import GameType
 from infrastructure.dependencies.factories import get_game_engine
 
+from ..game_names import TICTACTOE_NAME
 from .base_game_manager import BaseGameWebSocketManager
 
 
@@ -11,7 +12,7 @@ class TictactoeWebSocketManager(BaseGameWebSocketManager):
 
     @property
     def game_type(self) -> str:
-        return "tictactoe"
+        return TICTACTOE_NAME
 
     def create_game_engine(self, match_id: str) -> Any:
         """Crea una instancia del motor de TicTacToe"""

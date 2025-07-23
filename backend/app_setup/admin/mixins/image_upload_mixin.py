@@ -1,4 +1,3 @@
-import asyncio
 import re
 from typing import Optional
 
@@ -97,6 +96,11 @@ class ImageUploadAdminMixin:
         data = await self._process_image_upload(request, data, is_update=False)
         return await super().insert_model(request, data)
 
+    async def update_model(self, request: Request, pk: str, data: dict):
+        """Interceptar también el update_model de SQLAdmin"""
+        data = await self._process_image_upload(request, data, is_update=True, pk=pk)
+        return await super().update_model(request, pk, data)
+
     async def edit_model(self, request: Request, pk: str, data: dict):
         """Actualizar modelo con procesamiento de imagen"""
         data = await self._process_image_upload(request, data, is_update=True, pk=pk)
@@ -114,11 +118,17 @@ class ImageUploadAdminMixin:
         upload_service = FileUploadService(upload_directory="uploads")
         processed = data.copy()
 
+        # Buscar el archivo en form_data o en data
         image_file = form_data.get(self.image_field_name)
+
+        # Si no está en form_data, verificar en data (puede ser un UploadFile)
+        if not image_file:
+            image_file = processed.get(self.image_field_name)
 
         if (
             image_file
             and hasattr(image_file, "filename")
+            and image_file.filename
             and image_file.filename.strip()
         ):
             # Si es edición, eliminar la imagen anterior
@@ -131,8 +141,9 @@ class ImageUploadAdminMixin:
             )
             processed[self.image_field_name] = image_url
 
-        # Si se intentó subir pero el archivo es inválido
+        # Si se intentó subir pero el archivo es inválido (UploadFile sin filename válido)
         elif hasattr(processed.get(self.image_field_name, {}), "filename"):
+            # Remover el UploadFile inválido del procesamiento
             processed.pop(self.image_field_name, None)
 
         # Limpiar HTML (casos antiguos)
@@ -156,10 +167,10 @@ class ImageUploadAdminMixin:
 
                     if current_img and not current_img.startswith("<div"):
                         upload_service = FileUploadService(upload_directory="uploads")
-                        _ = asyncio.create_task(
-                            upload_service.delete_image(current_img)
-                        )
+                        # Ejecutar la eliminación de forma asíncrona
+                        await upload_service.delete_image(current_img)
         except Exception:
+            # Log del error si fuera necesario, pero no interrumpir el flujo
             pass
 
     def is_accessible(self, request: Request) -> bool:

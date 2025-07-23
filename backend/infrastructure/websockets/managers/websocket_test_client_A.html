@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cliente WebSocket - Sistema de Juegos</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .game-board {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+        max-width: 300px;
+        margin: 20px auto;
+      }
+
+      .cell {
+        width: 80px;
+        height: 80px;
+        border: 2px solid #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        background: #fff;
+      }
+
+      .cell:hover {
+        background: #f0f0f0;
+      }
+
+      .controls {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .controls button {
+        margin: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background: #007bff;
+        color: white;
+      }
+
+      .controls button:hover {
+        background: #0056b3;
+      }
+
+      .controls input {
+        margin: 5px;
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .controls input[type="text"]#token-input {
+        font-family: monospace;
+        font-size: 12px;
+        background-color: #f8f9fa;
+      }
+
+      .status {
+        text-align: center;
+        margin: 10px 0;
+        font-size: 18px;
+      }
+
+      .status.error {
+        color: #dc3545;
+      }
+
+      .status.success {
+        color: #28a745;
+      }
+
+      .log {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 10px;
+        height: 200px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 12px;
+      }
+
+      .connect4-board {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+        max-width: 420px;
+        margin: 20px auto;
+      }
+
+      .connect4-cell {
+        width: 50px;
+        height: 50px;
+        border: 2px solid #333;
+        border-radius: 50%;
+        cursor: pointer;
+        background: #fff;
+      }
+
+      .connect4-cell.red {
+        background: #dc3545;
+      }
+
+      .connect4-cell.yellow {
+        background: #ffc107;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎮 Cliente WebSocket - Sistema de Juegos</h1>
+
+      <div class="controls">
+        <h3>Conexión</h3>
+
+        <br />
+        <button id="connect-btn">🔗 Conectar</button>
+        <button id="disconnect-btn">🔌 Desconectar</button>
+        <button id="join-game-btn">🎮 Unirse al Juego</button>
+      </div>
+
+      <div class="status" id="connection-status">❌ Desconectado</div>
+    </div>
+
+    <div class="container">
+      <h3>🎲 Controles del Juego</h3>
+      <div class="controls">
+        <button id="get-state-btn">📊 Obtener Estado</button>
+        <button id="restart-btn">🔄 Reiniciar Juego</button>
+      </div>
+
+      <div class="status" id="game-status">Estado: Desconocido</div>
+      <div
+        class="status"
+        id="gameStatus"
+        style="
+          background: #f0f9ff;
+          border-left: 4px solid #2563eb;
+          padding: 8px;
+        "
+      >
+        Estado del juego: Esperando...
+      </div>
+      <div class="status" id="current-turn">Turno: -</div>
+      <div class="status" id="players-count">Jugadores: 0</div>
+      <div class="status" id="winner-message" style="display: none"></div>
+    </div>
+
+    <div class="container">
+      <h3>🎯 TicTacToe (3 en Raya)</h3>
+      <div class="game-board" id="tictactoe-board">
+        <div class="cell" id="cell-0-0" data-row="0" data-col="0"></div>
+        <div class="cell" id="cell-0-1" data-row="0" data-col="1"></div>
+        <div class="cell" id="cell-0-2" data-row="0" data-col="2"></div>
+        <div class="cell" id="cell-1-0" data-row="1" data-col="0"></div>
+        <div class="cell" id="cell-1-1" data-row="1" data-col="1"></div>
+        <div class="cell" id="cell-1-2" data-row="1" data-col="2"></div>
+        <div class="cell" id="cell-2-0" data-row="2" data-col="0"></div>
+        <div class="cell" id="cell-2-1" data-row="2" data-col="1"></div>
+        <div class="cell" id="cell-2-2" data-row="2" data-col="2"></div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h3>🔴 Connect4 (4 en Línea)</h3>
+      <div class="controls">
+        <button onclick="makeConnect4Move(0)">Col 1</button>
+        <button onclick="makeConnect4Move(1)">Col 2</button>
+        <button onclick="makeConnect4Move(2)">Col 3</button>
+        <button onclick="makeConnect4Move(3)">Col 4</button>
+        <button onclick="makeConnect4Move(4)">Col 5</button>
+        <button onclick="makeConnect4Move(5)">Col 6</button>
+        <button onclick="makeConnect4Move(6)">Col 7</button>
+      </div>
+      <div class="connect4-board" id="connect4-board">
+        <!-- Se generará dinámicamente -->
+      </div>
+    </div>
+
+    <div class="container">
+      <h3>📋 Log de Mensajes</h3>
+      <div class="log" id="message-log"></div>
+      <button onclick="clearLog()">🗑️ Limpiar Log</button>
+    </div>
+
+    <script>
+      // Cliente WebSocket embebido (versión simplificada)
+      class GameWebSocketClient {
+        constructor() {
+          this.ws = null;
+          this.matchId = "3bb28c84-500c-43b8-afcb-9072e87a9dbf";
+          this.playerId = "42e265f3-eeb2-4d31-8a07-3f14d5b13311";
+          this.playerColor = null;
+          this.token =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MmUyNjVmMy1lZWIyLTRkMzEtOGEwNy0zZjE0ZDViMTMzMTEiLCJleHAiOjE3NTM0NTE4MzQsImlhdCI6MTc1MzIzNTgzNCwidHlwZSI6ImFjY2Vzc190b2tlbiJ9.wKKdpPI7Sg2ulk13Uj4yTgPbzEYMPMmsGddc-xuQN2I";
+        }
+
+        connect() {
+          // Construir URL con token si está disponible
+          let wsUrl = `ws://localhost:8000/ws/games/${this.matchId}`;
+
+          // Si hay token, agregarlo como query parameter para autenticación
+          wsUrl += `?token=${encodeURIComponent(this.token)}`;
+
+          this.log(
+            `🔗 Conectando a: ${wsUrl.replace(/token=[^&]+/, "token=***")}`
+          );
+
+          this.ws = new WebSocket(wsUrl);
+
+          this.ws.onopen = () => {
+            this.log("🔗 Conectado al servidor");
+            this.updateConnectionStatus("✅ Conectado", "success");
+
+            // Authentication is handled automatically via token in query parameters
+              this.log("🔐 Autenticación procesada automáticamente");
+          };
+
+          this.ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            this.log(`📨 Recibido: ${JSON.stringify(message, null, 2)}`);
+            this.handleMessage(message);
+          };
+
+          this.ws.onclose = (event) => {
+            this.log(
+              `🔌 Desconectado del servidor. Código: ${event.code}, Razón: ${event.reason}`
+            );
+            this.updateConnectionStatus("❌ Desconectado", "error");
+          };
+
+          this.ws.onerror = (error) => {
+            this.log(`❌ Error: ${error}`);
+            this.updateConnectionStatus("❌ Error de conexión", "error");
+          };
+        }
+
+        sendMessage(message) {
+          if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify(message));
+            this.log(`📤 Enviado: ${JSON.stringify(message, null, 2)}`);
+          } else {
+            this.log("❌ WebSocket no está conectado");
+          }
+        }
+
+        joinGame() {
+          this.sendMessage({
+            type: "join_game",
+            player_id: this.playerId,
+            game_type: "connect4", // Especificar el tipo de juego
+          });
+        }
+
+        makeTicTacToeMove(row, col) {
+          this.sendMessage({
+            type: "make_move",
+            player_id: this.playerId,
+            game_type: "tictactoe",
+            move: { row: row, col: col },
+          });
+        }
+
+        makeConnect4Move(column) {
+          this.log(`🎯 Enviando movimiento Connect4 en columna ${column}`);
+          this.sendMessage({
+            type: "make_move",
+            player_id: this.playerId,
+            game_type: "connect4",
+            move: { column: column },
+          });
+        }
+
+        restartGame() {
+          this.sendMessage({ type: "restart_game" });
+        }
+
+        getGameState() {
+          this.sendMessage({ type: "get_game_state" });
+        }
+
+        handleMessage(message) {
+          this.log(`🔍 Procesando mensaje tipo: ${message.type}`);
+
+          switch (message.type) {
+            case "game_state":
+              this.log(`🎮 Estado del juego recibido`);
+              this.handleGameState(message);
+              break;
+            case "player_joined":
+              this.log(`👤 Jugador se unió al juego`);
+              this.handlePlayerJoined(message);
+              break;
+            case "move_made":
+              this.log(`🎯 Movimiento realizado`);
+              this.handleMoveMade(message);
+              break;
+            case "game_restarted":
+              this.log(`🔄 Juego reiniciado`);
+              this.handleGameRestarted(message);
+              break;
+            case "game_over":
+              this.log(`🏁 Juego terminado`);
+              this.handleGameOver(message);
+              break;
+            case "winner":
+              this.log(`🏆 Ganador anunciado`);
+              this.handleWinner(message);
+              break;
+            case "error":
+              this.log(`❌ Error recibido`);
+              this.handleError(message);
+              break;
+            default:
+              this.log(`📢 Mensaje no reconocido: ${message.type}`);
+              this.log(
+                `📋 Contenido completo: ${JSON.stringify(message, null, 2)}`
+              );
+          }
+
+          // Actualizar tableros automáticamente
+          this.autoUpdateBoards(message);
+        }
+
+        autoUpdateBoards(message) {
+          // Actualizar tableros automáticamente basado en el contenido del mensaje
+          let board = null;
+
+          if (message.game_state && message.game_state.board) {
+            board = message.game_state.board;
+          } else if (message.board) {
+            board = message.board;
+          }
+
+          if (board && Array.isArray(board)) {
+            // Detectar tipo de juego basado en el tamaño del tablero
+            const rows = board.length;
+            const cols = board[0] ? board[0].length : 0;
+
+            this.log(`📋 Tablero detectado: ${rows}x${cols}`);
+
+            if (rows === 3 && cols === 3) {
+              // TicTacToe
+              this.updateTicTacToeBoard(board);
+              this.log(`🎯 Actualizando tablero TicTacToe (3x3)`);
+            } else if (rows === 6 && cols === 7) {
+              // Connect4
+              this.updateConnect4Board(board);
+              this.log(`🔴 Actualizando tablero Connect4 (6x7)`);
+            } else {
+              this.log(`❓ Tamaño de tablero no reconocido: ${rows}x${cols}`);
+            }
+          }
+        }
+
+        handleGameState(message) {
+          this.playerColor = message.player_color;
+
+          document.getElementById("game-status").textContent = `Estado: ${
+            message.state === "waiting_for_players"
+              ? "Esperando jugadores"
+              : "Jugando"
+          }`;
+
+          document.getElementById("current-turn").textContent = `Turno: ${
+            message.current_player || "-"
+          }`;
+        }
+
+        handlePlayerJoined(message) {
+          document.getElementById(
+            "players-count"
+          ).textContent = `Jugadores: ${message.players_count}`;
+        }
+
+        handleMoveMade(message) {
+          this.log(
+            `🎯 Movimiento realizado: ${JSON.stringify(
+              message.data || message.result,
+              null,
+              2
+            )}`
+          );
+          if (message.result && message.result.winner) {
+            this.showWinner(message.result.winner);
+          }
+          // Solicitar estado del juego después de cada movimiento
+          setTimeout(() => {
+            this.log(
+              `📡 Solicitando estado del juego después del movimiento...`
+            );
+            this.getGameState();
+          }, 100);
+        }
+
+        handleGameRestarted(message) {
+          this.log(
+            `🔄 Juego reiniciado: ${JSON.stringify(message.data, null, 2)}`
+          );
+          document.getElementById("winner-message").style.display = "none";
+          this.updateGameStatus("Juego reiniciado");
+          // Solicitar nuevo estado del juego
+          setTimeout(() => {
+            this.getGameState();
+          }, 100);
+        }
+
+        handleGameOver(message) {
+          this.log(
+            `🏁 Juego terminado: ${JSON.stringify(message.data, null, 2)}`
+          );
+          this.updateGameStatus(
+            `Game Over: ${message.data?.reason || "Juego terminado"}`
+          );
+        }
+
+        handleWinner(message) {
+          this.log(`🏆 Ganador: ${JSON.stringify(message.data, null, 2)}`);
+          const winner = message.data?.winner;
+          if (winner) {
+            this.updateGameStatus(`🎉 ¡Ganador: ${winner.name || winner.id}!`);
+            this.showWinner(winner);
+          }
+        }
+
+        updateGameStatus(status) {
+          const statusElement = document.getElementById("gameStatus");
+          if (statusElement) {
+            statusElement.textContent = status;
+            statusElement.style.fontWeight = "bold";
+            statusElement.style.color = "#2563eb";
+          }
+          this.log(`📊 Estado del juego actualizado: ${status}`);
+        }
+
+        handleError(message) {
+          this.log(`❌ Error del servidor: ${message.message}`);
+          alert(`Error: ${message.message}`);
+        }
+
+        updateTicTacToeBoard(board) {
+          for (let row = 0; row < board.length; row++) {
+            for (let col = 0; col < board[row].length; col++) {
+              const cell = document.getElementById(`cell-${row}-${col}`);
+              if (cell) {
+                cell.textContent = board[row][col];
+              }
+            }
+          }
+        }
+
+        updateConnect4Board(board) {
+          // Connect4 tiene un tablero de 6x7
+          if (!board || !Array.isArray(board)) return;
+
+          this.log(
+            `🔍 Actualizando tablero Connect4 con ${board.length} filas`
+          );
+
+          for (let row = 0; row < Math.min(board.length, 6); row++) {
+            for (let col = 0; col < Math.min(board[row].length, 7); col++) {
+              const cell = document.getElementById(`connect4-${row}-${col}`);
+              if (cell) {
+                const value = board[row][col];
+                // Limpiar clases anteriores
+                cell.classList.remove("red", "yellow");
+
+                // Agregar clase según el valor
+                if (
+                  value === "R" ||
+                  value === "r" ||
+                  value === 1 ||
+                  value === "1"
+                ) {
+                  cell.classList.add("red");
+                  this.log(`🔴 Celda [${row}][${col}] = ROJO (${value})`);
+                } else if (
+                  value === "Y" ||
+                  value === "y" ||
+                  value === 2 ||
+                  value === "2"
+                ) {
+                  cell.classList.add("yellow");
+                  this.log(`🟡 Celda [${row}][${col}] = AMARILLO (${value})`);
+                } else if (
+                  value !== "" &&
+                  value !== null &&
+                  value !== undefined &&
+                  value !== 0 &&
+                  value !== "0"
+                ) {
+                  this.log(
+                    `❓ Celda [${row}][${col}] valor desconocido: ${value} (tipo: ${typeof value})`
+                  );
+                }
+              }
+            }
+          }
+        }
+
+        showWinner(winner) {
+          const winnerMessage = document.getElementById("winner-message");
+          winnerMessage.textContent = `🏆 ¡Ganador: ${winner}!`;
+          winnerMessage.style.display = "block";
+          winnerMessage.className = "status success";
+        }
+
+        updateConnectionStatus(text, className = "") {
+          const status = document.getElementById("connection-status");
+          status.textContent = text;
+          status.className = `status ${className}`;
+        }
+
+        log(message) {
+          const logDiv = document.getElementById("message-log");
+          const timestamp = new Date().toLocaleTimeString();
+          logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+          logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        disconnect() {
+          if (this.ws) {
+            this.ws.close();
+          }
+        }
+      }
+
+      // Instancia global del cliente
+      const gameClient = new GameWebSocketClient();
+
+      // Event listeners
+      document.addEventListener("DOMContentLoaded", () => {
+        // Botones de conexión
+        document.getElementById("connect-btn").addEventListener("click", () => {
+          gameClient.connect();
+        });
+
+        document
+          .getElementById("disconnect-btn")
+          .addEventListener("click", () => {
+            gameClient.disconnect();
+          });
+
+        document
+          .getElementById("join-game-btn")
+          .addEventListener("click", () => {
+            gameClient.joinGame();
+          });
+
+        // Botones de juego
+        document
+          .getElementById("get-state-btn")
+          .addEventListener("click", () => {
+            gameClient.getGameState();
+          });
+
+        document.getElementById("restart-btn").addEventListener("click", () => {
+          gameClient.restartGame();
+        });
+
+        // Tablero TicTacToe
+        document.querySelectorAll(".cell").forEach((cell) => {
+          cell.addEventListener("click", () => {
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            gameClient.makeTicTacToeMove(row, col);
+          });
+        });
+
+        // Generar tablero Connect4
+        generateConnect4Board();
+      });
+
+      // Funciones auxiliares
+      function makeConnect4Move(column) {
+        gameClient.makeConnect4Move(column);
+      }
+
+      function generateConnect4Board() {
+        const board = document.getElementById("connect4-board");
+        board.innerHTML = "";
+
+        for (let row = 0; row < 6; row++) {
+          for (let col = 0; col < 7; col++) {
+            const cell = document.createElement("div");
+            cell.className = "connect4-cell";
+            cell.id = `connect4-${row}-${col}`;
+            board.appendChild(cell);
+          }
+        }
+      }
+
+      function clearLog() {
+        document.getElementById("message-log").innerHTML = "";
+      }
+
+
+    </script>
+  </body>
+</html>
