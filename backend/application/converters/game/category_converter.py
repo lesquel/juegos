@@ -23,8 +23,8 @@ class CategoryEntityToDTOConverter(
 
         try:
             # Convertir games a IDs si son objetos, mantener si ya son strings
+            game_ids = []
             if entity.games:
-                game_ids = []
                 for game in entity.games:  # Es una entidad GameEntity
                     game_ids.append(str(game))
 

@@ -1,6 +1,5 @@
 from typing import Any
 
-from domain.enums.online_game_type import GameType
 from infrastructure.dependencies.factories import get_game_engine
 
 from ..game_names import TICTACTOE_NAME
@@ -16,7 +15,7 @@ class TictactoeWebSocketManager(BaseGameWebSocketManager):
 
     def create_game_engine(self, match_id: str) -> Any:
         """Crea una instancia del motor de TicTacToe"""
-        return get_game_engine(GameType.tictactoe)
+        return get_game_engine(self.game_type)
 
     def get_max_players(self) -> int:
         """TicTacToe permite 2 jugadores activos"""

@@ -19,8 +19,8 @@ class GameEntityToDTOConverter(
         )
 
         # Convertir categories a IDs si son objetos, mantener si ya son strings
+        category_ids = []
         if entity.categories:
-            category_ids = []
             for category in entity.categories:
                 category_ids.append(str(category))
 
