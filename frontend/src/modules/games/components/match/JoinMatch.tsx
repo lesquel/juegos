@@ -25,7 +25,6 @@ export const JoinMatch = ({ match, game }: { match: Match; game: Game }) => {
   const handleJoinMatch = async () => {
     if (isJoined) {
       if (match.winner_id === null) {
-        console.log("match.match_id", match.match_id);
         location.href =
           location.protocol +
           "//" +
@@ -42,6 +41,9 @@ export const JoinMatch = ({ match, game }: { match: Match; game: Game }) => {
     });
   };
 
+  const isFull = match.participant_ids.length >= Number(game.game_capacity);
+  const isFinished = match.winner_id !== null;
+
   return (
     <div>
       {error ? (
@@ -50,16 +52,17 @@ export const JoinMatch = ({ match, game }: { match: Match; game: Game }) => {
         </span>
       ) : null}
       <button
-        disabled={
-          match.participant_ids.length >= Number(game.game_capacity) ||
-          match.winner_id !== null
-        }
+        disabled={isFull || isFinished}
         onClick={() => {
           handleJoinMatch();
         }}
-        className="bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out text-xl transform hover:scale-105 flex items-center justify-center gap-3"
+        className={`w-full font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-3 text-lg 
+          ${isFull || isFinished
+            ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+            : 'bg-gradient-to-r from-purple-600 to-blue-500 text-white hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
+          }`}
       >
-        join{" "}
+        {isFinished ? 'Partida Terminada' : isFull ? 'Partida Llena' : isJoined ? 'Volver a la Partida' : 'Unirse a la Partida'}
       </button>
     </div>
   );

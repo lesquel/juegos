@@ -26,22 +26,30 @@ const UseListMatchesByGameId = ({ id }: { id: string }) => {
     console.log(location);
   }, []);
 
-  if (isLoading || gameIsLoading) return <div>Loading...</div>;
-  if (error || gameError)
-    return (
-      <div className="text-center text-red-400">Error: {error?.message}</div>
-    );
+  if (isLoading || gameIsLoading) return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="text-white text-2xl">Loading...</div>
+    </div>
+  );
+
+  if (error || gameError) return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="text-red-400 text-2xl">Error: {error?.message || gameError?.message}</div>
+    </div>
+  );
+
   return (
-    <div className="text-white">
-      <h1>Matches</h1>
-      <h2>juego: {game?.game_name}</h2>
-      <CreateMatch gameId={id} game={game as Game} />
-      <h2>lista de partidas</h2>
-      <ul>
+    <div className="container mx-auto px-4 py-8 text-white">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold">Partidas de {game?.game_name}</h1>
+        <CreateMatch gameId={id} game={game as Game} />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {data?.results.map((match) => (
           <CardMatch key={match.match_id} match={match} game={game as Game} />
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
