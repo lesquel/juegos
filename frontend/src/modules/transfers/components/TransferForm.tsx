@@ -23,6 +23,7 @@ export const TransferForm = () => (
 
 const InternalTransferForm = () => {
   const { mutate, error } = TransferDataClient.uploadTransfer();
+  const { data: infoAccounts } = TransferDataClient.getInfoAccounts();
 
   const form = useForm<
     TransferInputModel,
@@ -46,87 +47,105 @@ const InternalTransferForm = () => {
   });
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        void form.handleSubmit();
-      }}
-      className="max-w-lg mx-auto bg-white p-6 rounded-xl shadow-md space-y-4"
-    >
-      <h2 className="text-xl font-bold text-center mb-4">
-        Subir Transferencia
-      </h2>
-
-      {error && (
-        <p className="text-red-500 bg-red-100 p-2 rounded-md">
-          {error.errors.join(", ")}
-        </p>
-      )}
-
-      <form.Field name="transfer_img">
-        {(field) => (
-          <div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) field.handleChange(file);
-              }}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200"
-            />
-            {field.state.meta.errors.length > 0 && (
-              <p className="text-red-400 text-sm mt-1">
-                {field.state.meta.errors.join(", ")}
-              </p>
-            )}
+    <div>
+      <div>
+        <h2>cuentas</h2>
+        {infoAccounts?.accounts.map((account) => (
+          <div key={account.account_id}>
+            {account.account_name}
+            <br />
+            {account.account_number}
+            <br />
+            {account.account_owner_name}
+            <br />
+            {account.account_type}
+            <br />
+            {account.account_description}
           </div>
-        )}
-      </form.Field>
-
-      <form.Field name="transfer_amount">
-        {(field) => (
-          <div>
-            <input
-              type="number"
-              step="0.01"
-              value={field.state.value}
-              onChange={(e) => field.handleChange(Number(e.target.value))}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200"
-            />
-            {field.state.meta.errors.length > 0 && (
-              <p className="text-red-400 text-sm mt-1">
-                {field.state.meta.errors.join(", ")}
-              </p>
-            )}
-          </div>
-        )}
-      </form.Field>
-
-      <form.Field name="transfer_description">
-        {(field) => (
-          <div>
-            <textarea
-              rows={3}
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200"
-            />
-            {field.state.meta.errors.length > 0 && (
-              <p className="text-red-400 text-sm mt-1">
-                {field.state.meta.errors.join(", ")}
-              </p>
-            )}
-          </div>
-        )}
-      </form.Field>
-
-      <button
-        type="submit"
-        className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition"
+        ))}
+      </div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void form.handleSubmit();
+        }}
+        className="max-w-lg mx-auto bg-white p-6 rounded-xl shadow-md space-y-4"
       >
-        Subir Transferencia
-      </button>
-    </form>
+        <h2 className="text-xl font-bold text-center mb-4">
+          Subir Transferencia
+        </h2>
+
+        {error && (
+          <p className="text-red-500 bg-red-100 p-2 rounded-md">
+            {error.errors.join(", ")}
+          </p>
+        )}
+
+        <form.Field name="transfer_img">
+          {(field) => (
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) field.handleChange(file);
+                }}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200"
+              />
+              {field.state.meta.errors.length > 0 && (
+                <p className="text-red-400 text-sm mt-1">
+                  {field.state.meta.errors.join(", ")}
+                </p>
+              )}
+            </div>
+          )}
+        </form.Field>
+
+        <form.Field name="transfer_amount">
+          {(field) => (
+            <div>
+              <input
+                type="number"
+                step="0.01"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(Number(e.target.value))}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200"
+              />
+              {field.state.meta.errors.length > 0 && (
+                <p className="text-red-400 text-sm mt-1">
+                  {field.state.meta.errors.join(", ")}
+                </p>
+              )}
+            </div>
+          )}
+        </form.Field>
+
+        <form.Field name="transfer_description">
+          {(field) => (
+            <div>
+              <textarea
+                rows={3}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200"
+              />
+              {field.state.meta.errors.length > 0 && (
+                <p className="text-red-400 text-sm mt-1">
+                  {field.state.meta.errors.join(", ")}
+                </p>
+              )}
+            </div>
+          )}
+        </form.Field>
+
+        <button
+          type="submit"
+          className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition"
+        >
+          Subir Transferencia
+        </button>
+      </form>
+    </div>
   );
 };
