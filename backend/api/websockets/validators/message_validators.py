@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional
 
+from infrastructure.websockets.game_names import CONNECT4_NAME, TICTACTOE_NAME
 from pydantic import BaseModel, ValidationError
 
 
@@ -111,7 +112,6 @@ class GameMessageValidator(MessageValidator):
         schema_class = cls.MESSAGE_SCHEMAS.get(message_type, GameMessageSchema)
 
         try:
-            # Validate with Pydantic
             validated_data = schema_class(**message).dict()
             return True, None, validated_data
         except ValidationError as e:
@@ -126,9 +126,9 @@ class GameMessageValidator(MessageValidator):
         cls, move_data: dict, game_type: str
     ) -> tuple[bool, Optional[str]]:
         """Validate move data based on game type"""
-        if game_type in ["connect4", "conecta4"]:
+        if game_type == CONNECT4_NAME:
             return cls._validate_connect4_move(move_data)
-        elif game_type == "tictactoe":
+        elif game_type == TICTACTOE_NAME:
             return cls._validate_tictactoe_move(move_data)
         else:
             return True, None  # Unknown game type, let game engine validate

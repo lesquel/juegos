@@ -1,10 +1,16 @@
 from typing import Any, Dict, Optional
 
 from application.use_cases.auth.get_current_user import GetCurrentUserUseCase
+from domain.exceptions.auth import AuthenticationError
+from domain.exceptions.match import AlreadyParticipatingError, MatchJoinError
 from domain.repositories.match_repository import IMatchRepository
 from fastapi import WebSocket
 from infrastructure.websockets.unified_game_manager import UnifiedGameWebSocketManager
 
+from ..handlers.authentication_handler import WebSocketAuthenticationHandler
+from ..handlers.connection_handler import WebSocketConnectionHandler
+from ..handlers.error_handler import WebSocketErrorHandler
+from ..handlers.game_handler import WebSocketGameHandler
 from .websocket_middleware import WebSocketMiddleware
 
 
@@ -26,10 +32,6 @@ class WebSocketConnectionMiddleware(WebSocketMiddleware):
         self, websocket: WebSocket, match_id: str, **kwargs
     ) -> Optional[Dict[str, Any]]:
         """Process connection validation and authentication"""
-        from ..handlers.authentication_handler import WebSocketAuthenticationHandler
-        from ..handlers.connection_handler import WebSocketConnectionHandler
-        from ..handlers.error_handler import WebSocketErrorHandler
-        from ..handlers.game_handler import WebSocketGameHandler
 
         # Initialize handlers
         connection_handler = WebSocketConnectionHandler()
@@ -45,7 +47,7 @@ class WebSocketConnectionMiddleware(WebSocketMiddleware):
         user = await auth_handler.validate_authentication(websocket, match_id)
         if not user:
             await error_handler.handle_authentication_failure(websocket, match_id)
-            raise Exception("Authentication failed")
+            raise AuthenticationError("Authentication failed")
 
         # Validate game setup
         match = await game_handler.validate_game_setup(match_id, user)
@@ -53,14 +55,14 @@ class WebSocketConnectionMiddleware(WebSocketMiddleware):
             await error_handler.handle_validation_failure(
                 websocket, match_id, "Match validation failed"
             )
-            raise Exception("Match validation failed")
+            raise MatchJoinError("Match validation failed")
 
         # Connect to game
         if not game_handler.connect_user_to_game(match_id, websocket, user):
             await error_handler.handle_duplicate_connection(
                 websocket, match_id, str(user.user_id)
             )
-            raise Exception("Duplicate connection")
+            raise AlreadyParticipatingError("Duplicate connection")
 
         # Don't send connection confirmation immediately - let the message loop handle it
         # This avoids timing issues with WebSocket state

@@ -71,17 +71,3 @@ class WebSocketServiceFactory:
             unified_game_manager,
             WebSocketConfig.production(),
         )
-
-    @staticmethod
-    def create_testing_service(
-        user_use_case: GetCurrentUserUseCase,
-        match_repository: IMatchRepository,
-        unified_game_manager: UnifiedGameWebSocketManager,
-    ) -> WebSocketService:
-        """Create a WebSocket service with testing configuration"""
-        return WebSocketServiceFactory.create_websocket_service(
-            user_use_case,
-            match_repository,
-            unified_game_manager,
-            WebSocketConfig.testing(),
-        )
