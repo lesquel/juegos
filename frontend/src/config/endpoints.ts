@@ -1,4 +1,7 @@
 export const endpoints = {
+  appInfo: {
+    get: "/app-info",
+  },
   user: {
     get: "/users",
     getId: (id: string) => `/users/${id}`,
