@@ -1,56 +1,57 @@
 from typing import List, Optional
 
-from dtos.common.constants import (
-    EXAMPLE_BASE_BET_AMOUNT,
-    EXAMPLE_BET_AMOUNT,
-    EXAMPLE_CREATED_AT,
-    EXAMPLE_CREATED_BY_ID,
-    EXAMPLE_GAME_ID,
-    EXAMPLE_MATCH_ID,
-    EXAMPLE_ODDS_FOR_MATCH,
-    EXAMPLE_SCORE,
-    EXAMPLE_UPDATED_AT,
-    EXAMPLE_USER_ID,
-    EXAMPLE_WINNER_ID,
-)
 from pydantic import Field
 
 from .time_stamp_base import TimeStampBase
 
 
+class AccountResponseDTO(TimeStampBase):
+    """DTO para respuesta de información de la cuenta"""
 
-class MatchResponseDTO(TimeStampBase):
-    """DTO para respuesta de partida"""
-
-    match_id: str = Field(..., description="ID único de la partida")
-    game_id: str = Field(..., description="ID del juego")
-    winner_id: Optional[str] = Field(None, description="ID del ganador de la partida")
-    created_by_id: Optional[str] = Field(
-        None, description="ID del usuario que creó la partida"
+    account_id: str = Field(..., description="ID de la cuenta")
+    account_owner_name: str = Field(
+        ..., description="Nombre del propietario de la cuenta"
     )
-    base_bet_amount: Optional[float] = Field(
-        None, description="Monto base de la apuesta para la partida"
-    )
-
-    participant_ids: List[str] = Field(
-        default=[], description="Lista de participantes en la partida"
-    )
-
-    odds_for_match: Optional[float] = Field(
-        None, description="Cuota ganadora de la partida"
+    account_number: str = Field(..., description="Número de la cuenta")
+    account_type: str = Field(..., description="Tipo de cuenta")
+    account_description: Optional[str] = Field(
+        None, description="Descripción de la cuenta"
     )
 
     class Config:
         json_schema_extra = {
             "example": {
-                "match_id": EXAMPLE_MATCH_ID,
-                "game_id": EXAMPLE_GAME_ID,
-                "winner_id": EXAMPLE_WINNER_ID,
-                "created_by_id": EXAMPLE_CREATED_BY_ID,
-                "base_bet_amount": EXAMPLE_BASE_BET_AMOUNT,
-                "participant_ids": [EXAMPLE_USER_ID],
-                "odds_for_match": EXAMPLE_ODDS_FOR_MATCH,
-                "created_at": EXAMPLE_CREATED_AT,
-                "updated_at": EXAMPLE_UPDATED_AT,
+                "account_id": "12345",
+                "account_owner_name": "John Doe",
+                "account_number": "987654321",
+                "account_description": "Cuenta principal del usuario",
+            }
+        }
+
+
+class AppInfoResponseDTO(TimeStampBase):
+    """DTO para respuesta de información de la aplicación"""
+
+    site_name: str = Field(..., description="Nombre del sitio")
+    site_icon: str = Field(..., description="Icono del sitio")
+    site_logo: str = Field(..., description="Logo del sitio")
+    accounts: List[AccountResponseDTO] = Field(
+        ..., description="Lista de cuentas asociadas al sitio"
+    )
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "site_name": "My App",
+                "site_icon": "https://example.com/icon.png",
+                "site_logo": "https://example.com/logo.png",
+                "accounts": [
+                    {
+                        "account_id": "12345",
+                        "account_owner_name": "John Doe",
+                        "account_number": "987654321",
+                        "account_description": "Cuenta principal del usuario",
+                    }
+                ],
             }
         }

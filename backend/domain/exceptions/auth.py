@@ -1,7 +1,3 @@
-"""
-Excepciones de autenticación y autorización
-"""
-
 from .base import DomainException
 
 

@@ -4,6 +4,7 @@ venv/
 env/
 
 script_crear.py
+script_delete.py
 
 # Environment files
 *.env

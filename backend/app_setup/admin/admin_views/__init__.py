@@ -1,3 +1,4 @@
+from .app_info import AccountAdmin, AppInfoAdmin
 from .games import CategoryAdmin, GameAdmin, GameReviewAdmin
 from .matches import MatchAdmin, MatchParticipationAdmin
 from .payments import TransferPaymentAdmin
@@ -16,4 +17,7 @@ __all__ = [
     "MatchParticipationAdmin",
     # Módulo de pagos
     "TransferPaymentAdmin",
+    # App Info
+    "AppInfoAdmin",
+    "AccountAdmin",
 ]

@@ -4,12 +4,15 @@ from ..interfaces import IMatchService
 
 
 class MatchService(IMatchService):
-    def calculate_reward(self, odds: float, base_bet: float) -> float:
+    @staticmethod
+    def calculate_reward(odds: float, base_bet: float) -> float:
         return odds * base_bet
 
-    def validate_can_join(self, match: MatchEntity, game_capacity: int) -> bool:
+    @staticmethod
+    def validate_can_join(match: MatchEntity, game_capacity: int) -> bool:
         return len(match.participant_ids) < game_capacity
 
+    @staticmethod
     def get_winner(self, participation_scores: list[tuple[str, float]]) -> str:
         if not participation_scores:
             return ""

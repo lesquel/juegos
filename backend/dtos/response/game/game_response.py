@@ -36,6 +36,10 @@ class GameResponseDTO(TimeStampBase):
         None, description="Probabilidad de la casa en el juego"
     )
 
+    game_type: Optional[str] = Field(
+        None, description="Tipo de juego (Online, Presencial, etc.)"
+    )
+
     class Config:
         json_schema_extra = {
             "example": {

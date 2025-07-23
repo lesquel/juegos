@@ -1,5 +1,7 @@
 from .admin_config import initialize_admin
 from .admin_views import (
+    AccountAdmin,
+    AppInfoAdmin,
     CategoryAdmin,
     GameAdmin,
     GameReviewAdmin,
@@ -26,5 +28,9 @@ admin_views_by_module = {
     ],
     "Modulo pagos": [
         TransferPaymentAdmin,
+    ],
+    "App Info": [
+        AppInfoAdmin,
+        AccountAdmin,
     ],
 }

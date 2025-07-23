@@ -5,7 +5,7 @@ from domain.entities.match.match import MatchEntity
 
 class IMatchService(ABC):
     @abstractmethod
-    def calculate_reward(self, odds: float, base_bet: float) -> float:
+    def calculate_reward(odds: float, base_bet: float) -> float:
         """
         Calcula la recompensa basada en las probabilidades y la apuesta base.
 
@@ -18,7 +18,7 @@ class IMatchService(ABC):
         """
 
     @abstractmethod
-    def validate_can_join(self, match: MatchEntity, game_capacity: int) -> bool:
+    def validate_can_join(match: MatchEntity, game_capacity: int) -> bool:
         """
         Valida si un usuario puede unirse a una partida.
 
@@ -31,7 +31,7 @@ class IMatchService(ABC):
         """
 
     @abstractmethod
-    def is_participant(self, match: MatchEntity, user_id: str) -> bool:
+    def is_participant(match: MatchEntity, user_id: str) -> bool:
         """
         Verifica si un usuario es participante de una partida.
 
@@ -44,7 +44,7 @@ class IMatchService(ABC):
         """
 
     @abstractmethod
-    def get_winner(self, participation_scores: list[tuple[str, float]]) -> str:
+    def get_winner(participation_scores: list[tuple[str, float]]) -> str:
         """
         Obtiene el ID del ganador de una partida.
 

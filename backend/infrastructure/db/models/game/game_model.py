@@ -1,8 +1,10 @@
 import uuid
 
+from domain.enums import GameTypeEnum
 from sqlalchemy import Column, Float, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from sqlalchemy.types import Enum as SqlEnum
 
 from ...base import Base
 from ..common import TimeStampModelMixin, game_categories
@@ -22,6 +24,11 @@ class GameModel(Base, TimeStampModelMixin):
     game_capacity = Column(Integer, nullable=False, default=1, index=True)
 
     house_odds = Column(Float, default=1.0, nullable=False)
+
+    game_type = Column(
+        SqlEnum(GameTypeEnum, name="gametype", create_type=True), nullable=False
+    )
+
     categories = relationship(
         "CategoryModel", secondary=game_categories, back_populates="games"
     )

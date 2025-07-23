@@ -39,6 +39,7 @@ class GameAdmin(ImageUploadAdminMixin, ModelView, model=GameModel):
         GameModel.game_img,
         GameModel.categories,
         GameModel.game_capacity,
+        GameModel.game_type,
         GameModel.created_at,
         GameModel.updated_at,
     ]
@@ -52,7 +53,9 @@ class GameAdmin(ImageUploadAdminMixin, ModelView, model=GameModel):
         GameModel.game_url,
         GameModel.game_img,
         GameModel.categories,
+        GameModel.game_type,
         GameModel.game_capacity,
+        GameModel.house_odds,
     ]
 
     # Columnas para búsqueda

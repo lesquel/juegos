@@ -92,17 +92,15 @@ class ImageUploadAdminMixin:
             </div>
         """
 
-    async def create_model(self, request: Request, data: dict):
+    async def insert_model(self, request: Request, data: dict):
         """Crear modelo con procesamiento de imagen"""
         data = await self._process_image_upload(request, data, is_update=False)
-        # No llamar a super() ya que es un mixin
-        return data
+        return await super().insert_model(request, data)
 
-    async def update_model(self, request: Request, pk: str, data: dict):
+    async def edit_model(self, request: Request, pk: str, data: dict):
         """Actualizar modelo con procesamiento de imagen"""
         data = await self._process_image_upload(request, data, is_update=True, pk=pk)
-        # No llamar a super() ya que es un mixin
-        return data
+        return await super().edit_model(request, pk, data)
 
     async def _process_image_upload(
         self,

@@ -1,3 +1,4 @@
+from .app_info_routes import app_info_router
 from .auth_routes import auth_router
 from .category_routes import category_router
 from .game_routes import game_router
@@ -6,6 +7,7 @@ from .transfer_payment_routes import transfer_router
 from .user_routes import user_router
 
 http_routers = [
+    app_info_router,
     user_router,
     transfer_router,
     auth_router,

@@ -2,6 +2,8 @@
 Excepciones del dominio - Organizadas por módulos
 """
 
+from .app_info import AppInfoNotFound
+
 # Excepciones de autenticación
 from .auth import (
     AuthenticationError,
@@ -72,6 +74,8 @@ __all__ = [
     # Game
     "GameNotFoundError",
     "GameAlreadyExistsError",
+    "GameReviewAlreadyExistsError",
+    "GameReviewNotFoundError",
     "ServiceIdRequiredError",
     "CannotDeletePendingEventRentalError",
     "CategoryNotFoundError",
@@ -84,4 +88,6 @@ __all__ = [
     # Transfer
     "TransferNotFoundError",
     "InvalidTransferStateError",
+    # App Info
+    "AppInfoNotFound",
 ]

@@ -18,6 +18,7 @@ class GameEntity(TimeStampEntityMixin):
         game_capacity: int,
         categories: Optional[list[str]],  # Solo IDs de categorías para eficiencia
         house_odds: Optional[float] = None,
+        game_type: Optional[str] = None,
         created_at: Optional[str] = None,
         updated_at: Optional[str] = None,
     ):
@@ -33,6 +34,7 @@ class GameEntity(TimeStampEntityMixin):
             categories if categories is not None else []
         )  # Lista de IDs de categorías
         self.house_odds = house_odds
+        self.game_type = game_type
 
     def __repr__(self):
         return f"GameEntity(game_id={self.game_id}, game_name='{self.game_name}')"

@@ -32,6 +32,7 @@ class GameEntityToDTOConverter(
             game_url=entity.game_url,
             game_capacity=entity.game_capacity,
             house_odds=entity.house_odds,
+            game_type=entity.game_type,
             category_ids=category_ids,  # Siempre IDs de string
             created_at=entity.created_at,
             updated_at=entity.updated_at,

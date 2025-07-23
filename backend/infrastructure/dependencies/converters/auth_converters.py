@@ -1,10 +1,3 @@
-"""
-Proveedores de convertidores para autenticación y usuarios.
-
-Este módulo contiene las funciones que crean instancias de convertidores
-relacionados con autenticación y gestión de usuarios.
-"""
-
 from application.converters.auth.login_assembler import LoginResponseAssembler
 from application.converters.auth.user_response_converters import (
     UserEntityToBaseResponseDTOConverter,
