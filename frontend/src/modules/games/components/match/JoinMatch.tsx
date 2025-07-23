@@ -4,7 +4,20 @@ import type { Match } from "@modules/games/models/match.model";
 import { MatchClientData } from "@modules/games/services/matchClientData";
 
 export const JoinMatch = ({ match, game }: { match: Match; game: Game }) => {
-  const { mutate, error } = MatchClientData.joinMatch(match.match_id);
+  const onSuccess = (data: Match) => {
+    location.href =
+      location.protocol +
+      "//" +
+      location.host +
+      "/" +
+      game?.game_url +
+      "?match_id=" +
+      data.match_id;
+  };
+  const { mutate, error } = MatchClientData.joinMatch(
+    match.match_id,
+    onSuccess
+  );
   const isJoined = match.participant_ids.includes(
     useAuthStore.getState().user?.user.user_id as string
   );
@@ -37,7 +50,10 @@ export const JoinMatch = ({ match, game }: { match: Match; game: Game }) => {
         </span>
       ) : null}
       <button
-        disabled={match.participant_ids.length >= 2 || match.winner_id !== null}
+        disabled={
+          match.participant_ids.length >= Number(game.game_capacity) ||
+          match.winner_id !== null
+        }
         onClick={() => {
           handleJoinMatch();
         }}

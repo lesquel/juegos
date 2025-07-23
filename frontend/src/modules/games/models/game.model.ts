@@ -16,6 +16,7 @@ export interface GameDetail {
   update_at: Date;
   categories?: CategoryGame[];
   game_type: GameType;
+  game_capacity?: number;
 }
 
 export interface Game extends Omit<GameDetail, "categories" | "comments"> {}

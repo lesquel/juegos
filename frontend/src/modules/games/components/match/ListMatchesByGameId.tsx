@@ -34,7 +34,9 @@ const UseListMatchesByGameId = ({ id }: { id: string }) => {
   return (
     <div className="text-white">
       <h1>Matches</h1>
+      <h2>juego: {game?.game_name}</h2>
       <CreateMatch gameId={id} game={game as Game} />
+      <h2>lista de partidas</h2>
       <ul>
         {data?.results.map((match) => (
           <CardMatch key={match.match_id} match={match} game={game as Game} />

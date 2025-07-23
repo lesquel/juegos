@@ -244,6 +244,40 @@
     font-weight: bold;
   }
 
+  .players-info {
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+
+  .players-info.status-waiting {
+    background-color: rgba(241, 196, 15, 0.3);
+    color: #f1c40f;
+    border-color: rgba(241, 196, 15, 0.5);
+    animation: pulse 2s infinite;
+  }
+
+  .players-info.status-ready {
+    background-color: rgba(39, 174, 96, 0.3);
+    color: #2ecc71;
+    border-color: rgba(39, 174, 96, 0.5);
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.02);
+      opacity: 0.8;
+    }
+  }
+
   .status-connected {
     background-color: rgba(39, 174, 96, 0.3);
     color: #2ecc71;
@@ -385,6 +419,9 @@
       <button id="statusBtn" onclick="console.log(connectFour.status())">📋 Estado Conexión</button>
     </div>
     <div id="gameStats">Movimientos: <span id="moveCount">0</span></div>
+    <div id="playersInfo" class="players-info">
+      👤 Conectando...
+    </div>
     <div id="connectionStatus" class="connection-status status-disconnected">
       🔴 Desconectado
     </div>

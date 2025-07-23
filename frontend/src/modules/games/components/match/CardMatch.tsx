@@ -7,7 +7,6 @@ export const CardMatch = ({ match, game }: { match: Match; game: Game }) => {
   return (
     <li className="border-b border-gray-700">
       <div>
-        <div> Game ID: {match.game_id}</div>
         <div>
           {match.participant_ids.length > 0 ? (
             match.participant_ids.map((id, key) => (

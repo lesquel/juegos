@@ -45,7 +45,7 @@ export class MatchClientData {
     });
   }
 
-  public static joinMatch(id: string) {
+  public static joinMatch(id: string, onSuccess?: (data: Match) => void) {
     return useMutation({
       mutationFn: (data: JoinMatch) => {
         return axios.post(
@@ -61,6 +61,7 @@ export class MatchClientData {
         );
       },
       onSuccess: (data) => {
+        onSuccess?.(MatchAdapter.adapt(data.data));
         console.log("match join", data);
       },
       onError: (error: ErrorResponseErrorsArray) => {

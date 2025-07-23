@@ -13,6 +13,7 @@ export class GameAdapter {
       create_at: new Date(game.create_at),
       update_at: new Date(game.update_at),
       game_type: game.game_type,
+      game_capacity: game.game_capacity,
     };
   }
 
