@@ -52,7 +52,7 @@ const UseListCategoryGame = () => {
         paguination={paguination}
         setPaguination={setPaguination}
         info={data.info}
-        color="bg-purple-600"
+        color="bg-purple-300"
       />
     </div>
   );

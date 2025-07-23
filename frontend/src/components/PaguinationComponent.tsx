@@ -29,7 +29,7 @@ export const PaguinationComponent = ({
   };
 
   // Combine classes for easier maintenance
-  const buttonClasses = `w-10 h-10 flex items-center justify-center rounded-full text-white disabled:opacity-50 transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white ${color} cursor-pointer`;
+  const buttonClasses = `w-10 h-10 flex items-center justify-center rounded-full text-white transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125 hover:shadow-lg focus:ring-white ${color} cursor-pointer`;
 
   return (
     <div className="flex justify-center items-center space-x-4">
