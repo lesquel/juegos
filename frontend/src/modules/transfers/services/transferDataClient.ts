@@ -7,6 +7,7 @@ import { ErrorResponseAdapter } from "@adapters/errorResponse.adapter";
 import type { ErrorResponseErrorsArray } from "@models/errorResponse";
 import type { TransferInputModel } from "../models/transfer.model";
 import { endpoints } from "@config/endpoints";
+import { GlobalInfoAdapter } from "@adapters/globalInfo.adapter";
 
 export class TransferDataClient {
   private static readonly BASE_URL = environment.BASE_URL;
@@ -84,6 +85,18 @@ export class TransferDataClient {
           )
           .then((response) => {
             return TransferAdapter.adaptTransferDetail(response.data);
+          }),
+    });
+  }
+
+  static getInfoAccounts() {
+    return useQuery({
+      queryKey: ["infoAccounts"],
+      queryFn: () =>
+        axios
+          .get(`${TransferDataClient.BASE_URL}${endpoints.appInfo.get}`)
+          .then((response) => {
+            return GlobalInfoAdapter.adaptGlobalInfoAccount(response.data);
           }),
     });
   }
