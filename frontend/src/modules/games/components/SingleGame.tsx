@@ -62,6 +62,10 @@ const UseSingleGame = ({ id }: { id: string }) => {
             <p className="text-gray-300 text-lg leading-relaxed">
               {data?.game_description}
             </p>
+
+            <p>
+              <span>Tipo de juego:</span> {data?.game_type}
+            </p>
           </div>
         </div>
       </div>
