@@ -27,14 +27,14 @@ export const CardMatch = ({ match, game }: { match: Match; game: Game }) => {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-lg font-semibold text-white">Apuesta Base</div>
+            <div className="md:text-lg font-semibold text-white text-sm">Apuesta Base</div>
             <div className="text-3xl font-bold text-purple-400">${match.base_bet_amount}</div>
           </div>
         </div>
 
         <div className="mb-6">
           <h3 className="text-xl font-semibold text-gray-300 mb-4">Jugadores</h3>
-          <div className="space-y-4">
+          <div className="space-x-4 flex items-center flex-wrap gap-y-2.5">
             {match.participant_ids.length > 0 ? (
               match.participant_ids.map((id) => (
                 <CardParticipant key={id} id={id} />
