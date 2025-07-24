@@ -5,6 +5,7 @@ import { CreateMatch } from "./CreateMatch";
 import { GameClientData } from "@modules/games/services/gameClientData";
 import { useEffect } from "react";
 import type { Game } from "@modules/games/models/game.model";
+import { LoadingComponent } from "@components/LoadingComponent";
 
 export const ListMatchesByGameId = ({ id }: { id: string }) => {
   return (
@@ -27,9 +28,7 @@ const UseListMatchesByGameId = ({ id }: { id: string }) => {
   }, []);
 
   if (isLoading || gameIsLoading) return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="text-white text-2xl">Loading...</div>
-    </div>
+    <LoadingComponent />
   );
 
   if (error || gameError) return (
