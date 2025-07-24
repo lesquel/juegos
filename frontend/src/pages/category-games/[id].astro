@@ -9,7 +9,7 @@ const { id } = Astro.params;
 
 <Layout>
   <main class="min-h-full flex-grow bg-gray-900 relative">
-    <BackButton className="absolute top-2.5 left-2.5" href="#"/>
+    <BackButton href="#"/>
     <SingleCategoryGame client:load id={id as string} />
   </main>
 </Layout>
