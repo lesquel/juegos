@@ -5,10 +5,7 @@ var currPlayer = playerO;
 var gameOver = false;
 var moveCount = 0;
 
-window.onload = function () {
-  setGame();
-};
-
+// Eliminar window.onload duplicado - solo usar DOMContentLoaded
 function setGame() {
   board = [
     [" ", " ", " "],
@@ -17,7 +14,10 @@ function setGame() {
   ];
 
   // Limpiar el tablero
-  document.getElementById("board").innerHTML = "";
+  const boardElement = document.getElementById("board");
+  if (boardElement) {
+    boardElement.innerHTML = "";
+  }
 
   for (let r = 0; r < 3; r++) {
     for (let c = 0; c < 3; c++) {
@@ -40,8 +40,18 @@ function setGame() {
   currPlayer = playerO;
   gameOver = false;
   moveCount = 0;
-  document.getElementById("message").innerText = "Jugador O comienza";
-  document.getElementById("restartBtn").style.display = "none";
+  
+  // Verificar que el elemento mensaje existe
+  const messageElement = document.getElementById("message");
+  if (messageElement) {
+    messageElement.innerText = "Jugador O comienza";
+  }
+  
+  // Ocultar botón de reinicio
+  const restartBtn = document.getElementById("restartBtn");
+  if (restartBtn) {
+    restartBtn.style.display = "none";
+  }
 }
 
 function setTile() {
@@ -75,25 +85,26 @@ function setTile() {
   // Cambiar jugador
   if (currPlayer == playerO) {
     currPlayer = playerX;
-    document.getElementById("message").innerText = "Turno del Jugador X";
+    updateMessage("Turno del Jugador X");
   } else {
     currPlayer = playerO;
-    document.getElementById("message").innerText = "Turno del Jugador O";
+    updateMessage("Turno del Jugador O");
+  }
+}
+
+// Función helper para actualizar mensajes de forma segura
+function updateMessage(text) {
+  const messageElement = document.getElementById("message");
+  if (messageElement) {
+    messageElement.innerText = text;
   }
 }
 
 function checkWinner() {
   // Verificar filas
   for (let r = 0; r < 3; r++) {
-    if (
-      board[r][0] == board[r][1] &&
-      board[r][1] == board[r][2] &&
-      board[r][0] != " "
-    ) {
-      for (let i = 0; i < 3; i++) {
-        let tile = document.getElementById(r.toString() + "-" + i.toString());
-        tile.classList.add("winner");
-      }
+    if (checkLine(board[r][0], board[r][1], board[r][2])) {
+      highlightWinningLine([[r, 0], [r, 1], [r, 2]]);
       handleWin(board[r][0]);
       return true;
     }
@@ -101,47 +112,23 @@ function checkWinner() {
 
   // Verificar columnas
   for (let c = 0; c < 3; c++) {
-    if (
-      board[0][c] == board[1][c] &&
-      board[1][c] == board[2][c] &&
-      board[0][c] != " "
-    ) {
-      for (let i = 0; i < 3; i++) {
-        let tile = document.getElementById(i.toString() + "-" + c.toString());
-        tile.classList.add("winner");
-      }
+    if (checkLine(board[0][c], board[1][c], board[2][c])) {
+      highlightWinningLine([[0, c], [1, c], [2, c]]);
       handleWin(board[0][c]);
       return true;
     }
   }
 
   // Verificar diagonal principal
-  if (
-    board[0][0] == board[1][1] &&
-    board[1][1] == board[2][2] &&
-    board[0][0] != " "
-  ) {
-    for (let i = 0; i < 3; i++) {
-      let tile = document.getElementById(i.toString() + "-" + i.toString());
-      tile.classList.add("winner");
-    }
+  if (checkLine(board[0][0], board[1][1], board[2][2])) {
+    highlightWinningLine([[0, 0], [1, 1], [2, 2]]);
     handleWin(board[0][0]);
     return true;
   }
 
   // Verificar diagonal secundaria
-  if (
-    board[0][2] == board[1][1] &&
-    board[1][1] == board[2][0] &&
-    board[0][2] != " "
-  ) {
-    let tile = document.getElementById("0-2");
-    tile.classList.add("winner");
-    tile = document.getElementById("1-1");
-    tile.classList.add("winner");
-    tile = document.getElementById("2-0");
-    tile.classList.add("winner");
-
+  if (checkLine(board[0][2], board[1][1], board[2][0])) {
+    highlightWinningLine([[0, 2], [1, 1], [2, 0]]);
     handleWin(board[0][2]);
     return true;
   }
@@ -149,12 +136,29 @@ function checkWinner() {
   return false;
 }
 
+// Función helper para verificar si tres casillas forman una línea ganadora
+function checkLine(a, b, c) {
+  return a === b && b === c && a !== " ";
+}
+
+// Función helper para resaltar la línea ganadora
+function highlightWinningLine(positions) {
+  positions.forEach(([r, c]) => {
+    const tile = document.getElementById(r.toString() + "-" + c.toString());
+    if (tile) {
+      tile.classList.add("winner");
+    }
+  });
+}
+
 function handleWin(winner) {
   gameOver = true;
-  document.getElementById(
-    "message"
-  ).innerText = `¡Jugador ${winner} ha ganado! 🎉`;
-  document.getElementById("restartBtn").style.display = "inline-block";
+  updateMessage(`¡Jugador ${winner} ha ganado! 🎉`);
+  
+  const restartBtn = document.getElementById("restartBtn");
+  if (restartBtn) {
+    restartBtn.style.display = "inline-block";
+  }
 
   // Reiniciar automáticamente después de 3 segundos
   setTimeout(function () {
@@ -164,17 +168,22 @@ function handleWin(winner) {
 
 function handleTie() {
   gameOver = true;
-  document.getElementById("message").innerText = "¡Es un empate! 🤝";
+  updateMessage("¡Es un empate! 🤝");
 
   // Resaltar todas las casillas para empate
   for (let r = 0; r < 3; r++) {
     for (let c = 0; c < 3; c++) {
       let tile = document.getElementById(r.toString() + "-" + c.toString());
-      tile.classList.add("tie");
+      if (tile) {
+        tile.classList.add("tie");
+      }
     }
   }
 
-  document.getElementById("restartBtn").style.display = "inline-block";
+  const restartBtn = document.getElementById("restartBtn");
+  if (restartBtn) {
+    restartBtn.style.display = "inline-block";
+  }
 
   // Reiniciar automáticamente después de 3 segundos
   setTimeout(function () {
@@ -186,6 +195,16 @@ function restartGame() {
   setGame();
 }
 
+// Agregar event listener para el botón de reinicio
+function setupEventListeners() {
+  const restartBtn = document.getElementById("restartBtn");
+  if (restartBtn) {
+    restartBtn.addEventListener("click", restartGame);
+  }
+}
+
+// Inicializar el juego cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", function () {
   setGame();
+  setupEventListeners();
 });
