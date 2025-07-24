@@ -1,12 +1,15 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import { SingleCategoryGame } from "@modules/category-game/components/SingleCategoryGame";
+import BackButton from "@components/BackButton.astro"; 
+
 
 const { id } = Astro.params;
 ---
 
 <Layout>
-  <main class="min-h-full flex-grow bg-gray-900">
+  <main class="min-h-full flex-grow bg-gray-900 relative">
+    <BackButton className="absolute top-2.5 left-2.5" href="#"/>
     <SingleCategoryGame client:load id={id as string} />
   </main>
 </Layout>
