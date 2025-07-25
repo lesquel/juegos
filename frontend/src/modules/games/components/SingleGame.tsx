@@ -42,7 +42,7 @@ const UseSingleGame = ({ id }: { id: string }) => {
               href={
                 data?.game_type === GameType.online
                   ? `${data?.game_id}/matches`
-                  : data?.game_url
+                  : "/" + data?.game_url
               }
               target="_blank"
               rel="noopener noreferrer"
