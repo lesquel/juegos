@@ -6,11 +6,12 @@ import type { Game } from "@modules/games/models/game.model";
 export const CardMatch = ({ match, game }: { match: Match; game: Game }) => {
   const matchStatus = match.winner_id
     ? "Terminada"
-    : match.participant_ids.length === Number(game.game_capacity)
+    : match.participant_ids.length === Number(game?.game_capacity)
     ? "En curso"
     : "Esperando jugadores";
 
-    console.log(game);
+  console.log(match.participant_ids.length,  Number(game.game_capacity) - 1);
+  console.log(match.participant_ids.length === Number(game.game_capacity) - 1);
 
   const statusColor = {
     Terminada: "bg-red-500",

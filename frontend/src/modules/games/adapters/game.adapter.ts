@@ -27,6 +27,7 @@ export class GameAdapter {
       game_description: game.game_description,
       create_at: new Date(game.create_at),
       update_at: new Date(game.update_at),
+      game_capacity: game.game_capacity,
       categories: game.categorys
         ? game.categorys.map((category: any) =>
             CategoryGameGameAdapter.adapt(category)

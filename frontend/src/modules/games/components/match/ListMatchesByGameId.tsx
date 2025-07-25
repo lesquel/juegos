@@ -1,14 +1,14 @@
 import { MatchClientData } from "@modules/games/services/matchClientData";
 import { QueryProvider } from "@providers/QueryProvider";
-import { CardMatch } from "./CardMatch";
 import { CreateMatch } from "./CreateMatch";
 import { GameClientData } from "@modules/games/services/gameClientData";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Game } from "@modules/games/models/game.model";
 import { LoadingComponent } from "@components/LoadingComponent";
 import { PaguinationComponent } from "@components/PaguinationComponent";
 import type { Paguination } from "@models/paguination";
 import type { Info } from "@models/info.model";
+import { CardMatch } from "./CardMatch";
 
 export const ListMatchesByGameId = ({ id }: { id: string }) => {
   return (
@@ -35,10 +35,6 @@ const UseListMatchesByGameId = ({ id }: { id: string }) => {
     error: gameError,
   } = GameClientData.getGameDetail(id);
 
-  useEffect(() => {
-    console.log(location);
-  }, []);
-
   if (isLoading || gameIsLoading) return <LoadingComponent />;
 
   if (error || gameError)
@@ -63,11 +59,16 @@ const UseListMatchesByGameId = ({ id }: { id: string }) => {
         <div className="flex flex-wrap -mx-4">
           {data?.results.map((match) => (
             <div key={match.match_id} className="w-full px-4 mb-8">
-              <CardMatch match={match} game={game as Game} />
+              <CardMatch
+                key={match.match_id}
+                match={match}
+                game={game as Game}
+              />
             </div>
           ))}
         </div>
       </div>
+
       <PaguinationComponent
         paguination={paguination}
         setPaguination={setPaguination}
