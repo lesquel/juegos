@@ -25,8 +25,8 @@ const UseVirtualCurrency = () => {
   }
 
   return (
-    <div className="text-green-500 font-bold">
-      Moneda virtual: {data?.virtual_currency ?? 0}
-    </div>
+    <span className="text-green-500 font-bold">
+      $: {data?.virtual_currency ?? 0}
+    </span>
   );
 };
