@@ -20,7 +20,8 @@ async def lifespan(app: FastAPI):
         logger.info("✅ Database tables created/verified")
     except Exception as e:
         logger.error(f"❌ Error creating database tables: {str(e)}")
-        raise
+        logger.warning("⚠️ Application will continue without database initialization")
+        # Don't raise the exception to allow the app to start without database
 
     yield
 

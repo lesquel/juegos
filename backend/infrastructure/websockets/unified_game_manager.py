@@ -17,9 +17,10 @@ class UnifiedGameWebSocketManager:
     Mantiene la compatibilidad con el código existente mientras usa el nuevo sistema modular.
     """
 
-    def __init__(self):
+    def __init__(self, game_finish_service=None):
         self._game_managers: Dict[str, Any] = {}  # cache de managers por tipo
         self._match_game_types: Dict[str, str] = {}  # mapeo match_id -> game_type
+        self._game_finish_service = game_finish_service
 
     def _get_game_type_from_message(self, message: dict) -> str:
         """Extrae el tipo de juego del mensaje"""
@@ -41,7 +42,9 @@ class UnifiedGameWebSocketManager:
 
         # Usar cache de managers por tipo
         if game_type not in self._game_managers:
-            self._game_managers[game_type] = get_specific_manager(game_type)
+            self._game_managers[game_type] = get_specific_manager(
+                game_type, self._game_finish_service
+            )
 
         return self._game_managers[game_type]
 

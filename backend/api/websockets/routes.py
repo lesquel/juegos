@@ -3,12 +3,13 @@ from domain.repositories.match_repository import IMatchRepository
 from fastapi import APIRouter, WebSocket
 from fastapi.params import Depends
 from infrastructure.dependencies.repositories.database_repos import get_match_repository
-from infrastructure.dependencies.sockets import get_game_websocket_manager
+from infrastructure.dependencies.sockets.providers import get_game_websocket_manager
 from infrastructure.dependencies.use_cases import get_current_user_use_case
 from infrastructure.logging.logging_config import get_logger
 from infrastructure.websockets.unified_game_manager import UnifiedGameWebSocketManager
 
 from .factories.websocket_factory import WebSocketServiceFactory
+from .handlers.error_handler import WebSocketErrorHandler
 from .validators.connection_validators import ConnectionValidator
 
 websocket_router = APIRouter()
@@ -59,13 +60,11 @@ async def game_socket(
     )
 
     if not is_valid:
-        logger.warning(
-            f"Connection validation failed for match_id: {match_id}, error: {error_message}"
+        # Use error handler to send detailed error message before closing
+        error_handler = WebSocketErrorHandler()
+        await error_handler.handle_connection_validation_failure(
+            websocket, match_id, error_message
         )
-        try:
-            await websocket.close(code=1008, reason="Invalid connection parameters")
-        except Exception:
-            pass  # Connection might already be closed
         return
 
     # Create WebSocket service using factory (defaults to development config)

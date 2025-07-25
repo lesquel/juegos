@@ -25,8 +25,9 @@ class GameManagerProtocol(Protocol):
 class GameActions:
     """Maneja las acciones específicas del juego"""
 
-    def __init__(self, manager: GameManagerProtocol):
+    def __init__(self, manager: GameManagerProtocol, game_finish_service=None):
         self.manager = manager
+        self.game_finish_service = game_finish_service
 
     async def handle_make_move(
         self, match_id: str, websocket: WebSocket, message: dict
@@ -62,6 +63,10 @@ class GameActions:
             print(response)
 
             await self.manager.broadcast(match_id, response)
+
+            # 🔥 NUEVA FUNCIONALIDAD: Detectar automáticamente si el juego ha terminado
+            if self.game_finish_service and result.get("game_over"):
+                await self._handle_automatic_game_finish(match_id, result)
 
         except ValueError as e:
             await websocket.send_json({"type": "error", "message": str(e)})
@@ -104,3 +109,86 @@ class GameActions:
         }
 
         await websocket.send_json(response)
+
+    async def handle_game_finished(
+        self, match_id: str, websocket: WebSocket, message: dict
+    ):
+        """Maneja el final manual del juego (ej: rendición)"""
+        if not self.game_finish_service:
+            await websocket.send_json(
+                {"type": "error", "message": "Game finish service not available"}
+            )
+            return
+
+        try:
+            # Extraer datos de participantes del mensaje
+            participants_data = message.get("participants", [])
+
+            if not participants_data:
+                await websocket.send_json(
+                    {"type": "error", "message": "No participants data provided"}
+                )
+                return
+
+            # Llamar al servicio para finalizar el juego
+            result = await self.game_finish_service.handle_game_finished(
+                match_id=match_id,
+                participants_data=participants_data,
+                websocket_manager=self.manager,
+            )
+
+            logger.info(f"Game {match_id} finished manually with result: {result}")
+
+        except Exception as e:
+            logger.error(
+                f"Error finishing game manually for match {match_id}: {str(e)}"
+            )
+            await websocket.send_json(
+                {"type": "error", "message": f"Failed to finish game: {str(e)}"}
+            )
+
+    async def _handle_automatic_game_finish(self, match_id: str, game_result: dict):
+        """Maneja la finalización automática del juego cuando se detecta un ganador"""
+        if not self.game_finish_service:
+            logger.warning(f"Game finish service not available for match {match_id}")
+            return
+
+        try:
+            # Extraer información del ganador y participantes del resultado del juego
+            winner = game_result.get("winner")
+
+            # Obtener jugadores del manager
+            players = {}
+            if hasattr(self.manager, "player_manager"):
+                players = self.manager.player_manager.get_match_players(match_id)
+
+            # Construir datos de participantes con puntuaciones
+            participants_data = []
+            for player_id, player_symbol in players.items():
+                # Determinar puntuación basada en si ganó o no
+                if winner and player_symbol == winner:
+                    score = 100  # Ganador obtiene 100 puntos
+                else:
+                    score = 0  # Perdedor obtiene 0 puntos
+
+                participants_data.append({"user_id": player_id, "score": score})
+
+            if participants_data:
+                # Llamar al servicio para finalizar el juego automáticamente
+                await self.game_finish_service.handle_game_finished(
+                    match_id=match_id,
+                    participants_data=participants_data,
+                    websocket_manager=self.manager,
+                )
+
+                logger.info(f"Game {match_id} finished automatically. Winner: {winner}")
+            else:
+                logger.warning(
+                    f"No participants found for automatic finish of match {match_id}"
+                )
+
+        except Exception as e:
+            logger.error(
+                f"Error in automatic game finish for match {match_id}: {str(e)}"
+            )
+            # No lanzamos la excepción para no interrumpir el flujo del juego
