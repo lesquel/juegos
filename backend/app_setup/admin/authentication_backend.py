@@ -24,11 +24,32 @@ from starlette.requests import Request
 @lru_cache(maxsize=1)
 def _get_cached_services():
     """Cache de servicios para evitar recrearlos en cada login"""
-    return {
-        "password_hasher": get_password_hasher(),
-        "token_provider": get_token_provider(),
-        "user_converter": get_user_converter(),
-    }
+    try:
+        token_provider = get_token_provider()
+        password_hasher = get_password_hasher()
+        user_converter = get_user_converter()
+
+        # Logging detallado para debugging
+        print(f"token_provider: {token_provider} (type: {type(token_provider)})")
+        print(f"password_hasher: {password_hasher} (type: {type(password_hasher)})")
+        print(f"user_converter: {user_converter} (type: {type(user_converter)})")
+
+        # Validar que los servicios no sean None
+        if token_provider is None:
+            raise ValueError("token_provider is None from get_token_provider()")
+        if password_hasher is None:
+            raise ValueError("password_hasher is None from get_password_hasher()")
+        if user_converter is None:
+            raise ValueError("user_converter is None from get_user_converter()")
+
+        return {
+            "password_hasher": password_hasher,
+            "token_provider": token_provider,
+            "user_converter": user_converter,
+        }
+    except Exception as e:
+        print(f"Error in _get_cached_services: {e}")
+        raise
 
 
 class AdminAuth(AuthenticationBackend, LoggingMixin):
@@ -73,7 +94,9 @@ class AdminAuth(AuthenticationBackend, LoggingMixin):
                 )
 
                 login_request = LoginRequestDTO(email=email, password=password)
+
                 response = await login_use_case.execute(login_request)
+                print(response)
 
                 if response.user.role != UserRole.ADMIN:
                     self.logger.warning(
@@ -98,7 +121,7 @@ class AdminAuth(AuthenticationBackend, LoggingMixin):
         except Exception as e:
             elapsed_time = time.time() - start_time
             self.logger.error(f"Admin login error: {str(e)} ({elapsed_time:.2f}s)")
-            return False
+            raise
 
     async def logout(self, request: Request) -> bool:
         """Cerrar sesión del administrador optimizado"""

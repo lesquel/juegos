@@ -17,7 +17,7 @@ logger = get_logger("websockets.base_game_manager")
 class BaseGameWebSocketManager(WebSocketManager, ABC):
     """Clase base para managers de WebSocket específicos de juegos"""
 
-    def __init__(self):
+    def __init__(self, game_finish_service=None):
         super().__init__()
         # Inicializar los módulos de gestión
         self.game_state_manager = GameStateManager()
@@ -26,7 +26,7 @@ class BaseGameWebSocketManager(WebSocketManager, ABC):
 
         # Configurar los manejadores de acciones
         self.player_actions = PlayerActions(self)
-        self.game_actions = GameActions(self)
+        self.game_actions = GameActions(self, game_finish_service)
         self.message_handler.set_action_handlers(self.player_actions, self.game_actions)
 
     @property

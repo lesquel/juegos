@@ -11,6 +11,7 @@ CREATE_GAME = "create_game"
 MAKE_MOVE = "make_move"
 RESTART_GAME = "restart_game"
 GET_GAME_STATE = "get_game_state"
+GAME_FINISHED = "game_finished"
 
 
 class MessageHandlerProtocol(Protocol):
@@ -56,6 +57,11 @@ class MessageHandler:
         elif message_type == GET_GAME_STATE:
             if self.game_actions:
                 await self.game_actions.handle_get_game_state(
+                    match_id, websocket, message
+                )
+        elif message_type == GAME_FINISHED:
+            if self.game_actions:
+                await self.game_actions.handle_game_finished(
                     match_id, websocket, message
                 )
         else:
