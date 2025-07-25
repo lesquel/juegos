@@ -10,9 +10,6 @@ export const CardMatch = ({ match, game }: { match: Match; game: Game }) => {
     ? "En curso"
     : "Esperando jugadores";
 
-  console.log(match.participant_ids.length,  Number(game.game_capacity) - 1);
-  console.log(match.participant_ids.length === Number(game.game_capacity) - 1);
-
   const statusColor = {
     Terminada: "bg-red-500",
     "En curso": "bg-yellow-500",
