@@ -1,5 +1,9 @@
 from typing import Optional
 
+from infrastructure.db.models.match.match_participation_model import (
+    MatchParticipationModel,
+)
+from infrastructure.db.models.user.user_model import UserModel
 from pydantic import Field
 
 from ..base_filter import BaseFilterParams
@@ -12,8 +16,12 @@ class MatchFilterParams(BaseFilterParams):
     winner_id: Optional[str] = Field(
         None,
         description="ID del usuario ganador de la partida",
-        example="123e4567-e89b-12d3-a456-426614174000",
     )
+    user_email: Optional[str] = Field(
+        None,
+        description="Email del usuario ganador de la partida",
+    )
+
     min_base_bet_amount: Optional[float] = Field(
         None, ge=0, description="Apuesta base mínima"
     )
@@ -23,6 +31,17 @@ class MatchFilterParams(BaseFilterParams):
 
     def filter_winner_id(self, query, model, value):
         return self.any_filter(query, model.winner_id, "winner_id", value)
+
+    def filter_user_email(self, query, model, value):
+        if value:
+            return query.filter(
+                model.participants.any(
+                    MatchParticipationModel.user.has(
+                        UserModel.email.ilike(f"%{value}%")
+                    )
+                )
+            )
+        return query
 
     def filter_min_base_bet_amount(self, query, model, value):
         return self.gte_filter(query, model.base_bet_amount, value)
