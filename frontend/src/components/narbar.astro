@@ -6,6 +6,7 @@ import { NarbarAuthLoginRegister } from "@modules/auth/components/NarbarAuthLogi
 
 <header
   id="header"
+  data-astro-persist="navbar-header"
   class="sticky top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out bg-gray-900 bg-opacity-50 backdrop-blur-lg border-b border-gray-800"
 >
   <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -96,11 +97,13 @@ import { NarbarAuthLoginRegister } from "@modules/auth/components/NarbarAuthLogi
 <!-- Mobile Slide-in Menu -->
 <div
   id="mobile-menu-backdrop"
+  data-astro-persist="mobile-backdrop"
   class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"
 >
 </div>
 <div
   id="mobile-menu"
+  data-astro-persist="mobile-menu-panel"
   class="fixed top-0 right-0 h-full w-4/6 max-w-sm bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out translate-x-full md:hidden"
 >
   <div class="p-8 flex flex-col space-y-6">
