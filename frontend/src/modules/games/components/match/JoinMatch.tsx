@@ -52,17 +52,22 @@ export const JoinMatch = ({ match, game }: { match: Match; game: Game }) => {
         </span>
       ) : null}
       <button
-        disabled={isFull || isFinished}
-        onClick={() => {
-          handleJoinMatch();
-        }}
+        disabled={isFinished || (!isJoined && isFull)}
+        onClick={handleJoinMatch}
         className={`w-full font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-101 flex items-center justify-center gap-3 text-lg cursor-pointer
-          ${isFull || isFinished
-            ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-            : 'bg-gradient-to-r from-purple-600 to-blue-500 text-white hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
-          }`}
+    ${
+      isFinished || (!isJoined && isFull)
+        ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+        : "bg-gradient-to-r from-purple-600 to-blue-500 text-white hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+    }`}
       >
-        {isFinished ? 'Partida Terminada' : isFull ? 'Partida Llena' : isJoined ? 'Volver a la Partida' : 'Unirse a la Partida'}
+        {isFinished
+          ? "Partida Terminada"
+          : isFull && !isJoined
+          ? "Partida Llena"
+          : isJoined
+          ? "Volver a la Partida"
+          : "Unirse a la Partida"}
       </button>
     </div>
   );

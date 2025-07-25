@@ -5,6 +5,7 @@ import type { Match } from "@modules/games/models/match.model";
 import { MatchClientData } from "@modules/games/services/matchClientData";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
+import { useAuthStore } from "@modules/auth/store/auth.store";
 
 export const CreateMatch = ({
   gameId,
@@ -37,7 +38,12 @@ export const CreateMatch = ({
       }),
     },
     onSubmit: async ({ value }) => {
-      mutate(value);
+      if (useAuthStore.getState().user) {
+        mutate(value);
+      } else {
+        setIsModalOpen(false);
+        location.href = location.protocol + "//" + location.host + "/login";
+      }
     },
   });
 
@@ -50,7 +56,9 @@ export const CreateMatch = ({
         Crear Partida
       </button>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h1 className="text-2xl font-bold mb-6 text-white">Crear Nueva Partida</h1>
+        <h1 className="text-2xl font-bold mb-6 text-white">
+          Crear Nueva Partida
+        </h1>
         <form
           onSubmit={(e) => {
             e.preventDefault();
