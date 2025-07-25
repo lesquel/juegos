@@ -64,7 +64,7 @@ class GameWebSocketClient {
       this.isConnected = true;
       this.connectionAttempts = 0;
       isOnlineMode = true;
-      updateConnectionStatus("connected", "🟢 Conectado");
+      updateConnectionStatusEnhanced("connected", "🟢 Conectado");
       updateMessage(`👋 Hola ${userInfo.user.email}`, "");
 
       // Unirse al juego automáticamente
@@ -86,7 +86,7 @@ class GameWebSocketClient {
       );
       this.isConnected = false;
       isOnlineMode = false;
-      updateConnectionStatus("disconnected", "🔴 Desconectado");
+      updateConnectionStatusEnhanced("disconnected", "🔴 Desconectado");
 
       // Reintentar conexión si no fue intencional
       if (event.code !== 1000 && this.connectionAttempts < this.maxRetries) {
@@ -170,7 +170,7 @@ class GameWebSocketClient {
 
   handleConnectionError() {
     isOnlineMode = false;
-    updateConnectionStatus("disconnected", "🔴 Error de conexión");
+    updateConnectionStatusEnhanced("disconnected", "🔴 Error de conexión");
     updateMessage("❌ Error de conexión al servidor", "");
   }
 
@@ -206,6 +206,7 @@ var wsClient = new GameWebSocketClient();
 window.onload = function () {
   console.log("🚀 Iniciando aplicación Connect4...");
   extractUserInfo();
+  runDiagnostic(); // Diagnóstico inicial
   initializeWebSocket();
   setGame();
 };
@@ -384,7 +385,7 @@ function initializeWebSocket() {
       "❌ No se pudo obtener la información del usuario o el token"
     );
     console.log("UserInfo disponible:", userInfo);
-    updateConnectionStatus(
+    updateConnectionStatusEnhanced(
       "disconnected",
       "🔴 Error: Sin autenticación"
     );
@@ -787,7 +788,8 @@ function handleGameWinner(winner) {
   // Mostrar el modal
   showGameEndModal(modalTitle, modalMessage, titleClass);
 
-  // El botón de reinicio normal ya no existe - solo usamos el modal
+  // Ocultar el botón de reinicio normal
+  document.getElementById("restartBtn").style.display = "none";
 }
 
 function updateBoardFromServer(serverBoard) {
@@ -883,6 +885,7 @@ function setGame() {
     updateMessage("🏠 Modo Offline - Turno del Jugador Rojo", "current-red");
   }
 
+  document.getElementById("restartBtn").style.display = "none";
   document.getElementById("moveCount").textContent = "0";
   
   // Ocultar modal si está visible
@@ -1091,8 +1094,12 @@ function setWinner(winner) {
     updateMessage("🎉 ¡Jugador Amarillo ha ganado! 🎉", "current-yellow");
   }
 
-  // En modo offline, el setWinner se encarga de mostrar el mensaje
-  // pero no mostramos botón de reinicio ya que se usa el modal
+  document.getElementById("restartBtn").style.display = "inline-block";
+
+  // Reiniciar automáticamente después de 4 segundos
+  setTimeout(function () {
+    restartGame();
+  }, 4000);
 }
 
 function handleTie() {
@@ -1124,7 +1131,7 @@ function handleTie() {
     "winner"
   );
 
-  // No necesitamos el botón de reinicio ya que usamos el modal
+  document.getElementById("restartBtn").style.display = "none";
 }
 
 function restartGame() {
@@ -1238,8 +1245,452 @@ function restartGameFromModal() {
   }
 }
 
-// Asegurar que las funciones del modal estén disponibles globalmente
-window.showGameEndModal = showGameEndModal;
-window.hideGameEndModal = hideGameEndModal;
-window.goBackToPreviousPage = goBackToPreviousPage;
-window.restartGameFromModal = restartGameFromModal;
+// Función de diagnóstico para detectar problemas de conexión
+function runDiagnostic() {
+  console.log("🔍 DIAGNÓSTICO BÁSICO:");
+  console.log("1. UserInfo:", userInfo);
+  console.log("2. Game config:", gameConfig);
+  console.log("3. Is online mode:", isOnlineMode);
+  console.log("4. Player ID:", playerId);
+
+  // Para diagnóstico más detallado, usar runAdvancedDiagnostic() después de la conexión
+  if (!userInfo) {
+    console.error("❌ PROBLEMA: userInfo es null");
+  }
+
+  if (!userInfo?.access_token?.access_token) {
+    console.error("❌ PROBLEMA: No hay access_token");
+  }
+
+  console.log(
+    "📡 URL que se usaría:",
+    `ws://localhost:8000/ws/games/${gameConfig.matchId}?token=${
+      userInfo?.access_token?.access_token || "NO_TOKEN"
+    }`
+  );
+}
+
+// Función para verificar si el servidor está disponible
+async function checkServerAvailability() {
+  try {
+    console.log("🔍 Verificando disponibilidad del servidor...");
+    const response = await fetch("http://localhost:8000/health", {
+      method: "GET",
+      timeout: 5000,
+    });
+
+    if (response.ok) {
+      console.log("✅ Servidor disponible");
+      return true;
+    } else {
+      console.log("⚠️ Servidor responde pero con error:", response.status);
+      return false;
+    }
+  } catch (error) {
+    console.error("❌ Servidor no disponible:", error.message);
+    updateMessage("❌ Servidor no disponible. ¿Está ejecutándose?", "");
+    return false;
+  }
+}
+
+// Función mejorada para reconectar
+async function reconnectWebSocket() {
+  console.log("🔄 Intentando reconectar...");
+
+  // Verificar servidor primero
+  const serverAvailable = await checkServerAvailability();
+  if (!serverAvailable) {
+    updateMessage("❌ No se puede conectar: servidor no disponible", "");
+    return;
+  }
+
+  if (wsClient) {
+    wsClient.disconnect();
+  }
+
+  setTimeout(() => {
+    initializeWebSocket();
+  }, 1000);
+}
+
+// Funciones adicionales para la nueva clase WebSocket
+function forceReconnect() {
+  console.log("🔄 Forzando reconexión...");
+  if (wsClient) {
+    wsClient.disconnect();
+  }
+  setTimeout(() => {
+    initializeWebSocket();
+  }, 500);
+}
+
+function getConnectionStatus() {
+  return {
+    isConnected: wsClient?.isConnected || false,
+    isOnlineMode: isOnlineMode,
+    playerId: playerId,
+    playerColor: playerColor,
+    isMyTurn: isMyTurn,
+    matchId: gameConfig.matchId,
+    wsState: wsClient?.ws?.readyState || "No WebSocket",
+  };
+}
+
+// Función para debugging mejorada
+function runAdvancedDiagnostic() {
+  console.log("🔍 DIAGNÓSTICO AVANZADO:");
+  console.log("1. UserInfo:", userInfo);
+  console.log("2. Game config:", gameConfig);
+  console.log("3. Connection status:", getConnectionStatus());
+  console.log("4. WebSocket client:", wsClient);
+
+  if (wsClient?.ws) {
+    console.log("5. WebSocket URL:", wsClient.ws.url);
+    console.log(
+      "6. WebSocket state:",
+      {
+        0: "CONNECTING",
+        1: "OPEN",
+        2: "CLOSING",
+        3: "CLOSED",
+      }[wsClient.ws.readyState]
+    );
+  }
+
+  console.log("7. Token disponible:", !!userInfo?.access_token?.access_token);
+  console.log("8. Player ID:", playerId);
+
+  // Test de conectividad
+  if (userInfo?.access_token?.access_token) {
+    console.log("✅ Token válido encontrado");
+  } else {
+    console.error("❌ PROBLEMA: No hay token válido");
+  }
+}
+
+// Función para probar conexión con diferentes configuraciones
+function testConnection(customMatchId = null, customToken = null) {
+  const testMatchId = customMatchId || gameConfig.matchId;
+  const testToken = customToken || userInfo?.access_token?.access_token;
+  const testPlayerId = `test_${Date.now()}`;
+
+  console.log("🧪 PROBANDO CONEXIÓN:");
+  console.log("Match ID:", testMatchId);
+  console.log("Token:", testToken ? "***" + testToken.slice(-10) : "NO TOKEN");
+  console.log("Player ID:", testPlayerId);
+
+  if (wsClient) {
+    wsClient.disconnect();
+  }
+
+  setTimeout(() => {
+    wsClient.connect(testMatchId, testToken, testPlayerId);
+  }, 500);
+}
+
+// Funciones de utilidad adicionales para debugging y control
+
+// Función para limpiar y resetear todo el estado del juego
+function resetGameState() {
+  console.log("🔄 Reseteando estado completo del juego...");
+
+  // Desconectar WebSocket
+  if (wsClient) {
+    wsClient.disconnect();
+  }
+
+  // Resetear variables globales
+  isOnlineMode = false;
+  playerId = null;
+  playerColor = null;
+  isMyTurn = false;
+
+  // Resetear juego visual
+  setGame();
+
+  // Actualizar UI
+  updateConnectionStatus("disconnected", "🔴 Desconectado");
+  updateMessage("🔄 Estado reseteado", "");
+
+  console.log("✅ Estado reseteado completamente");
+}
+
+// Función para obtener información detallada del tablero
+function getBoardInfo() {
+  console.log("📋 INFORMACIÓN DEL TABLERO:");
+  console.log("Tablero actual:", board);
+  console.log("Columnas disponibles:", currColumns);
+  console.log("Movimientos realizados:", moveCount);
+  console.log("Juego terminado:", gameOver);
+  console.log("Posiciones ganadoras:", winningPositions);
+
+  if (isOnlineMode) {
+    console.log("Modo:", "Online");
+    console.log("Es mi turno:", isMyTurn);
+    console.log("Color del jugador:", playerColor);
+  } else {
+    console.log("Modo:", "Offline");
+    console.log("Jugador actual:", currPlayer);
+  }
+}
+
+// Función para simular datos de usuario de prueba
+function setTestUser() {
+  userInfo = {
+    access_token: {
+      access_token: `test_token_${Date.now()}`,
+    },
+    user: {
+      user_id: `test_user_${Math.random().toString(36).substr(2, 9)}`,
+      email: `test${Math.floor(Math.random() * 1000)}@example.com`,
+      role: "user",
+    },
+  };
+
+  playerId = userInfo.user.user_id;
+  console.log("🧪 Usuario de prueba configurado:", userInfo.user);
+  displayUserInfo();
+}
+
+// Función para configurar usuario desde localStorage actual
+function loadUserFromStorage() {
+  console.log("🔄 Recargando usuario desde localStorage...");
+  extractUserInfo();
+  if (userInfo) {
+    console.log("✅ Usuario cargado:", userInfo.user);
+    displayUserInfo();
+    updateMessage(`👋 Usuario: ${userInfo.user.email}`, "");
+  } else {
+    console.log("❌ No se pudo cargar usuario desde localStorage");
+    updateMessage("❌ No hay datos de usuario en localStorage", "");
+  }
+}
+
+// Función para mostrar información actual del localStorage
+function debugLocalStorage() {
+  console.log("🔍 DEBUGGING LOCALSTORAGE:");
+
+  const authStorage = localStorage.getItem("auth-storage");
+  console.log("1. auth-storage raw:", authStorage);
+
+  if (authStorage) {
+    try {
+      const parsed = JSON.parse(authStorage);
+      console.log("2. auth-storage parsed:", parsed);
+      console.log("3. state:", parsed.state);
+      console.log("4. user data:", parsed.state?.user);
+      console.log("5. access_token:", parsed.state?.user?.access_token);
+      console.log("6. user info:", parsed.state?.user?.user);
+
+      // Verificar coherencia del token
+      const token = parsed.state?.user?.access_token?.access_token;
+      if (token) {
+        const tokenUserId = extractUserIdFromToken(token);
+        const storageUserId = parsed.state?.user?.user?.user_id;
+
+        console.log("🔍 VERIFICACIÓN DE COHERENCIA:");
+        console.log("Token user_id:", tokenUserId);
+        console.log("Storage user_id:", storageUserId);
+
+        if (tokenUserId === storageUserId) {
+          console.log("✅ IDs coinciden - Todo correcto");
+        } else {
+          console.warn(
+            "⚠️ IDs NO coinciden - Posible problema de autenticación"
+          );
+          console.warn("Se usará el ID del token:", tokenUserId);
+        }
+      }
+    } catch (e) {
+      console.error("Error parsing auth-storage:", e);
+    }
+  } else {
+    console.log("❌ No hay auth-storage en localStorage");
+  }
+
+  console.log("7. Todas las keys en localStorage:", Object.keys(localStorage));
+
+  // También mostrar información actual del juego
+  console.log("8. Player ID actual:", playerId);
+  console.log("9. UserInfo actual:", userInfo);
+}
+
+// Función para validar token y mostrar su contenido
+function validateAndShowToken(token = null) {
+  const tokenToValidate = token || userInfo?.access_token?.access_token;
+
+  if (!tokenToValidate) {
+    console.log("❌ No hay token para validar");
+    return;
+  }
+
+  console.log("🔍 VALIDACIÓN DE TOKEN:");
+  console.log("Token completo:", tokenToValidate);
+
+  const userId = extractUserIdFromToken(tokenToValidate);
+  if (userId) {
+    console.log("✅ Token válido");
+    console.log("User ID extraído:", userId);
+
+    // Verificar expiración
+    try {
+      const parts = tokenToValidate.split(".");
+      const payload = JSON.parse(
+        atob(parts[1] + "=".repeat((4 - (parts[1].length % 4)) % 4))
+      );
+
+      const exp = payload.exp;
+      const now = Math.floor(Date.now() / 1000);
+
+      if (exp > now) {
+        const timeLeft = exp - now;
+        console.log("✅ Token NO expirado");
+        console.log("Tiempo restante:", Math.floor(timeLeft / 60), "minutos");
+      } else {
+        console.log("❌ Token EXPIRADO");
+        console.log("Expiró hace:", Math.floor((now - exp) / 60), "minutos");
+      }
+    } catch (e) {
+      console.error("Error al verificar expiración:", e);
+    }
+  } else {
+    console.log("❌ Token inválido");
+  }
+}
+
+// Funciones globales disponibles para debugging desde la consola
+window.connectFour = {
+  // Información y diagnóstico
+  status: getConnectionStatus,
+  diagnose: runAdvancedDiagnostic,
+  boardInfo: getBoardInfo,
+
+  // Control de conexión
+  connect: initializeWebSocket,
+  disconnect: () => wsClient?.disconnect(),
+  reconnect: forceReconnect,
+
+  // Control de juego
+  restart: restartGame,
+  reset: resetGameState,
+  getState: getGameState,
+
+  // Testing y debugging
+  testConnection: testConnection,
+  setTestUser: setTestUser,
+  loadUserFromStorage: loadUserFromStorage,
+  debugStorage: debugLocalStorage,
+  validateToken: validateAndShowToken,
+
+  // Configuración
+  config: (matchId) => updateGameConfig(matchId),
+
+  // Referencias internas (solo para debugging)
+  _wsClient: () => wsClient,
+  _userInfo: () => userInfo,
+  _gameConfig: () => gameConfig,
+};
+
+console.log("🎮 Connect4 Debug Functions disponibles en window.connectFour");
+console.log("Ejemplos:");
+console.log("- connectFour.status() // Ver estado de conexión");
+console.log("- connectFour.diagnose() // Diagnóstico avanzado");
+console.log("- connectFour.reconnect() // Forzar reconexión");
+console.log(
+  "- connectFour.loadUserFromStorage() // Recargar desde localStorage"
+);
+console.log("- connectFour.debugStorage() // Debug del localStorage");
+console.log("- connectFour.validateToken() // Validar token JWT");
+console.log("- connectFour.setTestUser() // Configurar usuario de prueba");
+
+// Funciones del Modal de Fin de Juego
+function showGameEndModal(title, message, titleClass) {
+  const modal = document.getElementById("gameEndModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalMessage = document.getElementById("modalMessage");
+  
+  if (modal && modalTitle && modalMessage) {
+    modalTitle.textContent = title;
+    modalTitle.className = `modal-title ${titleClass}`;
+    modalMessage.textContent = message;
+    
+    modal.classList.add("show");
+    
+    console.log("🎯 Modal mostrado:", { title, message, titleClass });
+  }
+}
+
+function hideGameEndModal() {
+  const modal = document.getElementById("gameEndModal");
+  if (modal) {
+    modal.classList.remove("show");
+  }
+}
+
+function goBackToPreviousPage() {
+  console.log("🏠 Regresando a la página anterior...");
+  
+  // Intentar usar history.back() primero
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    // Fallback: ir a la página principal de juegos
+    window.location.href = "/";
+  }
+}
+
+function restartGameFromModal() {
+  console.log("🔄 Reiniciando juego desde modal...");
+  
+  // Ocultar el modal
+  hideGameEndModal();
+  
+  // Rehabilitar el tablero
+  const board = document.getElementById("board");
+  if (board) {
+    board.classList.remove("board-disabled");
+  }
+  
+  // Reiniciar el juego
+  if (isOnlineMode && wsClient && wsClient.isConnected) {
+    wsClient.restartGame();
+  } else {
+    setGame();
+  }
+}
+
+// Función para alternar el panel de debug en la UI
+function toggleDebugPanel() {
+  const panel = document.getElementById("debugPanel");
+  const button = document.getElementById("toggleDebug");
+
+  if (panel.style.display === "none") {
+    panel.style.display = "block";
+    button.textContent = "🔧 Ocultar Debug";
+    console.log("🔧 Panel de debug mostrado");
+  } else {
+    panel.style.display = "none";
+    button.textContent = "🔧 Mostrar Debug";
+    console.log("🔧 Panel de debug ocultado");
+  }
+}
+
+// Función helper para actualizar el botón de reconexión basado en el estado
+function updateReconnectButton() {
+  const reconnectBtn = document.getElementById("reconnectBtn");
+  if (reconnectBtn) {
+    if (isOnlineMode && wsClient?.isConnected) {
+      reconnectBtn.textContent = "🔄 Reconectar";
+      reconnectBtn.style.opacity = "0.7";
+    } else {
+      reconnectBtn.textContent = "🔌 Conectar";
+      reconnectBtn.style.opacity = "1";
+    }
+  }
+}
+
+// Mejorar la función updateConnectionStatus para actualizar también el botón
+function updateConnectionStatusEnhanced(status, message) {
+  updateConnectionStatus(status, message);
+  updateReconnectButton();
+}

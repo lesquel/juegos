@@ -399,25 +399,137 @@
     background: rgba(255, 255, 255, 0.2);
     color: white;
   }
+
+  /* Modal de Victoria/Derrota */
+  .game-end-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .game-end-modal.show {
+    display: flex;
+  }
+
+  .modal-content {
+    background: linear-gradient(145deg, #2c3e50, #34495e);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    transform: scale(0.8);
+    animation: modalPop 0.5s ease-out forwards;
+    max-width: 400px;
+    width: 90%;
+  }
+
+  .modal-title {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .modal-title.winner {
+    color: #f1c40f;
+    text-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+  }
+
+  .modal-title.loser {
+    color: #e74c3c;
+    text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+  }
+
+  .modal-message {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    color: #ecf0f1;
+    line-height: 1.5;
+  }
+
+  .modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .modal-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    color: white;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+  }
+
+  .btn-secondary {
+    background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+    color: white;
+    box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+  }
+
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes modalPop {
+    from {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Bloquear tablero cuando el juego termine */
+  .board-disabled {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .board-disabled .tile {
+    cursor: not-allowed;
+  }
 </style>
 
 <div id="body">
-
     <h1>🔴 Connect 4 🟡</h1>
     <div id="message">
       Turno del Jugador Rojo
       <span class="current-player current-red"></span>
     </div>
     <div id="board"></div>
-    <button id="restartBtn" onclick="restartGame()">🎮 Jugar de Nuevo</button>
-    <div class="online-controls">
-      <button id="getStateBtn" onclick="getGameState()">📊 Estado del Juego</button>
-      <button id="reconnectBtn" onclick="forceReconnect()">🔄 Reconectar</button>
-      <button id="configBtn" onclick="showGameConfig()">⚙️ Configurar</button>
-      <button id="diagnosticBtn" onclick="runAdvancedDiagnostic()">🔍 Diagnóstico</button>
-      <button id="resetBtn" onclick="resetGameState()">🔄 Reset Completo</button>
-      <button id="statusBtn" onclick="console.log(connectFour.status())">📋 Estado Conexión</button>
-    </div>
+    
     <div id="gameStats">Movimientos: <span id="moveCount">0</span></div>
     <div id="playersInfo" class="players-info">
       👤 Conectando...
@@ -426,23 +538,19 @@
       🔴 Desconectado
     </div>
     
-    <button id="toggleDebug" class="toggle-debug" onclick="toggleDebugPanel()">
-      🔧 Mostrar Debug
-    </button>
-    
-    <!-- Panel de debug opcional -->
-    <div id="debugPanel" class="debug-panel" style="display: none;">
-      <h4>🔧 Panel de Debug</h4>
-      <div class="debug-actions">
-        <button onclick="connectFour.loadUserFromStorage(); updateMessage('🔄 Usuario recargado desde localStorage', '')">🔄 Recargar Usuario</button>
-        <button onclick="connectFour.debugStorage()">🔍 Debug localStorage</button>
-        <button onclick="connectFour.setTestUser(); updateMessage('🧪 Usuario de prueba configurado', '')">👤 Usuario Test</button>
-        <button onclick="connectFour.testConnection(); updateMessage('🧪 Probando conexión...', '')">🔌 Test Conexión</button>
-        <button onclick="connectFour.boardInfo()">📋 Info Tablero</button>
-        <button onclick="getBoardInfo()">📊 Estado Detallado</button>
-      </div>
-      <div class="debug-info">
-        <small>Usar F12 (consola) para ver logs detallados</small>
+    <!-- Modal de Victoria/Derrota -->
+    <div id="gameEndModal" class="game-end-modal">
+      <div class="modal-content">
+        <div id="modalTitle" class="modal-title"></div>
+        <div id="modalMessage" class="modal-message"></div>
+        <div class="modal-buttons">
+          <button id="modalBackBtn" class="modal-btn btn-primary" onclick="goBackToPreviousPage()">
+            🏠 Volver al Menú
+          </button>
+          <button id="modalRestartBtn" class="modal-btn btn-secondary" onclick="restartGameFromModal()">
+            🔄 Jugar de Nuevo
+          </button>
+        </div>
       </div>
     </div>
     
