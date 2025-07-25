@@ -32,6 +32,11 @@ class MatchFilterParams(BaseFilterParams):
     def filter_winner_id(self, query, model, value):
         return self.any_filter(query, model.winner_id, "winner_id", value)
 
+    def filter_by_has_winner(self, query, model, value: bool):
+        if value:
+            return query.filter(model.winner_id.is_not(None))
+        return query.filter(model.winner_id.is_(None))
+
     def filter_user_email(self, query, model, value):
         if value:
             return query.filter(

@@ -1,30 +1,30 @@
 import type { Info } from "@models/info.model";
-import type { Paguination } from "@models/paguination";
+import type { Pagination } from "@models/paguination";
 
-export const PaguinationComponent = ({
-  paguination,
+export const PaginationComponent = ({
+  pagination,
   info,
   color, // Default gradient
-  setPaguination,
+  setPagination,
 }: {
-  paguination: Paguination;
+  pagination: Pagination;
   info: Info;
   color?: string; // Optional color prop
-  setPaguination: (paguination: any) => void;
+  setPagination: (pagination: any) => void;
 }) => {
   const nextPage = () => {
     if (!info.next) return;
-    setPaguination({
-      ...paguination,
-      page: paguination.page + 1,
+    setPagination({
+      ...pagination,
+      page: pagination.page + 1,
     });
   };
 
   const prevPage = () => {
     if (!info.prev) return;
-    setPaguination({
-      ...paguination,
-      page: paguination.page - 1,
+    setPagination({
+      ...pagination,
+      page: pagination.page - 1,
     });
   };
 
@@ -32,9 +32,9 @@ export const PaguinationComponent = ({
   const buttonClasses = `w-10 h-10 flex items-center justify-center rounded-full text-white transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125 hover:shadow-lg focus:ring-white ${color} cursor-pointer`;
 
   return (
-    <div className="flex justify-center items-center space-x-4">
+    <div className="flex justify-center items-center space-x-4 pt-3">
       <button
-        disabled={paguination.page === 1}
+        disabled={pagination.page === 1}
         onClick={prevPage}
         className={buttonClasses}
       >
@@ -55,11 +55,11 @@ export const PaguinationComponent = ({
       </button>
 
       <p className="text-gray-400 text-sm">
-        Página {paguination.page} de {info.pages}
+        Página {pagination.page} de {info.pages}
       </p>
 
       <button
-        disabled={paguination.page === info.pages}
+        disabled={pagination.page === info.pages}
         onClick={nextPage}
         className={buttonClasses}
       >

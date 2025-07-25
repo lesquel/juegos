@@ -2,14 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { GameAdapter } from "../adapters/game.adapter";
 import { environment } from "@config/environment";
-import type { Paguination } from "@models/paguination";
+import type { Pagination } from "@models/paguination";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 import { endpoints } from "@config/endpoints";
 
 export class GameClientData {
   private static readonly BASE_URL = environment.BASE_URL;
 
-  public static getGames(paguination: Paguination) {
+  public static getGames(paguination: Pagination) {
     return useQuery({
       queryKey: ["games", paguination],
       gcTime: 1000 * 60 * 10,

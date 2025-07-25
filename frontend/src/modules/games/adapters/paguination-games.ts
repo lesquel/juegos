@@ -1,3 +1,3 @@
-import type { Paguination } from "@models/paguination";
+import type { Pagination } from "@models/paguination";
 
-export interface PaguinationGames extends Paguination {}
+export interface PaguinationGames extends Pagination {}

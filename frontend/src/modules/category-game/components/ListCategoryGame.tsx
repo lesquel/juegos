@@ -3,8 +3,11 @@ import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { CardCategoryGame } from "./CardCategoryGame";
 import { LoadingComponent } from "@components/LoadingComponent";
 import type { PaguinationCategory } from "../models/paguination-category";
-import { useState } from "react";
-import { PaguinationComponent } from "@components/PaguinationComponent";
+import { useState, useCallback, useMemo } from "react";
+import { PaginationComponent } from "@components/PaginationComponent";
+import CategoryGameSearchComponent from "./CategoryGameSearchComponent";
+import type { SearchFilters } from "@components/SearchComponent";
+import type { CategoryGame } from "../models/category-game.model";
 
 export const ListCategoryGame = () => {
   return (
@@ -15,12 +18,62 @@ export const ListCategoryGame = () => {
 };
 
 const UseListCategoryGame = () => {
-  const [paguination, setPaguination] = useState<PaguinationCategory>({
+  const [pagination, setPagination] = useState<PaguinationCategory>({
     page: 1,
     limit: 10,
   });
+
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
+    searchTerm: "",
+    filterType: "all",
+    sortBy: "created_at",
+    sortOrder: "desc",
+  });
+
+  const handleSearch = useCallback((filters: SearchFilters) => {
+    setSearchFilters(filters);
+    // Actualizar la paginación con los nuevos filtros de ordenamiento
+    setPagination(prev => ({
+      ...prev,
+      page: 1, // Reset a la primera página
+      sort_by: filters.sortBy || "created_at",
+      sort_order: filters.sortOrder || "desc",
+    }));
+  }, []);
+
   const { data, isLoading, error } =
-    CategoryGameClientData.getCategoryGames(paguination);
+    CategoryGameClientData.getCategoryGames(pagination);
+
+  // Memoizar los resultados filtrados para evitar recálculos innecesarios
+  const filteredResults = useMemo(() => {
+    if (!data?.results) return [];
+
+    return data.results.filter((category: CategoryGame) => {
+      if (!searchFilters.searchTerm) return true;
+
+      const searchTerm = searchFilters.searchTerm.toLowerCase();
+      const filterType = searchFilters.filterType;
+
+      switch (filterType) {
+        case "category_name":
+          return category.category_name?.toLowerCase().includes(searchTerm);
+        case "category_description":
+          return category.category_description?.toLowerCase().includes(searchTerm);
+        case "status": {
+          const status = category.status ? "activo" : "inactivo";
+          return status.toLowerCase().includes(searchTerm);
+        }
+        default: { // "all"
+          const status = category.status ? "activo" : "inactivo";
+          return (
+            category.category_name?.toLowerCase().includes(searchTerm) ||
+            category.category_description?.toLowerCase().includes(searchTerm) ||
+            status.toLowerCase().includes(searchTerm)
+          );
+        }
+      }
+    });
+  }, [data?.results, searchFilters]);
 
   if (isLoading) return <LoadingComponent />;
   if (error)
@@ -35,25 +88,44 @@ const UseListCategoryGame = () => {
       </div>
     );
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col items-center">
-      <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-white">
-        <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-teal-400">
-          Categorías de Juegos
-        </span>
-      </h1>
+    <div className="container mx-auto px-4 py-8 text-white">
+      <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto flex justify-center items-center mb-8">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-center text-white">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-teal-400">
+              Explora Nuestras Categorías de Juegos
+            </span>
+          </h1>
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mb-6">
-        {data?.results.map((category) => (
-          <CardCategoryGame key={category.category_id} category={category} />
-        ))}
+
+        <CategoryGameSearchComponent onSearch={handleSearch} />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredResults.map((category: CategoryGame) => (
+            <CardCategoryGame key={category.category_id} category={category} />
+          ))}
+        </div>
+        {filteredResults.length === 0 && searchFilters.searchTerm && (
+          <div className="text-center text-gray-400 py-8">
+            No se encontraron categorías que coincidan con "{searchFilters.searchTerm}"
+          </div>
+        )}
+
+
       </div>
 
-      <PaguinationComponent
-        paguination={paguination}
-        setPaguination={setPaguination}
+
+      <PaginationComponent
+        pagination={pagination}
+        setPagination={setPagination}
         info={data.info}
         color="bg-gradient-to-r from-purple-500 to-teal-400"
       />
+
+
+
     </div>
+
   );
 };

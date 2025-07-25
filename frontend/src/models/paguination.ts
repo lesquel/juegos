@@ -1,4 +1,4 @@
-export interface Paguination {
+export interface Pagination {
   page: number;
   limit?: number;
   sort_by?: string;
