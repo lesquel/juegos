@@ -39,7 +39,6 @@ export class GameClientData {
           .get(`${GameClientData.BASE_URL}${endpoints.games.getId(id)}`)
           .then((response) => {
             console.log("response", response.data);
-            response.data.game_type = "online";
             return GameAdapter.adaptDetail(response.data);
           }),
     });
