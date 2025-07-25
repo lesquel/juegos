@@ -1,0 +1,9 @@
+<button id="returnBtn">Volver</button>
+<script is:inline>
+  const returnBtn = document.getElementById("returnBtn");
+  if (returnBtn) {
+    returnBtn.addEventListener("click", () => {
+      window.history.back();
+    });
+  }
+</script>
