@@ -1,5 +1,8 @@
 ---
 import SrmcgannComponent from "@all-games/marketplace/srmcgann/srmcgannComponent.astro";
+import LayoutForGames from "@layouts/LayoutForGames.astro"; 
 ---
 
-<SrmcgannComponent />
+<LayoutForGames>
+  <SrmcgannComponent client:load />
+</LayoutForGames>

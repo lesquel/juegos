@@ -1,6 +1,8 @@
 ---
-import Layout from "@layouts/Layout.astro";
 import LostOnStrangerTerraComponent from "@all-games/marketplace/lost-on-stranger-terra/LostOnStrangerTerraComponent.astro";
+import LayoutForGames from "@layouts/LayoutForGames.astro"; 
 ---
 
-  <LostOnStrangerTerraComponent />
+<LayoutForGames>
+  <LostOnStrangerTerraComponent client:load/>
+</LayoutForGames>

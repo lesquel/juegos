@@ -1,5 +1,8 @@
 ---
 import LostCityComponent from "@all-games/marketplace/lost-city/lostCityComponent.astro";
+import LayoutForGames from "@layouts/LayoutForGames.astro"; 
 ---
 
-<LostCityComponent />
+<LayoutForGames>
+  <LostCityComponent client:load />
+</LayoutForGames>

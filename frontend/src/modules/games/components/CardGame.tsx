@@ -27,7 +27,7 @@ export const CardGame = ({ game }: { game: Game }) => {
             <p className="text-xs text-gray-400">Total de Puntos</p>
             <p className="text-lg font-bold text-teal-400">500p</p>
           </div>
-          <button className="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out">
+          <button className="bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out">
             Jugar Ahora
           </button>
         </div>

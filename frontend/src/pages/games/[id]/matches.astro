@@ -1,12 +1,14 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import { ListMatchesByGameId } from "@modules/games/components/match/ListMatchesByGameId";
+import BackButton from "@components/BackButton.astro"; 
 
 const { id } = Astro.params;
 ---
 
 <Layout>
-  <main class="h-full flex-grow flex items-center justify-center bg-gray-900">
+  <main class="h-full flex-grow flex items-center justify-center bg-gray-900 relative">
+    <BackButton href="#"/>
     <ListMatchesByGameId client:load id={id as string} />
   </main>
 </Layout>

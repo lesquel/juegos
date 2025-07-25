@@ -1,8 +1,8 @@
 ---
 import DoNotMakeComponent from "@all-games/marketplace/do-not-make/doNotMakeComponent.astro";
-import Layout from "@layouts/Layout.astro";
+import LayoutForGames from "@layouts/layoutForGames.astro"; 
 ---
 
-<Layout>
-  <DoNotMakeComponent />
-</Layout>
+<LayoutForGames>
+  <DoNotMakeComponent client:load />
+</LayoutForGames>

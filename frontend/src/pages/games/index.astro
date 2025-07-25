@@ -1,10 +1,12 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import { ListGames } from "@modules/games/components/ListGames";
+import BackButton from "@components/BackButton.astro"; 
 ---
 
 <Layout>
-  <main class="h-full flex-grow bg-gray-900">
+  <main class="h-full flex-grow bg-gray-900 relative">
+    <BackButton href="#" />
     <ListGames client:load />
   </main>
 </Layout>

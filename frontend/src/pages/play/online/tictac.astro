@@ -1,8 +1,8 @@
 ---
-import Layout from "@layouts/Layout.astro";
 import TicTacComponent from "@all-games/online/tic-tac/TicTacComponent.astro";
+import LayoutForGames from "@layouts/LayoutForGames.astro"; 
 ---
 
-<Layout title="Tic Tac Toe">
-  <TicTacComponent />
-</Layout>
+<LayoutForGames>
+  <TicTacComponent client:load />
+</LayoutForGames>
