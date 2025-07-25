@@ -9,8 +9,6 @@ export const CardParticipant = ({ id }: { id: string }) => {
       <span className="text-sm text-red-400">Error: {error.message}</span>
     );
 
-    console.log(participant);
-    
     // SE SUPONE QUE EN EL RETURN DEBERIA DE APARECER SOLAMENTE EL NOMBRE, PERO YA LE PONEMOS UNA IMAGEN ALEATORIA Y QUEDA MELO
   return (
     <div className="flex items-center space-x-2 flex-wrap">

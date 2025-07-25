@@ -6,9 +6,11 @@ import type { Game } from "@modules/games/models/game.model";
 export const CardMatch = ({ match, game }: { match: Match; game: Game }) => {
   const matchStatus = match.winner_id
     ? "Terminada"
-    : match.participant_ids.length >= Number(game.game_capacity)
+    : match.participant_ids.length === Number(game.game_capacity)
     ? "En curso"
     : "Esperando jugadores";
+
+    console.log(game);
 
   const statusColor = {
     Terminada: "bg-red-500",
@@ -22,18 +24,25 @@ export const CardMatch = ({ match, game }: { match: Match; game: Game }) => {
         <div className="flex justify-between items-start mb-4">
           <div>
             <div
-              className={`px-3 py-1 text-sm font-bold text-white rounded-full inline-block ${statusColor[matchStatus]}`}>
+              className={`px-3 py-1 text-sm font-bold text-white rounded-full inline-block ${statusColor[matchStatus]}`}
+            >
               {matchStatus}
             </div>
           </div>
           <div className="text-right">
-            <div className="md:text-lg font-semibold text-white text-sm">Apuesta Base</div>
-            <div className="text-3xl font-bold text-purple-400">${match.base_bet_amount}</div>
+            <div className="md:text-lg font-semibold text-white text-sm">
+              Apuesta Base
+            </div>
+            <div className="text-3xl font-bold text-purple-400">
+              ${match.base_bet_amount}
+            </div>
           </div>
         </div>
 
         <div className="mb-6">
-          <h3 className="text-xl font-semibold text-gray-300 mb-4">Jugadores</h3>
+          <h3 className="text-xl font-semibold text-gray-300 mb-4">
+            Jugadores
+          </h3>
           <div className="space-x-4 flex items-center flex-wrap gap-y-2.5">
             {match.participant_ids.length > 0 ? (
               match.participant_ids.map((id) => (
@@ -47,7 +56,9 @@ export const CardMatch = ({ match, game }: { match: Match; game: Game }) => {
 
         {match.winner_id && (
           <div className="mb-6">
-            <h3 className="text-xl font-semibold text-gray-300 mb-4">Ganador</h3>
+            <h3 className="text-xl font-semibold text-gray-300 mb-4">
+              Ganador
+            </h3>
             <CardParticipant id={match.winner_id} />
           </div>
         )}
@@ -59,6 +70,8 @@ export const CardMatch = ({ match, game }: { match: Match; game: Game }) => {
 
       <div className="bg-gray-900 px-6 py-2 text-xs text-gray-500">
         <span>ID de la partida: {match.match_id}</span>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <span>Fecha de creación: {match.created_at.toLocaleString()}</span>
       </div>
     </div>
   );

@@ -11,19 +11,21 @@ import type {
   Match,
 } from "../models/match.model";
 import { useAuthStore } from "@modules/auth/store/auth.store";
+import type { Paguination } from "@models/paguination";
+import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 
 export class MatchClientData {
   private static readonly BASE_URL = environment.BASE_URL;
 
-  public static getMatchesByGameId(gameId: string) {
+  public static getMatchesByGameId(gameId: string, paguination: Paguination) {
     return useQuery({
-      queryKey: ["matches", gameId],
+      queryKey: ["matches", gameId, paguination],
       queryFn: () => {
         return axios
           .get(
             `${MatchClientData.BASE_URL}${endpoints.matches.getMatchesByGameId(
               gameId
-            )}`
+            )}${PaguinationCategoryAdapter.adaptPaguination(paguination)}`
           )
           .then((response) => {
             return MatchAdapter.adaptList(response.data);
