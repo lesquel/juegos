@@ -52,13 +52,32 @@ class UnifiedGameWebSocketManager:
         """Conecta un websocket usando el manager apropiado"""
         # Para connect, usar el manager por defecto ya que aún no sabemos el tipo de juego
         manager = self._get_manager_for_match(match_id)
-        return manager.connect(match_id, websocket, user_id)
+        result = manager.connect(match_id, websocket, user_id)
+
+        if result:
+            logger.info(
+                f"Successfully connected user {user_id} to match {match_id}. "
+                f"Active connections for this match: {len(manager.active_connections.get(match_id, []))}"
+            )
+        else:
+            logger.warning(
+                f"Failed to connect user {user_id} to match {match_id} (already connected)"
+            )
+
+        return result
 
     def disconnect(self, match_id: str, websocket: WebSocket, user_id: str = None):
         """Desconecta un websocket usando el manager apropiado"""
         if match_id in self._match_game_types:
             manager = self._get_manager_for_match(match_id)
             result = manager.disconnect(match_id, websocket, user_id)
+
+            # Log del estado después de la desconexión
+            connections_count = len(manager.active_connections.get(match_id, []))
+            logger.info(
+                f"Disconnected user {user_id} from match {match_id}. "
+                f"Remaining connections: {connections_count}"
+            )
 
             # Si ya no hay conexiones activas, limpiar el mapeo de tipo de juego
             if (
@@ -67,10 +86,12 @@ class UnifiedGameWebSocketManager:
                 or not manager.active_connections[match_id]
             ):
                 self._match_game_types.pop(match_id, None)
+                logger.info(f"Removed game type mapping for match {match_id}")
 
             return result
         else:
             # Si no conocemos el tipo, intentar con connect4 por defecto
+            logger.warning(f"No game type found for match {match_id}, using default")
             manager = self._get_manager_for_match(match_id, CONNECT4_NAME)
             return manager.disconnect(match_id, websocket, user_id)
 
@@ -104,9 +125,18 @@ class UnifiedGameWebSocketManager:
         Para compatibilidad con el código existente.
         """
         all_connections = {}
-        for manager in self._game_managers.values():
+        for game_type, manager in self._game_managers.items():
             if hasattr(manager, "active_connections"):
-                all_connections.update(manager.active_connections)
+                for match_id, connections in manager.active_connections.items():
+                    if match_id not in all_connections:
+                        all_connections[match_id] = []
+                    # Agregar información del tipo de juego para debugging
+                    all_connections[match_id].extend(connections)
+
+        # Log para debugging
+        for match_id, connections in all_connections.items():
+            logger.debug(f"Match {match_id}: {len(connections)} active connections")
+
         return all_connections
 
     def get_match_game_type(self, match_id: str) -> Optional[str]:
@@ -118,3 +148,36 @@ class UnifiedGameWebSocketManager:
         if match_id in self._match_game_types:
             return self._get_manager_for_match(match_id)
         return None
+
+    def get_debug_info(self, match_id: str = None) -> Dict:
+        """Obtiene información detallada para debugging"""
+        debug_info = {
+            "match_game_types": dict(self._match_game_types),
+            "cached_managers": list(self._game_managers.keys()),
+            "connections_by_manager": {},
+        }
+
+        for game_type, manager in self._game_managers.items():
+            if hasattr(manager, "active_connections"):
+                debug_info["connections_by_manager"][game_type] = {
+                    match_id: len(connections)
+                    for match_id, connections in manager.active_connections.items()
+                }
+
+        if match_id:
+            specific_manager = self.get_game_manager_for_match(match_id)
+            if specific_manager:
+                debug_info["specific_match"] = {
+                    "match_id": match_id,
+                    "game_type": self.get_match_game_type(match_id),
+                    "connections_count": len(
+                        specific_manager.active_connections.get(match_id, [])
+                    ),
+                    "has_player_manager": hasattr(specific_manager, "player_manager"),
+                }
+                if hasattr(specific_manager, "player_manager"):
+                    debug_info["specific_match"]["users_connected"] = len(
+                        specific_manager.player_manager.match_users.get(match_id, {})
+                    )
+
+        return debug_info

@@ -75,22 +75,59 @@ class FinishMatchUseCase(BaseUseCase[MatchParticipationResultsDTO, MatchResponse
         self.logger.info(
             f"Determined winner {match.winner_id} for match {match_id} based on scores"
         )
-        # Actualizar puntuación
-        updated_match = await self.match_repo.update(match_id, match)
 
-        winner = await self.user_repo.get_by_id(updated_match.winner_id)
+        try:
+            # Actualizar puntuación
+            updated_match = await self.match_repo.update(match_id, match)
 
-        game = await self.game_repo.get_by_id(updated_match.game_id)
+            # Obtener el ganador
+            winner = await self.user_repo.get_by_id(updated_match.winner_id)
+            if not winner:
+                self.logger.error(f"Winner with ID {updated_match.winner_id} not found")
+                raise MatchScoreError(
+                    f"Winner with ID {updated_match.winner_id} not found"
+                )
 
-        odds = updated_match.calculate_odds_for_match(game.house_odds)
-        base_bet = updated_match.base_bet_amount or 0.0
-        reward = UserBalanceService.calculate_reward(odds, base_bet)
+            # Obtener el juego
+            game = await self.game_repo.get_by_id(updated_match.game_id)
+            if not game:
+                self.logger.error(f"Game with ID {updated_match.game_id} not found")
+                raise MatchScoreError(f"Game with ID {updated_match.game_id} not found")
 
-        UserBalanceService.add_balance(winner, reward)
+            # Calcular recompensa
+            try:
+                odds = updated_match.calculate_odds_for_match(game.house_odds)
+                base_bet = updated_match.base_bet_amount or 0.0
+                reward = UserBalanceService.calculate_reward(odds, base_bet)
 
-        self.logger.info(f"Match {match_id} finished successfully with updated scores")
+                self.logger.info(
+                    f"Calculated reward for winner {winner.user_id}: {reward} (odds: {odds}, base_bet: {base_bet})"
+                )
 
-        await self.user_repo.update(winner.user_id, winner)
+                # Agregar balance al ganador
+                UserBalanceService.add_balance(winner, reward)
 
-        # Convertir a DTO de respuesta
-        return self.match_converter.to_dto(updated_match, game)
+                # Actualizar el usuario en la base de datos
+                await self.user_repo.update(winner.user_id, winner)
+
+                self.logger.info(
+                    f"Updated balance for winner {winner.user_id}. New balance: {winner.virtual_currency}"
+                )
+
+            except Exception as balance_error:
+                self.logger.error(
+                    f"Error calculating or updating balance: {str(balance_error)}"
+                )
+                # No lanzar error aquí para no interrumpir la finalización del match
+                # Solo registrar el error
+
+            self.logger.info(
+                f"Match {match_id} finished successfully with updated scores"
+            )
+
+            # Convertir a DTO de respuesta
+            return self.match_converter.to_dto(updated_match, game)
+
+        except Exception as update_error:
+            self.logger.error(f"Error updating match or user data: {str(update_error)}")
+            raise MatchScoreError(f"Failed to update match data: {str(update_error)}")

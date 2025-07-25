@@ -13,7 +13,7 @@ class MatchService(IMatchService):
         return len(match.participant_ids) < game_capacity
 
     @staticmethod
-    def get_winner(self, participation_scores: list[tuple[str, float]]) -> str:
+    def get_winner(participation_scores: list[tuple[str, float]]) -> str:
         if not participation_scores:
             return ""
         return max(participation_scores, key=lambda x: x[1])[0]

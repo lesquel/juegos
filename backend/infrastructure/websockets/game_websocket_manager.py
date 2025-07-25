@@ -235,6 +235,9 @@ class GameWebSocketManager(WebSocketManager):
             move_data = message.get("move", {})
             result = game.apply_move(move_data)
 
+            # Obtener estado actualizado del juego
+            current_game_state = game.get_game_state()
+
             # Enviar resultado a todos los jugadores
             response = {
                 "type": "move_made",
@@ -242,10 +245,27 @@ class GameWebSocketManager(WebSocketManager):
                 "player_symbol": player_symbol,
                 "move": move_data,
                 "result": result,
-                "game_state": game.get_game_state(),
+                "game_state": current_game_state,
             }
 
             await self.broadcast(match_id, response)
+
+            # Si el juego terminó, enviar mensaje adicional de finalización
+            if result.get("game_over"):
+                logger.info(
+                    f"Game over detected in legacy manager for match {match_id}. Winner: {result.get('winner', 'None')}"
+                )
+
+                finish_message = {
+                    "type": "game_over",
+                    "match_id": match_id,
+                    "winner": result.get("winner"),
+                    "is_tie": result.get("is_tie", False),
+                    "final_state": current_game_state,
+                    "message": "¡El juego ha terminado!",
+                }
+
+                await self.broadcast(match_id, finish_message)
 
         except ValueError as e:
             # Enviar error solo al jugador que hizo el movimiento inválido

@@ -47,10 +47,23 @@ class PlayerManager:
     ) -> bool:
         """Agrega una conexión de usuario. Retorna False si ya existe"""
         if match_id in self.match_users and user_id in self.match_users[match_id]:
-            logger.info(
-                f"User {user_id} already connected to match {match_id}, rejecting duplicate connection"
-            )
-            return False
+            existing_websocket = self.match_users[match_id][user_id]
+            # Verificar si la conexión existente está realmente activa
+            if (
+                hasattr(existing_websocket, "application_state")
+                and existing_websocket.application_state.value == 1
+            ):  # CONNECTED
+                logger.info(
+                    f"User {user_id} already connected to match {match_id}, rejecting duplicate connection"
+                )
+                return False
+            else:
+                # La conexión anterior no está activa, reemplazarla
+                logger.info(
+                    f"Replacing inactive connection for user {user_id} in match {match_id}"
+                )
+                self.match_users[match_id][user_id] = websocket
+                return True
 
         if match_id not in self.match_users:
             self.match_users[match_id] = {}

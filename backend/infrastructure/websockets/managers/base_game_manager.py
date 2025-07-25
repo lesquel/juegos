@@ -71,12 +71,23 @@ class BaseGameWebSocketManager(WebSocketManager, ABC):
 
     def connect(self, match_id: str, websocket: WebSocket, user_id: str = None):
         """Conecta un websocket a un match, verificando si el usuario ya está conectado"""
-        if user_id and not self.player_manager.add_user_connection(
-            match_id, user_id, websocket
-        ):
-            return False
+        if user_id:
+            if not self.player_manager.add_user_connection(
+                match_id, user_id, websocket
+            ):
+                logger.warning(f"User {user_id} already connected to match {match_id}")
+                return False
+            # Solo llamar a super().connect() si la conexión del usuario fue exitosa
+            super().connect(match_id, websocket)
+            logger.info(f"User {user_id} connected to match {match_id}")
+        else:
+            # Si no hay user_id, conectar directamente
+            super().connect(match_id, websocket)
+            logger.info(f"Anonymous connection added to match {match_id}")
 
-        super().connect(match_id, websocket)
+        connections_count = len(self.active_connections.get(match_id, []))
+        logger.info(f"Total connections for match {match_id}: {connections_count}")
+
         return True
 
     def disconnect(self, match_id: str, websocket: WebSocket, user_id: str = None):

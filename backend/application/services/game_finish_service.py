@@ -77,6 +77,7 @@ class GameFinishService:
                     if hasattr(finished_match, "model_dump")
                     else finished_match.__dict__
                 ),
+                "message": "¡El juego ha finalizado correctamente!",
             }
 
             # Broadcast to all connected players
@@ -85,11 +86,17 @@ class GameFinishService:
                 self.logger.info(
                     f"Broadcasted game finish results to all players in match {match_id}"
                 )
+            else:
+                self.logger.warning(
+                    f"No websocket manager provided for match {match_id}, skipping broadcast"
+                )
 
             return broadcast_message
 
         except Exception as e:
             self.logger.error(f"Error finishing game for match {match_id}: {str(e)}")
+            self.logger.error(f"Error type: {type(e).__name__}")
+            self.logger.error(f"Participants data: {participants_data}")
 
             # Broadcast error to players
             error_message = {
@@ -100,7 +107,12 @@ class GameFinishService:
             }
 
             if websocket_manager:
-                await websocket_manager.broadcast(match_id, error_message)
+                try:
+                    await websocket_manager.broadcast(match_id, error_message)
+                except Exception as broadcast_error:
+                    self.logger.error(
+                        f"Failed to broadcast error message: {str(broadcast_error)}"
+                    )
 
             raise
 
@@ -165,4 +177,18 @@ class GameFinishService:
         # Default implementation - should be customized per game
         return (
             game_state.get("game_over", False) or game_state.get("winner") is not None
+        )
+
+    def should_auto_finish(self, game_result: Dict[str, Any]) -> bool:
+        """
+        Determines if a game should be automatically finished based on the move result.
+
+        Args:
+            game_result: Result dictionary from game engine apply_move method
+
+        Returns:
+            True if the game should be auto-finished, False otherwise
+        """
+        return game_result.get("game_over", False) and (
+            game_result.get("winner") is not None or game_result.get("is_tie", False)
         )
