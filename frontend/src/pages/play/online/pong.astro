@@ -1,8 +1,8 @@
 ---
-import Layout from "@layouts/Layout.astro";
 import PongComponent from "@all-games/online/pong/PongComponent.astro";
+import LayoutForGames from "@layouts/layoutForGames.astro"; 
 ---
 
-<Layout title="Pong">
-  <PongComponent />
-</Layout>
+<LayoutForGames>
+  <PongComponent client:load />
+</LayoutForGames>

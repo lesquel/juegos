@@ -1,8 +1,8 @@
 ---
 import GolfrogComponent from "@all-games/marketplace/golfrog/golfrogComponent.astro";
-import Layout from "@layouts/Layout.astro";
+import LayoutForGames from "@layouts/layoutForGames.astro"; 
 ---
 
-<Layout>
-  <GolfrogComponent />
-</Layout>
+<LayoutForGames>
+  <GolfrogComponent client:load />
+</LayoutForGames>

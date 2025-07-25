@@ -1,5 +1,8 @@
 ---
 import PuzleComponent from '@all-games/marketplace/puzle/puzleComponent.astro';
+import LayoutForGames from "@layouts/layoutForGames.astro"; 
 ---
 
-<PuzleComponent />
+<LayoutForGames>
+  <PuzleComponent client:load />
+</LayoutForGames>
