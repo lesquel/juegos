@@ -1,0 +1,778 @@
+<style is:inline>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Arial Black", Arial, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .casino-container {
+    max-width: 800px;
+    text-align: center;
+  }
+
+  .title {
+    font-size: 3em;
+    color: #ffd700;
+    text-shadow:
+      0 0 10px #ffd700,
+      0 0 20px #ffd700,
+      0 0 30px #ffd700;
+    margin-bottom: 30px;
+    animation: neonGlow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes neonGlow {
+    from {
+      text-shadow:
+        0 0 10px #ffd700,
+        0 0 20px #ffd700,
+        0 0 30px #ffd700;
+    }
+    to {
+      text-shadow:
+        0 0 20px #ffd700,
+        0 0 30px #ffd700,
+        0 0 40px #ffd700;
+    }
+  }
+
+  .slot-machine {
+    background: linear-gradient(145deg, #d4af37, #b8860b);
+    border: 8px solid #8b4513;
+    border-radius: 30px;
+    padding: 40px;
+    box-shadow:
+      0 0 50px rgba(0, 0, 0, 0.8),
+      inset 0 0 30px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slot-machine::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: shine 3s infinite;
+  }
+
+  @keyframes shine {
+    0% {
+      transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+  }
+
+  .game-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #000;
+  }
+
+  .credits,
+  .bet-amount {
+    background: linear-gradient(145deg, #000, #333);
+    color: #00ff00;
+    padding: 15px 25px;
+    border-radius: 15px;
+    border: 3px solid #ffd700;
+    text-shadow: 0 0 10px #00ff00;
+    box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.3);
+  }
+
+  .reels-container {
+    background: #000;
+    border: 6px solid #ffd700;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 30px 0;
+    box-shadow:
+      inset 0 0 30px rgba(255, 215, 0, 0.3),
+      0 0 30px rgba(0, 0, 0, 0.8);
+  }
+
+  .reels {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .reel {
+    width: 150px;
+    height: 180px;
+    background: linear-gradient(145deg, #333, #111);
+    border: 4px solid #666;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+  }
+
+  .reel-strip {
+    position: absolute;
+    width: 100%;
+    transition: transform 0.1s ease-out;
+  }
+
+  .symbol {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5em;
+    background: linear-gradient(145deg, #f0f0f0, #ddd);
+    border-bottom: 2px solid #999;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .winning-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff0000, #ffff00, #ff0000);
+    transform: translateY(-50%);
+    z-index: 10;
+    opacity: 0;
+    box-shadow: 0 0 10px #ff0000;
+  }
+
+  .winning-line.active {
+    opacity: 1;
+    animation: winningLine 1s ease-in-out infinite;
+  }
+
+  @keyframes winningLine {
+    0%,
+    100% {
+      box-shadow: 0 0 10px #ff0000;
+    }
+    50% {
+      box-shadow:
+        0 0 20px #ffff00,
+        0 0 30px #ff0000;
+    }
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+  }
+
+  .control-button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .spin-button {
+    background: linear-gradient(145deg, #ff4444, #cc0000);
+    color: white;
+    font-size: 1.5em;
+    padding: 20px 40px;
+  }
+
+  .spin-button:hover:not(:disabled) {
+    background: linear-gradient(145deg, #ff6666, #ff0000);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4);
+  }
+
+  .spin-button:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .bet-button {
+    background: linear-gradient(145deg, #4caf50, #45a049);
+    color: white;
+  }
+
+  .bet-button:hover {
+    background: linear-gradient(145deg, #66bb6a, #4caf50);
+    transform: translateY(-2px);
+  }
+
+  .bet-button.active {
+    background: linear-gradient(145deg, #ffeb3b, #fbc02d);
+    color: #000;
+    box-shadow: 0 0 20px #ffeb3b;
+  }
+
+  .result-display {
+    margin: 30px 0;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .win-message {
+    font-size: 2em;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 0 0 20px #ffd700;
+    animation: winPulse 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes winPulse {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.1);
+    }
+  }
+
+  .lose-message {
+    font-size: 1.5em;
+    color: #ff6b6b;
+    text-shadow: 0 0 10px #ff6b6b;
+  }
+
+  .payout-table {
+    background: rgba(0, 0, 0, 0.8);
+    border: 3px solid #ffd700;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 30px 0;
+  }
+
+  .payout-table h3 {
+    color: #ffd700;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+  }
+
+  .payout-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+  }
+
+  .payout-symbols {
+    font-size: 1.2em;
+  }
+
+  .payout-amount {
+    color: #00ff00;
+    font-weight: bold;
+  }
+
+  .jackpot-display {
+    background: linear-gradient(145deg, #8b0000, #4a0000);
+    border: 4px solid #ffd700;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .jackpot-label {
+    font-size: 1.5em;
+    color: #ffd700;
+    margin-bottom: 10px;
+  }
+
+  .jackpot-amount {
+    font-size: 3em;
+    color: #ff0000;
+    font-weight: bold;
+    text-shadow: 0 0 20px #ff0000;
+    animation: jackpotGlow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes jackpotGlow {
+    from {
+      text-shadow: 0 0 20px #ff0000;
+    }
+    to {
+      text-shadow:
+        0 0 30px #ff0000,
+        0 0 40px #ff4444;
+    }
+  }
+
+  .spinning {
+    animation: spin 0.1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-60px);
+    }
+  }
+
+  .celebration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #ffd700;
+    animation: confetti-fall 3s linear infinite;
+  }
+
+  @keyframes confetti-fall {
+    0% {
+      transform: translateY(-100vh) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .slot-machine {
+      padding: 20px;
+    }
+
+    .title {
+      font-size: 2em;
+    }
+
+    .reel {
+      width: 100px;
+      height: 150px;
+    }
+
+    .symbol {
+      height: 50px;
+      font-size: 2em;
+    }
+
+    .controls {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .game-info {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+</style>
+<div class="casino-container">
+  <h1 class="title">🎰 LUCKY SLOTS 🎰</h1>
+
+  <div class="slot-machine">
+    <div class="celebration" id="celebration"></div>
+
+    <div class="game-info">
+      <div class="credits">💰 Créditos: $<span id="credits">1000</span></div>
+      <div class="bet-amount">🎯 Apuesta: $<span id="currentBet">10</span></div>
+    </div>
+
+    <div class="jackpot-display">
+      <div class="jackpot-label">🏆 JACKPOT 🏆</div>
+      <div class="jackpot-amount">$<span id="jackpot">5000</span></div>
+    </div>
+
+    <div class="reels-container">
+      <div class="winning-line" id="winningLine"></div>
+      <div class="reels">
+        <div class="reel" id="reel1">
+          <div class="reel-strip" id="strip1"></div>
+        </div>
+        <div class="reel" id="reel2">
+          <div class="reel-strip" id="strip2"></div>
+        </div>
+        <div class="reel" id="reel3">
+          <div class="reel-strip" id="strip3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="control-button bet-button" onclick="changeBet(1)"
+        >Apuesta $1</button
+      >
+      <button class="control-button bet-button active" onclick="changeBet(10)"
+        >Apuesta $10</button
+      >
+      <button class="control-button bet-button" onclick="changeBet(25)"
+        >Apuesta $25</button
+      >
+      <button class="control-button bet-button" onclick="changeBet(50)"
+        >Apuesta $50</button
+      >
+    </div>
+
+    <div class="controls">
+      <button
+        class="control-button spin-button"
+        id="spinButton"
+        onclick="spin()"
+      >
+        ¡GIRAR! 🎲
+      </button>
+    </div>
+
+    <div class="result-display" id="resultDisplay">
+      ¡Haz tu apuesta y gira los rodillos para ganar!
+    </div>
+  </div>
+
+  <div class="payout-table">
+    <h3>📊 TABLA DE PAGOS</h3>
+    <div class="payout-row">
+      <div class="payout-symbols">🍀 🍀 🍀</div>
+      <div class="payout-amount">x100</div>
+    </div>
+    <div class="payout-row">
+      <div class="payout-symbols">🔔 🔔 🔔</div>
+      <div class="payout-amount">x50</div>
+    </div>
+    <div class="payout-row">
+      <div class="payout-symbols">7⃣ 7⃣ 7⃣</div>
+      <div class="payout-amount">x30</div>
+    </div>
+    <div class="payout-row">
+      <div class="payout-symbols">💰 💰 💰</div>
+      <div class="payout-amount">x20</div>
+    </div>
+    <div class="payout-row">
+      <div class="payout-symbols">🍒 🍒 🍒</div>
+      <div class="payout-amount">x15</div>
+    </div>
+    <div class="payout-row">
+      <div class="payout-symbols">🍊 🍊 🍊</div>
+      <div class="payout-amount">x10</div>
+    </div>
+    <div class="payout-row">
+      <div class="payout-symbols">🍇 🍇 🍇</div>
+      <div class="payout-amount">x5</div>
+    </div>
+    <div class="payout-row">
+      <div class="payout-symbols">Cualquier 2 🍒</div>
+      <div class="payout-amount">x2</div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  class SlotMachine {
+    constructor() {
+      this.credits = 1000;
+      this.currentBet = 10;
+      this.jackpot = 5000;
+      this.isSpinning = false;
+
+      // Símbolos de la máquina con sus probabilidades
+      this.symbols = [
+        { symbol: "🍒", weight: 20 }, // Cerezas - más común
+        { symbol: "🍊", weight: 15 }, // Naranja
+        { symbol: "🍇", weight: 15 }, // Uvas
+        { symbol: "🔔", weight: 10 }, // Campana
+        { symbol: "💰", weight: 8 }, // Dinero
+        { symbol: "7⃣", weight: 7 }, // Siete
+        { symbol: "🍀", weight: 5 }, // Trébol - más raro
+      ];
+
+      // Tabla de pagos
+      this.payouts = {
+        "🍀🍀🍀": 100,
+        "🔔🔔🔔": 50,
+        "7⃣7⃣7⃣": 30,
+        "💰💰💰": 20,
+        "🍒🍒🍒": 15,
+        "🍊🍊🍊": 10,
+        "🍇🍇🍇": 5,
+      };
+
+      this.init();
+    }
+
+    init() {
+      this.createReels();
+      this.updateDisplay();
+      this.updateJackpot();
+    }
+
+    createReels() {
+      for (let i = 1; i <= 3; i++) {
+        const strip = document.getElementById(`strip${i}`);
+        strip.innerHTML = "";
+
+        // Crear muchos símbolos para el efecto de giro
+        for (let j = 0; j < 20; j++) {
+          const symbol = document.createElement("div");
+          symbol.className = "symbol";
+          symbol.textContent = this.getRandomSymbol();
+          strip.appendChild(symbol);
+        }
+      }
+    }
+
+    getRandomSymbol() {
+      const totalWeight = this.symbols.reduce((sum, s) => sum + s.weight, 0);
+      let random = Math.random() * totalWeight;
+
+      for (const symbolData of this.symbols) {
+        random -= symbolData.weight;
+        if (random <= 0) {
+          return symbolData.symbol;
+        }
+      }
+
+      return this.symbols[0].symbol;
+    }
+
+    changeBet(amount) {
+      if (this.isSpinning) return;
+
+      document
+        .querySelectorAll(".bet-button")
+        .forEach((btn) => btn.classList.remove("active"));
+      event.target.classList.add("active");
+
+      this.currentBet = amount;
+      this.updateDisplay();
+    }
+
+    async spin() {
+      if (this.isSpinning || this.credits < this.currentBet) {
+        if (this.credits < this.currentBet) {
+          this.showResult("¡Créditos insuficientes!", false);
+        }
+        return;
+      }
+
+      this.isSpinning = true;
+      this.credits -= this.currentBet;
+
+      const spinButton = document.getElementById("spinButton");
+      spinButton.disabled = true;
+      spinButton.textContent = "GIRANDO...";
+
+      // Incrementar jackpot con parte de la apuesta
+      this.jackpot += Math.floor(this.currentBet * 0.1);
+
+      this.hideWinningLine();
+      this.showResult("", false);
+
+      // Animar los rodillos
+      const reels = [1, 2, 3];
+      const spinPromises = reels.map((reelNum) => this.spinReel(reelNum));
+
+      // Esperar a que terminen todos los giros
+      const results = await Promise.all(spinPromises);
+
+      // Evaluar el resultado
+      this.evaluateResult(results);
+
+      this.isSpinning = false;
+      spinButton.disabled = false;
+      spinButton.textContent = "¡GIRAR! 🎲";
+
+      this.updateDisplay();
+    }
+
+    async spinReel(reelNum) {
+      const strip = document.getElementById(`strip${reelNum}`);
+      const reel = document.getElementById(`reel${reelNum}`);
+
+      // Agregar clase spinning para la animación
+      strip.classList.add("spinning");
+
+      // Duración del giro (diferente para cada rodillo)
+      const spinDuration = 1000 + reelNum * 500;
+
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          strip.classList.remove("spinning");
+
+          // Posicionar en un símbolo aleatorio
+          const finalSymbol = this.getRandomSymbol();
+          const symbolPosition = -60; // Mostrar el símbolo del medio
+          strip.style.transform = `translateY(${symbolPosition}px)`;
+
+          // Actualizar el símbolo visible
+          const visibleSymbols = strip.querySelectorAll(".symbol");
+          visibleSymbols[1].textContent = finalSymbol;
+
+          resolve(finalSymbol);
+        }, spinDuration);
+      });
+    }
+
+    evaluateResult(results) {
+      const [symbol1, symbol2, symbol3] = results;
+      const combination = symbol1 + symbol2 + symbol3;
+
+      // Verificar jackpot (tres tréboles)
+      if (combination === "🍀🍀🍀") {
+        const winAmount = this.jackpot;
+        this.credits += winAmount;
+        this.showResult(`¡JACKPOT! ¡Ganaste $${winAmount}!`, true, true);
+        this.jackpot = 5000; // Resetear jackpot
+        this.createCelebration();
+        return;
+      }
+
+      // Verificar otras combinaciones ganadoras
+      if (this.payouts[combination]) {
+        const winAmount = this.currentBet * this.payouts[combination];
+        this.credits += winAmount;
+        this.showResult(`¡Ganaste $${winAmount}!`, true);
+        this.showWinningLine();
+        return;
+      }
+
+      // Verificar cerezas especiales (cualquier 2 cerezas)
+      const cherryCount = results.filter((s) => s === "🍒").length;
+      if (cherryCount >= 2) {
+        const winAmount = this.currentBet * 2;
+        this.credits += winAmount;
+        this.showResult(
+          `¡${cherryCount} cerezas! Ganaste $${winAmount}!`,
+          true
+        );
+        this.showWinningLine();
+        return;
+      }
+
+      // No hay ganancia
+      this.showResult("¡Intenta de nuevo!", false);
+    }
+
+    showResult(message, isWin, isJackpot = false) {
+      const resultDisplay = document.getElementById("resultDisplay");
+
+      if (isWin) {
+        resultDisplay.innerHTML = `<div class="${isJackpot ? "win-message" : "win-message"}">${message}</div>`;
+      } else {
+        resultDisplay.innerHTML = `<div class="lose-message">${message}</div>`;
+      }
+    }
+
+    showWinningLine() {
+      const winningLine = document.getElementById("winningLine");
+      winningLine.classList.add("active");
+
+      setTimeout(() => {
+        winningLine.classList.remove("active");
+      }, 3000);
+    }
+
+    hideWinningLine() {
+      const winningLine = document.getElementById("winningLine");
+      winningLine.classList.remove("active");
+    }
+
+    createCelebration() {
+      const celebration = document.getElementById("celebration");
+      celebration.innerHTML = "";
+
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * 100 + "%";
+        confetti.style.animationDelay = Math.random() * 3 + "s";
+        confetti.style.background = this.getRandomColor();
+        celebration.appendChild(confetti);
+      }
+
+      setTimeout(() => {
+        celebration.innerHTML = "";
+      }, 5000);
+    }
+
+    getRandomColor() {
+      const colors = [
+        "#ffd700",
+        "#ff6b6b",
+        "#4ecdc4",
+        "#45b7d1",
+        "#96ceb4",
+        "#feca57",
+      ];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    updateDisplay() {
+      document.getElementById("credits").textContent = this.credits;
+      document.getElementById("currentBet").textContent = this.currentBet;
+      document.getElementById("jackpot").textContent = this.jackpot;
+    }
+
+    updateJackpot() {
+      // Incrementar jackpot gradualmente
+      setInterval(() => {
+        if (!this.isSpinning) {
+          this.jackpot += Math.floor(Math.random() * 5) + 1;
+          this.updateDisplay();
+        }
+      }, 10000); // Cada 10 segundos
+    }
+  }
+
+  // Variables globales para acceso desde HTML
+  let slotMachine;
+
+  function changeBet(amount) {
+    slotMachine.changeBet(amount);
+  }
+
+  function spin() {
+    slotMachine.spin();
+  }
+
+  // Inicializar el juego cuando se carga la página
+  window.addEventListener("DOMContentLoaded", () => {
+    slotMachine = new SlotMachine();
+  });
+</script>
