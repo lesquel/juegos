@@ -96,7 +96,7 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
     if (error) return errorMessage;
 
     return (
-      <main className="min-h-screen bg-gray-900">
+      <main className="min-h-full bg-gray-900">
         <div className="container mx-auto px-4 py-10 flex flex-col items-center">
           {titleWithCount}
           {commentsList}

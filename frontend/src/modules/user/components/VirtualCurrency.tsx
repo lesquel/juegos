@@ -47,7 +47,7 @@ const UseVirtualCurrency = memo(() => {
     return (
       <div className="flex items-center gap-2">
         <p className="text-gray-300 font-bold">Saldo:</p>
-        <span className="text-green-500 font-bold bg-green-500/10 px-2 py-1 rounded">
+        <span className="text-green-500 font-bold bg-green-500/10 px-2 py-1 rounded text-sm">
           $: {data?.virtual_currency ?? 0}
         </span>
       </div>
