@@ -25,8 +25,11 @@ const UseVirtualCurrency = () => {
   }
 
   return (
-    <span className="text-green-500 font-bold">
-      $: {data?.virtual_currency ?? 0}
-    </span>
+    <div className="flex items-center gap-2">
+      <p className="text-gray-300 font-bold">Saldo:</p>
+      <span className="text-green-500 font-bold">
+        $: {data?.virtual_currency ?? 0}
+      </span>
+    </div>
   );
 };

@@ -1,8 +1,12 @@
 import { AuthClientData } from "../services/authClientData";
 
-export const ItemAuthLogout = () => {
+type Props = {
+  className?: string;
+};
+
+export const ItemAuthLogout = ({ className }: Props) => {
   return (
-    <button className="text-white" onClick={() => AuthClientData.logout()}>
+    <button className={`text-white ${className}`} onClick={() => AuthClientData.logout()}>
       Logout
     </button>
   );
