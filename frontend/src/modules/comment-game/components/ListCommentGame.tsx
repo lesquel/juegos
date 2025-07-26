@@ -13,7 +13,6 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
   ({ gameId }) => {
     const { data, isLoading, error } = CommentGameDataClient.getCommentGames(
       gameId
-      // hasMounted
     );
 
     // Memoizar mensaje de error

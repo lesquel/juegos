@@ -21,6 +21,7 @@ export class GameClientData {
   private static readonly BASE_URL = environment.BASE_URL;
 
   public static getGames(paguination: PaguinationGames) {
+    console.log("paguination", paguination);
     return useQuery({
       queryKey: ["games", paguination],
       ...QUERY_CONFIG,
