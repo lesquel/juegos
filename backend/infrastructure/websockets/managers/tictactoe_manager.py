@@ -22,15 +22,15 @@ class TictactoeWebSocketManager(BaseGameWebSocketManager):
         return 2
 
     def assign_player_symbol(self, current_players: int) -> str:
-        """Asigna símbolos para TicTacToe: X y O"""
+        """Asigna símbolos para TicTacToe: R y Y (compatible con Connect4)"""
         if current_players == 0:
-            return "X"  # Primer jugador es X
+            return "R"  # Primer jugador es R
         elif current_players == 1:
-            return "O"  # Segundo jugador es O
+            return "Y"  # Segundo jugador es Y
         else:
             return "S"  # Espectador
 
     def get_player_color_from_symbol(self, symbol: str) -> str:
         """Convierte el símbolo del jugador a color para TicTacToe"""
-        color_map = {"X": "blue", "O": "red", "S": "spectator"}
+        color_map = {"R": "red", "Y": "yellow", "S": "spectator"}
         return color_map.get(symbol, "spectator")

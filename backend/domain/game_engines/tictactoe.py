@@ -14,12 +14,13 @@ class TictactoeGame(BaseGameEngine):
         self.game_over = False
         self.winner = None
         self.winning_positions = []
-        self.players = {"X": "X", "O": "O"}
+        # Usar símbolos R y Y para compatibilidad con Connect4
+        self.players = {"R": "Jugador 1", "Y": "Jugador 2"}
 
         # Llamar al constructor padre después de inicializar propiedades
         super().__init__()
-        # Sobrescribir el jugador actual para Tic Tac Toe
-        self.current_player = "X"
+        # Sobrescribir el jugador actual para Tic Tac Toe (primer jugador es R)
+        self.current_player = "R"
 
     def create_board(self):
         return [[" " for _ in range(3)] for _ in range(3)]
@@ -27,7 +28,7 @@ class TictactoeGame(BaseGameEngine):
     def reset_game(self):
         """Reinicia el juego a su estado inicial"""
         self.board = self.create_board()
-        self.current_player = "X"
+        self.current_player = "R"  # Primer jugador es R
         self.move_count = 0
         self.game_over = False
         self.winner = None
@@ -79,7 +80,7 @@ class TictactoeGame(BaseGameEngine):
 
         # Cambiar turno si el juego continúa
         if not self.game_over:
-            self.current_player = "O" if self.current_player == "X" else "X"
+            self.current_player = "Y" if self.current_player == "R" else "R"
 
         return move_result
 

@@ -134,7 +134,7 @@ class TicTacWebSocketClient {
       game_type: "tictactoe",
       move: {
         row: row,
-        col: col,
+        column: col,  // Cambiar 'col' a 'column' para que coincida con el backend
       },
       player_id: this.playerId,
     };
@@ -437,10 +437,11 @@ function handleNewFormatGameState(data) {
   console.log("🎮 Estado: Jugando (2 jugadores conectados)");
   updateConnectionStatus("connected", "🟢 En juego");
 
-  // Para Tic-Tac-Toe, necesitamos solo un tablero 3x3
-  // Ignoramos el tablero de Connect4 que viene del backend
-  // En su lugar, iniciamos con tablero vacío o esperamos movimientos individuales
-  console.log("⚠️ Ignorando tablero de Connect4, usando tablero local 3x3");
+  // Para Tic-Tac-Toe, el backend ahora envía el tablero correctamente
+  if (gameStateData.board) {
+    console.log("📋 Actualizando tablero desde servidor");
+    updateBoardFromServer(gameStateData.board);
+  }
 
   // Determinar de quién es el turno
   // Mapear "R" -> "X", "Y" -> "O"
@@ -607,16 +608,16 @@ function processValidMove(data) {
 
   console.log("📋 Movimiento válido:", {
     row: move.row,
-    col: move.col,
+    column: move.column,
     symbol: symbol,
     original_symbol: data.player_symbol,
     result: data.result,
   });
 
   // Actualizar el tablero local
-  if (board[move.row] && board[move.row][move.col] === " ") {
-    board[move.row][move.col] = symbol;
-    updateTileVisualization(move.row, move.col, symbol);
+  if (board[move.row] && board[move.row][move.column] === " ") {
+    board[move.row][move.column] = symbol;
+    updateTileVisualization(move.row, move.column, symbol);
     moveCount++;
   }
 
@@ -771,10 +772,11 @@ function updateBoardCell(row, col, serverValue) {
 }
 
 function convertServerValueToLocal(serverValue) {
-  if (serverValue === 1 || serverValue === "X") {
+  // Convertir símbolos del backend (R/Y) a los símbolos del frontend (X/O)
+  if (serverValue === "R" || serverValue === 1 || serverValue === "X") {
     return "X";
   }
-  if (serverValue === 2 || serverValue === "O") {
+  if (serverValue === "Y" || serverValue === 2 || serverValue === "O") {
     return "O";
   }
   return " "; // Default for 0, null, " ", etc.
