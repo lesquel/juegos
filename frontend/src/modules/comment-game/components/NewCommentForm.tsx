@@ -3,6 +3,7 @@ import { z } from "zod";
 import { useForm } from "@tanstack/react-form";
 import { RatingInput } from "./RatingInput";
 import { CommentGameDataClient } from "../services/commentGameDataClient";
+import { Send } from "lucide-react";
 
 interface NewCommentFormProps {
   gameId: string;
@@ -13,178 +14,190 @@ interface CommentFormValues {
   rating: number;
 }
 
-export const NewCommentForm: React.FC<NewCommentFormProps> = memo(({ gameId }) => {
-  const { mutate, error } = CommentGameDataClient.createCommentGame(gameId);
+export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
+  ({ gameId }) => {
+    const { mutate, error } = CommentGameDataClient.createCommentGame(gameId);
 
-  // Memoizar validadores
-  const validators = useMemo(() => ({
-    onSubmit: z.object({
-      comment: z.string().min(1, "El comentario es requerido."),
-      rating: z.number().min(1, "Debes seleccionar al menos 1 estrella."),
-    }),
-  }), []);
-
-  // Memoizar valores por defecto
-  const defaultValues = useMemo((): CommentFormValues => ({
-    comment: "",
-    rating: 0,
-  }), []);
-
-  // Memoizar función de submit
-  const handleSubmit = useCallback(async ({ value }: { value: CommentFormValues }) => {
-    mutate(value);
-  }, [mutate]);
-
-  const form = useForm({
-    defaultValues,
-    validators,
-    onSubmit: handleSubmit,
-  });
-
-  // Memoizar mensaje de error
-  const errorMessage = useMemo(() => {
-    if (!error) return null;
-    return (
-      <div 
-        className="text-red-400 bg-red-900 bg-opacity-50 p-3 rounded-lg mb-4 border border-red-600"
-        role="alert"
-      >
-        <h4 className="font-semibold mb-1">Error al publicar comentario:</h4>
-        <p>{error.errors.join(", ")}</p>
-      </div>
+    // Memoizar validadores
+    const validators = useMemo(
+      () => ({
+        onSubmit: z.object({
+          comment: z.string().min(1, "El comentario es requerido."),
+          rating: z.number().min(1, "Debes seleccionar al menos 1 estrella."),
+        }),
+      }),
+      []
     );
-  }, [error]);
 
-  // Memoizar función de envío del formulario
-  const onFormSubmit = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    void form.handleSubmit();
-  }, [form]);
+    // Memoizar valores por defecto
+    const defaultValues = useMemo(
+      (): CommentFormValues => ({
+        comment: "",
+        rating: 0,
+      }),
+      []
+    );
 
-  // Memoizar icono de comentario
-  const commentIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-6 w-6 text-teal-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-      />
-    </svg>
-  ), []);
+    // Memoizar función de submit
+    const handleSubmit = useCallback(
+      async ({ value }: { value: CommentFormValues }) => {
+        mutate(value);
+      },
+      [mutate]
+    );
 
-  return (
-    <section className="bg-gray-800 bg-opacity-50 rounded-2xl p-6 border border-gray-700 mx-auto backdrop-blur-lg">
-      <header className="mb-6">
-        <h3 className="text-xl font-bold text-white flex items-center gap-3">
-          {commentIcon}
-          Deja tu Comentario
-        </h3>
-        <p className="text-gray-400 text-sm mt-1">
-          Comparte tu experiencia con este juego
-        </p>
-      </header>
-      
-      <div className="flex items-start space-x-4">
-        <div className="flex-1">
-          <form onSubmit={onFormSubmit} className="w-full space-y-4">
-            {errorMessage}
+    const form = useForm({
+      defaultValues,
+      validators,
+      onSubmit: handleSubmit,
+    });
 
-            {/* Campo de Comentario */}
-            <form.Field name="comment">
-              {(field) => {
-                // Memoizar errores del campo
-                const fieldErrors = useMemo(() => 
-                  field.state.meta.errors.length > 0 ? field.state.meta.errors.join(", ") : null,
-                  [field.state.meta.errors]
-                );
-
-                // Memoizar handler de cambio
-                const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                  field.handleChange(e.target.value);
-                }, [field]);
-
-                return (
-                  <div>
-                    <label 
-                      htmlFor="comment-field"
-                      className="block text-sm font-medium text-gray-300 mb-2"
-                    >
-                      Comentario
-                    </label>
-                    <textarea
-                      id="comment-field"
-                      rows={4}
-                      value={field.state.value}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-600 bg-gray-900 text-white rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors resize-none"
-                      placeholder="Escribe tu comentario sobre este juego..."
-                      aria-describedby={fieldErrors ? "comment-error" : undefined}
-                    />
-                    {fieldErrors && (
-                      <p id="comment-error" className="text-red-400 text-sm mt-2" role="alert">
-                        {fieldErrors}
-                      </p>
-                    )}
-                  </div>
-                );
-              }}
-            </form.Field>
-
-            {/* Campo de Rating */}
-            <form.Field name="rating">
-              {(field) => {
-                const errors = useMemo(() => 
-                  (field.state.meta.errors || []).filter(Boolean).map(String),
-                  [field.state.meta.errors]
-                );
-                
-                return (
-                  <RatingInput
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    error={errors}
-                  />
-                );
-              }}
-            </form.Field>
-
-            <button
-              type="submit"
-              className="w-full py-3 px-6 cursor-pointer bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-semibold rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out transform hover:scale-105"
-              aria-label="Publicar comentario"
-            >
-              <span className="flex items-center justify-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
-                </svg>
-                Publicar Comentario
-              </span>
-            </button>
-          </form>
+    // Memoizar mensaje de error
+    const errorMessage = useMemo(() => {
+      if (!error) return null;
+      return (
+        <div
+          className="text-red-400 bg-red-900 bg-opacity-50 p-3 rounded-lg mb-4 border border-red-600"
+          role="alert"
+        >
+          <h4 className="font-semibold mb-1">Error al publicar comentario:</h4>
+          <p>{error.errors.join(", ")}</p>
         </div>
-      </div>
-    </section>
-  );
-});
+      );
+    }, [error]);
+
+    // Memoizar función de envío del formulario
+    const onFormSubmit = useCallback(
+      (e: React.FormEvent) => {
+        e.preventDefault();
+        void form.handleSubmit();
+      },
+      [form]
+    );
+
+    // Memoizar icono de comentario
+    const commentIcon = useMemo(
+      () => (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 text-teal-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+          />
+        </svg>
+      ),
+      []
+    );
+
+    return (
+      <section className="bg-gray-800 bg-opacity-50 rounded-2xl p-6 border border-gray-700 mx-auto backdrop-blur-lg">
+        <header className="mb-6">
+          <h3 className="text-xl font-bold text-white flex items-center gap-3">
+            {commentIcon}
+            Deja tu Comentario
+          </h3>
+          <p className="text-gray-400 text-sm mt-1">
+            Comparte tu experiencia con este juego
+          </p>
+        </header>
+
+        <div className="flex items-start space-x-4">
+          <div className="flex-1">
+            <form onSubmit={onFormSubmit} className="w-full space-y-4">
+              {errorMessage}
+
+              {/* Campo de Comentario */}
+              <form.Field name="comment">
+                {(field) => {
+                  // NO usar hooks aquí - mover la lógica directamente
+                  const fieldErrors =
+                    field.state.meta.errors.length > 0
+                      ? field.state.meta.errors
+                          .map((error) => error?.message)
+                          .join(", ")
+                      : null;
+
+                  const handleChange = (
+                    e: React.ChangeEvent<HTMLTextAreaElement>
+                  ) => {
+                    field.handleChange(e.target.value);
+                  };
+
+                  return (
+                    <div>
+                      <label
+                        htmlFor="comment-field"
+                        className="block text-sm font-medium text-gray-300 mb-2"
+                      >
+                        Comentario
+                      </label>
+                      <textarea
+                        id="comment-field"
+                        rows={4}
+                        value={field.state.value}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-600 bg-gray-900 text-white rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors resize-none"
+                        placeholder="Escribe tu comentario sobre este juego..."
+                        aria-describedby={
+                          fieldErrors ? "comment-error" : undefined
+                        }
+                      />
+                      {fieldErrors && (
+                        <p
+                          id="comment-error"
+                          className="text-red-400 text-sm mt-2"
+                          role="alert"
+                        >
+                          {fieldErrors}
+                        </p>
+                      )}
+                    </div>
+                  );
+                }}
+              </form.Field>
+
+              {/* Campo de Rating */}
+              <form.Field name="rating">
+                {(field) => {
+                  // NO usar hooks aquí - mover la lógica directamente
+                  const errors = (field.state.meta.errors || [])
+                    .filter(Boolean)
+                    .map(String);
+
+                  return (
+                    <RatingInput
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      error={errors}
+                    />
+                  );
+                }}
+              </form.Field>
+
+              <button
+                type="submit"
+                className="w-full py-3 px-6 cursor-pointer bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-semibold rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out transform hover:scale-105"
+                aria-label="Publicar comentario"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <Send className="w-5 h-5" />
+                  Publicar Comentario
+                </span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    );
+  }
+);
 
 NewCommentForm.displayName = "NewCommentForm";
