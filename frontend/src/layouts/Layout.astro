@@ -4,7 +4,6 @@ import "../styles/global.css";
 import { Navbar } from "@components/Navbar";
 import { GlobalClientData } from "@services/globalClientData";
 import { SaveAuthProvider } from "@modules/auth/providers/SaveAuthProvider";
-import { QueryProvider } from "@providers/QueryProvider";
 
 const data = await GlobalClientData.getGlobalInfo();
 ---
@@ -17,7 +16,6 @@ const data = await GlobalClientData.getGlobalInfo();
     <link rel="icon" type="image/svg+xml" href={data.site_icon} />
     <meta name="generator" content={Astro.generator} />
     <title>{data.site_name}</title>
-    <ClientRouter />
   </head>
   <body class="min-h-screen flex flex-col">
     <SaveAuthProvider
@@ -29,6 +27,6 @@ const data = await GlobalClientData.getGlobalInfo();
       data-astro-persist="navbar"
       transition:persist
     />
-      <slot />
+    <slot />
   </body>
 </html>

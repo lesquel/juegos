@@ -1,3 +1,4 @@
+import { QueryProvider } from "@providers/QueryProvider";
 import { GameClientData } from "../services/gameClientData";
 import { CardGame } from "./CardGame";
 import type { Game } from "../models/game.model";
@@ -7,7 +8,6 @@ import { useState, useCallback, useMemo, memo } from "react";
 import { PaginationComponent } from "@components/PaginationComponent";
 import GameSearchComponent from "./GameSearchComponent";
 import type { SearchFilters } from "@components/SearchComponent";
-import { QueryProvider } from "@providers/QueryProvider";
 
 export const ListGames = memo(() => {
   return (
