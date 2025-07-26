@@ -74,7 +74,7 @@ export const ListTagsGames: React.FC<ListTagsGamesProps> = memo(
       if (!data?.results?.length) return emptyState;
 
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {data.results.map((game) => (
             <CardTagsGame key={game.game_id} game={game} />
           ))}
