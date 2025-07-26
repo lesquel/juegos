@@ -278,7 +278,7 @@ function extractFromAuthData(authData) {
   const tokenUserId = extractUserIdFromToken(
     userInfo.access_token.access_token
   );
-  
+
   if (tokenUserId) {
     console.log("🔑 User ID del token:", tokenUserId);
     console.log("👤 User ID del localStorage:", userInfo.user.user_id);
@@ -345,7 +345,7 @@ function extractFromCookieData(userCookie) {
 function useFallbackAuth() {
   console.log("⚠️ No se encontraron datos de usuario, usando fallback");
   userInfo = {
-    ...FALLBACK_CONFIG
+    ...FALLBACK_CONFIG,
   };
   playerId = userInfo.user.user_id;
   console.log("🛡️ Usando datos de fallback");
@@ -398,10 +398,7 @@ function initializeWebSocket() {
       "❌ No se pudo obtener la información del usuario o el token"
     );
     console.log("UserInfo disponible:", userInfo);
-    updateConnectionStatus(
-      "disconnected",
-      "🔴 Error: Sin autenticación"
-    );
+    updateConnectionStatus("disconnected", "🔴 Error: Sin autenticación");
     return;
   }
 
@@ -450,7 +447,7 @@ function handleWebSocketMessage(data) {
 
 function handleGameState(data) {
   console.log("🎮 Estado del juego recibido:", data);
-  
+
   // Detectar el formato del mensaje
   if (data.game_state) {
     handleNewFormatGameState(data);
@@ -462,18 +459,23 @@ function handleGameState(data) {
 function handleNewFormatGameState(data) {
   const gameStateData = data.game_state;
   const playersMapping = data.players;
-  
+
   console.log("📋 Formato nuevo detectado");
   console.log("📋 Game state data:", gameStateData);
   console.log("📋 Players mapping:", playersMapping);
-  
+
   // Determinar mi color basado en el mapping de jugadores
   if (playersMapping?.[playerId]) {
     const mySymbol = playersMapping[playerId];
     playerColor = mySymbol === "R" ? "red" : "yellow";
-    console.log("📋 Mi símbolo del mapping:", mySymbol, "-> color:", playerColor);
+    console.log(
+      "📋 Mi símbolo del mapping:",
+      mySymbol,
+      "-> color:",
+      playerColor
+    );
   }
-  
+
   // Determinar el estado del juego
   if (gameStateData.game_over) {
     if (gameStateData.winner) {
@@ -484,17 +486,17 @@ function handleNewFormatGameState(data) {
     handleTie();
     return;
   }
-  
+
   // El juego está en progreso
   console.log("🎮 Estado: Jugando (2 jugadores conectados)");
   updateConnectionStatus("connected", "🟢 En juego");
-  
+
   // Actualizar el tablero si existe
   if (gameStateData.board) {
     console.log("📋 Actualizando tablero desde servidor");
     updateBoardFromServer(gameStateData.board);
   }
-  
+
   // Determinar de quién es el turno
   updateTurnFromGameState(gameStateData.current_player);
   updateTurnMessage();
@@ -506,16 +508,16 @@ function handleOriginalFormatGameState(data) {
   console.log("📋 Player ID asignado:", data.player_id);
   console.log("📋 Color del jugador:", data.player_color);
   console.log("📋 Estado del juego:", data.state);
-  
+
   playerId = data.player_id;
   playerColor = data.player_color;
-  
+
   if (data.state === "waiting_for_players") {
     handleWaitingState();
   } else if (data.state === "playing") {
     handlePlayingState(data);
   }
-  
+
   if (data.winner) {
     console.log("🏆 Ganador:", data.winner);
     handleGameWinner(data.winner);
@@ -532,13 +534,13 @@ function handleWaitingState() {
 function handlePlayingState(data) {
   console.log("🎮 Estado: Jugando");
   updateConnectionStatus("connected", "🟢 En juego");
-  
+
   // Actualizar el tablero si existe
   if (data.board) {
     console.log("📋 Actualizando tablero desde servidor");
     updateBoardFromServer(data.board);
   }
-  
+
   updateTurnFromGameState(data.current_player);
   updateTurnMessage();
   updatePlayersInfo(2);
@@ -547,13 +549,13 @@ function handlePlayingState(data) {
 function updateTurnFromGameState(currentPlayer) {
   // Determinar de quién es el turno basado en current_player
   let isCurrentPlayer = false;
-  
+
   if (currentPlayer === "R" || currentPlayer === 1) {
-    isCurrentPlayer = (playerColor === "red");
+    isCurrentPlayer = playerColor === "red";
   } else if (currentPlayer === "Y" || currentPlayer === 2) {
-    isCurrentPlayer = (playerColor === "yellow");
+    isCurrentPlayer = playerColor === "yellow";
   }
-  
+
   isMyTurn = isCurrentPlayer;
   console.log("📋 Current player del servidor:", currentPlayer);
   console.log("📋 Mi color:", playerColor);
@@ -565,20 +567,26 @@ function updateTurnMessage() {
     if (playerColor === "red") {
       updateMessage("🎯 Es tu turno - Tus fichas son rojas", "current-red");
     } else {
-      updateMessage("🎯 Es tu turno - Tus fichas son amarillas", "current-yellow");
+      updateMessage(
+        "🎯 Es tu turno - Tus fichas son amarillas",
+        "current-yellow"
+      );
     }
   } else {
     if (playerColor === "red") {
-      updateMessage("⏳ Turno del oponente (fichas amarillas)", "current-yellow");
+      updateMessage(
+        "⏳ Turno del oponente (fichas amarillas)",
+        "current-yellow"
+      );
     } else {
       updateMessage("⏳ Turno del oponente (fichas rojas)", "current-red");
     }
   }
-  
+
   console.log("💬 Mensaje de turno actualizado:", {
     isMyTurn,
     playerColor,
-    message: document.getElementById("message")?.textContent || "Sin mensaje"
+    message: document.getElementById("message")?.textContent || "Sin mensaje",
   });
 }
 
@@ -587,7 +595,7 @@ function updatePlayersInfo(playersCount) {
   if (playersInfoElement) {
     let statusText = "";
     let statusClass = "";
-    
+
     if (playersCount === 1) {
       statusText = "👤 1/2 jugadores - Esperando oponente...";
       statusClass = "waiting";
@@ -595,7 +603,7 @@ function updatePlayersInfo(playersCount) {
       statusText = "👥 2/2 jugadores - ¡Listos para jugar!";
       statusClass = "ready";
     }
-    
+
     playersInfoElement.textContent = statusText;
     playersInfoElement.className = `players-info status-${statusClass}`;
   }
@@ -611,8 +619,10 @@ function updateConnectionStatus(status, message) {
 
 function handlePlayerJoined(data) {
   updateMessage("✅ Jugador se unió al juego", "");
-  console.log(`Jugador ${data.player_id} se unió. Total: ${data.players_count}`);
-  
+  console.log(
+    `Jugador ${data.player_id} se unió. Total: ${data.players_count}`
+  );
+
   // Si ahora hay 2 jugadores, solicitar el estado actualizado del juego
   if (data.players_count === 2) {
     console.log("🎯 Dos jugadores conectados, solicitando estado del juego...");
@@ -620,19 +630,22 @@ function handlePlayerJoined(data) {
       wsClient.getGameState();
     }, GAME_STATE_DELAY); // Pequeño delay para que el servidor procese
   }
-  
+
   // Actualizar información de jugadores conectados
   updatePlayersInfo(data.players_count);
 }
 
 function handleMoveMade(data) {
   console.log("🎯 Movimiento procesado:", data);
-  
+
   if (data.result?.valid) {
     processValidMove(data);
   } else {
     console.log("❌ Movimiento inválido:", data.result);
-    updateMessage(`❌ Movimiento inválido: ${data.result?.reason || 'Error desconocido'}`, "");
+    updateMessage(
+      `❌ Movimiento inválido: ${data.result?.reason || "Error desconocido"}`,
+      ""
+    );
   }
 }
 
@@ -640,19 +653,19 @@ function processValidMove(data) {
   // Actualizar el tablero con el movimiento
   const move = data.move;
   const playerSymbol = data.player_symbol;
-  
+
   console.log("📋 Movimiento válido:", {
     column: move.column,
     symbol: playerSymbol,
-    result: data.result
+    result: data.result,
   });
-  
+
   const row = placePieceOnBoard(move.column, playerSymbol);
-  
+
   if (row !== -1) {
     updateMoveVisualization(row, move.column, playerSymbol);
   }
-  
+
   // Actualizar el estado del juego si existe información adicional
   if (data.game_state) {
     processGameStateAfterMove(data.game_state, data.player_id);
@@ -666,7 +679,7 @@ function processValidMove(data) {
 
 function placePieceOnBoard(column, playerSymbol) {
   let row = -1;
-  
+
   for (let r = rows - 1; r >= 0; r--) {
     if (board[r][column] === " ") {
       board[r][column] = playerSymbol;
@@ -674,24 +687,26 @@ function placePieceOnBoard(column, playerSymbol) {
       break;
     }
   }
-  
+
   return row;
 }
 
 function updateMoveVisualization(row, column, playerSymbol) {
-  const tile = document.getElementById(row.toString() + "-" + column.toString());
+  const tile = document.getElementById(
+    row.toString() + "-" + column.toString()
+  );
   if (tile) {
     if (playerSymbol === "R") {
       tile.classList.add("red-piece");
     } else if (playerSymbol === "Y") {
       tile.classList.add("yellow-piece");
     }
-    
+
     // Actualizar currColumns
     currColumns[column] = row - 1;
     moveCount++;
     document.getElementById("moveCount").textContent = moveCount;
-    
+
     console.log(`✅ Pieza ${playerSymbol} colocada en [${row}][${column}]`);
   }
 }
@@ -704,24 +719,24 @@ function processGameStateAfterMove(gameState, playerId) {
   } else {
     // Cambiar turno basado en current_player
     const nextPlayer = gameState.current_player;
-    
+
     let isMyNewTurn = false;
     if (nextPlayer === "R" || nextPlayer === 1) {
-      isMyNewTurn = (playerColor === "red");
+      isMyNewTurn = playerColor === "red";
     } else if (nextPlayer === "Y" || nextPlayer === 2) {
-      isMyNewTurn = (playerColor === "yellow");
+      isMyNewTurn = playerColor === "yellow";
     }
-    
+
     isMyTurn = isMyNewTurn;
-    
+
     console.log("🔄 Nuevo turno:", {
       nextPlayer: nextPlayer,
       myColor: playerColor,
-      isMyTurn: isMyTurn
+      isMyTurn: isMyTurn,
     });
-    
+
     updateTurnMessage();
-    
+
     // Información adicional de debugging después del movimiento
     console.log("🎯 Análisis del movimiento:", {
       playerWhoMoved: playerId,
@@ -729,7 +744,7 @@ function processGameStateAfterMove(gameState, playerId) {
       myPlayerId: window.playerId,
       nextPlayerTurn: nextPlayer,
       myColor: playerColor,
-      nowMyTurn: isMyTurn
+      nowMyTurn: isMyTurn,
     });
   }
 }
@@ -757,7 +772,7 @@ function handleError(data) {
 function handleGameWinner(winner) {
   console.log("🏆 Juego terminado - Ganador:", winner);
   gameOver = true;
-  
+
   // Bloquear el tablero
   const boardElement = document.getElementById("board");
   if (boardElement) {
@@ -774,47 +789,60 @@ function handleGameWinner(winner) {
 function handleOnlineGameWinner(winner) {
   const didIWin = isWinnerMe(winner);
   let modalTitle, modalMessage, titleClass;
-  
+
   if (didIWin) {
     modalTitle = "🎉 ¡GANASTE! 🎉";
     modalMessage = `¡Excelente! Has conectado 4 fichas ${getPlayerColorName().toLowerCase()}s y ganaste la partida.`;
     titleClass = "winner";
-    updateMessage(`🎉 ¡Ganaste con las fichas ${getPlayerColorName().toLowerCase()}s! 🎉`, getMyPlayerClass());
+    updateMessage(
+      `🎉 ¡Ganaste con las fichas ${getPlayerColorName().toLowerCase()}s! 🎉`,
+      getMyPlayerClass()
+    );
   } else {
     modalTitle = "😞 Perdiste";
-    modalMessage = `Tu oponente conectó 4 fichas ${getWinnerColorName(winner).toLowerCase()}s primero. ¡Inténtalo de nuevo!`;
+    modalMessage = `Tu oponente conectó 4 fichas ${getWinnerColorName(
+      winner
+    ).toLowerCase()}s primero. ¡Inténtalo de nuevo!`;
     titleClass = "loser";
-    updateMessage(`😞 Perdiste - El oponente ganó con fichas ${getWinnerColorName(winner).toLowerCase()}s`, getWinnerClass(winner));
+    updateMessage(
+      `😞 Perdiste - El oponente ganó con fichas ${getWinnerColorName(
+        winner
+      ).toLowerCase()}s`,
+      getWinnerClass(winner)
+    );
   }
-  
+
   console.log("🎮 Resultado online:", {
     winner,
     myColor: playerColor,
-    didIWin
+    didIWin,
   });
-  
+
   showGameEndModal(modalTitle, modalMessage, titleClass);
 }
 
 function handleOfflineGameWinner(winner) {
   let modalTitle, modalMessage;
-  
+
   if (winner === "R") {
     modalTitle = "🎉 ¡Jugador Rojo Gana! 🎉";
     modalMessage = "¡El jugador rojo ha conectado 4 fichas y gana la partida!";
     updateMessage("🎉 ¡Jugador Rojo ha ganado! 🎉", "current-red");
   } else if (winner === "Y") {
     modalTitle = "🎉 ¡Jugador Amarillo Gana! 🎉";
-    modalMessage = "¡El jugador amarillo ha conectado 4 fichas y gana la partida!";
+    modalMessage =
+      "¡El jugador amarillo ha conectado 4 fichas y gana la partida!";
     updateMessage("🎉 ¡Jugador Amarillo ha ganado! 🎉", "current-yellow");
   }
-  
+
   showGameEndModal(modalTitle, modalMessage, "winner");
 }
 
 function isWinnerMe(winner) {
-  return (winner === "R" && playerColor === "red") || 
-         (winner === "Y" && playerColor === "yellow");
+  return (
+    (winner === "R" && playerColor === "red") ||
+    (winner === "Y" && playerColor === "yellow")
+  );
 }
 
 function getPlayerColorName() {
@@ -836,15 +864,15 @@ function getMyPlayerClass() {
 function updateBoardFromServer(serverBoard) {
   // Actualizar el tablero local con el estado del servidor
   console.log("🔄 Actualizando tablero desde servidor:", serverBoard);
-  
+
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
       updateBoardCell(r, c, serverBoard[r][c]);
     }
   }
-  
+
   updateColumnsFromBoard();
-  
+
   console.log("📋 Tablero local actualizado:", board);
   console.log("📋 Columnas disponibles:", currColumns);
 }
@@ -852,7 +880,7 @@ function updateBoardFromServer(serverBoard) {
 function updateBoardCell(row, col, serverValue) {
   const localValue = convertServerValueToLocal(serverValue);
   const currentValue = board[row][col];
-  
+
   if (localValue !== currentValue) {
     board[row][col] = localValue;
     updateTileVisualization(row, col, localValue);
@@ -871,11 +899,11 @@ function convertServerValueToLocal(serverValue) {
 
 function updateTileVisualization(row, col, localValue) {
   const tile = document.getElementById(row.toString() + "-" + col.toString());
-  
+
   if (tile) {
     // Limpiar clases existentes
     tile.classList.remove("red-piece", "yellow-piece");
-    
+
     // Agregar la clase correspondiente
     if (localValue === "R") {
       tile.classList.add("red-piece");
@@ -938,7 +966,7 @@ function setGame() {
   }
 
   document.getElementById("moveCount").textContent = "0";
-  
+
   // Ocultar modal si está visible
   hideGameEndModal();
 
@@ -953,9 +981,9 @@ function setPiece() {
     isOnlineMode,
     isMyTurn,
     playerColor,
-    playerId
+    playerId,
   });
-  
+
   if (gameOver) {
     console.log("⚠️ Juego terminado, no se permiten movimientos");
     return;
@@ -968,7 +996,7 @@ function setPiece() {
       isOnlineMode,
       isMyTurn,
       playerColor,
-      shouldBlock: true
+      shouldBlock: true,
     });
     updateMessage("⏳ Espera tu turno para jugar", "");
     return;
@@ -976,7 +1004,7 @@ function setPiece() {
 
   let coords = this.id.split("-");
   let c = parseInt(coords[1]);
-  
+
   console.log("📍 Coordenadas del movimiento:", { coords, column: c });
 
   // Verificar si la columna está llena
@@ -1039,10 +1067,12 @@ function updateMessage(text, playerClass) {
 }
 
 function checkWinner() {
-  return checkHorizontalWin() || 
-         checkVerticalWin() || 
-         checkDiagonalWin() || 
-         checkAntiDiagonalWin();
+  return (
+    checkHorizontalWin() ||
+    checkVerticalWin() ||
+    checkDiagonalWin() ||
+    checkAntiDiagonalWin()
+  );
 }
 
 function checkHorizontalWin() {
@@ -1112,10 +1142,7 @@ function checkLineWin(startRow, startCol, deltaRow, deltaCol) {
 function setWinningLine(startRow, startCol, deltaRow, deltaCol) {
   winningPositions = [];
   for (let i = 0; i < WIN_LENGTH; i++) {
-    winningPositions.push([
-      startRow + i * deltaRow,
-      startCol + i * deltaCol
-    ]);
+    winningPositions.push([startRow + i * deltaRow, startCol + i * deltaCol]);
   }
 }
 
@@ -1141,13 +1168,13 @@ function setWinner(winner) {
 function handleTie() {
   console.log("🤝 Juego terminado en empate");
   gameOver = true;
-  
+
   // Bloquear el tablero
   const boardElement = document.getElementById("board");
   if (boardElement) {
     boardElement.classList.add("board-disabled");
   }
-  
+
   updateMessage("💔 ¡Tablero lleno! Ambos jugadores perdieron", "");
 
   // Resaltar todas las piezas para empate
@@ -1230,14 +1257,14 @@ function showGameEndModal(title, message, titleClass) {
   const modal = document.getElementById("gameEndModal");
   const modalTitle = document.getElementById("modalTitle");
   const modalMessage = document.getElementById("modalMessage");
-  
+
   if (modal && modalTitle && modalMessage) {
     modalTitle.textContent = title;
     modalTitle.className = `modal-title ${titleClass}`;
     modalMessage.textContent = message;
-    
+
     modal.classList.add("show");
-    
+
     console.log("🎯 Modal mostrado:", { title, message, titleClass });
   }
 }
@@ -1251,7 +1278,7 @@ function hideGameEndModal() {
 
 function goBackToPreviousPage() {
   console.log("🏠 Regresando a la página anterior...");
-  
+
   // Intentar usar history.back() primero
   if (window.history.length > 1) {
     window.history.back();
@@ -1263,16 +1290,16 @@ function goBackToPreviousPage() {
 
 function restartGameFromModal() {
   console.log("🔄 Reiniciando juego desde modal...");
-  
+
   // Ocultar el modal
   hideGameEndModal();
-  
+
   // Rehabilitar el tablero
   const board = document.getElementById("board");
   if (board) {
     board.classList.remove("board-disabled");
   }
-  
+
   // Reiniciar el juego
   if (isWebSocketConnected()) {
     wsClient.restartGame();
