@@ -8,13 +8,13 @@ import { CreateMatch } from "./CreateMatch";
 import { CardMatch } from "./CardMatch";
 import MatchSearchComponent from "./MatchSearchComponent";
 import type { Game } from "@modules/games/models/game.model";
-import type { PaguinationMatch } from "@modules/games/models/paguination-match";
+import type { PaginationMatch } from "@modules/games/models/pagination-match";
 import type { SearchFilters } from "@components/SearchComponent";
 import { PersonStanding } from "lucide-react";
 import { CardMatchSkeleton } from "./CardMatchSkeleton";
 
 // Configuración de paginación por defecto con búsqueda
-const DEFAULT_PAGINATION: PaguinationMatch = {
+const DEFAULT_PAGINATION: PaginationMatch = {
   page: 1,
   limit: 10,
   sort_by: "created_at",
@@ -40,7 +40,7 @@ ListMatchesByGameId.displayName = "ListMatchesByGameId";
 
 const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
   const [pagination, setPagination] =
-    useState<PaguinationMatch>(DEFAULT_PAGINATION);
+    useState<PaginationMatch>(DEFAULT_PAGINATION);
 
   // Memoizar función de búsqueda que actualiza la paginación
   const handleSearch = useCallback((filters: SearchFilters) => {
@@ -59,7 +59,7 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
 
   // Memoizar función de cambio de paginación
   const handlePaginationChange = useCallback(
-    (newPagination: PaguinationMatch) => {
+    (newPagination: PaginationMatch) => {
       setPagination(newPagination);
     },
     []
@@ -153,8 +153,8 @@ const MatchesContent = memo(
   }: {
     gameId: string;
     game: Game;
-    pagination: PaguinationMatch;
-    onPaginationChange: (newPagination: PaguinationMatch) => void;
+    pagination: PaginationMatch;
+    onPaginationChange: (newPagination: PaginationMatch) => void;
   }) => {
     // La consulta ahora usa toda la información de paginación, incluyendo búsqueda
     const { data, isLoading, error } = MatchClientData.getMatchesByGameId(

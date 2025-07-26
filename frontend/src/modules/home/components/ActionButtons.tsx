@@ -4,7 +4,7 @@ import { MiddlewareUser } from "@modules/auth/middleware/middlewareUser";
 import { LogIn, NotebookPen } from "lucide-react";
 
 const ActionButtons: React.FC = memo(() => {
-  // Memoizar iconos SVG
+  // Memoizar iconos
   const loginIcon = useMemo(
     () => (
       <LogIn className="h-5 w-5 text-gray-300 hover:text-white transition-colors duration-300 font-medium px-3 py-2 rounded-lg hover:bg-gray-800" />

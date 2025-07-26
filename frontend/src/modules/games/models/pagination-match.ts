@@ -1,6 +1,6 @@
-import type { Pagination } from "@models/paguination";
+import type { Pagination } from "@models/pagination";
 
-export interface PaguinationMatch extends Pagination {
+export interface PaginationMatch extends Pagination {
   search?: string;
   user_email?: string;
   min_base_bet_amount?: number;

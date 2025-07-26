@@ -12,6 +12,7 @@ const GameSearchComponent = ({ onSearch, className }: GameSearchProps) => {
     { value: "game_name", label: "Nombre del juego" },
     { value: "game_description", label: "Descripción" },
     { value: "game_type", label: "Tipo de juego" },
+    { value: "category_name", label: "Categoría" },
   ], []);
 
   const sortOptions = useMemo(() => [

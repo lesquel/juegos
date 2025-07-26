@@ -65,7 +65,7 @@ const UseLoginForm: React.FC = memo(() => {
     onSubmit: handleSubmit,
   });
 
-  // Memoizar iconos SVG
+  // Memoizar iconos
   const userIcon = useMemo(() => <User className="w-12 h-12 text-white" />, []);
 
   const emailIcon = useMemo(

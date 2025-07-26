@@ -1,5 +1,6 @@
 import type { Info } from "@models/info.model";
-import type { Pagination } from "@models/paguination";
+import type { Pagination } from "@models/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { memo, useCallback, useMemo } from "react";
 
 interface PaginationComponentProps {
@@ -32,7 +33,7 @@ export const PaginationComponent = memo(({
   }, [info.prev, pagination, setPagination]);
 
   // Memoizar clases de botón
-  const buttonClasses = useMemo(() => 
+  const buttonClasses = useMemo(() =>
     `w-10 h-10 flex items-center justify-center rounded-full text-white transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125 hover:shadow-lg focus:ring-white ${color} cursor-pointer`,
     [color]
   );
@@ -41,39 +42,13 @@ export const PaginationComponent = memo(({
   const isFirstPage = useMemo(() => pagination.page === 1, [pagination.page]);
   const isLastPage = useMemo(() => pagination.page === info.pages, [pagination.page, info.pages]);
 
-  // Memoizar iconos SVG
+  // Memoizar iconos
   const prevIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-6 w-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M15 19l-7-7 7-7"
-      />
-    </svg>
+    <ChevronLeft />
   ), []);
 
   const nextIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-6 w-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M9 5l7 7-7 7"
-      />
-    </svg>
+    <ChevronRight />
   ), []);
 
   return (

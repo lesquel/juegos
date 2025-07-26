@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { GameAdapter } from "../adapters/game.adapter";
 import { environment } from "@config/environment";
-import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
+import { PaginationCategoryAdapter } from "@adapters/paginationCategory.adapter";
 import { endpoints } from "@config/endpoints";
-import type { PaguinationGames } from "../models/paguination-games";
+import type { PaginationGames } from "../models/pagination-games";
 
 // Configuración optimizada para mejor rendimiento
 const QUERY_CONFIG = {
@@ -20,8 +20,7 @@ const QUERY_CONFIG = {
 export class GameClientData {
   private static readonly BASE_URL = environment.BASE_URL;
 
-  public static getGames(paguination: PaguinationGames) {
-    console.log("paguination", paguination);
+  public static getGames(paguination: PaginationGames) {
     return useQuery({
       queryKey: ["games", paguination],
       ...QUERY_CONFIG,
@@ -30,7 +29,7 @@ export class GameClientData {
           .get(
             GameClientData.BASE_URL +
               endpoints.games.get +
-              PaguinationCategoryAdapter.adaptPaguinationGames(paguination),
+              PaginationCategoryAdapter.adaptPaginationGames(paguination),
             {
               timeout: 5000, // 5 segundos timeout
             }

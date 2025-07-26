@@ -1,7 +1,7 @@
 import { QueryProvider } from "@providers/QueryProvider";
 import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { CardCategoryGame } from "./CardCategoryGame";
-import type { PaguinationCategory } from "../models/paguination-category";
+import type { PaginationCategory } from "../models/pagination-category";
 import { useState, useCallback, useMemo, memo } from "react";
 import { PaginationComponent } from "@components/PaginationComponent";
 import CategoryGameSearchComponent from "./CategoryGameSearchComponent";
@@ -11,7 +11,7 @@ import { CardCategoryGameSkeleton } from "./CardCategoryGameSkeleton";
 import { Copy } from "lucide-react";
 
 // Configuración de paginación por defecto con búsqueda
-const DEFAULT_PAGINATION: PaguinationCategory = {
+const DEFAULT_PAGINATION: PaginationCategory = {
   page: 1,
   limit: 10,
   sort_by: "created_at",
@@ -31,7 +31,7 @@ ListCategoryGame.displayName = "ListCategoryGame";
 
 const UseListCategoryGame = memo(() => {
   const [pagination, setPagination] =
-    useState<PaguinationCategory>(DEFAULT_PAGINATION);
+    useState<PaginationCategory>(DEFAULT_PAGINATION);
 
   // Memoizar función de búsqueda que actualiza la paginación
   const handleSearch = useCallback((filters: SearchFilters) => {
@@ -54,7 +54,7 @@ const UseListCategoryGame = memo(() => {
 
   // Memoizar función de cambio de paginación
   const handlePaginationChange = useCallback(
-    (newPagination: PaguinationCategory) => {
+    (newPagination: PaginationCategory) => {
       setPagination(newPagination);
     },
     []
@@ -93,14 +93,14 @@ const CategoriesContent = memo(
     pagination,
     onPaginationChange,
   }: {
-    pagination: PaguinationCategory;
-    onPaginationChange: (newPagination: PaguinationCategory) => void;
+    pagination: PaginationCategory;
+    onPaginationChange: (newPagination: PaginationCategory) => void;
   }) => {
     // La consulta ahora usa toda la información de paginación, incluyendo búsqueda
     const { data, isLoading, error } =
       CategoryGameClientData.getCategoryGames(pagination);
 
-    // Ya no necesitamos filtrado local, el backend maneja 
+    // Ya no necesitamos filtrado local, el backend maneja
     const categoryCards = useMemo(() => {
       if (!data?.results) return [];
 

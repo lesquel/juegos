@@ -37,7 +37,7 @@ const ItemAuthLoginRegister: React.FC = memo(() => {
   const loginUrl = useMemo(() => authRoutesConfig.children.login.url, []);
   const registerUrl = useMemo(() => authRoutesConfig.children.register.url, []);
 
-  // Memoizar iconos SVG
+  // Memoizar iconos
   const loginIcon = useMemo(() => <LogInIcon className="h-4 w-4" />, []);
 
   const registerIcon = useMemo(() => <UserPlus className="h-4 w-4" />, []);

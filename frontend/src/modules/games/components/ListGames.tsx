@@ -6,12 +6,12 @@ import { useState, useCallback, useMemo, memo } from "react";
 import { PaginationComponent } from "@components/PaginationComponent";
 import GameSearchComponent from "./GameSearchComponent";
 import type { SearchFilters } from "@components/SearchComponent";
-import type { PaguinationGames } from "../models/paguination-games";
+import type { PaginationGames } from "../models/pagination-games";
 import { CardGameSkeleton } from "./CardGameSkeleton";
 import { Box, Search } from "lucide-react";
 
 // Configuración de paginación por defecto con búsqueda
-const DEFAULT_PAGINATION: PaguinationGames = {
+const DEFAULT_PAGINATION: PaginationGames = {
   page: 1,
   limit: 10,
   sort_by: "created_at",
@@ -31,7 +31,7 @@ ListGames.displayName = "ListGames";
 
 const UseListGames = memo(() => {
   const [pagination, setPagination] =
-    useState<PaguinationGames>(DEFAULT_PAGINATION);
+    useState<PaginationGames>(DEFAULT_PAGINATION);
 
   // Memoizar función de búsqueda que actualiza la paginación
   const handleSearch = useCallback((filters: SearchFilters) => {
@@ -48,12 +48,15 @@ const UseListGames = memo(() => {
       ...(filters.filterType === "game_description" && {
         game_description: filters.searchTerm,
       }),
+      ...(filters.filterType == "category_name" && {
+        category_name: filters.searchTerm,
+      })
     }));
   }, []); // Sin dependencias, la función es estable
 
   // Memoizar función de cambio de paginación
   const handlePaginationChange = useCallback(
-    (newPagination: PaguinationGames) => {
+    (newPagination: PaginationGames) => {
       setPagination(newPagination);
     },
     []
@@ -98,13 +101,13 @@ const GamesContent = memo(
     pagination,
     onPaginationChange,
   }: {
-    pagination: PaguinationGames;
-    onPaginationChange: (newPagination: PaguinationGames) => void;
+    pagination: PaginationGames;
+    onPaginationChange: (newPagination: PaginationGames) => void;
   }) => {
     // La consulta ahora usa toda la información de paginación, incluyendo búsqueda
     const { data, isLoading, error } = GameClientData.getGames(pagination);
 
-    // Ya no necesitamos filtrado local, el backend maneja 
+    // Ya no necesitamos filtrado local, el backend maneja
     const gameCards = useMemo(() => {
       if (!data?.results) return [];
 

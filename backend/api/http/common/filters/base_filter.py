@@ -54,10 +54,18 @@ class BaseFilterParams(DomainBaseFilterParams):
     def ilike_filter(self, query, model_field, value):
         return query.filter(model_field.ilike(f"%{value}%")) if value else query
 
-    def any_filter(self, query, relationship_field, attr_name, value):
-        if value:
-            return query.filter(relationship_field.any(**{attr_name: value}))
-        return query
+    def any_filter(
+        self, query, relationship_field, attr_name: str, value, ilike: bool = False
+    ):
+        if not value:
+            return query
+
+        related_model = relationship_field.prop.mapper.class_
+        column = getattr(related_model, attr_name)
+
+        condition = column.ilike(f"%{value}%") if ilike else column == value
+
+        return query.filter(relationship_field.any(condition))
 
     def gte_filter(self, query, model_field, value):
         return query.filter(model_field >= value) if value is not None else query

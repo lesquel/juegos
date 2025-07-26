@@ -70,7 +70,7 @@ const UseRegisterForm: React.FC = memo(() => {
     onSubmit: handleSubmit,
   });
 
-  // Memoizar iconos SVG
+  // Memoizar iconos
   const userIcon = useMemo(() => (
     <User className="w-12 h-12 text-white" />
   ), []);
@@ -106,7 +106,7 @@ const UseRegisterForm: React.FC = memo(() => {
           {userIcon}
         </div>
       </header>
-      
+
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2 text-white">
           Crea tu Cuenta
@@ -121,7 +121,7 @@ const UseRegisterForm: React.FC = memo(() => {
         className="w-full"
       >
         {errorMessage && (
-          <div 
+          <div
             role="alert"
             className="text-red-400 text-sm mb-4 text-center bg-red-900 bg-opacity-50 p-3 rounded-lg"
           >
@@ -165,7 +165,7 @@ const UseRegisterForm: React.FC = memo(() => {
           Registrarse
         </button>
       </form>
-      
+
       <footer className="text-sm text-gray-400 mt-6 text-center">
         ¿Ya tienes una cuenta?{" "}
         <a
