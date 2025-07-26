@@ -57,3 +57,6 @@ class MatchParticipationResultsDTO(BaseModel):
     participants: list[MatchParticipationInputDTO] = Field(
         ..., description="Lista de participantes en la partida"
     )
+    custom_odds: Optional[float] = Field(
+        None, description="Cuotas personalizadas para la partida"
+    )

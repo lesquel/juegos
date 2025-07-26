@@ -44,7 +44,7 @@ class IMatchService(ABC):
         """
 
     @abstractmethod
-    def get_winner(participation_scores: list[tuple[str, float]]) -> str:
+    def get_winner_id(participation_scores: list[tuple[str, float]]) -> str:
         """
         Obtiene el ID del ganador de una partida.
 

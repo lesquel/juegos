@@ -46,8 +46,8 @@ class WebSocketMessageMiddleware(WebSocketMiddleware):
         # Validate move data if it's a move message
         if validated_data.get("type") == "make_move" and validated_data.get("move"):
             game_type = validated_data.get(
-                "game_type", "connect4"
-            )  # Default to connect4
+                "game_type",
+            )
             move_valid, move_error = GameMessageValidator.validate_move_data(
                 validated_data["move"], game_type
             )

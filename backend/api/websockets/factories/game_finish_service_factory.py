@@ -1,7 +1,3 @@
-"""
-Factory for creating GameFinishService with all required dependencies.
-"""
-
 from application.services.game_finish_service import GameFinishService
 from application.use_cases.match.finish_match import FinishMatchUseCase
 from fastapi import Depends

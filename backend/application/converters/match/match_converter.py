@@ -41,6 +41,7 @@ class CreateMatchRequestToEntityConverter(
             created_by_id=None,
             winner_id=None,  # Se asignará cuando termine la partida
             participant_ids=[],  # Inicialmente sin participantes
+            is_finished=False,  # Inicialmente no está terminada
         )
 
 
@@ -66,6 +67,7 @@ class MatchEntityToDTOConverter(
             created_by_id=str(entity.created_by_id),
             base_bet_amount=(float(entity.base_bet_amount)),
             participant_ids=entity.participant_ids,
+            is_finished=entity.is_finished_match(),
             odds_for_match=odds,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
