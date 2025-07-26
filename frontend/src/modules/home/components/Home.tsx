@@ -1,11 +1,11 @@
 
-import React from "react";
+import React, { memo } from "react";
 import Header from "./Header";
 import WelcomeSection from "./WelcomeSection";
 import ActionButtons from "./ActionButtons";
 import FeatureCards from "./FeatureCards";
 
-export const Home: React.FC = () => {
+export const Home: React.FC = memo(() => {
   return (
     <div className="w-full min-h-full">
       <div className="container mx-auto px-6 py-20">
@@ -20,4 +20,6 @@ export const Home: React.FC = () => {
       </div>
     </div>
   );
-};
+});
+
+Home.displayName = "Home";
