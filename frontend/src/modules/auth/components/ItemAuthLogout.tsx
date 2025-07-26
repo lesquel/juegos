@@ -14,7 +14,7 @@ export const ItemAuthLogout: React.FC<ItemAuthLogoutProps> = memo(({ className =
 
   // Memoizar clases CSS
   const buttonClasses = useMemo(() => 
-    `text-white cursor-pointer hover:text-red-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded px-2 py-1 ${className}`,
+    `text-white cursor-pointer hover:text-red-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 ${className}`,
     [className]
   );
 
@@ -31,7 +31,7 @@ export const ItemAuthLogout: React.FC<ItemAuthLogoutProps> = memo(({ className =
       aria-label="Cerrar sesión"
       title="Cerrar sesión"
     >
-      <span className="flex items-center">
+      <span className="flex items-center text-sm">
         {logoutIcon}
         Cerrar Sesión
       </span>
