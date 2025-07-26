@@ -1,13 +1,13 @@
 import { QueryProvider } from "@providers/QueryProvider";
 import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { CardCategoryGame } from "./CardCategoryGame";
-import { LoadingComponent } from "@components/LoadingComponent";
 import type { PaguinationCategory } from "../models/paguination-category";
 import { useState, useCallback, useMemo, memo } from "react";
 import { PaginationComponent } from "@components/PaginationComponent";
 import CategoryGameSearchComponent from "./CategoryGameSearchComponent";
 import type { SearchFilters } from "@components/SearchComponent";
 import type { CategoryGame } from "../models/category-game.model";
+import { CardCategoryGameSkeleton } from "./CardCategoryGameSkeleton";
 
 // Configuración de paginación por defecto con búsqueda
 const DEFAULT_PAGINATION: PaguinationCategory = {
@@ -29,27 +29,35 @@ export const ListCategoryGame = memo(() => {
 ListCategoryGame.displayName = "ListCategoryGame";
 
 const UseListCategoryGame = memo(() => {
-  const [pagination, setPagination] = useState<PaguinationCategory>(DEFAULT_PAGINATION);
+  const [pagination, setPagination] =
+    useState<PaguinationCategory>(DEFAULT_PAGINATION);
 
   // Memoizar función de búsqueda que actualiza la paginación
   const handleSearch = useCallback((filters: SearchFilters) => {
-    setPagination(prev => ({
+    setPagination((prev) => ({
       ...prev,
       page: 1, // Reset a la primera página al buscar
       search: filters.searchTerm,
       sort_by: filters.sortBy || "created_at",
       sort_order: filters.sortOrder || "desc",
       // Mapear filterType a campos específicos según el tipo de búsqueda
-      ...(filters.filterType === "category_name" && { category_name: filters.searchTerm }),
-      ...(filters.filterType === "category_description" && { category_description: filters.searchTerm }),
+      ...(filters.filterType === "category_name" && {
+        category_name: filters.searchTerm,
+      }),
+      ...(filters.filterType === "category_description" && {
+        category_description: filters.searchTerm,
+      }),
       ...(filters.filterType === "status" && { status: filters.searchTerm }),
     }));
   }, []); // Sin dependencias, la función es estable
 
   // Memoizar función de cambio de paginación
-  const handlePaginationChange = useCallback((newPagination: PaguinationCategory) => {
-    setPagination(newPagination);
-  }, []); // Sin dependencias, la función es estable
+  const handlePaginationChange = useCallback(
+    (newPagination: PaguinationCategory) => {
+      setPagination(newPagination);
+    },
+    []
+  ); // Sin dependencias, la función es estable
 
   return (
     <div className="container mx-auto px-4 py-8 text-white">
@@ -69,9 +77,9 @@ const UseListCategoryGame = memo(() => {
         </div>
 
         {/* Categories Content - Componente separado que se actualiza independientemente */}
-        <CategoriesContent 
-          pagination={pagination} 
-          onPaginationChange={handlePaginationChange} 
+        <CategoriesContent
+          pagination={pagination}
+          onPaginationChange={handlePaginationChange}
         />
       </div>
     </div>
@@ -79,105 +87,160 @@ const UseListCategoryGame = memo(() => {
 });
 
 // Componente separado para el contenido que cambia
-const CategoriesContent = memo(({ pagination, onPaginationChange }: {
-  pagination: PaguinationCategory;
-  onPaginationChange: (newPagination: PaguinationCategory) => void;
-}) => {
-  // La consulta ahora usa toda la información de paginación, incluyendo búsqueda
-  const { data, isLoading, error } = CategoryGameClientData.getCategoryGames(pagination);
+const CategoriesContent = memo(
+  ({
+    pagination,
+    onPaginationChange,
+  }: {
+    pagination: PaguinationCategory;
+    onPaginationChange: (newPagination: PaguinationCategory) => void;
+  }) => {
+    // La consulta ahora usa toda la información de paginación, incluyendo búsqueda
+    const { data, isLoading, error } =
+      CategoryGameClientData.getCategoryGames(pagination);
 
-  // Ya no necesitamos filtrado local, el backend maneja todo
-  const categoryCards = useMemo(() => {
-    if (!data?.results) return [];
-    
-    return data.results.map((category: CategoryGame) => (
-      <CardCategoryGame key={category.category_id} category={category} />
-    ));
-  }, [data?.results]);
+    // Ya no necesitamos filtrado local, el backend maneja todo
+    const categoryCards = useMemo(() => {
+      if (!data?.results) return [];
 
-  // Mensaje para resultados vacíos
-  const noResultsMessage = useMemo(() => {
-    if (data?.results?.length === 0 && pagination.search) {
-      return (
-        <div className="text-center py-16">
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
+      return data.results.map((category: CategoryGame) => (
+        <CardCategoryGame key={category.category_id} category={category} />
+      ));
+    }, [data?.results]);
+
+    // Mensaje para resultados vacíos
+    const noResultsMessage = useMemo(() => {
+      if (data?.results?.length === 0 && pagination.search) {
+        return (
+          <div className="text-center py-16">
+            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-2">
+              No se encontraron categorías
+            </h3>
+            <p className="text-gray-400 mb-6">
+              No hay categorías que coincidan con tu búsqueda:{" "}
+              <strong>"{pagination.search}"</strong>
+            </p>
+            <button
+              onClick={() =>
+                onPaginationChange({ ...pagination, search: "", page: 1 })
+              }
+              className="bg-gradient-to-r from-purple-500 to-teal-400 text-white font-bold py-2 px-4 rounded-lg hover:from-purple-600 hover:to-teal-500 transition duration-300"
+            >
+              Limpiar búsqueda
+            </button>
           </div>
-          <h3 className="text-2xl font-bold text-white mb-2">No se encontraron categorías</h3>
-          <p className="text-gray-400 mb-6">
-            No hay categorías que coincidan con tu búsqueda: <strong>"{pagination.search}"</strong>
-          </p>
+        );
+      }
+      return null;
+    }, [
+      data?.results?.length,
+      pagination.search,
+      pagination,
+      onPaginationChange,
+    ]);
+
+    const ListSkeleton = useMemo(
+      () => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <CardCategoryGameSkeleton key={i} />
+          ))}
+        </div>
+      ),
+      [isLoading, error]
+    );
+
+    // Estados de carga y error
+    if (isLoading) return ListSkeleton;
+
+    if (error) {
+      return (
+        <div className="text-center bg-red-900 bg-opacity-50 p-8 rounded-lg border border-red-600 max-w-md mx-auto">
+          <h2 className="text-2xl font-bold text-red-400 mb-4">
+            Error al cargar categorías
+          </h2>
+          <p className="text-red-300 mb-6">{error.message}</p>
           <button
-            onClick={() => onPaginationChange({ ...pagination, search: "", page: 1 })}
+            onClick={() => window.location.reload()}
             className="bg-gradient-to-r from-purple-500 to-teal-400 text-white font-bold py-2 px-4 rounded-lg hover:from-purple-600 hover:to-teal-500 transition duration-300"
           >
-            Limpiar búsqueda
+            Intentar de nuevo
           </button>
         </div>
       );
     }
-    return null;
-  }, [data?.results?.length, pagination.search, pagination, onPaginationChange]);
 
-  // Estados de carga y error
-  if (isLoading) return <LoadingComponent />;
-  
-  if (error) {
-    return (
-      <div className="text-center bg-red-900 bg-opacity-50 p-8 rounded-lg border border-red-600 max-w-md mx-auto">
-        <h2 className="text-2xl font-bold text-red-400 mb-4">Error al cargar categorías</h2>
-        <p className="text-red-300 mb-6">{error.message}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="bg-gradient-to-r from-purple-500 to-teal-400 text-white font-bold py-2 px-4 rounded-lg hover:from-purple-600 hover:to-teal-500 transition duration-300"
-        >
-          Intentar de nuevo
-        </button>
-      </div>
-    );
-  }
-
-  if (!data?.results || data.results.length === 0) {
-    return (
-      <div className="text-center">
-        <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
-        </div>
-        <h3 className="text-2xl font-bold text-white mb-2">No hay categorías disponibles</h3>
-        <p className="text-gray-400">Vuelve más tarde para ver nuevas categorías.</p>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      {/* Categories Grid */}
-      <div className="mb-8">
-        {categoryCards.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {categoryCards}
+    if (!data?.results || data.results.length === 0) {
+      return (
+        <div className="text-center">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
           </div>
-        ) : (
-          noResultsMessage
-        )}
-      </div>
+          <h3 className="text-2xl font-bold text-white mb-2">
+            No hay categorías disponibles
+          </h3>
+          <p className="text-gray-400">
+            Vuelve más tarde para ver nuevas categorías.
+          </p>
+        </div>
+      );
+    }
 
-      {/* Pagination */}
-      {data?.results && data.results.length > 0 && (
-        <PaginationComponent
-          pagination={pagination}
-          setPagination={onPaginationChange}
-          info={data.info}
-          color="bg-gradient-to-r from-purple-500 to-teal-400"
-        />
-      )}
-    </>
-  );
-});
+    return (
+      <>
+        {/* Categories Grid */}
+        <div className="mb-8">
+          {categoryCards.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {categoryCards}
+            </div>
+          ) : (
+            noResultsMessage
+          )}
+        </div>
+
+        {/* Pagination */}
+        {data?.results && data.results.length > 0 && (
+          <PaginationComponent
+            pagination={pagination}
+            setPagination={onPaginationChange}
+            info={data.info}
+            color="bg-gradient-to-r from-purple-500 to-teal-400"
+          />
+        )}
+      </>
+    );
+  }
+);
 
 UseListCategoryGame.displayName = "UseListCategoryGame";
 CategoriesContent.displayName = "CategoriesContent";
