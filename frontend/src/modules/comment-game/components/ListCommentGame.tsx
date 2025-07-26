@@ -3,7 +3,7 @@ import type { CommentGame } from "../models/comment-game.model";
 import { CommentGameDataClient } from "../services/commentGameDataClient";
 import { CardCommentGame } from "./CardCommentGame";
 import { LoadingComponent } from "@components/LoadingComponent";
-import { MessageCircleCode } from "lucide-react";
+import { MessageCircleCode, MessageCircleMore } from "lucide-react";
 
 interface ListCommentGameProps {
   gameId: string;
@@ -34,21 +34,8 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
       () => (
         <section className="text-center py-12">
           <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-10 w-10 text-gray-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-              />
-            </svg>
+            <MessageCircleMore className="h-10 w-10 text-gray-500" />
+
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">
             Sé el primero en comentar

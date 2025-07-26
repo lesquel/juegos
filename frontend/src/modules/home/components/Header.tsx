@@ -2,7 +2,7 @@ import { Smile } from "lucide-react";
 import React, { memo, useMemo } from "react";
 
 const Header: React.FC = memo(() => {
-  // Memoizar el icono SVG
+  // Memoizar el icono
   const smileyIcon = useMemo(() => (
     <Smile className="h-8 w-8 text-white" />
   ), []);

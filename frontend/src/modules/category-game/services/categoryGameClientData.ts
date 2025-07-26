@@ -2,8 +2,8 @@ import axios from "axios";
 import { CategoryGameGameAdapter } from "../adapters/category-game.adapter";
 import { useQuery } from "@tanstack/react-query";
 import { environment } from "@config/environment";
-import type { PaguinationCategory } from "../models/paguination-category";
-import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
+import type { PaginationCategory } from "../models/pagination-category";
+import { PaginationCategoryAdapter } from "@adapters/paginationCategory.adapter";
 import { endpoints } from "@config/endpoints";
 
 // Configuración optimizada para datos de categorías de juegos
@@ -27,7 +27,7 @@ const CATEGORY_AXIOS_CONFIG = {
 export class CategoryGameClientData {
   private static readonly BASE_URL = environment.BASE_URL;
 
-  public static getCategoryGames(paguination: PaguinationCategory) {
+  public static getCategoryGames(paguination: PaginationCategory) {
     return useQuery({
       queryKey: ["category-games", paguination],
       ...CATEGORY_QUERY_CONFIG,
@@ -36,7 +36,7 @@ export class CategoryGameClientData {
           .get(
             CategoryGameClientData.BASE_URL +
               endpoints.categories.get +
-              PaguinationCategoryAdapter.adaptPaguinationCategory(paguination),
+              PaginationCategoryAdapter.adaptPaguinationCategory(paguination),
             CATEGORY_AXIOS_CONFIG
           )
           .then((response) => {

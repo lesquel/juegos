@@ -1,3 +1,4 @@
+import { Search, X } from "lucide-react";
 import { useState, useCallback, useMemo, useEffect, useRef, memo } from "react";
 
 // Hook personalizado para debounce
@@ -62,7 +63,7 @@ export const SearchComponent = memo(({
     // Ref para evitar el primer render en el useEffect
     const isFirstRender = useRef(true);
     const filtersRef = useRef(filters);
-    
+
     // Mantener la referencia actualizada
     filtersRef.current = filters;
 
@@ -139,42 +140,16 @@ export const SearchComponent = memo(({
                             onChange={(e) => handleInputChange(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleManualSearch()}
                             placeholder={placeholder}
-                            className="w-full px-4 py-2 pl-10 pr-12 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg
-                                className="h-5 w-5 text-gray-400"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                />
-                            </svg>
-                        </div>
+
                         <button
                             type="button"
                             onClick={handleManualSearch}
                             className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-600 rounded-r-md transition-colors duration-200"
                             title="Buscar"
                         >
-                            <svg
-                                className="h-5 w-5 text-gray-400 hover:text-white"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                />
-                            </svg>
+                            <Search />
                         </button>
                     </div>
                 </div>
@@ -242,19 +217,7 @@ export const SearchComponent = memo(({
                         onClick={clearFilters}
                         className="w-full lg:w-auto px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md transition-colors duration-200 flex items-center justify-center gap-2"
                     >
-                        <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M6 18L18 6M6 6l12 12"
-                            />
-                        </svg>
+                        <X />
                         Limpiar
                     </button>
                 </div>

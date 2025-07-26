@@ -1,6 +1,6 @@
-import type { Pagination } from "@models/paguination";
+import type { Pagination } from "@models/pagination";
 
-export interface PaguinationCategory extends Pagination {
+export interface PaginationCategory extends Pagination {
   search?: string;
   category_name?: string;
   category_description?: string;

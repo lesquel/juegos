@@ -36,7 +36,7 @@ const Feature: React.FC<FeatureProps> = memo(({ icon, title, description }) => {
 Feature.displayName = "Feature";
 
 const FeatureCards: React.FC = memo(() => {
-  // Memoizar iconos SVG
+  // Memoizar iconos
   const heartIcon = useMemo(() => <Heart className="h-8 w-8 text-white" />, []);
 
   const communityIcon = useMemo(
