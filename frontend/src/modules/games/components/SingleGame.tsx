@@ -7,6 +7,7 @@ import { NewCommentForm } from "@modules/comment-game/components/NewCommentForm"
 import { PlayCircle } from "lucide-react";
 import { GameType } from "../models/game.model";
 import { memo, useMemo } from "react";
+import { SingleGameSkeleton } from "./SingleGameSkeleton";
 
 interface SingleGameProps {
   id: string;
@@ -34,9 +35,7 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
   }, [data?.game_type, data?.game_id, data?.game_url]);
 
   // Memoizar el icono del botón play
-  const playIcon = useMemo(() => (
-    <PlayCircle className="w-6 h-6" />
-  ), []);
+  const playIcon = useMemo(() => <PlayCircle className="w-6 h-6" />, []);
 
   // Memoizar el contenido del juego
   const gameContent = useMemo(() => {
@@ -95,12 +94,15 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
     );
   }, [data, gameUrl, playIcon, id]);
 
-  if (isLoading) return <LoadingComponent />;
+  const ListSkeleton = useMemo(
+    () => <SingleGameSkeleton />,
+    [isLoading, error]
+  );
+
+  if (isLoading) return ListSkeleton;
   if (error)
     return (
-      <div className="text-center text-red-400 p-8">
-        Error: {error.message}
-      </div>
+      <div className="text-center text-red-400 p-8">Error: {error.message}</div>
     );
 
   return gameContent;
