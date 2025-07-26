@@ -6,6 +6,7 @@ import { AuthClientData } from "../services/authClientData";
 import { MiddlewareAstroProtectUser } from "../middleware/middlewareAstroProtectUser";
 import { authRoutesConfig } from "../config/auth.routes.config";
 import { FormInput } from "@modules/auth/components/FormInputAuth";
+import { LockIcon, Mail, User } from "lucide-react";
 
 interface RegisterFormValues {
   email: string;
@@ -71,57 +72,15 @@ const UseRegisterForm: React.FC = memo(() => {
 
   // Memoizar iconos SVG
   const userIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-12 h-12 text-white"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-      />
-    </svg>
+    <User className="w-12 h-12 text-white" />
   ), []);
 
   const emailIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5 text-gray-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-      />
-    </svg>
+    <Mail className="h-5 w-5 text-gray-400" />
   ), []);
 
   const passwordIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5 text-gray-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-      />
-    </svg>
+    <LockIcon className="h-5 w-5 text-gray-400" />
   ), []);
 
   // Memoizar URL de login

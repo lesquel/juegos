@@ -9,6 +9,7 @@ import GameSearchComponent from "./GameSearchComponent";
 import type { SearchFilters } from "@components/SearchComponent";
 import type { PaguinationGames } from "../models/paguination-games";
 import { CardGameSkeleton } from "./CardGameSkeleton";
+import { Box, Search } from "lucide-react";
 
 // Configuración de paginación por defecto con búsqueda
 const DEFAULT_PAGINATION: PaguinationGames = {
@@ -119,20 +120,7 @@ const GamesContent = memo(
         return (
           <div className="text-center py-16">
             <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+              <Search className="h-12 w-12 text-gray-400" />
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">
               No se encontraron juegos
@@ -195,20 +183,7 @@ const GamesContent = memo(
       return (
         <div className="text-center">
           <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20 7l-8-4-8 4m16 0l-8 4-8-4m16 0v10l-8 4-8-4V7"
-              />
-            </svg>
+            <Box className="h-12 w-12 text-gray-400" />
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">
             No hay juegos disponibles

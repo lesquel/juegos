@@ -6,6 +6,7 @@ import { AuthClientData } from "../services/authClientData";
 import { MiddlewareAstroProtectUser } from "../middleware/middlewareAstroProtectUser";
 import { authRoutesConfig } from "../config/auth.routes.config";
 import { FormInput } from "@modules/auth/components/FormInputAuth";
+import { LockIcon, Mail, User } from "lucide-react";
 
 interface LoginFormValues {
   email: string;
@@ -27,27 +28,36 @@ const UseLoginForm: React.FC = memo(() => {
   const { mutate, error } = AuthClientData.login();
 
   // Memoizar validadores
-  const validators = useMemo(() => ({
-    onChange: z.object({
-      email: z.string().email("Correo electrónico inválido"),
-      password: z.string(),
+  const validators = useMemo(
+    () => ({
+      onChange: z.object({
+        email: z.string().email("Correo electrónico inválido"),
+        password: z.string(),
+      }),
+      onSubmit: z.object({
+        email: z.string().email("Por favor, ingresa un correo válido."),
+        password: z.string().min(1, "La contraseña es requerida."),
+      }),
     }),
-    onSubmit: z.object({
-      email: z.string().email("Por favor, ingresa un correo válido."),
-      password: z.string().min(1, "La contraseña es requerida."),
-    }),
-  }), []);
+    []
+  );
 
   // Memoizar valores por defecto
-  const defaultValues = useMemo((): LoginFormValues => ({
-    email: "",
-    password: "",
-  }), []);
+  const defaultValues = useMemo(
+    (): LoginFormValues => ({
+      email: "",
+      password: "",
+    }),
+    []
+  );
 
   // Memoizar función de submit
-  const handleSubmit = useCallback(async ({ value }: { value: LoginFormValues }) => {
-    mutate(value);
-  }, [mutate]);
+  const handleSubmit = useCallback(
+    async ({ value }: { value: LoginFormValues }) => {
+      mutate(value);
+    },
+    [mutate]
+  );
 
   const form = useForm({
     defaultValues,
@@ -56,59 +66,17 @@ const UseLoginForm: React.FC = memo(() => {
   });
 
   // Memoizar iconos SVG
-  const userIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-12 h-12 text-white"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-      />
-    </svg>
-  ), []);
+  const userIcon = useMemo(() => <User className="w-12 h-12 text-white" />, []);
 
-  const emailIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5 text-gray-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-      />
-    </svg>
-  ), []);
+  const emailIcon = useMemo(
+    () => <Mail className="h-5 w-5 text-gray-400" />,
+    []
+  );
 
-  const passwordIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5 text-gray-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-      />
-    </svg>
-  ), []);
+  const passwordIcon = useMemo(
+    () => <LockIcon className="h-5 w-5 text-gray-400" />,
+    []
+  );
 
   // Memoizar URL de registro
   const registerUrl = useMemo(() => authRoutesConfig.children.register.url, []);
@@ -120,11 +88,14 @@ const UseLoginForm: React.FC = memo(() => {
   }, [error]);
 
   // Memoizar función de envío del formulario
-  const onFormSubmit = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    void form.handleSubmit();
-  }, [form]);
+  const onFormSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      void form.handleSubmit();
+    },
+    [form]
+  );
 
   return (
     <main className="w-full max-w-md mx-auto bg-gray-900 bg-opacity-50 rounded-2xl p-8 shadow-lg backdrop-blur-lg backdrop-filter border border-gray-700">
@@ -133,14 +104,12 @@ const UseLoginForm: React.FC = memo(() => {
           {userIcon}
         </div>
       </header>
-      
+
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2 text-white">
           Bienvenido de Nuevo
         </h1>
-        <p className="text-gray-400">
-          Inicia sesión para continuar
-        </p>
+        <p className="text-gray-400">Inicia sesión para continuar</p>
       </div>
 
       <form
@@ -148,14 +117,14 @@ const UseLoginForm: React.FC = memo(() => {
         className="w-full flex flex-col items-center gap-2"
       >
         {errorMessage && (
-          <div 
+          <div
             role="alert"
             className="text-red-400 text-sm mb-4 text-center bg-red-900 bg-opacity-50 p-3 rounded-lg w-full"
           >
             {errorMessage}
           </div>
         )}
-        
+
         <FormInput
           form={form}
           name="email"
@@ -164,7 +133,7 @@ const UseLoginForm: React.FC = memo(() => {
           label="Correo Electrónico"
           icon={emailIcon}
         />
-        
+
         <FormInput
           form={form}
           name="password"
@@ -182,7 +151,7 @@ const UseLoginForm: React.FC = memo(() => {
           Acceder
         </button>
       </form>
-      
+
       <footer className="text-sm text-gray-400 mt-6 text-center">
         ¿No tienes una cuenta?{" "}
         <a

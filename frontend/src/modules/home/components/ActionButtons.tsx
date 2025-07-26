@@ -1,44 +1,18 @@
 import React, { memo, useMemo } from "react";
 import { homeRoutesConfig } from "../config/home.routes.config";
 import { MiddlewareUser } from "@modules/auth/middleware/middlewareUser";
+import { LogIn, NotebookPen } from "lucide-react";
 
 const ActionButtons: React.FC = memo(() => {
   // Memoizar iconos SVG
-  const loginIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-      />
-    </svg>
-  ), []);
+  const loginIcon = useMemo(
+    () => (
+      <LogIn className="h-5 w-5 text-gray-300 hover:text-white transition-colors duration-300 font-medium px-3 py-2 rounded-lg hover:bg-gray-800" />
+    ),
+    []
+  );
 
-  const registerIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-      />
-    </svg>
-  ), []);
+  const registerIcon = useMemo(() => <NotebookPen className="h-5 w-5" />, []);
 
   // Memoizar URLs
   const loginUrl = useMemo(() => homeRoutesConfig.children.login.url, []);
