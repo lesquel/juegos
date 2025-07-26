@@ -7,6 +7,34 @@ import { GamepadIcon, Menu, X } from "lucide-react";
 
 export const Navbar = memo(() => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentPath, setCurrentPath] = useState("");
+
+  // Función para obtener la página actual
+  const getCurrentPath = useCallback(() => {
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname;
+      console.log("Current path:", path); // Debug temporal
+      return path;
+    }
+    return "";
+  }, []);
+
+  // Función para verificar si un enlace está activo
+  const isActivePage = useCallback((path: string) => {
+    // Normalizar las rutas removiendo barras al final
+    const normalizedCurrentPath = currentPath.replace(/\/$/, '') || '/';
+    const normalizedPath = path.replace(/\/$/, '') || '/';
+    
+    console.log("Checking:", normalizedPath, "vs", normalizedCurrentPath); // Debug temporal
+    
+    // Para la página de inicio
+    if (normalizedPath === '/' && normalizedCurrentPath === '/') return true;
+    
+    // Para otras páginas, verificar si la ruta actual comienza con la ruta del enlace
+    if (normalizedPath !== '/' && normalizedCurrentPath.startsWith(normalizedPath)) return true;
+    
+    return false;
+  }, [currentPath]);
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen((prev) => {
@@ -21,12 +49,41 @@ export const Navbar = memo(() => {
   }, []);
 
   useEffect(() => {
-    // Limpieza en caso de cerrar manualmente
+    // Función para actualizar la ruta actual
+    const updateCurrentPath = () => {
+      setCurrentPath(getCurrentPath());
+    };
+
+    // Obtener la ruta inicial
+    updateCurrentPath();
+
+    // Escuchar cambios de navegación
+    window.addEventListener("popstate", updateCurrentPath);
+    
+    // Escuchar cambios en la URL (para SPAs)
+    let lastUrl = location.href;
+    const observer = new MutationObserver(() => {
+      const url = location.href;
+      if (url !== lastUrl) {
+        lastUrl = url;
+        updateCurrentPath();
+      }
+    });
+    
+    observer.observe(document, { subtree: true, childList: true });
+
+    // Polling fallback para asegurar actualización
+    const interval = setInterval(updateCurrentPath, 1000);
+
+    // Limpieza
     return () => {
       document.body.classList.remove("overflow-hidden");
       setMobileMenuOpen(false);
+      window.removeEventListener("popstate", updateCurrentPath);
+      observer.disconnect();
+      clearInterval(interval);
     };
-  }, []);
+  }, [getCurrentPath]);
 
   return (
     <>
@@ -53,21 +110,42 @@ export const Navbar = memo(() => {
 
             <a
               href="/"
-              className="text-gray-300 hover:text-white transition-colors duration-300"
+              className={`relative transition-all duration-300 ${
+                isActivePage("/")
+                  ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
+                  : "text-gray-300 hover:text-white"
+              }`}
             >
               Inicio
+              {isActivePage("/") && (
+                <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
+              )}
             </a>
             <a
               href={gamesRoutesConfig.base}
-              className="text-gray-300 hover:text-white transition-colors duration-300"
+              className={`relative transition-all duration-300 ${
+                isActivePage(gamesRoutesConfig.base)
+                  ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
+                  : "text-gray-300 hover:text-white"
+              }`}
             >
               Juegos
+              {isActivePage(gamesRoutesConfig.base) && (
+                <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
+              )}
             </a>
             <a
               href={categoryGameRoutesConfig.base}
-              className="text-gray-300 hover:text-white transition-colors duration-300"
+              className={`relative transition-all duration-300 ${
+                isActivePage(categoryGameRoutesConfig.base)
+                  ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
+                  : "text-gray-300 hover:text-white"
+              }`}
             >
               Categorías
+              {isActivePage(categoryGameRoutesConfig.base) && (
+                <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
+              )}
             </a>
             <NavbarAuthLoginRegister />
           </div>
@@ -103,20 +181,44 @@ export const Navbar = memo(() => {
         } md:hidden`}
       >
         <div className="p-8 flex flex-col space-y-6">
-          <a href="/" className="text-gray-300 hover:text-white text-lg">
+          <a 
+            href="/" 
+            className={`relative text-lg transition-all duration-300 ${
+              isActivePage("/")
+                ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
+                : "text-gray-300 hover:text-white"
+            }`}
+          >
             Inicio
+            {isActivePage("/") && (
+              <span className="absolute -bottom-1 left-0 w-12 h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
+            )}
           </a>
           <a
             href={gamesRoutesConfig.base}
-            className="text-gray-300 hover:text-white text-lg"
+            className={`relative text-lg transition-all duration-300 ${
+              isActivePage(gamesRoutesConfig.base)
+                ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
+                : "text-gray-300 hover:text-white"
+            }`}
           >
             Juegos
+            {isActivePage(gamesRoutesConfig.base) && (
+              <span className="absolute -bottom-1 left-0 w-12 h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
+            )}
           </a>
           <a
             href={categoryGameRoutesConfig.base}
-            className="text-gray-300 hover:text-white text-lg"
+            className={`relative text-lg transition-all duration-300 ${
+              isActivePage(categoryGameRoutesConfig.base)
+                ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
+                : "text-gray-300 hover:text-white"
+            }`}
           >
             Categorías
+            {isActivePage(categoryGameRoutesConfig.base) && (
+              <span className="absolute -bottom-1 left-0 w-12 h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
+            )}
           </a>
           <div className=" flex justify-between items-start pt-6 border-t border-gray-700">
             <NavbarAuthLoginRegister />
