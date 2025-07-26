@@ -5,6 +5,7 @@ import { environment } from "@config/environment";
 import type { Pagination } from "@models/paguination";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 import { endpoints } from "@config/endpoints";
+import type { PaguinationGames } from "../adapters/paguination-games";
 
 // Configuración optimizada para mejor rendimiento
 const QUERY_CONFIG = {
@@ -20,7 +21,7 @@ const QUERY_CONFIG = {
 export class GameClientData {
   private static readonly BASE_URL = environment.BASE_URL;
 
-  public static getGames(paguination: Pagination) {
+  public static getGames(paguination: PaguinationGames) {
     return useQuery({
       queryKey: ["games", paguination],
       ...QUERY_CONFIG,

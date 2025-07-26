@@ -41,7 +41,7 @@ const InternalTransferForm: React.FC = memo(() => {
     mutate(value);
   }, [mutate]);
 
-  const form = useForm<TransferInputModel>({
+  const form = useForm({
     defaultValues,
     validators: { onSubmit: transferSchema },
     onSubmit: handleSubmit,

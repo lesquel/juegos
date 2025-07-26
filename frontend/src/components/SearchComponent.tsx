@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef, memo } from "react";
 
 // Hook personalizado para debounce
 const useDebounce = (value: string, delay: number) => {
@@ -39,7 +39,7 @@ interface SearchComponentProps {
     className?: string;
 }
 
-export const SearchComponent = ({
+export const SearchComponent = memo(({
     onSearch,
     filterOptions,
     placeholder = "Buscar...",
@@ -61,6 +61,10 @@ export const SearchComponent = ({
 
     // Ref para evitar el primer render en el useEffect
     const isFirstRender = useRef(true);
+    const filtersRef = useRef(filters);
+    
+    // Mantener la referencia actualizada
+    filtersRef.current = filters;
 
     // Memoizar las opciones de filtro para evitar re-renderizados
     const memoizedFilterOptions = useMemo(() => filterOptions, [filterOptions]);
@@ -71,19 +75,25 @@ export const SearchComponent = ({
         setFilters(prev => ({ ...prev, searchTerm: value }));
     }, []);
 
+    // Callback optimizado para búsqueda manual (botón)
+    const handleManualSearch = useCallback(() => {
+        const searchFilters = { ...filtersRef.current };
+        onSearch(searchFilters);
+    }, [onSearch]);
+
     // Callback optimizado para el cambio de tipo de filtro
     const handleFilterTypeChange = useCallback((value: string) => {
-        const newFilters = { ...filters, filterType: value };
+        const newFilters = { ...filtersRef.current, filterType: value };
         setFilters(newFilters);
         onSearch(newFilters);
-    }, [filters, onSearch]);
+    }, [onSearch]);
 
     // Callback optimizado para el cambio de ordenamiento
     const handleSortChange = useCallback((field: "sortBy" | "sortOrder", value: string) => {
-        const newFilters = { ...filters, [field]: value };
+        const newFilters = { ...filtersRef.current, [field]: value };
         setFilters(newFilters);
         onSearch(newFilters);
-    }, [filters, onSearch]);
+    }, [onSearch]);
 
     // Callback optimizado para limpiar filtros
     const clearFilters = useCallback(() => {
@@ -104,9 +114,10 @@ export const SearchComponent = ({
             return;
         }
 
-        const newFilters = { ...filters, searchTerm: debouncedSearchTerm };
+        // Usar la referencia para evitar dependencias
+        const newFilters = { ...filtersRef.current, searchTerm: debouncedSearchTerm };
         onSearch(newFilters);
-    }, [debouncedSearchTerm, filters, onSearch]);
+    }, [debouncedSearchTerm, onSearch]); // Sin 'filters' en dependencias
 
     // Generar IDs únicos para accesibilidad
     const searchId = useMemo(() => `search-${Math.random().toString(36).substring(2, 9)}`, []);
@@ -126,8 +137,9 @@ export const SearchComponent = ({
                             type="text"
                             value={filters.searchTerm}
                             onChange={(e) => handleInputChange(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleManualSearch()}
                             placeholder={placeholder}
-                            className="w-full px-4 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-2 pl-10 pr-12 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg
@@ -144,6 +156,26 @@ export const SearchComponent = ({
                                 />
                             </svg>
                         </div>
+                        <button
+                            type="button"
+                            onClick={handleManualSearch}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-600 rounded-r-md transition-colors duration-200"
+                            title="Buscar"
+                        >
+                            <svg
+                                className="h-5 w-5 text-gray-400 hover:text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -246,4 +278,6 @@ export const SearchComponent = ({
             )}
         </div>
     );
-};
+});
+
+SearchComponent.displayName = "SearchComponent";

@@ -21,6 +21,11 @@ const GameSearchComponent = ({ onSearch, className }: GameSearchProps) => {
     { value: "game_type", label: "Tipo de juego" },
   ], []);
 
+  const initialFilters = useMemo(() => ({
+    sortBy: "created_at",
+    sortOrder: "desc" as const,
+  }), []);
+
   return (
     <SearchComponent
       onSearch={onSearch}
@@ -29,10 +34,7 @@ const GameSearchComponent = ({ onSearch, className }: GameSearchProps) => {
       placeholder="Buscar juegos..."
       showSort={true}
       className={className}
-      initialFilters={{
-        sortBy: "created_at",
-        sortOrder: "desc",
-      }}
+      initialFilters={initialFilters}
     />
   );
 };
