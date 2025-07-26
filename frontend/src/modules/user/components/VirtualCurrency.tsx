@@ -1,7 +1,13 @@
 import { QueryProvider } from "@providers/QueryProvider";
 import { UserClientData } from "../services/userClientData";
+import { useAuthStore } from "@modules/auth/store/auth.store";
 
 export const VirtualCurrency = () => {
+  const userStore = useAuthStore();
+  const { user } = userStore;
+  if (!user) {
+    return null;
+  }
   return (
     <QueryProvider>
       <UseVirtualCurrency />
@@ -18,9 +24,7 @@ const UseVirtualCurrency = () => {
 
   if (error) {
     return (
-      <div className="text-red-500">
-        Ocurrió un error al obtener tu saldo.
-      </div>
+      <div className="text-red-500">Ocurrió un error al obtener tu saldo.</div>
     );
   }
 

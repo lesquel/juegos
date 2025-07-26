@@ -1,7 +1,7 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
-import {Navbar} from "@components/Navbar";
+import { Navbar } from "@components/Navbar";
 import { GlobalClientData } from "@services/globalClientData";
 import { SaveAuthProvider } from "@modules/auth/providers/SaveAuthProvider";
 
@@ -19,8 +19,15 @@ const data = await GlobalClientData.getGlobalInfo();
     <ClientRouter />
   </head>
   <body class="min-h-screen flex flex-col">
-    <SaveAuthProvider />
-    <Navbar client:only="react" data-astro-persist="navbar" />
+    <SaveAuthProvider
+      transition:persist
+      data-astro-persist="save-auth-provider"
+    />
+    <Navbar
+      client:only="react"
+      data-astro-persist="navbar"
+      transition:persist
+    />
     <slot />
   </body>
 </html>

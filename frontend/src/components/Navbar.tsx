@@ -3,6 +3,7 @@ import { gamesRoutesConfig } from "@modules/games/config/games.routes.config";
 import { categoryGameRoutesConfig } from "@modules/category-game/config/category-game.routes.config";
 import { NavbarAuthLoginRegister } from "@modules/auth/components/NavbarAuthLoginRegister";
 import { VirtualCurrency } from "@modules/user/components/VirtualCurrency";
+import { Menu, X } from "lucide-react";
 
 export const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -82,35 +83,9 @@ export const Navbar = () => {
                             className="text-white focus:outline-none z-50 cursor-pointer"
                         >
                             {mobileMenuOpen ? (
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-6 w-6"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
+                                <X />
                             ) : (
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-6 w-6"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M4 6h16M4 12h16m-7 6h7"
-                                    />
-                                </svg>
+                                <Menu />
                             )}
                         </button>
                     </div>
