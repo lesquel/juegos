@@ -114,8 +114,8 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
                   const fieldErrors =
                     field.state.meta.errors.length > 0
                       ? field.state.meta.errors
-                          .map((error) => error?.message)
-                          .join(", ")
+                        .map((error) => error?.message)
+                        .join(", ")
                       : null;
 
                   const handleChange = (
@@ -163,8 +163,8 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
                   const errors =
                     field.state.meta.errors.length > 0
                       ? field.state.meta.errors
-                          .map((error) => error?.message)
-                          .join(", ")
+                        .map((error) => error?.message)
+                        .join(", ")
                       : "";
 
                   return (
