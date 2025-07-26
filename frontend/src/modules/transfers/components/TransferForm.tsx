@@ -4,6 +4,7 @@ import { z } from "zod";
 import { TransferDataClient } from "../services/transferDataClient";
 import { QueryProvider } from "@providers/QueryProvider";
 import type { TransferInputModel } from "../models/transfer.model";
+import { DollarSign, Landmark, Loader, Upload } from "lucide-react";
 
 // Memoizar schema para evitar recreaciones
 const transferSchema = z.object({
@@ -121,15 +122,11 @@ const InternalTransferForm: React.FC = memo(() => {
 
   // Memoizar iconos
   const uploadIcon = useMemo(() => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-    </svg>
+    <Upload className="h-5 w-5" />
   ), []);
 
   const moneyIcon = useMemo(() => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-    </svg>
+    <DollarSign className="h-5 w-5" />
   ), []);
 
   return (
@@ -143,9 +140,7 @@ const InternalTransferForm: React.FC = memo(() => {
       {/* Accounts Section */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
+          <Landmark className="h-6 w-6 text-indigo-600" />
           Cuentas de Destino
         </h2>
         {accountsList}
@@ -257,10 +252,7 @@ const InternalTransferForm: React.FC = memo(() => {
         >
           {isPending ? (
             <>
-              <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
+              <Loader />
               Subiendo...
             </>
           ) : (

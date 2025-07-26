@@ -3,6 +3,7 @@ import { LoadingComponent } from "@components/LoadingComponent";
 import { QueryProvider } from "@providers/QueryProvider";
 import { TransferDataClient } from "../services/transferDataClient";
 import { CardTransfer } from "./CardTransfer";
+import { Landmark, Plus } from "lucide-react";
 
 export const ListTransfer: React.FC = memo(() => {
   return (
@@ -21,7 +22,7 @@ const UseListTransfer: React.FC = memo(() => {
   const errorMessage = useMemo(() => {
     if (!error) return null;
     return (
-      <div 
+      <div
         className="text-center text-red-400 bg-red-900 bg-opacity-20 p-4 rounded-lg border border-red-600"
         role="alert"
       >
@@ -32,49 +33,25 @@ const UseListTransfer: React.FC = memo(() => {
   }, [error]);
 
   // Memoizar icono de transferencia
-  const transferIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-6 w-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-      />
-    </svg>
-  ), []);
+  const transferIcon = useMemo(
+    () => <Landmark className="h-6 w-6 text-teal-400" />,
+    []
+  );
 
   // Memoizar botón de nueva transferencia
-  const newTransferButton = useMemo(() => (
-    <a
-      href="/transfers/new"
-      className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out transform hover:scale-105"
-      aria-label="Crear nueva transferencia"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        aria-hidden="true"
+  const newTransferButton = useMemo(
+    () => (
+      <a
+        href="/transfers/new"
+        className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out transform hover:scale-105"
+        aria-label="Crear nueva transferencia"
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 4v16m8-8H4"
-        />
-      </svg>
-      Nueva Transferencia
-    </a>
-  ), []);
+        <Plus className="h-5 w-5 text-teal-400" />
+        Nueva Transferencia
+      </a>
+    ),
+    []
+  );
 
   // Memoizar lista de transferencias
   const transfersList = useMemo(() => {
@@ -122,9 +99,7 @@ const UseListTransfer: React.FC = memo(() => {
         {newTransferButton}
       </header>
 
-      <section>
-        {transfersList}
-      </section>
+      <section>{transfersList}</section>
     </main>
   );
 });
