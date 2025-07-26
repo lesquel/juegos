@@ -1,4 +1,6 @@
-export const LoadingComponent = () => {
+import { memo } from "react";
+
+export const LoadingComponent = memo(() => {
   return (
     <div className="fixed inset-x-0 bottom-0 top-16 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50">
       <div className="relative flex h-24 w-24">
@@ -7,4 +9,6 @@ export const LoadingComponent = () => {
       </div>
     </div>
   );
-};
+});
+
+LoadingComponent.displayName = "LoadingComponent";

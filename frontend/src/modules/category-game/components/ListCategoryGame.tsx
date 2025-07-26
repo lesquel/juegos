@@ -3,32 +3,39 @@ import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { CardCategoryGame } from "./CardCategoryGame";
 import { LoadingComponent } from "@components/LoadingComponent";
 import type { PaguinationCategory } from "../models/paguination-category";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { PaginationComponent } from "@components/PaginationComponent";
 import CategoryGameSearchComponent from "./CategoryGameSearchComponent";
 import type { SearchFilters } from "@components/SearchComponent";
 import type { CategoryGame } from "../models/category-game.model";
 
-export const ListCategoryGame = () => {
+// Configuraciones por defecto memoizadas
+const DEFAULT_PAGINATION: PaguinationCategory = {
+  page: 1,
+  limit: 10,
+};
+
+const DEFAULT_SEARCH_FILTERS: SearchFilters = {
+  searchTerm: "",
+  filterType: "all",
+  sortBy: "created_at",
+  sortOrder: "desc",
+};
+
+export const ListCategoryGame = memo(() => {
   return (
     <QueryProvider>
       <UseListCategoryGame />
     </QueryProvider>
   );
-};
+});
 
-const UseListCategoryGame = () => {
-  const [pagination, setPagination] = useState<PaguinationCategory>({
-    page: 1,
-    limit: 10,
-  });
+ListCategoryGame.displayName = "ListCategoryGame";
 
-  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
-    searchTerm: "",
-    filterType: "all",
-    sortBy: "created_at",
-    sortOrder: "desc",
-  });
+const UseListCategoryGame = memo(() => {
+  const [pagination, setPagination] = useState<PaguinationCategory>(DEFAULT_PAGINATION);
+
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>(DEFAULT_SEARCH_FILTERS);
 
   const handleSearch = useCallback((filters: SearchFilters) => {
     setSearchFilters(filters);
@@ -39,6 +46,10 @@ const UseListCategoryGame = () => {
       sort_by: filters.sortBy || "created_at",
       sort_order: filters.sortOrder || "desc",
     }));
+  }, []);
+
+  const handlePaginationChange = useCallback((newPagination: any) => {
+    setPagination(newPagination);
   }, []);
 
   const { data, isLoading, error } =
@@ -75,6 +86,24 @@ const UseListCategoryGame = () => {
     });
   }, [data?.results, searchFilters]);
 
+  // Memoizar componentes pesados
+  const categoryCards = useMemo(() => {
+    return filteredResults.map((category: CategoryGame) => (
+      <CardCategoryGame key={category.category_id} category={category} />
+    ));
+  }, [filteredResults]);
+
+  const noResultsMessage = useMemo(() => {
+    if (filteredResults.length === 0 && searchFilters.searchTerm) {
+      return (
+        <div className="text-center text-gray-400 py-8">
+          No se encontraron categorías que coincidan con "{searchFilters.searchTerm}"
+        </div>
+      );
+    }
+    return null;
+  }, [filteredResults.length, searchFilters.searchTerm]);
+
   if (isLoading) return <LoadingComponent />;
   if (error)
     return (
@@ -102,30 +131,19 @@ const UseListCategoryGame = () => {
         <CategoryGameSearchComponent onSearch={handleSearch} />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredResults.map((category: CategoryGame) => (
-            <CardCategoryGame key={category.category_id} category={category} />
-          ))}
+          {categoryCards}
         </div>
-        {filteredResults.length === 0 && searchFilters.searchTerm && (
-          <div className="text-center text-gray-400 py-8">
-            No se encontraron categorías que coincidan con "{searchFilters.searchTerm}"
-          </div>
-        )}
-
-
+        {noResultsMessage}
       </div>
-
 
       <PaginationComponent
         pagination={pagination}
-        setPagination={setPagination}
+        setPagination={handlePaginationChange}
         info={data.info}
         color="bg-gradient-to-r from-purple-500 to-teal-400"
       />
-
-
-
     </div>
-
   );
-};
+});
+
+UseListCategoryGame.displayName = "UseListCategoryGame";

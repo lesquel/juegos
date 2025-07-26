@@ -11,16 +11,31 @@ import { ErrorResponseAdapter } from "@adapters/errorResponse.adapter";
 import type { ErrorResponseErrorsArray } from "@models/errorResponse";
 import { endpoints } from "@config/endpoints";
 
+// Configuración optimizada para mutaciones de autenticación
+const MUTATION_CONFIG = {
+  retry: 2, // 2 reintentos para auth
+  retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 30000),
+};
+
+const AXIOS_CONFIG = {
+  timeout: 8000, // 8 segundos para auth (más tiempo)
+  headers: {
+    'Content-Type': 'application/json',
+  }
+};
+
 export class AuthClientData {
   private static readonly baseUrl = environment.BASE_URL;
   static login() {
     const setUser = useAuthStore.getState().setUser;
     return useMutation({
+      ...MUTATION_CONFIG,
       mutationFn: async (data: LoginModel) => {
         try {
           const response = await axios.post(
             `${AuthClientData.baseUrl}${endpoints.authentication.login}`,
-            data
+            data,
+            AXIOS_CONFIG
           );
           console.log(response.data);
           return UserAdapter.adaptMe(response.data);
@@ -43,11 +58,13 @@ export class AuthClientData {
 
   static register() {
     return useMutation({
+      ...MUTATION_CONFIG,
       mutationFn: async (data: RegiterInpustModel) => {
         try {
           const response = await axios.post<UserMe>(
             `${AuthClientData.baseUrl}${endpoints.authentication.register}`,
-            data
+            data,
+            AXIOS_CONFIG
           );
           return response.data;
         } catch (error: any) {

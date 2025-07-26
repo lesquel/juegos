@@ -1,22 +1,39 @@
 import { gamesRoutesConfig } from "../config/games.routes.config";
 import type { Game } from "../models/game.model";
+import { memo, useMemo } from "react";
 
-export const CardGame = ({ game }: { game: Game }) => {
+interface CardGameProps {
+  game: Game;
+}
+
+export const CardGame = memo(({ game }: CardGameProps) => {
   const { game_id, game_name, game_img, game_description, house_odds } = game;
+
+  // Memoizar la URL del juego
+  const gameUrl = useMemo(() => 
+    `${gamesRoutesConfig.base}/${game_id}`, 
+    [game_id]
+  );
+
+  // Memoizar estilos complejos
+  const gradientStyles = useMemo(() => ({
+    boxShadow: '0 0 15px rgba(20, 184, 166, 0), 0 0 25px rgba(20, 184, 166, 0)'
+  }), []);
 
   return (
     <a
-      href={gamesRoutesConfig.base + `/${game_id}`}
+      href={gameUrl}
       className="relative block rounded-2xl overflow-hidden group transform transition-all duration-300 ease-in-out hover:scale-105 shadow-lg"
     >
       <div className="absolute inset-0 bg-black opacity-50 z-10 group-hover:opacity-60 transition-opacity duration-300"></div>
       <div
         className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-teal-500 transition-all duration-300 z-20"
-        style={{ boxShadow: '0 0 15px rgba(20, 184, 166, 0), 0 0 25px rgba(20, 184, 166, 0)' }}
+        style={gradientStyles}
       ></div>
       <img
         src={game_img}
         alt={game_name}
+        loading="lazy"
         className="w-full h-64 object-cover transform transition-transform duration-500 ease-in-out group-hover:scale-110"
       />
       <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 bg-gradient-to-t from-black via-black/70 to-transparent">
@@ -34,4 +51,6 @@ export const CardGame = ({ game }: { game: Game }) => {
       </div>
     </a>
   );
-};
+});
+
+CardGame.displayName = "CardGame";

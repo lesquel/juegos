@@ -1,21 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo, useCallback } from "react";
 import { gamesRoutesConfig } from "@modules/games/config/games.routes.config";
 import { categoryGameRoutesConfig } from "@modules/category-game/config/category-game.routes.config";
 import { NavbarAuthLoginRegister } from "@modules/auth/components/NavbarAuthLoginRegister";
 import { VirtualCurrency } from "@modules/user/components/VirtualCurrency";
-import { Car, GamepadIcon, Menu, X } from "lucide-react";
+import { GamepadIcon, Menu, X } from "lucide-react";
 
-export const Navbar = () => {
+export const Navbar = memo(() => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen((prev) => !prev);
-    document.body.classList.toggle("overflow-hidden");
-  };
+  const toggleMobileMenu = useCallback(() => {
+    setMobileMenuOpen((prev) => {
+      const newState = !prev;
+      if (newState) {
+        document.body.classList.add("overflow-hidden");
+      } else {
+        document.body.classList.remove("overflow-hidden");
+      }
+      return newState;
+    });
+  }, []);
 
   useEffect(() => {
     // Limpieza en caso de cerrar manualmente
-    return () => document.body.classList.remove("overflow-hidden");
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+      setMobileMenuOpen(false);
+    };
   }, []);
 
   return (
@@ -116,4 +126,6 @@ export const Navbar = () => {
       </div>
     </>
   );
-};
+});
+
+Navbar.displayName = "Navbar";

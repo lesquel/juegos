@@ -14,18 +14,43 @@ import { useAuthStore } from "@modules/auth/store/auth.store";
 import type { Pagination } from "@models/paguination";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 
+// Configuración optimizada para datos de partidas
+const MATCH_QUERY_CONFIG = {
+  gcTime: 1000 * 60 * 30, // 30 minutos en cache
+  staleTime: 1000 * 60 * 10, // 10 minutos sin refetch
+  refetchOnWindowFocus: false,
+  refetchOnMount: false,
+  refetchOnReconnect: true, // Reconectar al reestablecer conexión
+  retry: 2,
+  retryDelay: 1000,
+};
+
+const MATCH_MUTATION_CONFIG = {
+  retry: 1,
+  retryDelay: 500,
+};
+
+const MATCH_AXIOS_CONFIG = {
+  timeout: 8000,
+  headers: {
+    'Content-Type': 'application/json',
+  }
+};
+
 export class MatchClientData {
   private static readonly BASE_URL = environment.BASE_URL;
 
   public static getMatchesByGameId(gameId: string, paguination: Pagination) {
     return useQuery({
       queryKey: ["matches", gameId, paguination],
+      ...MATCH_QUERY_CONFIG,
       queryFn: () => {
         return axios
           .get(
             `${MatchClientData.BASE_URL}${endpoints.matches.getMatchesByGameId(
               gameId
-            )}${PaguinationCategoryAdapter.adaptPaguination(paguination)}`
+            )}${PaguinationCategoryAdapter.adaptPaguination(paguination)}`,
+            MATCH_AXIOS_CONFIG
           )
           .then((response) => {
             return MatchAdapter.adaptList(response.data);
@@ -37,9 +62,11 @@ export class MatchClientData {
   public static getMatch(id: string) {
     return useQuery({
       queryKey: ["matches", id],
+      ...MATCH_QUERY_CONFIG,
       queryFn: () => {
         return axios
-          .get(`${MatchClientData.BASE_URL}${endpoints.matches.getMathes(id)}`)
+          .get(`${MatchClientData.BASE_URL}${endpoints.matches.getMathes(id)}`, 
+            MATCH_AXIOS_CONFIG)
           .then((response) => {
             return MatchAdapter.adapt(response.data);
           });
@@ -49,12 +76,15 @@ export class MatchClientData {
 
   public static joinMatch(id: string, onSuccess?: (data: Match) => void) {
     return useMutation({
+      ...MATCH_MUTATION_CONFIG,
       mutationFn: (data: JoinMatch) => {
         return axios.post(
           `${MatchClientData.BASE_URL}${endpoints.matches.joinMatch(id)}`,
           data,
           {
+            ...MATCH_AXIOS_CONFIG,
             headers: {
+              ...MATCH_AXIOS_CONFIG.headers,
               Authorization: `Bearer ${
                 useAuthStore.getState().user?.access_token.access_token
               }`,
@@ -75,10 +105,12 @@ export class MatchClientData {
   public static getMatchParticipants(id: string) {
     return useQuery({
       queryKey: ["matches", id, "participants"],
+      ...MATCH_QUERY_CONFIG,
       queryFn: () => {
         return axios
           .get(
-            `${MatchClientData.BASE_URL}${endpoints.matches.getPartcipants(id)}`
+            `${MatchClientData.BASE_URL}${endpoints.matches.getPartcipants(id)}`,
+            MATCH_AXIOS_CONFIG
           )
           .then((response) => {
             return MatchAdapter.adaptParticipants(response.data);
@@ -89,10 +121,12 @@ export class MatchClientData {
 
   public static finishMatch(id: string) {
     return useMutation({
+      ...MATCH_MUTATION_CONFIG,
       mutationFn: (data: FinishMatch) => {
         return axios.put(
           `${MatchClientData.BASE_URL}${endpoints.matches.finisMatch(id)}`,
-          data
+          data,
+          MATCH_AXIOS_CONFIG
         );
       },
       onSuccess: (data) => {
@@ -106,12 +140,15 @@ export class MatchClientData {
 
   public static createMatch(gameId: string, onSuccess?: (data: Match) => void) {
     return useMutation({
+      ...MATCH_MUTATION_CONFIG,
       mutationFn: (data: CreateMatch) => {
         return axios.post(
           `${MatchClientData.BASE_URL}${endpoints.matches.createMatch(gameId)}`,
           data,
           {
+            ...MATCH_AXIOS_CONFIG,
             headers: {
+              ...MATCH_AXIOS_CONFIG.headers,
               Authorization: `Bearer ${
                 useAuthStore.getState().user?.access_token.access_token
               }`,

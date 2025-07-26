@@ -9,6 +9,19 @@ import { PaginationComponent } from "@components/PaginationComponent";
 import GameSearchComponent from "./GameSearchComponent";
 import type { SearchFilters } from "@components/SearchComponent";
 
+// Configuración de filtros por defecto memoizada
+const DEFAULT_SEARCH_FILTERS: SearchFilters = {
+  searchTerm: "",
+  filterType: "all",
+  sortBy: "created_at",
+  sortOrder: "desc",
+};
+
+const DEFAULT_PAGINATION: Pagination = {
+  page: 1,
+  limit: 10,
+};
+
 export const ListGames = memo(() => {
   return (
     <QueryProvider>
@@ -20,17 +33,9 @@ export const ListGames = memo(() => {
 ListGames.displayName = "ListGames";
 
 const UseListGames = memo(() => {
-  const [pagination, setPagination] = useState<Pagination>({
-    page: 1,
-    limit: 10,
-  });
+  const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION);
 
-  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
-    searchTerm: "",
-    filterType: "all",
-    sortBy: "created_at",
-    sortOrder: "desc",
-  });
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>(DEFAULT_SEARCH_FILTERS);
 
   const handleSearch = useCallback((filters: SearchFilters) => {
     setSearchFilters(filters);
@@ -40,6 +45,10 @@ const UseListGames = memo(() => {
       sort_by: filters.sortBy || "created_at",
       sort_order: filters.sortOrder || "desc",
     }));
+  }, []);
+
+  const handlePaginationChange = useCallback((newPagination: Pagination) => {
+    setPagination(newPagination);
   }, []);
 
   const { data, isLoading, error } = GameClientData.getGames(pagination);
@@ -76,6 +85,25 @@ const UseListGames = memo(() => {
     });
   }, [data?.results, searchFilters.searchTerm, searchFilters.filterType]);
 
+  // Memoizar componentes pesados
+  const gameCards = useMemo(() => {
+    return filteredResults.map((game: Game) => (
+      <CardGame key={game.game_id} game={game} />
+    ));
+  }, [filteredResults]);
+
+  const noResultsMessage = useMemo(() => {
+    if (filteredResults.length === 0 && searchFilters.searchTerm) {
+      return (
+        <div className="text-center text-gray-400 py-8">
+          No se encontraron juegos que coincidan con "
+          {searchFilters.searchTerm}"
+        </div>
+      );
+    }
+    return null;
+  }, [filteredResults.length, searchFilters.searchTerm]);
+
   if (isLoading) return <LoadingComponent />;
   if (error)
     return (
@@ -98,21 +126,14 @@ const UseListGames = memo(() => {
         <GameSearchComponent onSearch={handleSearch} />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredResults.map((game: Game) => (
-            <CardGame key={game.game_id} game={game} />
-          ))}
+          {gameCards}
         </div>
-        {filteredResults.length === 0 && searchFilters.searchTerm && (
-          <div className="text-center text-gray-400 py-8">
-            No se encontraron juegos que coincidan con "
-            {searchFilters.searchTerm}"
-          </div>
-        )}
+        {noResultsMessage}
       </div>
 
       <PaginationComponent
         pagination={pagination}
-        setPagination={setPagination}
+        setPagination={handlePaginationChange}
         info={data.info}
         color="bg-gradient-to-r from-teal-500 to-cyan-400"
       />

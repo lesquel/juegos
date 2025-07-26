@@ -1,57 +1,90 @@
 import type { Info } from "@models/info.model";
 import type { Pagination } from "@models/paguination";
+import { memo, useCallback, useMemo } from "react";
 
-export const PaginationComponent = ({
-  pagination,
-  info,
-  color, // Default gradient
-  setPagination,
-}: {
+interface PaginationComponentProps {
   pagination: Pagination;
   info: Info;
-  color?: string; // Optional color prop
-  setPagination: (pagination: any) => void;
-}) => {
-  const nextPage = () => {
+  color?: string;
+  setPagination: (pagination: Pagination) => void;
+}
+
+export const PaginationComponent = memo(({
+  pagination,
+  info,
+  color = "bg-gradient-to-r from-teal-500 to-cyan-400",
+  setPagination,
+}: PaginationComponentProps) => {
+  const nextPage = useCallback(() => {
     if (!info.next) return;
     setPagination({
       ...pagination,
       page: pagination.page + 1,
     });
-  };
+  }, [info.next, pagination, setPagination]);
 
-  const prevPage = () => {
+  const prevPage = useCallback(() => {
     if (!info.prev) return;
     setPagination({
       ...pagination,
       page: pagination.page - 1,
     });
-  };
+  }, [info.prev, pagination, setPagination]);
 
-  // Combine classes for easier maintenance
-  const buttonClasses = `w-10 h-10 flex items-center justify-center rounded-full text-white transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125 hover:shadow-lg focus:ring-white ${color} cursor-pointer`;
+  // Memoizar clases de botón
+  const buttonClasses = useMemo(() => 
+    `w-10 h-10 flex items-center justify-center rounded-full text-white transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125 hover:shadow-lg focus:ring-white ${color} cursor-pointer`,
+    [color]
+  );
+
+  // Memoizar estado de botones
+  const isFirstPage = useMemo(() => pagination.page === 1, [pagination.page]);
+  const isLastPage = useMemo(() => pagination.page === info.pages, [pagination.page, info.pages]);
+
+  // Memoizar iconos SVG
+  const prevIcon = useMemo(() => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M15 19l-7-7 7-7"
+      />
+    </svg>
+  ), []);
+
+  const nextIcon = useMemo(() => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 5l7 7-7 7"
+      />
+    </svg>
+  ), []);
 
   return (
     <div className="flex justify-center items-center space-x-4 pt-3">
       <button
-        disabled={pagination.page === 1}
+        disabled={isFirstPage}
         onClick={prevPage}
         className={buttonClasses}
+        aria-label="Página anterior"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
+        {prevIcon}
       </button>
 
       <p className="text-gray-400 text-sm">
@@ -59,25 +92,15 @@ export const PaginationComponent = ({
       </p>
 
       <button
-        disabled={pagination.page === info.pages}
+        disabled={isLastPage}
         onClick={nextPage}
         className={buttonClasses}
+        aria-label="Página siguiente"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
+        {nextIcon}
       </button>
     </div>
   );
-};
+});
+
+PaginationComponent.displayName = "PaginationComponent";

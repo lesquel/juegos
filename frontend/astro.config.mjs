@@ -13,5 +13,25 @@ export default defineConfig({
   }),
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'react-vendor': ['react', 'react-dom'],
+            'query-vendor': ['@tanstack/react-query'],
+          }
+        }
+      }
+    },
+    ssr: {
+      noExternal: ['@tanstack/react-query']
+    }
   },
+  prefetch: {
+    prefetchAll: false,
+    defaultStrategy: 'hover'
+  },
+  experimental: {
+    clientPrerender: true
+  }
 });
