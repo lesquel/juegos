@@ -4,7 +4,7 @@ import { Star, StarOff } from "lucide-react";
 interface RatingInputProps {
     value: number;
     onChange: (value: number) => void;
-    error?: string[];
+    error?: string;
 }
 
 export const RatingInput: React.FC<RatingInputProps> = memo(({ value, onChange, error }) => {
@@ -21,7 +21,7 @@ export const RatingInput: React.FC<RatingInputProps> = memo(({ value, onChange, 
         if (!error || error.length === 0) return null;
         return (
             <p className="text-red-400 text-sm mt-2" role="alert" id="rating-error">
-                {error.join(", ")}
+                {error}
             </p>
         );
     }, [error]);

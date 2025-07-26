@@ -3,7 +3,7 @@ import { z } from "zod";
 import { useForm } from "@tanstack/react-form";
 import { RatingInput } from "./RatingInput";
 import { CommentGameDataClient } from "../services/commentGameDataClient";
-import { Send } from "lucide-react";
+import { MessageCircleCode, Send } from "lucide-react";
 
 interface NewCommentFormProps {
   gameId: string;
@@ -42,6 +42,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
     const handleSubmit = useCallback(
       async ({ value }: { value: CommentFormValues }) => {
         mutate(value);
+        form.reset();
       },
       [mutate]
     );
@@ -77,23 +78,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
 
     // Memoizar icono de comentario
     const commentIcon = useMemo(
-      () => (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-teal-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-          />
-        </svg>
-      ),
+      () => <MessageCircleCode className="h-6 w-6 text-teal-400" />,
       []
     );
 
@@ -167,10 +152,12 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
               {/* Campo de Rating */}
               <form.Field name="rating">
                 {(field) => {
-                  // NO usar hooks aquí - mover la lógica directamente
-                  const errors = (field.state.meta.errors || [])
-                    .filter(Boolean)
-                    .map(String);
+                  const errors =
+                    field.state.meta.errors.length > 0
+                      ? field.state.meta.errors
+                          .map((error) => error?.message)
+                          .join(", ")
+                      : "";
 
                   return (
                     <RatingInput
