@@ -17,9 +17,20 @@ class MatchFilterParams(BaseFilterParams):
         None,
         description="ID del usuario ganador de la partida",
     )
+
+    participant_id: Optional[str] = Field(
+        None,
+        description="ID del usuario participante de la partida",
+    )
+
     user_email: Optional[str] = Field(
         None,
-        description="Email del usuario ganador de la partida",
+        description="Email del usuario participante de la partida",
+    )
+
+    has_winner: Optional[bool] = Field(
+        None,
+        description="Indica si la partida tiene un ganador",
     )
 
     min_base_bet_amount: Optional[float] = Field(
@@ -32,7 +43,14 @@ class MatchFilterParams(BaseFilterParams):
     def filter_winner_id(self, query, model, value):
         return self.any_filter(query, model.winner_id, "winner_id", value)
 
-    def filter_by_has_winner(self, query, model, value: bool):
+    def filter_participant_id(self, query, model, value):
+        if value:
+            return query.filter(
+                model.participants.any(MatchParticipationModel.user_id == value)
+            )
+        return query
+
+    def filter_has_winner(self, query, model, value: bool):
         if value:
             return query.filter(model.winner_id.is_not(None))
         return query.filter(model.winner_id.is_(None))

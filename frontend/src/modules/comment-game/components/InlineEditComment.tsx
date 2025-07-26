@@ -52,7 +52,7 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(({
       const starValue = index + 1;
       const isSelected = editRating >= starValue;
       const StarIcon = isSelected ? Star : StarOff;
-      
+
       return (
         <button
           type="button"
@@ -75,9 +75,9 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(({
   // Memoizar mensaje de error
   const errorMessage = useMemo(() => {
     if (!error) return null;
-    
+
     return (
-      <div 
+      <div
         className="mb-4 p-3 bg-red-900 bg-opacity-50 border border-red-600 text-red-300 rounded-lg"
         role="alert"
       >
@@ -101,8 +101,8 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(({
         <legend className="block text-sm font-medium text-gray-300">
           Tu calificación
         </legend>
-        <div 
-          className="flex space-x-1" 
+        <div
+          className="flex space-x-1"
           role="radiogroup"
           aria-label="Calificación del comentario"
         >
@@ -115,8 +115,8 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(({
 
       {/* Comment Section */}
       <div className="space-y-2">
-        <label 
-          htmlFor={`edit-comment-${commentId}`} 
+        <label
+          htmlFor={`edit-comment-${commentId}`}
           className="block text-sm font-medium text-gray-300"
         >
           Comentario
@@ -154,7 +154,7 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(({
             "Guardar cambios"
           )}
         </button>
-        
+
         <button
           onClick={handleCancel}
           disabled={isPending}
