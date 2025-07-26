@@ -822,11 +822,30 @@
     }
 
     init() {
+      // Crear elementos de los rodillos primero
       this.createReels();
+      
+      // Actualizar display inicial
       this.updateDisplay();
+      
+      // Configurar botón activo inicial
+      setTimeout(() => {
+        const defaultButton = document.querySelector('[onclick="changeBet(10)"]');
+        if (defaultButton) {
+          defaultButton.classList.add('active');
+        }
+      }, 100);
+      
+      // Iniciar incremento de jackpot
       this.startJackpotIncrement();
+      
+      // Configurar eventos
       this.bindEvents();
+      
+      // Mostrar mensaje de bienvenida
       this.showWelcomeMessage();
+      
+      console.log("🎰 Slot Machine iniciada correctamente!");
     }
 
     bindEvents() {
@@ -840,7 +859,17 @@
     }
 
     showWelcomeMessage() {
-      this.showResult("¡Bienvenido! Selecciona tu apuesta y gira para ganar", false);
+      this.showResult(`
+        <div style="color: var(--primary-gold); font-size: 1.3em; margin-bottom: 10px;">
+          🎰 ¡Bienvenido a Lucky Slots! 🎰
+        </div>
+        <div style="color: white; font-size: 1.1em; margin-bottom: 8px;">
+          💰 Créditos disponibles: $${this.credits.toLocaleString()}
+        </div>
+        <div style="color: var(--win-green); font-size: 1em;">
+          Selecciona tu apuesta y presiona GIRAR o ESPACIO
+        </div>
+      `, false);
     }
 
     createReels() {
@@ -916,18 +945,27 @@
       ];
     }
 
-    changeBet(amount) {
+    changeBet(amount, buttonElement) {
       if (this.isSpinning) return;
 
       // Actualizar botones
       document.querySelectorAll(".bet-button").forEach(btn => btn.classList.remove("active"));
-      event.target.classList.add("active");
+      if (buttonElement) {
+        buttonElement.classList.add("active");
+      } else {
+        // Si no se pasa el elemento, encontrarlo por el amount
+        const targetButton = Array.from(document.querySelectorAll(".bet-button"))
+          .find(btn => btn.textContent.includes(`$${amount}`));
+        if (targetButton) {
+          targetButton.classList.add("active");
+        }
+      }
 
       this.currentBet = amount;
       this.updateDisplay();
       
       // Feedback visual
-      this.showResult(`Apuesta establecida en $${amount}`, false);
+      this.showResult(`💰 Apuesta establecida en $${amount}`, false);
     }
 
     async spin() {
@@ -992,6 +1030,11 @@
       const reel = document.getElementById(`reel${reelNum}`);
       const strip = document.getElementById(`strip${reelNum}`);
       
+      if (!reel || !strip) {
+        console.error(`Reel ${reelNum} not found`);
+        return;
+      }
+      
       // Agregar clase de spinning
       reel.classList.add('spinning');
       
@@ -1007,10 +1050,21 @@
           const finalPosition = -66.66; // Mostrar símbolo del medio
           strip.style.transform = `translateY(${finalPosition}px)`;
           
-          // Actualizar símbolo visible
-          const symbols = strip.querySelectorAll('.symbol');
-          if (symbols.length > 1) {
-            symbols[1].textContent = finalSymbol;
+          // Actualizar símbolo visible - crear nuevos símbolos para garantizar el resultado
+          strip.innerHTML = "";
+          for (let i = 0; i < 3; i++) {
+            const symbol = document.createElement("div");
+            symbol.className = "symbol";
+            
+            if (i === 1) {
+              // Símbolo del medio (visible)
+              symbol.textContent = finalSymbol;
+            } else {
+              // Símbolos de arriba y abajo
+              symbol.textContent = this.getWeightedRandomSymbol();
+            }
+            
+            strip.appendChild(symbol);
           }
           
           // Limpiar clases después de la animación
@@ -1060,8 +1114,10 @@
         this.credits += winAmount;
         this.totalWins++;
         
-        await this.showWin(winAmount, `${cherryCount} CEREZAS`, "🍒🍒");
+        const cherryDisplay = "🍒".repeat(cherryCount) + (cherryCount === 2 ? " + otro símbolo" : "");
+        await this.showWin(winAmount, `${cherryCount} CEREZAS`, cherryDisplay);
         this.showWinningLine();
+        this.createCelebration();
         return;
       }
 
@@ -1071,11 +1127,19 @@
 
     async showJackpotWin(amount) {
       const resultDisplay = document.getElementById("resultDisplay");
+      const profit = amount - this.currentBet;
+      
       resultDisplay.innerHTML = `
         <div class="win-message">🏆 ¡JACKPOT! 🏆</div>
-        <div class="win-details">¡Ganaste $${amount.toLocaleString()}!</div>
-        <div style="color: var(--primary-gold); font-size: 1em; margin-top: 10px;">
-          ¡Felicidades! ¡Increíble suerte!
+        <div class="win-details">🍀🍀🍀</div>
+        <div style="color: var(--primary-gold); font-size: 1.3em; margin-top: 10px;">
+          ¡Ganaste $${amount.toLocaleString()}!
+        </div>
+        <div style="color: var(--win-green); font-size: 1.1em; margin-top: 5px;">
+          Ganancia neta: +$${profit.toLocaleString()}
+        </div>
+        <div style="color: rgba(255, 255, 255, 0.9); font-size: 1em; margin-top: 10px;">
+          ¡Felicidades! ¡Increíble suerte! 🎉
         </div>
       `;
     }
@@ -1088,25 +1152,32 @@
       resultDisplay.innerHTML = `
         <div class="win-message">🎉 ¡${name}! 🎉</div>
         <div class="win-details">
-          ${symbols} → $${amount} (x${multiplier})
+          ${symbols} → $${amount.toLocaleString()} (x${multiplier})
         </div>
         <div style="color: var(--win-green); font-size: 1em; margin-top: 5px;">
-          Ganancia: +$${profit}
+          Ganancia neta: +$${profit.toLocaleString()}
+        </div>
+        <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9em; margin-top: 5px;">
+          Apuesta: $${this.currentBet} → Total: $${amount.toLocaleString()}
         </div>
       `;
     }
 
     async showLoss() {
       const resultDisplay = document.getElementById("resultDisplay");
-      const stats = `Giros: ${this.totalSpins} | Victorias: ${this.totalWins}`;
+      const winRate = this.totalSpins > 0 ? ((this.totalWins / this.totalSpins) * 100).toFixed(1) : "0.0";
+      const results = this.currentResults.join(" ");
       
       resultDisplay.innerHTML = `
-        <div class="lose-message">Sin suerte esta vez 😔</div>
-        <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.9em; margin-top: 10px;">
-          ${stats}
+        <div class="lose-message">😔 ${results}</div>
+        <div style="color: var(--lose-red); font-size: 1.1em; margin-top: 10px;">
+          Sin suerte esta vez - Perdiste $${this.currentBet}
         </div>
-        <div style="color: var(--lose-red); font-size: 0.8em;">
-          ¡Sigue intentando!
+        <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.9em; margin-top: 10px;">
+          Estadísticas: ${this.totalSpins} giros | ${this.totalWins} victorias (${winRate}%)
+        </div>
+        <div style="color: var(--primary-gold); font-size: 0.8em;">
+          ¡Sigue intentando! 🎰
         </div>
       `;
     }
@@ -1114,10 +1185,20 @@
     showResult(message, isWin) {
       const resultDisplay = document.getElementById("resultDisplay");
       
+      if (!resultDisplay) {
+        console.error("Result display element not found");
+        return;
+      }
+      
       if (isWin) {
         resultDisplay.innerHTML = `<div class="win-message">${message}</div>`;
       } else {
-        resultDisplay.innerHTML = `<div style="color: white; font-size: 1.2em;">${message}</div>`;
+        // Si el mensaje contiene HTML, usarlo directamente, sino envolver en div
+        if (message.includes('<div')) {
+          resultDisplay.innerHTML = message;
+        } else {
+          resultDisplay.innerHTML = `<div style="color: white; font-size: 1.2em;">${message}</div>`;
+        }
       }
     }
 
@@ -1210,12 +1291,17 @@
 
     // Métodos públicos para debugging
     getStats() {
+      const winRate = this.totalSpins > 0 ? ((this.totalWins / this.totalSpins) * 100).toFixed(2) : "0.00";
       return {
         credits: this.credits,
+        currentBet: this.currentBet,
+        jackpot: this.jackpot,
         totalSpins: this.totalSpins,
         totalWins: this.totalWins,
-        winRate: ((this.totalWins / this.totalSpins) * 100).toFixed(2) + "%",
-        currentResults: this.currentResults
+        winRate: winRate + "%",
+        currentResults: this.currentResults,
+        isSpinning: this.isSpinning,
+        lastResult: this.currentResults.join(" ")
       };
     }
 
@@ -1224,8 +1310,28 @@
       this.totalSpins = 0;
       this.totalWins = 0;
       this.currentBet = GAME_CONFIG.BET_OPTIONS[1];
+      this.currentResults = [];
       this.updateDisplay();
       this.showWelcomeMessage();
+      
+      // Restablecer botón activo
+      document.querySelectorAll(".bet-button").forEach(btn => btn.classList.remove("active"));
+      const defaultButton = document.querySelector('[onclick="changeBet(10)"]');
+      if (defaultButton) {
+        defaultButton.classList.add('active');
+      }
+      
+      console.log("🎰 Juego reiniciado!");
+    }
+
+    // Método para forzar una victoria (solo para testing)
+    forceWin(combination = "🍒🍒🍒") {
+      if (combination === "jackpot") {
+        this.currentResults = ["🍀", "🍀", "🍀"];
+      } else {
+        this.currentResults = combination.split("");
+      }
+      console.log("🎰 Victoria forzada:", this.currentResults);
     }
   }
 
@@ -1237,7 +1343,8 @@
 
   function changeBet(amount) {
     if (slotMachine) {
-      slotMachine.changeBet(amount);
+      const buttonElement = event ? event.target : null;
+      slotMachine.changeBet(amount, buttonElement);
     }
   }
 
@@ -1251,9 +1358,21 @@
   document.addEventListener("DOMContentLoaded", () => {
     slotMachine = new SlotMachine();
     console.log("🎰 Premium Slot Machine initialized!");
-    console.log("Press SPACE to spin or use buttons");
+    console.log("🎮 Controls: SPACE to spin, click buttons to bet");
+    console.log("🔧 Debug: window.slotMachine.getStats() for stats");
+    console.log("🔧 Debug: window.slotMachine.resetGame() to reset");
     
     // Hacer disponible globalmente para debugging
     window.slotMachine = slotMachine;
+    
+    // Verificar que todos los elementos existen
+    const requiredElements = ["credits", "currentBet", "jackpot", "spinButton", "resultDisplay"];
+    const missingElements = requiredElements.filter(id => !document.getElementById(id));
+    
+    if (missingElements.length > 0) {
+      console.error("❌ Missing elements:", missingElements);
+    } else {
+      console.log("✅ All UI elements found!");
+    }
   });
 </script>
