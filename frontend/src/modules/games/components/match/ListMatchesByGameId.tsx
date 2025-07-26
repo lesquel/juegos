@@ -11,18 +11,21 @@ import type { Game } from "@modules/games/models/game.model";
 import type { Pagination } from "@models/paguination";
 import type { Info } from "@models/info.model";
 import type { SearchFilters } from "@components/SearchComponent";
+import { PersonStanding } from "lucide-react";
 
 interface ListMatchesByGameIdProps {
   id: string;
 }
 
-export const ListMatchesByGameId: React.FC<ListMatchesByGameIdProps> = memo(({ id }) => {
-  return (
-    <QueryProvider>
-      <UseListMatchesByGameId id={id} />
-    </QueryProvider>
-  );
-});
+export const ListMatchesByGameId: React.FC<ListMatchesByGameIdProps> = memo(
+  ({ id }) => {
+    return (
+      <QueryProvider>
+        <UseListMatchesByGameId id={id} />
+      </QueryProvider>
+    );
+  }
+);
 
 ListMatchesByGameId.displayName = "ListMatchesByGameId";
 
@@ -45,7 +48,7 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
   const handleSearch = useCallback((filters: SearchFilters) => {
     setSearchFilters(filters);
     // Actualizar la paginación con los nuevos filtros de ordenamiento
-    setPagination(prev => ({
+    setPagination((prev) => ({
       ...prev,
       page: 1, // Reset a la primera página
       sort_by: filters.sortBy || "created_at",
@@ -53,8 +56,15 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
     }));
   }, []);
 
-  const { data, isLoading, error } = MatchClientData.getMatchesByGameId(id, pagination);
-  const { data: game, isLoading: gameIsLoading, error: gameError } = GameClientData.getGameDetail(id);
+  const { data, isLoading, error } = MatchClientData.getMatchesByGameId(
+    id,
+    pagination
+  );
+  const {
+    data: game,
+    isLoading: gameIsLoading,
+    error: gameError,
+  } = GameClientData.getGameDetail(id);
 
   // Memoizar los resultados filtrados para evitar recálculos innecesarios
   const filteredResults = useMemo(() => {
@@ -70,7 +80,7 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
         case "match_name":
           return match.match_id?.toLowerCase().includes(searchTerm);
         case "participants":
-          return match.participant_ids?.some(participantId =>
+          return match.participant_ids?.some((participantId) =>
             participantId.toLowerCase().includes(searchTerm)
           );
         case "status": {
@@ -81,12 +91,13 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
           const gameMode = match.base_bet_amount > 0 ? "with_bet" : "free";
           return gameMode.toLowerCase().includes(searchTerm);
         }
-        default: { // "all"
+        default: {
+          // "all"
           const allStatus = match.winner_id ? "finished" : "active";
           const allGameMode = match.base_bet_amount > 0 ? "with_bet" : "free";
           return (
             match.match_id?.toLowerCase().includes(searchTerm) ||
-            match.participant_ids?.some(participantId =>
+            match.participant_ids?.some((participantId) =>
               participantId.toLowerCase().includes(searchTerm)
             ) ||
             allStatus.toLowerCase().includes(searchTerm) ||
@@ -101,14 +112,16 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
   const errorMessage = useMemo(() => {
     const errorText = error?.message || gameError?.message;
     if (!errorText) return null;
-    
+
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-900">
         <div className="text-center bg-red-900 bg-opacity-50 p-8 rounded-lg border border-red-600 max-w-md">
-          <h2 className="text-2xl font-bold text-red-400 mb-4">Error al cargar datos</h2>
+          <h2 className="text-2xl font-bold text-red-400 mb-4">
+            Error al cargar datos
+          </h2>
           <p className="text-red-300 mb-6">{errorText}</p>
-          <a 
-            href="/games" 
+          <a
+            href="/games"
             className="inline-block bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg hover:from-teal-600 hover:to-cyan-500 transition duration-300"
           >
             Volver a juegos
@@ -119,44 +132,33 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
   }, [error, gameError]);
 
   // Memoizar iconos
-  const matchIcon = useMemo(() => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-8 w-8 text-teal-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-      />
-    </svg>
-  ), []);
+  const matchIcon = useMemo(
+    () => <PersonStanding className="h-8 w-8 text-teal-400" />,
+    []
+  );
 
   // Memoizar estado vacío
-  const emptyState = useMemo(() => (
-    <div className="text-center py-16">
-      <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
-        {matchIcon}
+  const emptyState = useMemo(
+    () => (
+      <div className="text-center py-16">
+        <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
+          {matchIcon}
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-2">
+          No hay partidas disponibles
+        </h3>
+        <p className="text-gray-400 mb-8 max-w-md mx-auto">
+          {searchFilters.searchTerm
+            ? "No se encontraron partidas que coincidan con tu búsqueda."
+            : "Sé el primero en crear una partida para este juego."}
+        </p>
+        {!searchFilters.searchTerm && game && (
+          <CreateMatch gameId={id} game={game as Game} />
+        )}
       </div>
-      <h3 className="text-2xl font-bold text-white mb-2">
-        No hay partidas disponibles
-      </h3>
-      <p className="text-gray-400 mb-8 max-w-md mx-auto">
-        {searchFilters.searchTerm 
-          ? "No se encontraron partidas que coincidan con tu búsqueda."
-          : "Sé el primero en crear una partida para este juego."
-        }
-      </p>
-      {!searchFilters.searchTerm && game && (
-        <CreateMatch gameId={id} game={game as Game} />
-      )}
-    </div>
-  ), [matchIcon, searchFilters.searchTerm, game, id]);
+    ),
+    [matchIcon, searchFilters.searchTerm, game, id]
+  );
 
   // Memoizar grid de partidas
   const matchesGrid = useMemo(() => {
@@ -167,11 +169,7 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredResults.map((match) => (
-          <CardMatch
-            key={match.match_id}
-            match={match}
-            game={game as Game}
-          />
+          <CardMatch key={match.match_id} match={match} game={game as Game} />
         ))}
       </div>
     );
@@ -180,11 +178,11 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
   // Memoizar estadísticas
   const statsInfo = useMemo(() => {
     if (!data?.results) return null;
-    
+
     const total = data.results.length;
-    const active = data.results.filter(m => !m.winner_id).length;
-    const finished = data.results.filter(m => m.winner_id).length;
-    
+    const active = data.results.filter((m) => !m.winner_id).length;
+    const finished = data.results.filter((m) => m.winner_id).length;
+
     return (
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="bg-gray-800 bg-opacity-50 rounded-lg p-4 text-center backdrop-blur-lg">
@@ -236,9 +234,7 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
           </section>
 
           {/* Matches Grid */}
-          <section className="mb-8">
-            {matchesGrid}
-          </section>
+          <section className="mb-8">{matchesGrid}</section>
 
           {/* Pagination */}
           {filteredResults.length > 0 && (
