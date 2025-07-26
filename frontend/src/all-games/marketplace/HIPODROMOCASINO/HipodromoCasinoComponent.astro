@@ -255,11 +255,13 @@
     box-shadow:
       inset 0 0 50px rgba(0, 0, 0, 0.4),
       0 0 30px rgba(0, 0, 0, 0.5);
+    min-width: 600px;
   }
 
   .track-lanes {
     position: relative;
     height: 400px;
+    width: 100%;
   }
 
   .lane {
@@ -278,6 +280,7 @@
     border-top: 2px dashed rgba(255, 255, 255, 0.3);
     border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
     border-radius: 8px;
+    width: 100%;
   }
 
   .lane:last-child {
@@ -290,10 +293,11 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: 3rem;
-    transition: left 0.2s ease-out;
+    transition: left 0.1s linear;
     z-index: 10;
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
     cursor: pointer;
+    will-change: left;
   }
 
   .horse.running {
@@ -346,6 +350,7 @@
     );
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
     border-radius: 4px;
+    z-index: 5;
   }
 
   .distance-markers {
@@ -358,6 +363,44 @@
     font-size: 1rem;
     color: #bdc3c7;
     font-weight: 600;
+    padding: 0 20px;
+  }
+
+  .quarter-markers {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    z-index: 3;
+  }
+
+  .quarter-markers.marker-25 {
+    left: 25%;
+  }
+
+  .quarter-markers.marker-50 {
+    left: 50%;
+    background: rgba(255, 215, 0, 0.3);
+    width: 3px;
+  }
+
+  .quarter-markers.marker-75 {
+    left: 75%;
+  }
+
+  .progress-indicator {
+    position: absolute;
+    top: -25px;
+    font-size: 0.8rem;
+    color: var(--primary-gold);
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .progress-indicator.visible {
+    opacity: 1;
   }
 
   .betting-dashboard {
@@ -938,6 +981,9 @@
       <!-- Los carriles se generarán dinámicamente -->
     </div>
 
+    <div class="quarter-markers marker-25"></div>
+    <div class="quarter-markers marker-50"></div>
+    <div class="quarter-markers marker-75"></div>
     <div class="finish-line"></div>
   </div>
 
@@ -1017,6 +1063,7 @@
       this.selectedBetType = "win";
       this.isRacing = false;
       this.raceNumber = 1;
+      this.currentRaceResults = null;
 
       // Estadísticas
       this.stats = {
@@ -1095,7 +1142,7 @@
 
       trackLanes.innerHTML = "";
 
-      this.horses.forEach((horse) => {
+      this.horses.forEach((horse, index) => {
         const lane = document.createElement("div");
         lane.className = "lane";
 
@@ -1106,7 +1153,14 @@
         horseElement.style.color = horse.color;
         horseElement.title = horse.name;
 
+        // Añadir indicador de progreso
+        const progressIndicator = document.createElement("div");
+        progressIndicator.className = "progress-indicator";
+        progressIndicator.id = `progress-${horse.id}`;
+        progressIndicator.textContent = horse.name;
+
         lane.appendChild(horseElement);
+        lane.appendChild(progressIndicator);
         trackLanes.appendChild(lane);
       });
     }
@@ -1309,21 +1363,22 @@
       await this.showCountdown();
 
       // Generar resultados con probabilidades rigged
-      const raceResults = this.generateRiggedRaceResults();
+      this.currentRaceResults = this.generateRiggedRaceResults();
 
-      // Animar carrera
+      // Animar carrera usando los resultados predeterminados
       await this.runRaceAnimation();
 
-      // Evaluar resultado
-      const isWin = this.checkWin(raceResults);
+      // Evaluar resultado usando los resultados ya calculados
+      const isWin = this.checkWin(this.currentRaceResults);
 
-      this.processRaceResult(isWin, raceResults);
+      this.processRaceResult(isWin, this.currentRaceResults);
 
       // Mostrar animación del ganador
-      this.showWinnerAnimation(raceResults[0].id);
+      this.showWinnerAnimation(this.currentRaceResults[0].id);
 
       // Limpiar
       this.isRacing = false;
+      this.currentRaceResults = null;
       if (startButton) {
         startButton.disabled = false;
         startButton.textContent = "🏁 ¡INICIAR CARRERA! 🏁";
@@ -1431,9 +1486,13 @@
     }
 
     async runRaceAnimation() {
-      const maxDistance = 90; // Porcentaje máximo de la pista
-      const steps = 40; // Número de pasos de animación
-
+      const trackLanes = document.getElementById("trackLanes");
+      if (!trackLanes) return;
+      
+      const trackWidth = trackLanes.offsetWidth;
+      const finishLinePosition = trackWidth - 80; // Posición de la línea de meta
+      const steps = 50; // Más pasos para animación más suave
+      
       // Inicializar posiciones
       this.horses.forEach((horse) => {
         horse.currentPosition = 0;
@@ -1444,41 +1503,101 @@
         }
       });
 
-      // Simular progreso de carrera
-      for (let step = 0; step < steps; step++) {
-        this.horses.forEach((horse) => {
-          // Calcular velocidad basada en estadísticas del caballo
-          const baseSpeed = maxDistance / steps;
-          const speedVariation = (Math.random() - 0.5) * 0.3;
-          const staminaFactor = horse.stamina * (1 - (step / steps) * 0.2);
-          const speedFactor = horse.speed;
+      // Simular progreso de carrera con resultados predeterminados
+      const raceResults = this.currentRaceResults || this.generateRiggedRaceResults();
+      this.currentRaceResults = raceResults;
+      
+      // Calcular velocidades para que los caballos lleguen en el orden correcto
+      const finalPositions = {};
+      raceResults.forEach((horse, index) => {
+        finalPositions[horse.id] = index;
+      });
 
-          const movement =
-            baseSpeed * speedFactor * staminaFactor * (1 + speedVariation);
-          horse.currentPosition = Math.min(
-            horse.currentPosition + movement,
-            maxDistance
-          );
+      for (let step = 0; step < steps; step++) {
+        const progress = step / (steps - 1);
+        
+        this.horses.forEach((horse) => {
+          const finalPosition = finalPositions[horse.id];
+          const targetProgress = this.calculateHorseProgress(progress, finalPosition, steps);
+          
+          // Añadir variación aleatoria para hacer la carrera más emocionante
+          const randomVariation = (Math.random() - 0.5) * 0.1;
+          const adjustedProgress = Math.max(0, Math.min(1, targetProgress + randomVariation));
+          
+          horse.currentPosition = adjustedProgress * finishLinePosition;
 
           // Actualizar posición visual
           const horseElement = document.getElementById(`horse-${horse.id}`);
+          const progressIndicator = document.getElementById(`progress-${horse.id}`);
+          
           if (horseElement) {
-            const pixelPosition =
-              20 + (horse.currentPosition / maxDistance) * 1000;
-            horseElement.style.left = `${Math.min(pixelPosition, 1020)}px`;
+            horseElement.style.left = `${20 + horse.currentPosition}px`;
+          }
+          
+          // Mostrar indicador de progreso en puntos clave
+          if (progressIndicator) {
+            const progressPercent = Math.round(adjustedProgress * 100);
+            if (progressPercent >= 25 && progressPercent < 30) {
+              progressIndicator.style.left = `${20 + horse.currentPosition}px`;
+              progressIndicator.textContent = `${horse.name} - 25%`;
+              progressIndicator.classList.add("visible");
+            } else if (progressPercent >= 50 && progressPercent < 55) {
+              progressIndicator.style.left = `${20 + horse.currentPosition}px`;
+              progressIndicator.textContent = `${horse.name} - 50%`;
+              progressIndicator.classList.add("visible");
+            } else if (progressPercent >= 75 && progressPercent < 80) {
+              progressIndicator.style.left = `${20 + horse.currentPosition}px`;
+              progressIndicator.textContent = `${horse.name} - 75%`;
+              progressIndicator.classList.add("visible");
+            } else if (progressPercent < 25 || (progressPercent >= 30 && progressPercent < 50) || (progressPercent >= 55 && progressPercent < 75) || progressPercent >= 80) {
+              progressIndicator.classList.remove("visible");
+            }
           }
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 80));
       }
 
-      // Remover animación de correr
+      // Posicionar caballos en sus posiciones finales exactas
       this.horses.forEach((horse) => {
+        const finalPosition = finalPositions[horse.id];
         const horseElement = document.getElementById(`horse-${horse.id}`);
+        const progressIndicator = document.getElementById(`progress-${horse.id}`);
+        
         if (horseElement) {
+          // El ganador llega a la línea de meta, los demás quedan ligeramente atrás
+          const finalLeft = finalPosition === 0 ? 
+            finishLinePosition : 
+            finishLinePosition - (finalPosition * 30) - Math.random() * 20;
+          
+          horseElement.style.left = `${20 + finalLeft}px`;
           horseElement.classList.remove("running");
         }
+        
+        // Limpiar indicadores de progreso
+        if (progressIndicator) {
+          progressIndicator.classList.remove("visible");
+        }
       });
+    }
+    
+    calculateHorseProgress(overallProgress, finalPosition, totalSteps) {
+      // Los caballos en mejores posiciones finales van más rápido al final
+      const baseProgress = overallProgress;
+      
+      if (finalPosition === 0) {
+        // El ganador acelera progresivamente
+        return baseProgress * (0.8 + 0.2 * overallProgress);
+      } else if (finalPosition === 1) {
+        // El segundo lugar mantiene ritmo constante
+        return baseProgress * 0.95;
+      } else if (finalPosition === 2) {
+        // El tercer lugar empieza rápido pero se cansa
+        return baseProgress * (1.1 - 0.2 * overallProgress);
+      } else {
+        // El último lugar va más lento
+        return baseProgress * (1.0 - 0.3 * overallProgress);
+      }
     }
 
     showWinnerAnimation(winnerId) {
