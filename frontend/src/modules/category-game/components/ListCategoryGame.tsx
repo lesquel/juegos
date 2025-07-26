@@ -100,7 +100,7 @@ const CategoriesContent = memo(
     const { data, isLoading, error } =
       CategoryGameClientData.getCategoryGames(pagination);
 
-    // Ya no necesitamos filtrado local, el backend maneja todo
+    // Ya no necesitamos filtrado local, el backend maneja 
     const categoryCards = useMemo(() => {
       if (!data?.results) return [];
 

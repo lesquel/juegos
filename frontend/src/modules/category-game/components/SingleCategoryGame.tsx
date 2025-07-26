@@ -3,7 +3,7 @@ import { QueryProvider } from "@providers/QueryProvider";
 import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { ListTagsGames } from "@modules/games/components/tags/ListTagsGames";
 import { SingleCategoryGameSkeleton } from "./SingleCategoryGameSkeleton";
-import { ArrowRight, ArrowRightToLine, Clock, Copy } from "lucide-react";
+import { ArrowRight, Clock, Copy } from "lucide-react";
 
 interface SingleCategoryGameProps {
   id: string;

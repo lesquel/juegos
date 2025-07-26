@@ -4,7 +4,6 @@ import { useForm } from "@tanstack/react-form";
 import { RatingInput } from "./RatingInput";
 import { CommentGameDataClient } from "../services/commentGameDataClient";
 import { Loader, MessageCircleCode, Send } from "lucide-react";
-import { LoadingComponent } from "@components/LoadingComponent";
 
 interface NewCommentFormProps {
   gameId: string;
