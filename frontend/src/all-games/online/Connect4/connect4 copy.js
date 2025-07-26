@@ -524,7 +524,7 @@ function handleOriginalFormatGameState(data) {
 
 function handleWaitingState() {
   console.log("⏳ Estado: Esperando jugadores");
-  updateMessage("⏳ Esperando que se una otro jugador...", "");
+  updateMessage("🕐 Esperando a otro jugador...", "");
   updateConnectionStatus("waiting", "🟡 Esperando jugadores");
   isMyTurn = false;
 }
@@ -563,16 +563,14 @@ function updateTurnFromGameState(currentPlayer) {
 function updateTurnMessage() {
   if (isMyTurn) {
     if (playerColor === "red") {
-      updateMessage("🎯 Es tu turno - Tus fichas son rojas", "current-red");
+      updateMessage("🔴 Tu turno - Eres las fichas rojas", "current-red");
     } else {
-      updateMessage("🎯 Es tu turno - Tus fichas son amarillas", "current-yellow");
+      updateMessage("🟡 Tu turno - Eres las fichas amarillas", "current-yellow");
     }
+  } else if (playerColor === "red") {
+    updateMessage("🟡 Turno del oponente", "current-yellow");
   } else {
-    if (playerColor === "red") {
-      updateMessage("⏳ Turno del oponente (fichas amarillas)", "current-yellow");
-    } else {
-      updateMessage("⏳ Turno del oponente (fichas rojas)", "current-red");
-    }
+    updateMessage("🔴 Turno del oponente", "current-red");
   }
   
   console.log("💬 Mensaje de turno actualizado:", {
@@ -776,15 +774,15 @@ function handleOnlineGameWinner(winner) {
   let modalTitle, modalMessage, titleClass;
   
   if (didIWin) {
-    modalTitle = "🎉 ¡GANASTE! 🎉";
-    modalMessage = `¡Excelente! Has conectado 4 fichas ${getPlayerColorName().toLowerCase()}s y ganaste la partida.`;
+    modalTitle = "🎉 ¡VICTORIA! 🎉";
+    modalMessage = `¡Felicidades! Has ganado la partida como jugador ${getPlayerColorName()}.`;
     titleClass = "winner";
-    updateMessage(`🎉 ¡Ganaste con las fichas ${getPlayerColorName().toLowerCase()}s! 🎉`, getMyPlayerClass());
+    updateMessage("🎉 ¡Has ganado! 🎉", getWinnerClass(winner));
   } else {
-    modalTitle = "😞 Perdiste";
-    modalMessage = `Tu oponente conectó 4 fichas ${getWinnerColorName(winner).toLowerCase()}s primero. ¡Inténtalo de nuevo!`;
+    modalTitle = "😞 Derrota";
+    modalMessage = `El jugador ${getWinnerColorName(winner)} ha ganado esta partida. ¡Mejor suerte la próxima vez!`;
     titleClass = "loser";
-    updateMessage(`😞 Perdiste - El oponente ganó con fichas ${getWinnerColorName(winner).toLowerCase()}s`, getWinnerClass(winner));
+    updateMessage("😞 Has perdido", getWinnerClass(winner));
   }
   
   console.log("🎮 Resultado online:", {
@@ -827,10 +825,6 @@ function getWinnerColorName(winner) {
 
 function getWinnerClass(winner) {
   return winner === "R" ? "current-red" : "current-yellow";
-}
-
-function getMyPlayerClass() {
-  return playerColor === "red" ? "current-red" : "current-yellow";
 }
 
 function updateBoardFromServer(serverBoard) {
@@ -932,7 +926,7 @@ function setGame() {
   // Resetear UI
   currPlayer = playerRed;
   if (isOnlineMode) {
-    updateMessage("🌐 Conectando al juego online...", "");
+    updateMessage("🌐 Modo Online - Esperando conexión...", "");
   } else {
     updateMessage("🏠 Modo Offline - Turno del Jugador Rojo", "current-red");
   }
@@ -970,7 +964,7 @@ function setPiece() {
       playerColor,
       shouldBlock: true
     });
-    updateMessage("⏳ Espera tu turno para jugar", "");
+    updateMessage("❌ No es tu turno", "");
     return;
   }
 
@@ -982,7 +976,6 @@ function setPiece() {
   // Verificar si la columna está llena
   if (currColumns[c] < 0) {
     console.log("⚠️ Columna llena:", c);
-    updateMessage("⚠️ Esta columna está llena, elige otra", "");
     return;
   }
 
@@ -1005,11 +998,11 @@ function setPiece() {
   if (currPlayer === playerRed) {
     tile.classList.add("red-piece");
     currPlayer = playerYellow;
-    updateMessage("🟡 Turno del Jugador Amarillo", "current-yellow");
+    updateMessage("Turno del Jugador Amarillo", "current-yellow");
   } else {
     tile.classList.add("yellow-piece");
     currPlayer = playerRed;
-    updateMessage("🔴 Turno del Jugador Rojo", "current-red");
+    updateMessage("Turno del Jugador Rojo", "current-red");
   }
 
   moveCount++;
@@ -1129,9 +1122,9 @@ function setWinner(winner) {
   });
 
   if (winner === playerRed) {
-    updateMessage("🎉 ¡Las fichas rojas han ganado! 🎉", "current-red");
+    updateMessage("🎉 ¡Jugador Rojo ha ganado! 🎉", "current-red");
   } else {
-    updateMessage("🎉 ¡Las fichas amarillas han ganado! 🎉", "current-yellow");
+    updateMessage("🎉 ¡Jugador Amarillo ha ganado! 🎉", "current-yellow");
   }
 
   // En modo offline, el setWinner se encarga de mostrar el mensaje
@@ -1148,7 +1141,7 @@ function handleTie() {
     boardElement.classList.add("board-disabled");
   }
   
-  updateMessage("💔 ¡Tablero lleno! Ambos jugadores perdieron", "");
+  updateMessage("🤝 ¡Es un empate! Tablero lleno 🤝", "");
 
   // Resaltar todas las piezas para empate
   for (let r = 0; r < rows; r++) {
@@ -1162,9 +1155,9 @@ function handleTie() {
 
   // Mostrar modal de empate
   showGameEndModal(
-    "💔 ¡Ambos Perdieron!",
-    "El tablero se llenó sin que ningún jugador logre conectar 4 fichas. ¡Ambos jugadores han perdido esta partida!",
-    "loser"
+    "🤝 ¡Empate!",
+    "El tablero está lleno y ningún jugador logró conectar 4 fichas. ¡Fue una partida muy reñida!",
+    "winner"
   );
 
   // No necesitamos el botón de reinicio ya que usamos el modal
