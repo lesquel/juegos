@@ -31,7 +31,7 @@ export const CardMatch: React.FC<CardMatchProps> = memo(({ match, game }) => {
       "En curso": "bg-yellow-500 text-yellow-900",
       "Esperando jugadores": "bg-green-500 text-green-100",
     };
-    return colors[matchStatus as keyof typeof colors];
+    return colors[matchStatus];
   }, [matchStatus]);
 
   // Memoizar fecha formateada
@@ -87,7 +87,7 @@ export const CardMatch: React.FC<CardMatchProps> = memo(({ match, game }) => {
       "En curso": <ClockIcon className="h-4 w-4" />,
       "Esperando jugadores": <PersonStandingIcon className="h-4 w-4" />,
     };
-    return icons[matchStatus as keyof typeof icons];
+    return icons[matchStatus];
   }, [matchStatus]);
 
   return (

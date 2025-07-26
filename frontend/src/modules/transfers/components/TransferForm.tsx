@@ -5,6 +5,7 @@ import { TransferDataClient } from "../services/transferDataClient";
 import { QueryProvider } from "@providers/QueryProvider";
 import type { TransferInputModel } from "../models/transfer.model";
 import { DollarSign, Landmark, Loader, Upload } from "lucide-react";
+import { Account } from "./Account";
 
 // Memoizar schema para evitar recreaciones
 const transferSchema = z.object({
@@ -106,30 +107,7 @@ const InternalTransferForm: React.FC = memo(() => {
     return (
       <div className="grid gap-4 mb-6">
         {infoAccounts.accounts.map((account) => (
-          <div
-            key={account.account_id}
-            className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-2"
-          >
-            <div className="font-semibold text-gray-800">
-              {account.account_name}
-            </div>
-            <div className="text-sm text-gray-600">
-              <div>
-                <strong>Número:</strong> {account.account_number}
-              </div>
-              <div>
-                <strong>Titular:</strong> {account.account_owner_name}
-              </div>
-              <div>
-                <strong>Tipo:</strong> {account.account_type}
-              </div>
-              {account.account_description && (
-                <div>
-                  <strong>Descripción:</strong> {account.account_description}
-                </div>
-              )}
-            </div>
-          </div>
+          <Account key={account.account_id} account={account} />
         ))}
       </div>
     );

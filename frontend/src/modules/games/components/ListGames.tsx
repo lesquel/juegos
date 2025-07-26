@@ -104,7 +104,7 @@ const GamesContent = memo(
     // La consulta ahora usa toda la información de paginación, incluyendo búsqueda
     const { data, isLoading, error } = GameClientData.getGames(pagination);
 
-    // Ya no necesitamos filtrado local, el backend maneja todo
+    // Ya no necesitamos filtrado local, el backend maneja 
     const gameCards = useMemo(() => {
       if (!data?.results) return [];
 

@@ -14,14 +14,15 @@ import { endpoints } from "@config/endpoints";
 // Configuración optimizada para mutaciones de autenticación
 const MUTATION_CONFIG = {
   retry: 2, // 2 reintentos para auth
-  retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  retryDelay: (attemptIndex: number) =>
+    Math.min(1000 * 2 ** attemptIndex, 30000),
 };
 
 const AXIOS_CONFIG = {
   timeout: 8000, // 8 segundos para auth (más tiempo)
   headers: {
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  },
 };
 
 export class AuthClientData {
@@ -48,7 +49,11 @@ export class AuthClientData {
       onSuccess: (data) => {
         CookiesSection.set(data);
         setUser(data);
-        window.location.href = "/";
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = "/";
+        }
       },
       onError: (error: ErrorResponseErrorsArray) => {
         console.error("onError:", error);
@@ -87,7 +92,11 @@ export class AuthClientData {
     if (useAuthStore.getState().isLogged()) {
       CookiesSection.clear();
       useAuthStore.getState().clearUser();
-      window.location.href = "/";
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
     }
   }
 }
