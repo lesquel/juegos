@@ -1,23 +1,25 @@
-import { QueryProvider } from "@providers/QueryProvider";
 import { GameClientData } from "../services/gameClientData";
 import { CardGame } from "./CardGame";
 import type { Game } from "../models/game.model";
 import { LoadingComponent } from "@components/LoadingComponent";
 import type { Pagination } from "@models/paguination";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { PaginationComponent } from "@components/PaginationComponent";
 import GameSearchComponent from "./GameSearchComponent";
 import type { SearchFilters } from "@components/SearchComponent";
+import { QueryProvider } from "@providers/QueryProvider";
 
-export const ListGames = () => {
+export const ListGames = memo(() => {
   return (
     <QueryProvider>
       <UseListGames />
     </QueryProvider>
   );
-};
+});
 
-const UseListGames = () => {
+ListGames.displayName = "ListGames";
+
+const UseListGames = memo(() => {
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
     limit: 10,
@@ -45,12 +47,14 @@ const UseListGames = () => {
   const filteredResults = useMemo(() => {
     if (!data?.results) return [];
 
-    const term = searchFilters.searchTerm.toLowerCase();
+    const term = searchFilters.searchTerm.toLowerCase().trim();
+
+    // Si no hay término de búsqueda, devolver todos los resultados
+    if (!term) return data.results;
+
     const type = searchFilters.filterType;
 
     return data.results.filter((game: Game) => {
-      if (!term) return true;
-
       const name = game.game_name?.toLowerCase() || "";
       const description = game.game_description?.toLowerCase() || "";
       const gtype = game.game_type?.toLowerCase() || "";
@@ -63,13 +67,20 @@ const UseListGames = () => {
         case "game_type":
           return gtype.includes(term);
         default:
-          return name.includes(term) || description.includes(term) || gtype.includes(term);
+          return (
+            name.includes(term) ||
+            description.includes(term) ||
+            gtype.includes(term)
+          );
       }
     });
-  }, [data?.results, searchFilters]);
+  }, [data?.results, searchFilters.searchTerm, searchFilters.filterType]);
 
   if (isLoading) return <LoadingComponent />;
-  if (error) return <div className="text-center text-red-400">Error: {error.message}</div>;
+  if (error)
+    return (
+      <div className="text-center text-red-400">Error: {error.message}</div>
+    );
   if (!data?.results || data.results.length === 0)
     return <div className="text-center text-red-400">No hay juegos</div>;
 
@@ -84,7 +95,6 @@ const UseListGames = () => {
           </h1>
         </div>
 
-
         <GameSearchComponent onSearch={handleSearch} />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -94,13 +104,11 @@ const UseListGames = () => {
         </div>
         {filteredResults.length === 0 && searchFilters.searchTerm && (
           <div className="text-center text-gray-400 py-8">
-            No se encontraron juegos que coincidan con "{searchFilters.searchTerm}"
+            No se encontraron juegos que coincidan con "
+            {searchFilters.searchTerm}"
           </div>
         )}
-
-
       </div>
-
 
       <PaginationComponent
         pagination={pagination}
@@ -108,9 +116,8 @@ const UseListGames = () => {
         info={data.info}
         color="bg-gradient-to-r from-teal-500 to-cyan-400"
       />
-
-
-
     </div>
   );
-};
+});
+
+UseListGames.displayName = "UseListGames";

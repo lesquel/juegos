@@ -12,9 +12,11 @@ export class GameClientData {
   public static getGames(paguination: Pagination) {
     return useQuery({
       queryKey: ["games", paguination],
-      gcTime: 1000 * 60 * 10,
-      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 30, // 30 minutos en cache
+      staleTime: 1000 * 60 * 15, // 15 minutos sin refetch
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
       queryFn: () =>
         axios
           .get(
@@ -30,10 +32,12 @@ export class GameClientData {
 
   public static getGameDetail(id: string) {
     return useQuery({
-      queryKey: ["games", id],
-      gcTime: 1000 * 60 * 10,
-      staleTime: 1000 * 60 * 5,
+      queryKey: ["game-detail", id],
+      gcTime: 1000 * 60 * 30, // 30 minutos en cache
+      staleTime: 1000 * 60 * 20, // 20 minutos sin refetch
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
       queryFn: () =>
         axios
           .get(`${GameClientData.BASE_URL}${endpoints.games.getId(id)}`)
@@ -51,10 +55,12 @@ export class GameClientData {
       `${GameClientData.BASE_URL}${endpoints.games.getCategoriesByGameId(id)}`
     );
     return useQuery({
-      queryKey: ["games", id],
-      staleTime: 1000 * 60 * 5,
-      gcTime: 1000 * 60 * 10,
+      queryKey: ["games-by-category", id],
+      staleTime: 1000 * 60 * 15, // 15 minutos sin refetch
+      gcTime: 1000 * 60 * 30, // 30 minutos en cache
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
       queryFn: () =>
         axios
           .get(

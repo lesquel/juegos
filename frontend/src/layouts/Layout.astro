@@ -4,6 +4,7 @@ import "../styles/global.css";
 import { Navbar } from "@components/Navbar";
 import { GlobalClientData } from "@services/globalClientData";
 import { SaveAuthProvider } from "@modules/auth/providers/SaveAuthProvider";
+import { QueryProvider } from "@providers/QueryProvider";
 
 const data = await GlobalClientData.getGlobalInfo();
 ---
@@ -28,6 +29,6 @@ const data = await GlobalClientData.getGlobalInfo();
       data-astro-persist="navbar"
       transition:persist
     />
-    <slot />
+      <slot />
   </body>
 </html>
