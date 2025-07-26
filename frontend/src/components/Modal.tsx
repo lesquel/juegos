@@ -8,50 +8,77 @@ interface ModalProps {
 }
 
 export const Modal = memo(({ children, isOpen, onClose, className = "" }: ModalProps) => {
-  const modalRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-  // Memoizar el handler de ESC
-  const handleEsc = useCallback((event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      onClose();
-    }
-  }, [onClose]);
+  const handleEsc = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
-  // Memoizar el handler de click en el backdrop
-  const handleBackdropClick = useCallback((event: React.MouseEvent) => {
-    if (event.target === event.currentTarget) {
-      onClose();
-    }
-  }, [onClose]);
+  // Click en backdrop
+  const handleBackdropClick = useCallback(
+    (event: React.MouseEvent) => {
+      if (event.target === event.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
+
+  // Soporte para teclado en backdrop (Enter y Space)
+  const handleBackdropKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key === "Enter" || event.key === " " || event.key === "Escape") {
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
   useEffect(() => {
     if (isOpen) {
-      window.addEventListener('keydown', handleEsc);
-      // Prevenir scroll del body cuando el modal está abierto
-      document.body.style.overflow = 'hidden';
+      window.addEventListener("keydown", handleEsc);
+      document.body.style.overflow = "hidden";
+      dialogRef.current?.showModal();
+    } else {
+      dialogRef.current?.close();
+      document.body.style.overflow = "unset";
     }
 
     return () => {
-      window.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'unset';
+      window.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "unset";
     };
   }, [isOpen, handleEsc]);
 
   if (!isOpen) return null;
 
   return (
-    <div 
-      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4"
-      onClick={handleBackdropClick}
+    <dialog
+      ref={dialogRef}
+      className={`bg-gray-800 rounded-lg p-8 max-w-md w-full max-h-[90vh] overflow-y-auto ${className}`}
     >
-      <div 
-        ref={modalRef} 
-        className={`bg-gray-800 rounded-lg p-8 max-w-md w-full max-h-[90vh] overflow-y-auto ${className}`}
+      {/* Backdrop como div separado para manejar click y teclado */}
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        onClick={handleBackdropClick}
+        onKeyDown={handleBackdropKeyDown}
+        role="button"
+        tabIndex={0}
+        aria-label="Cerrar modal"
+      />
+
+      <div
+        className="relative z-50"
         onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>
-    </div>
+    </dialog>
   );
 });
 

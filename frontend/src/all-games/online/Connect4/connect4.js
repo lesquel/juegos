@@ -1,28 +1,49 @@
-var playerRed = "R";
-var playerYellow = "Y";
-var currPlayer = playerRed;
-var gameOver = false;
-var board;
-var rows = 6;
-var columns = 7;
-var currColumns = [];
-var moveCount = 0;
-var winningPositions = [];
+const playerRed = "R";
+const playerYellow = "Y";
+let currPlayer = playerRed;
+let gameOver = false;
+let board;
+const rows = 6;
+const columns = 7;
+let currColumns = [];
+let moveCount = 0;
+let winningPositions = [];
 
 // WebSocket variables
-var socket = null;
-var playerId = null;
-var playerColor = null;
-var isMyTurn = false;
-var isOnlineMode = false;
-var userInfo = null;
+let socket = null;
+let playerId = null;
+let playerColor = null;
+let isMyTurn = false;
+let isOnlineMode = false;
+let userInfo = null;
 const params = new URLSearchParams(window.location.search);
-var gameConfig = {
-  matchId: params.get("match_id"), // Se p  uede cambiar dinámicamente
+let gameConfig = {
+  matchId: params.get("match_id"), // Se puede cambiar dinámicamente
   gameType: "connect4",
 };
 
-// Clase WebSocket Client mejorada
+// Constants
+const WEBSOCKET_URL = "ws://localhost:8000/ws/games";
+const MAX_RETRIES = 3;
+const RECONNECT_DELAY = 3000;
+const GAME_STATE_DELAY = 500;
+const MOVE_STATE_DELAY = 200;
+const BOARD_SIZE = 42; // 6 * 7
+const WIN_LENGTH = 4;
+const DEFAULT_COLUMNS = [5, 5, 5, 5, 5, 5, 5];
+
+// Fallback configuration (should be replaced with proper auth)
+const FALLBACK_CONFIG = {
+  access_token: {
+    access_token: "fallback_token_placeholder",
+    token_type: "bearer",
+  },
+  user: {
+    user_id: "fallback_user_id",
+    email: "fallback@example.com",
+    role: "user",
+  },
+};
 class GameWebSocketClient {
   constructor() {
     this.ws = null;
@@ -31,7 +52,7 @@ class GameWebSocketClient {
     this.token = null;
     this.isConnected = false;
     this.connectionAttempts = 0;
-    this.maxRetries = 3;
+    this.maxRetries = MAX_RETRIES;
   }
 
   connect(matchId, token, playerId) {
@@ -41,7 +62,7 @@ class GameWebSocketClient {
     this.connectionAttempts++;
 
     // Construir URL con token si está disponible
-    let wsUrl = `ws://localhost:8000/ws/games/${matchId}`;
+    let wsUrl = `${WEBSOCKET_URL}/${matchId}`;
     if (token) {
       wsUrl += `?token=${encodeURIComponent(token)}`;
     }
@@ -97,7 +118,7 @@ class GameWebSocketClient {
             })`
           );
           this.connect(this.matchId, this.token, this.playerId);
-        }, 3000);
+        }, RECONNECT_DELAY);
       }
     };
 
@@ -200,8 +221,11 @@ class GameWebSocketClient {
   }
 }
 
-// Instancia global del cliente WebSocket
-var wsClient = new GameWebSocketClient();
+// Helper function to check if WebSocket is connected
+function isWebSocketConnected() {
+  return isOnlineMode && wsClient?.isConnected;
+}
+let wsClient = new GameWebSocketClient();
 
 window.onload = function () {
   console.log("🚀 Iniciando aplicación Connect4...");
@@ -214,124 +238,118 @@ function extractUserInfo() {
   console.log("🔍 Extrayendo información del usuario desde localStorage...");
 
   try {
-    // Buscar en localStorage con la key 'auth-storage'
-    const authStorage = localStorage.getItem("auth-storage");
-
-    if (authStorage) {
-      console.log("✅ auth-storage encontrado en localStorage");
-      const authData = JSON.parse(authStorage);
-      console.log("📋 Estructura de auth-storage:", authData);
-
-      // Extraer los datos del estado
-      if (authData.state && authData.state.user) {
-        userInfo = {
-          access_token: authData.state.user.access_token,
-          user: authData.state.user.user,
-        };
-
-        // IMPORTANTE: Extraer el user_id del token JWT para asegurar coherencia
-        const tokenUserId = extractUserIdFromToken(
-          userInfo.access_token.access_token
-        );
-        if (tokenUserId) {
-          console.log("🔑 User ID del token:", tokenUserId);
-          console.log("👤 User ID del localStorage:", userInfo.user.user_id);
-
-          // Usar el user_id del token para evitar inconsistencias
-          playerId = tokenUserId;
-
-          // Actualizar userInfo con el ID correcto del token
-          userInfo.user.user_id = tokenUserId;
-        } else {
-          // Fallback al ID del localStorage
-          playerId = userInfo.user.user_id;
-        }
-
-        console.log("✅ Información del usuario extraída del localStorage:", {
-          user_id: userInfo.user.user_id,
-          player_id_usado: playerId,
-          email: userInfo.user.email,
-          role: userInfo.user.role,
-          has_token: !!userInfo.access_token?.access_token,
-          token_preview: userInfo.access_token?.access_token
-            ? userInfo.access_token.access_token.substring(0, 20) + "..."
-            : "No token",
-        });
-
-        return;
-      }
+    const authData = getAuthDataFromStorage();
+    if (authData) {
+      return extractFromAuthData(authData);
     }
 
-    console.log(
-      "⚠️ No se encontró auth-storage válido, verificando cookies..."
-    );
-
-    // Fallback: buscar en cookies como antes
-    const cookies = document.cookie.split(";");
-    let userCookie = null;
-
-    console.log("🍪 Cookies disponibles:", cookies);
-
-    for (let cookie of cookies) {
-      const [name, value] = cookie.trim().split("=");
-      console.log("Cookie encontrada:", name);
-      if (
-        name.includes("user") ||
-        name.includes("auth") ||
-        name.includes("session")
-      ) {
-        userCookie = decodeURIComponent(value);
-        console.log("✅ Cookie de usuario encontrada:", name);
-        break;
-      }
+    const cookieData = getAuthDataFromCookies();
+    if (cookieData) {
+      return extractFromCookieData(cookieData);
     }
 
-    if (userCookie) {
-      console.log("📋 Parseando cookie de usuario...");
-      userInfo = JSON.parse(userCookie);
-
-      // También extraer user_id del token si hay cookie
-      const tokenUserId = extractUserIdFromToken(
-        userInfo.access_token?.access_token
-      );
-      playerId = tokenUserId || userInfo.user.user_id;
-      return;
-    }
-
-    // Si no se encuentra nada, usar datos fallback
-    console.log("⚠️ No se encontraron datos de usuario, usando fallback");
-    userInfo = {
-      access_token: {
-        access_token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMzQ3ODY4Zi0yYzcwLTQ5YWYtYjhiZi1lOThhNWE5NDFlNDEiLCJleHAiOjE3NTM0NTQyMzIsImlhdCI6MTc1MzIzODIzMiwidHlwZSI6ImFjY2Vzc190b2tlbiJ9.YRdifdF8JANCFECSNOgHgG76TNAAYAnwaubo1SCAjco",
-        token_type: "bearer",
-      },
-      user: {
-        user_id: "3347868f-2c70-49af-b8bf-e98a5a941e41",
-        email: "lesquel662@gmail.com",
-        role: "user",
-      },
-    };
-    playerId = userInfo.user.user_id;
-    console.log("🛡️ Usando datos de fallback");
+    return useFallbackAuth();
   } catch (error) {
     console.error("💥 Error al extraer información del usuario:", error);
-    // Fallback con datos de ejemplo
-    userInfo = {
-      access_token: {
-        access_token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMzQ3ODY4Zi0yYzcwLTQ5YWYtYjhiZi1lOThhNWE5NDFlNDEiLCJleHAiOjE3NTM0NTQyMzIsImlhdCI6MTc1MzIzODIzMiwidHlwZSI6ImFjY2Vzc190b2tlbiJ9.YRdifdF8JANCFECSNOgHgG76TNAAYAnwaubo1SCAjco",
-        token_type: "bearer",
-      },
-      user: {
-        user_id: "3347868f-2c70-49af-b8bf-e98a5a941e41",
-        email: "lesquel662@gmail.com",
-        role: "user",
-      },
-    };
-    playerId = userInfo.user.user_id;
-    console.log("🛡️ Usando datos de error fallback");
+    return useFallbackAuth();
   }
+}
+
+function getAuthDataFromStorage() {
+  const authStorage = localStorage.getItem("auth-storage");
+  if (!authStorage) {
+    return null;
+  }
+
+  console.log("✅ auth-storage encontrado en localStorage");
+  const authData = JSON.parse(authStorage);
+  console.log("📋 Estructura de auth-storage:", authData);
+
+  return authData?.state?.user ? authData : null;
+}
+
+function extractFromAuthData(authData) {
+  userInfo = {
+    access_token: authData.state.user.access_token,
+    user: authData.state.user.user,
+  };
+
+  // IMPORTANTE: Extraer el user_id del token JWT para asegurar coherencia
+  const tokenUserId = extractUserIdFromToken(
+    userInfo.access_token.access_token
+  );
+  
+  if (tokenUserId) {
+    console.log("🔑 User ID del token:", tokenUserId);
+    console.log("👤 User ID del localStorage:", userInfo.user.user_id);
+
+    // Usar el user_id del token para evitar inconsistencias
+    playerId = tokenUserId;
+    userInfo.user.user_id = tokenUserId;
+  } else {
+    // Fallback al ID del localStorage
+    playerId = userInfo.user.user_id;
+  }
+
+  console.log("✅ Información del usuario extraída del localStorage:", {
+    user_id: userInfo.user.user_id,
+    player_id_usado: playerId,
+    email: userInfo.user.email,
+    role: userInfo.user.role,
+    has_token: !!userInfo.access_token?.access_token,
+    token_preview: userInfo.access_token?.access_token
+      ? userInfo.access_token.access_token.substring(0, 20) + "..."
+      : "No token",
+  });
+
+  return true;
+}
+
+function getAuthDataFromCookies() {
+  console.log("⚠️ No se encontró auth-storage válido, verificando cookies...");
+
+  const cookies = document.cookie.split(";");
+  let userCookie = null;
+
+  console.log("🍪 Cookies disponibles:", cookies);
+
+  for (const cookie of cookies) {
+    const [name, value] = cookie.trim().split("=");
+    console.log("Cookie encontrada:", name);
+    if (
+      name.includes("user") ||
+      name.includes("auth") ||
+      name.includes("session")
+    ) {
+      userCookie = decodeURIComponent(value);
+      console.log("✅ Cookie de usuario encontrada:", name);
+      break;
+    }
+  }
+
+  return userCookie;
+}
+
+function extractFromCookieData(userCookie) {
+  console.log("📋 Parseando cookie de usuario...");
+  userInfo = JSON.parse(userCookie);
+
+  // También extraer user_id del token si hay cookie
+  const tokenUserId = extractUserIdFromToken(
+    userInfo.access_token?.access_token
+  );
+  playerId = tokenUserId || userInfo.user.user_id;
+  return true;
+}
+
+function useFallbackAuth() {
+  console.log("⚠️ No se encontraron datos de usuario, usando fallback");
+  userInfo = {
+    ...FALLBACK_CONFIG
+  };
+  playerId = userInfo.user.user_id;
+  console.log("🛡️ Usando datos de fallback");
+  return true;
 }
 
 // Función para extraer el user_id del token JWT
@@ -375,11 +393,7 @@ function extractUserIdFromToken(token) {
 
 function initializeWebSocket() {
   // Verificar que tenemos la información del usuario
-  if (
-    !userInfo ||
-    !userInfo.access_token ||
-    !userInfo.access_token.access_token
-  ) {
+  if (!userInfo?.access_token?.access_token) {
     console.error(
       "❌ No se pudo obtener la información del usuario o el token"
     );
@@ -391,7 +405,7 @@ function initializeWebSocket() {
     return;
   }
 
-  console.log("� Inicializando WebSocket con nueva clase");
+  console.log("🌐 Inicializando WebSocket con nueva clase");
 
   // Usar la nueva clase WebSocket
   wsClient.connect(
@@ -438,113 +452,112 @@ function handleGameState(data) {
   console.log("🎮 Estado del juego recibido:", data);
   
   // Detectar el formato del mensaje
-  let gameStateData;
-  let playersMapping;
-  
   if (data.game_state) {
-    // Formato nuevo: { type: "game_state", game_state: {...}, players: {...} }
-    gameStateData = data.game_state;
-    playersMapping = data.players;
-    
-    console.log("📋 Formato nuevo detectado");
-    console.log("📋 Game state data:", gameStateData);
-    console.log("📋 Players mapping:", playersMapping);
-    
-    // Determinar mi color basado en el mapping de jugadores
-    if (playersMapping && playersMapping[playerId]) {
-      const mySymbol = playersMapping[playerId];
-      playerColor = mySymbol === "R" ? "red" : "yellow";
-      console.log("📋 Mi símbolo del mapping:", mySymbol, "-> color:", playerColor);
-    }
-    
-    // Determinar el estado del juego
-    if (gameStateData.game_over) {
-      if (gameStateData.winner) {
-        console.log("🏆 Ganador:", gameStateData.winner);
-        handleGameWinner(gameStateData.winner);
-        return;
-      } else {
-        handleTie();
-        return;
-      }
-    }
-    
-    // El juego está en progreso
-    console.log("🎮 Estado: Jugando (2 jugadores conectados)");
-    updateConnectionStatus("connected", "🟢 En juego");
-    
-    // Actualizar el tablero si existe
-    if (gameStateData.board) {
-      console.log("📋 Actualizando tablero desde servidor");
-      updateBoardFromServer(gameStateData.board);
-    }
-    
-    // Determinar de quién es el turno
-    const currentPlayerSymbol = gameStateData.current_player;
-    let isCurrentPlayer = false;
-    
-    if (currentPlayerSymbol === "R") {
-      isCurrentPlayer = (playerColor === "red");
-    } else if (currentPlayerSymbol === "Y") {
-      isCurrentPlayer = (playerColor === "yellow");
-    }
-    
-    isMyTurn = isCurrentPlayer;
-    console.log("📋 Current player del servidor:", currentPlayerSymbol);
-    console.log("📋 Mi color:", playerColor);
-    console.log("📋 Es mi turno:", isMyTurn);
-    
-    updateTurnMessage();
-    updatePlayersInfo(2);
-    
+    handleNewFormatGameState(data);
   } else {
-    // Formato original: campos directos en data
-    console.log("📋 Formato original detectado");
-    console.log("📋 Player ID asignado:", data.player_id);
-    console.log("📋 Color del jugador:", data.player_color);
-    console.log("📋 Estado del juego:", data.state);
-    
-    playerId = data.player_id;
-    playerColor = data.player_color;
-    
-    if (data.state === "waiting_for_players") {
-      console.log("⏳ Estado: Esperando jugadores");
-      updateMessage("🕐 Esperando a otro jugador...", "");
-      updateConnectionStatus("waiting", "🟡 Esperando jugadores");
-      isMyTurn = false;
-    } else if (data.state === "playing") {
-      console.log("🎮 Estado: Jugando");
-      updateConnectionStatus("connected", "🟢 En juego");
-      
-      // Actualizar el tablero si existe
-      if (data.board) {
-        console.log("📋 Actualizando tablero desde servidor");
-        updateBoardFromServer(data.board);
-      }
-      
-      // Determinar de quién es el turno basado en current_player
-      let isCurrentPlayer = false;
-      
-      if (data.current_player === "R" || data.current_player === 1) {
-        isCurrentPlayer = (playerColor === "red");
-      } else if (data.current_player === "Y" || data.current_player === 2) {
-        isCurrentPlayer = (playerColor === "yellow");
-      }
-      
-      isMyTurn = isCurrentPlayer;
-      console.log("📋 Current player del servidor:", data.current_player);
-      console.log("📋 Mi color:", playerColor);
-      console.log("📋 Es mi turno:", isMyTurn);
-      
-      updateTurnMessage();
-      updatePlayersInfo(2);
-    }
-    
-    if (data.winner) {
-      console.log("🏆 Ganador:", data.winner);
-      handleGameWinner(data.winner);
-    }
+    handleOriginalFormatGameState(data);
   }
+}
+
+function handleNewFormatGameState(data) {
+  const gameStateData = data.game_state;
+  const playersMapping = data.players;
+  
+  console.log("📋 Formato nuevo detectado");
+  console.log("📋 Game state data:", gameStateData);
+  console.log("📋 Players mapping:", playersMapping);
+  
+  // Determinar mi color basado en el mapping de jugadores
+  if (playersMapping?.[playerId]) {
+    const mySymbol = playersMapping[playerId];
+    playerColor = mySymbol === "R" ? "red" : "yellow";
+    console.log("📋 Mi símbolo del mapping:", mySymbol, "-> color:", playerColor);
+  }
+  
+  // Determinar el estado del juego
+  if (gameStateData.game_over) {
+    if (gameStateData.winner) {
+      console.log("🏆 Ganador:", gameStateData.winner);
+      handleGameWinner(gameStateData.winner);
+      return;
+    }
+    handleTie();
+    return;
+  }
+  
+  // El juego está en progreso
+  console.log("🎮 Estado: Jugando (2 jugadores conectados)");
+  updateConnectionStatus("connected", "🟢 En juego");
+  
+  // Actualizar el tablero si existe
+  if (gameStateData.board) {
+    console.log("📋 Actualizando tablero desde servidor");
+    updateBoardFromServer(gameStateData.board);
+  }
+  
+  // Determinar de quién es el turno
+  updateTurnFromGameState(gameStateData.current_player);
+  updateTurnMessage();
+  updatePlayersInfo(2);
+}
+
+function handleOriginalFormatGameState(data) {
+  console.log("📋 Formato original detectado");
+  console.log("📋 Player ID asignado:", data.player_id);
+  console.log("📋 Color del jugador:", data.player_color);
+  console.log("📋 Estado del juego:", data.state);
+  
+  playerId = data.player_id;
+  playerColor = data.player_color;
+  
+  if (data.state === "waiting_for_players") {
+    handleWaitingState();
+  } else if (data.state === "playing") {
+    handlePlayingState(data);
+  }
+  
+  if (data.winner) {
+    console.log("🏆 Ganador:", data.winner);
+    handleGameWinner(data.winner);
+  }
+}
+
+function handleWaitingState() {
+  console.log("⏳ Estado: Esperando jugadores");
+  updateMessage("🕐 Esperando a otro jugador...", "");
+  updateConnectionStatus("waiting", "🟡 Esperando jugadores");
+  isMyTurn = false;
+}
+
+function handlePlayingState(data) {
+  console.log("🎮 Estado: Jugando");
+  updateConnectionStatus("connected", "🟢 En juego");
+  
+  // Actualizar el tablero si existe
+  if (data.board) {
+    console.log("📋 Actualizando tablero desde servidor");
+    updateBoardFromServer(data.board);
+  }
+  
+  updateTurnFromGameState(data.current_player);
+  updateTurnMessage();
+  updatePlayersInfo(2);
+}
+
+function updateTurnFromGameState(currentPlayer) {
+  // Determinar de quién es el turno basado en current_player
+  let isCurrentPlayer = false;
+  
+  if (currentPlayer === "R" || currentPlayer === 1) {
+    isCurrentPlayer = (playerColor === "red");
+  } else if (currentPlayer === "Y" || currentPlayer === 2) {
+    isCurrentPlayer = (playerColor === "yellow");
+  }
+  
+  isMyTurn = isCurrentPlayer;
+  console.log("📋 Current player del servidor:", currentPlayer);
+  console.log("📋 Mi color:", playerColor);
+  console.log("📋 Es mi turno:", isMyTurn);
 }
 
 function updateTurnMessage() {
@@ -554,12 +567,10 @@ function updateTurnMessage() {
     } else {
       updateMessage("🟡 Tu turno - Eres las fichas amarillas", "current-yellow");
     }
+  } else if (playerColor === "red") {
+    updateMessage("🟡 Turno del oponente", "current-yellow");
   } else {
-    if (playerColor === "red") {
-      updateMessage("🟡 Turno del oponente", "current-yellow");
-    } else {
-      updateMessage("🔴 Turno del oponente", "current-red");
-    }
+    updateMessage("🔴 Turno del oponente", "current-red");
   }
   
   console.log("💬 Mensaje de turno actualizado:", {
@@ -605,7 +616,7 @@ function handlePlayerJoined(data) {
     console.log("🎯 Dos jugadores conectados, solicitando estado del juego...");
     setTimeout(() => {
       wsClient.getGameState();
-    }, 500); // Pequeño delay para que el servidor procese
+    }, GAME_STATE_DELAY); // Pequeño delay para que el servidor procese
   }
   
   // Actualizar información de jugadores conectados
@@ -615,96 +626,109 @@ function handlePlayerJoined(data) {
 function handleMoveMade(data) {
   console.log("🎯 Movimiento procesado:", data);
   
-  if (data.result && data.result.valid) {
-    // Actualizar el tablero con el movimiento
-    const move = data.move;
-    const playerSymbol = data.player_symbol;
-    
-    console.log("📋 Movimiento válido:", {
-      column: move.column,
-      symbol: playerSymbol,
-      result: data.result
-    });
-    
-    // Encontrar la fila donde se colocó la pieza
-    const col = move.column;
-    let row = -1;
-    
-    for (let r = rows - 1; r >= 0; r--) {
-      if (board[r][col] === " ") {
-        board[r][col] = playerSymbol;
-        row = r;
-        break;
-      }
-    }
-    
-    if (row !== -1) {
-      // Actualizar la visualización
-      const tile = document.getElementById(row.toString() + "-" + col.toString());
-      if (tile) {
-        if (playerSymbol === "R") {
-          tile.classList.add("red-piece");
-        } else if (playerSymbol === "Y") {
-          tile.classList.add("yellow-piece");
-        }
-        
-        // Actualizar currColumns
-        currColumns[col] = row - 1;
-        moveCount++;
-        document.getElementById("moveCount").textContent = moveCount;
-        
-        console.log(`✅ Pieza ${playerSymbol} colocada en [${row}][${col}]`);
-      }
-    }
-    
-    // Actualizar el estado del juego si existe información adicional
-    if (data.game_state) {
-      const gameState = data.game_state;
-      
-      if (gameState.winner) {
-        handleGameWinner(gameState.winner);
-      } else if (gameState.game_over) {
-        handleTie();
-      } else {
-        // Cambiar turno basado en current_player
-        const nextPlayer = gameState.current_player;
-        
-        let isMyNewTurn = false;
-        if (nextPlayer === "R" || nextPlayer === 1) {
-          isMyNewTurn = (playerColor === "red");
-        } else if (nextPlayer === "Y" || nextPlayer === 2) {
-          isMyNewTurn = (playerColor === "yellow");
-        }
-        
-        isMyTurn = isMyNewTurn;
-        
-        console.log("� Nuevo turno:", {
-          nextPlayer: nextPlayer,
-          myColor: playerColor,
-          isMyTurn: isMyTurn
-        });
-        
-        updateTurnMessage();
-        
-        // Información adicional de debugging después del movimiento
-        console.log("🎯 Análisis del movimiento:", {
-          playerWhoMoved: data.player_id,
-          isMyMove: data.player_id === playerId,
-          myPlayerId: playerId,
-          nextPlayerTurn: nextPlayer,
-          myColor: playerColor,
-          nowMyTurn: isMyTurn
-        });
-      }
-    } else {
-      // Si no hay game_state, solicitar el estado actualizado
-      setTimeout(() => {
-        wsClient.getGameState();
-      }, 200);
-    }
+  if (data.result?.valid) {
+    processValidMove(data);
   } else {
     console.log("❌ Movimiento inválido:", data.result);
     updateMessage(`❌ Movimiento inválido: ${data.result?.reason || 'Error desconocido'}`, "");
+  }
+}
+
+function processValidMove(data) {
+  // Actualizar el tablero con el movimiento
+  const move = data.move;
+  const playerSymbol = data.player_symbol;
+  
+  console.log("📋 Movimiento válido:", {
+    column: move.column,
+    symbol: playerSymbol,
+    result: data.result
+  });
+  
+  const row = placePieceOnBoard(move.column, playerSymbol);
+  
+  if (row !== -1) {
+    updateMoveVisualization(row, move.column, playerSymbol);
+  }
+  
+  // Actualizar el estado del juego si existe información adicional
+  if (data.game_state) {
+    processGameStateAfterMove(data.game_state, data.player_id);
+  } else {
+    // Si no hay game_state, solicitar el estado actualizado
+    setTimeout(() => {
+      wsClient.getGameState();
+    }, MOVE_STATE_DELAY);
+  }
+}
+
+function placePieceOnBoard(column, playerSymbol) {
+  let row = -1;
+  
+  for (let r = rows - 1; r >= 0; r--) {
+    if (board[r][column] === " ") {
+      board[r][column] = playerSymbol;
+      row = r;
+      break;
+    }
+  }
+  
+  return row;
+}
+
+function updateMoveVisualization(row, column, playerSymbol) {
+  const tile = document.getElementById(row.toString() + "-" + column.toString());
+  if (tile) {
+    if (playerSymbol === "R") {
+      tile.classList.add("red-piece");
+    } else if (playerSymbol === "Y") {
+      tile.classList.add("yellow-piece");
+    }
+    
+    // Actualizar currColumns
+    currColumns[column] = row - 1;
+    moveCount++;
+    document.getElementById("moveCount").textContent = moveCount;
+    
+    console.log(`✅ Pieza ${playerSymbol} colocada en [${row}][${column}]`);
+  }
+}
+
+function processGameStateAfterMove(gameState, playerId) {
+  if (gameState.winner) {
+    handleGameWinner(gameState.winner);
+  } else if (gameState.game_over) {
+    handleTie();
+  } else {
+    // Cambiar turno basado en current_player
+    const nextPlayer = gameState.current_player;
+    
+    let isMyNewTurn = false;
+    if (nextPlayer === "R" || nextPlayer === 1) {
+      isMyNewTurn = (playerColor === "red");
+    } else if (nextPlayer === "Y" || nextPlayer === 2) {
+      isMyNewTurn = (playerColor === "yellow");
+    }
+    
+    isMyTurn = isMyNewTurn;
+    
+    console.log("🔄 Nuevo turno:", {
+      nextPlayer: nextPlayer,
+      myColor: playerColor,
+      isMyTurn: isMyTurn
+    });
+    
+    updateTurnMessage();
+    
+    // Información adicional de debugging después del movimiento
+    console.log("🎯 Análisis del movimiento:", {
+      playerWhoMoved: playerId,
+      isMyMove: playerId === window.playerId,
+      myPlayerId: window.playerId,
+      nextPlayerTurn: nextPlayer,
+      myColor: playerColor,
+      nowMyTurn: isMyTurn
+    });
   }
 }
 
@@ -733,61 +757,74 @@ function handleGameWinner(winner) {
   gameOver = true;
   
   // Bloquear el tablero
-  const board = document.getElementById("board");
-  if (board) {
-    board.classList.add("board-disabled");
+  const boardElement = document.getElementById("board");
+  if (boardElement) {
+    boardElement.classList.add("board-disabled");
   }
 
-  // Determinar si el jugador actual ganó o perdió
-  let didIWin = false;
-  let modalTitle = "";
-  let modalMessage = "";
-  let titleClass = "";
-  
   if (isOnlineMode) {
-    // En modo online, determinar si yo gané o perdí
-    if (winner === "R" && playerColor === "red") {
-      didIWin = true;
-    } else if (winner === "Y" && playerColor === "yellow") {
-      didIWin = true;
-    }
-    
-    if (didIWin) {
-      modalTitle = "🎉 ¡VICTORIA! 🎉";
-      modalMessage = `¡Felicidades! Has ganado la partida como jugador ${playerColor === "red" ? "Rojo" : "Amarillo"}.`;
-      titleClass = "winner";
-      updateMessage("🎉 ¡Has ganado! 🎉", winner === "R" ? "current-red" : "current-yellow");
-    } else {
-      modalTitle = "😞 Derrota";
-      modalMessage = `El jugador ${winner === "R" ? "Rojo" : "Amarillo"} ha ganado esta partida. ¡Mejor suerte la próxima vez!`;
-      titleClass = "loser";
-      updateMessage("😞 Has perdido", winner === "R" ? "current-red" : "current-yellow");
-    }
-    
-    console.log("🎮 Resultado online:", {
-      winner,
-      myColor: playerColor,
-      didIWin
-    });
+    handleOnlineGameWinner(winner);
   } else {
-    // Modo offline
-    if (winner === "R") {
-      modalTitle = "🎉 ¡Jugador Rojo Gana! 🎉";
-      modalMessage = "¡El jugador rojo ha conectado 4 fichas y gana la partida!";
-      titleClass = "winner";
-      updateMessage("🎉 ¡Jugador Rojo ha ganado! 🎉", "current-red");
-    } else if (winner === "Y") {
-      modalTitle = "🎉 ¡Jugador Amarillo Gana! 🎉";
-      modalMessage = "¡El jugador amarillo ha conectado 4 fichas y gana la partida!";
-      titleClass = "winner";
-      updateMessage("🎉 ¡Jugador Amarillo ha ganado! 🎉", "current-yellow");
-    }
+    handleOfflineGameWinner(winner);
   }
+}
 
-  // Mostrar el modal
+function handleOnlineGameWinner(winner) {
+  const didIWin = isWinnerMe(winner);
+  let modalTitle, modalMessage, titleClass;
+  
+  if (didIWin) {
+    modalTitle = "🎉 ¡VICTORIA! 🎉";
+    modalMessage = `¡Felicidades! Has ganado la partida como jugador ${getPlayerColorName()}.`;
+    titleClass = "winner";
+    updateMessage("🎉 ¡Has ganado! 🎉", getWinnerClass(winner));
+  } else {
+    modalTitle = "😞 Derrota";
+    modalMessage = `El jugador ${getWinnerColorName(winner)} ha ganado esta partida. ¡Mejor suerte la próxima vez!`;
+    titleClass = "loser";
+    updateMessage("😞 Has perdido", getWinnerClass(winner));
+  }
+  
+  console.log("🎮 Resultado online:", {
+    winner,
+    myColor: playerColor,
+    didIWin
+  });
+  
   showGameEndModal(modalTitle, modalMessage, titleClass);
+}
 
-  // El botón de reinicio normal ya no existe - solo usamos el modal
+function handleOfflineGameWinner(winner) {
+  let modalTitle, modalMessage;
+  
+  if (winner === "R") {
+    modalTitle = "🎉 ¡Jugador Rojo Gana! 🎉";
+    modalMessage = "¡El jugador rojo ha conectado 4 fichas y gana la partida!";
+    updateMessage("🎉 ¡Jugador Rojo ha ganado! 🎉", "current-red");
+  } else if (winner === "Y") {
+    modalTitle = "🎉 ¡Jugador Amarillo Gana! 🎉";
+    modalMessage = "¡El jugador amarillo ha conectado 4 fichas y gana la partida!";
+    updateMessage("🎉 ¡Jugador Amarillo ha ganado! 🎉", "current-yellow");
+  }
+  
+  showGameEndModal(modalTitle, modalMessage, "winner");
+}
+
+function isWinnerMe(winner) {
+  return (winner === "R" && playerColor === "red") || 
+         (winner === "Y" && playerColor === "yellow");
+}
+
+function getPlayerColorName() {
+  return playerColor === "red" ? "Rojo" : "Amarillo";
+}
+
+function getWinnerColorName(winner) {
+  return winner === "R" ? "Rojo" : "Amarillo";
+}
+
+function getWinnerClass(winner) {
+  return winner === "R" ? "current-red" : "current-yellow";
 }
 
 function updateBoardFromServer(serverBoard) {
@@ -796,41 +833,55 @@ function updateBoardFromServer(serverBoard) {
   
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      const serverValue = serverBoard[r][c];
-      let localValue = " "; // Valor por defecto
-      
-      // Convertir los valores del servidor a nuestro formato local
-      if (serverValue === 1 || serverValue === "R") {
-        localValue = "R";
-      } else if (serverValue === 2 || serverValue === "Y") {
-        localValue = "Y";
-      } else if (serverValue === 0 || serverValue === null || serverValue === " ") {
-        localValue = " ";
-      }
-      
-      const currentValue = board[r][c];
-      
-      if (localValue !== currentValue) {
-        board[r][c] = localValue;
-        const tile = document.getElementById(r.toString() + "-" + c.toString());
-        
-        if (tile) {
-          // Limpiar clases existentes
-          tile.classList.remove("red-piece", "yellow-piece");
-          
-          // Agregar la clase correspondiente
-          if (localValue === "R") {
-            tile.classList.add("red-piece");
-            console.log(`🔴 Colocando pieza roja en [${r}][${c}]`);
-          } else if (localValue === "Y") {
-            tile.classList.add("yellow-piece");
-            console.log(`🟡 Colocando pieza amarilla en [${r}][${c}]`);
-          }
-        }
-      }
+      updateBoardCell(r, c, serverBoard[r][c]);
     }
   }
   
+  updateColumnsFromBoard();
+  
+  console.log("📋 Tablero local actualizado:", board);
+  console.log("📋 Columnas disponibles:", currColumns);
+}
+
+function updateBoardCell(row, col, serverValue) {
+  const localValue = convertServerValueToLocal(serverValue);
+  const currentValue = board[row][col];
+  
+  if (localValue !== currentValue) {
+    board[row][col] = localValue;
+    updateTileVisualization(row, col, localValue);
+  }
+}
+
+function convertServerValueToLocal(serverValue) {
+  if (serverValue === 1 || serverValue === "R") {
+    return "R";
+  }
+  if (serverValue === 2 || serverValue === "Y") {
+    return "Y";
+  }
+  return " "; // Default for 0, null, " ", etc.
+}
+
+function updateTileVisualization(row, col, localValue) {
+  const tile = document.getElementById(row.toString() + "-" + col.toString());
+  
+  if (tile) {
+    // Limpiar clases existentes
+    tile.classList.remove("red-piece", "yellow-piece");
+    
+    // Agregar la clase correspondiente
+    if (localValue === "R") {
+      tile.classList.add("red-piece");
+      console.log(`🔴 Colocando pieza roja en [${row}][${col}]`);
+    } else if (localValue === "Y") {
+      tile.classList.add("yellow-piece");
+      console.log(`🟡 Colocando pieza amarilla en [${row}][${col}]`);
+    }
+  }
+}
+
+function updateColumnsFromBoard() {
   // Actualizar currColumns basado en el tablero del servidor
   for (let c = 0; c < columns; c++) {
     let availableRow = -1;
@@ -842,14 +893,11 @@ function updateBoardFromServer(serverBoard) {
     }
     currColumns[c] = availableRow;
   }
-  
-  console.log("📋 Tablero local actualizado:", board);
-  console.log("📋 Columnas disponibles:", currColumns);
 }
 
 function setGame() {
   board = [];
-  currColumns = [5, 5, 5, 5, 5, 5, 5];
+  currColumns = [...DEFAULT_COLUMNS];
   moveCount = 0;
   gameOver = false;
   winningPositions = [];
@@ -862,11 +910,11 @@ function setGame() {
   }
 
   for (let r = 0; r < rows; r++) {
-    let row = [];
+    const row = [];
     for (let c = 0; c < columns; c++) {
       row.push(" ");
 
-      let tile = document.createElement("div");
+      const tile = document.createElement("div");
       tile.id = r.toString() + "-" + c.toString();
       tile.classList.add("tile");
       tile.addEventListener("click", setPiece);
@@ -932,7 +980,7 @@ function setPiece() {
   }
 
   // En modo online, usar la nueva clase WebSocket
-  if (isOnlineMode && wsClient && wsClient.isConnected) {
+  if (isWebSocketConnected()) {
     console.log("🌐 Enviando movimiento online - columna:", c);
     const success = wsClient.makeMove(c);
     if (!success) {
@@ -943,11 +991,11 @@ function setPiece() {
 
   // Modo offline - lógica original
   console.log("🏠 Procesando movimiento offline - columna:", c);
-  let r = currColumns[c];
+  const r = currColumns[c];
   board[r][c] = currPlayer;
-  let tile = document.getElementById(r.toString() + "-" + c.toString());
+  const tile = document.getElementById(r.toString() + "-" + c.toString());
 
-  if (currPlayer == playerRed) {
+  if (currPlayer === playerRed) {
     tile.classList.add("red-piece");
     currPlayer = playerYellow;
     updateMessage("Turno del Jugador Amarillo", "current-yellow");
@@ -960,15 +1008,14 @@ function setPiece() {
   moveCount++;
   document.getElementById("moveCount").textContent = moveCount;
 
-  r -= 1;
-  currColumns[c] = r;
+  currColumns[c] = r - 1;
 
   if (checkWinner()) {
     return;
   }
 
   // Verificar empate
-  if (moveCount === 42) {
+  if (moveCount === BOARD_SIZE) {
     handleTie();
   }
 }
@@ -985,95 +1032,84 @@ function updateMessage(text, playerClass) {
 }
 
 function checkWinner() {
-  // Horizontal
+  return checkHorizontalWin() || 
+         checkVerticalWin() || 
+         checkDiagonalWin() || 
+         checkAntiDiagonalWin();
+}
+
+function checkHorizontalWin() {
   for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns - 3; c++) {
-      if (board[r][c] != " ") {
-        if (
-          board[r][c] == board[r][c + 1] &&
-          board[r][c + 1] == board[r][c + 2] &&
-          board[r][c + 2] == board[r][c + 3]
-        ) {
-          winningPositions = [
-            [r, c],
-            [r, c + 1],
-            [r, c + 2],
-            [r, c + 3],
-          ];
-          setWinner(board[r][c]);
-          return true;
-        }
+    for (let c = 0; c < columns - WIN_LENGTH + 1; c++) {
+      if (board[r][c] !== " " && checkLineWin(r, c, 0, 1)) {
+        setWinningLine(r, c, 0, 1);
+        setWinner(board[r][c]);
+        return true;
       }
     }
   }
-
-  // Vertical
-  for (let c = 0; c < columns; c++) {
-    for (let r = 0; r < rows - 3; r++) {
-      if (board[r][c] != " ") {
-        if (
-          board[r][c] == board[r + 1][c] &&
-          board[r + 1][c] == board[r + 2][c] &&
-          board[r + 2][c] == board[r + 3][c]
-        ) {
-          winningPositions = [
-            [r, c],
-            [r + 1, c],
-            [r + 2, c],
-            [r + 3, c],
-          ];
-          setWinner(board[r][c]);
-          return true;
-        }
-      }
-    }
-  }
-
-  // Anti diagonal
-  for (let r = 0; r < rows - 3; r++) {
-    for (let c = 0; c < columns - 3; c++) {
-      if (board[r][c] != " ") {
-        if (
-          board[r][c] == board[r + 1][c + 1] &&
-          board[r + 1][c + 1] == board[r + 2][c + 2] &&
-          board[r + 2][c + 2] == board[r + 3][c + 3]
-        ) {
-          winningPositions = [
-            [r, c],
-            [r + 1, c + 1],
-            [r + 2, c + 2],
-            [r + 3, c + 3],
-          ];
-          setWinner(board[r][c]);
-          return true;
-        }
-      }
-    }
-  }
-
-  // Diagonal
-  for (let r = 3; r < rows; r++) {
-    for (let c = 0; c < columns - 3; c++) {
-      if (board[r][c] != " ") {
-        if (
-          board[r][c] == board[r - 1][c + 1] &&
-          board[r - 1][c + 1] == board[r - 2][c + 2] &&
-          board[r - 2][c + 2] == board[r - 3][c + 3]
-        ) {
-          winningPositions = [
-            [r, c],
-            [r - 1, c + 1],
-            [r - 2, c + 2],
-            [r - 3, c + 3],
-          ];
-          setWinner(board[r][c]);
-          return true;
-        }
-      }
-    }
-  }
-
   return false;
+}
+
+function checkVerticalWin() {
+  for (let c = 0; c < columns; c++) {
+    for (let r = 0; r < rows - WIN_LENGTH + 1; r++) {
+      if (board[r][c] !== " " && checkLineWin(r, c, 1, 0)) {
+        setWinningLine(r, c, 1, 0);
+        setWinner(board[r][c]);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function checkDiagonalWin() {
+  for (let r = WIN_LENGTH - 1; r < rows; r++) {
+    for (let c = 0; c < columns - WIN_LENGTH + 1; c++) {
+      if (board[r][c] !== " " && checkLineWin(r, c, -1, 1)) {
+        setWinningLine(r, c, -1, 1);
+        setWinner(board[r][c]);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function checkAntiDiagonalWin() {
+  for (let r = 0; r < rows - WIN_LENGTH + 1; r++) {
+    for (let c = 0; c < columns - WIN_LENGTH + 1; c++) {
+      if (board[r][c] !== " " && checkLineWin(r, c, 1, 1)) {
+        setWinningLine(r, c, 1, 1);
+        setWinner(board[r][c]);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function checkLineWin(startRow, startCol, deltaRow, deltaCol) {
+  const piece = board[startRow][startCol];
+  for (let i = 1; i < WIN_LENGTH; i++) {
+    const row = startRow + i * deltaRow;
+    const col = startCol + i * deltaCol;
+    if (board[row][col] !== piece) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function setWinningLine(startRow, startCol, deltaRow, deltaCol) {
+  winningPositions = [];
+  for (let i = 0; i < WIN_LENGTH; i++) {
+    winningPositions.push([
+      startRow + i * deltaRow,
+      startCol + i * deltaCol
+    ]);
+  }
 }
 
 function setWinner(winner) {
@@ -1081,11 +1117,11 @@ function setWinner(winner) {
 
   // Resaltar piezas ganadoras
   winningPositions.forEach((pos) => {
-    let tile = document.getElementById(pos[0] + "-" + pos[1]);
+    const tile = document.getElementById(pos[0] + "-" + pos[1]);
     tile.classList.add("winning-piece");
   });
 
-  if (winner == playerRed) {
+  if (winner === playerRed) {
     updateMessage("🎉 ¡Jugador Rojo ha ganado! 🎉", "current-red");
   } else {
     updateMessage("🎉 ¡Jugador Amarillo ha ganado! 🎉", "current-yellow");
@@ -1100,9 +1136,9 @@ function handleTie() {
   gameOver = true;
   
   // Bloquear el tablero
-  const board = document.getElementById("board");
-  if (board) {
-    board.classList.add("board-disabled");
+  const boardElement = document.getElementById("board");
+  if (boardElement) {
+    boardElement.classList.add("board-disabled");
   }
   
   updateMessage("🤝 ¡Es un empate! Tablero lleno 🤝", "");
@@ -1110,7 +1146,7 @@ function handleTie() {
   // Resaltar todas las piezas para empate
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
-      let tile = document.getElementById(r + "-" + c);
+      const tile = document.getElementById(r + "-" + c);
       if (board[r][c] !== " ") {
         tile.classList.add("tie-piece");
       }
@@ -1129,7 +1165,7 @@ function handleTie() {
 
 function restartGame() {
   // En modo online, usar la nueva clase WebSocket
-  if (isOnlineMode && wsClient && wsClient.isConnected) {
+  if (isWebSocketConnected()) {
     wsClient.restartGame();
     return;
   }
@@ -1140,7 +1176,7 @@ function restartGame() {
 
 function getGameState() {
   // Solicitar el estado actual del juego al servidor usando la nueva clase
-  if (isOnlineMode && wsClient && wsClient.isConnected) {
+  if (isWebSocketConnected()) {
     wsClient.getGameState();
   }
 }
@@ -1231,7 +1267,7 @@ function restartGameFromModal() {
   }
   
   // Reiniciar el juego
-  if (isOnlineMode && wsClient && wsClient.isConnected) {
+  if (isWebSocketConnected()) {
     wsClient.restartGame();
   } else {
     setGame();

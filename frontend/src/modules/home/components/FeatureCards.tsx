@@ -75,7 +75,7 @@ const FeatureCards: React.FC = memo(() => {
     <section className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
       {features.map((feature, index) => (
         <Feature
-          key={`feature-${index}`}
+          key={feature.title}
           icon={feature.icon}
           title={feature.title}
           description={feature.description}

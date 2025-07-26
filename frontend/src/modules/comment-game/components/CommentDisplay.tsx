@@ -40,7 +40,6 @@ export const CommentDisplay: React.FC<CommentDisplayProps> = memo(({ comment, ra
       {/* Rating Stars */}
       <div 
         className="flex items-center"
-        role="img"
         aria-label={`Calificación: ${rating} de 5 estrellas`}
       >
         {starsDisplay}

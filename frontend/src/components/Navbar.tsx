@@ -20,21 +20,28 @@ export const Navbar = memo(() => {
   }, []);
 
   // Función para verificar si un enlace está activo
-  const isActivePage = useCallback((path: string) => {
-    // Normalizar las rutas removiendo barras al final
-    const normalizedCurrentPath = currentPath.replace(/\/$/, '') || '/';
-    const normalizedPath = path.replace(/\/$/, '') || '/';
-    
-    console.log("Checking:", normalizedPath, "vs", normalizedCurrentPath); // Debug temporal
-    
-    // Para la página de inicio
-    if (normalizedPath === '/' && normalizedCurrentPath === '/') return true;
-    
-    // Para otras páginas, verificar si la ruta actual comienza con la ruta del enlace
-    if (normalizedPath !== '/' && normalizedCurrentPath.startsWith(normalizedPath)) return true;
-    
-    return false;
-  }, [currentPath]);
+  const isActivePage = useCallback(
+    (path: string) => {
+      // Normalizar las rutas removiendo barras al final
+      const normalizedCurrentPath = currentPath.replace(/\/$/, "") || "/";
+      const normalizedPath = path.replace(/\/$/, "") || "/";
+
+      console.log("Checking:", normalizedPath, "vs", normalizedCurrentPath); // Debug temporal
+
+      // Para la página de inicio
+      if (normalizedPath === "/" && normalizedCurrentPath === "/") return true;
+
+      // Para otras páginas, verificar si la ruta actual comienza con la ruta del enlace
+      if (
+        normalizedPath !== "/" &&
+        normalizedCurrentPath.startsWith(normalizedPath)
+      )
+        return true;
+
+      return false;
+    },
+    [currentPath]
+  );
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen((prev) => {
@@ -59,7 +66,7 @@ export const Navbar = memo(() => {
 
     // Escuchar cambios de navegación
     window.addEventListener("popstate", updateCurrentPath);
-    
+
     // Escuchar cambios en la URL (para SPAs)
     let lastUrl = location.href;
     const observer = new MutationObserver(() => {
@@ -69,7 +76,7 @@ export const Navbar = memo(() => {
         updateCurrentPath();
       }
     });
-    
+
     observer.observe(document, { subtree: true, childList: true });
 
     // Polling fallback para asegurar actualización
@@ -164,14 +171,16 @@ export const Navbar = memo(() => {
       </header>
 
       {/* Mobile Slide-in Menu */}
-      <div
+      <button
         id="mobile-menu-backdrop"
         data-astro-persist="mobile-backdrop"
         className={`fixed inset-0 bg-black opacity-60 z-30 ${
           mobileMenuOpen ? "" : "hidden"
         }`}
         onClick={toggleMobileMenu}
-      ></div>
+        aria-label="Cerrar menú móvil"
+        type="button"
+      ></button>
 
       <div
         id="mobile-menu"
@@ -181,8 +190,8 @@ export const Navbar = memo(() => {
         } md:hidden`}
       >
         <div className="p-8 flex flex-col space-y-6">
-          <a 
-            href="/" 
+          <a
+            href="/"
             className={`relative text-lg transition-all duration-300 ${
               isActivePage("/")
                 ? "text-purple-400 font-bold scale-105 drop-shadow-lg"

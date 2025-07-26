@@ -137,19 +137,16 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
             <form onSubmit={onFormSubmit} className="space-y-6">
               {errorMessage}
 
-              <form.Field
-                name="base_bet_amount"
-                children={(field) => {
-                  // Memoizar errores del campo
+              <form.Field name="base_bet_amount">
+                {(field) => {
                   const fieldErrors = useMemo(
                     () =>
                       field.state.meta.errors.length > 0
-                        ? field.state.meta.errors.join(", ")
+                        ? field.state.meta.errors.map((error : any) => error.message).join(", ")
                         : null,
                     [field.state.meta.errors]
                   );
 
-                  // Memoizar handler de cambio
                   const handleChange = useCallback(
                     (e: React.ChangeEvent<HTMLInputElement>) => {
                       field.handleChange(Number(e.target.value));
@@ -200,7 +197,7 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
                     </div>
                   );
                 }}
-              />
+              </form.Field>
 
               <footer className="flex justify-end space-x-4 pt-4">
                 <button

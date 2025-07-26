@@ -15,7 +15,7 @@ const WelcomeSection: React.FC = memo(() => {
       <p className="text-gray-300 md:text-lg leading-relaxed">
         Este proyecto, creado por estudiantes de 4º nivel de Ingeniería de
         Software de la ULEAM, tiene como fin donar todas las ganancias a
-        fundaciones que luchan contra el cáncer infantil.
+        fundaciones que luchan contra el cáncer infantil.{" "}
         <span className="text-teal-400 font-semibold"> ¡Tu juego ayuda!</span>
       </p>
     </section>

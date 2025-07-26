@@ -12,6 +12,17 @@ export const ListTagsGames: React.FC<ListTagsGamesProps> = memo(
     const { data, isLoading, error } =
       GameClientData.getGamesByCategoryId(categoryId);
 
+    const resultsCount = data?.results?.length ?? 0;
+
+    const isPlural = resultsCount !== 1;
+    const juegosTexto = isPlural ? "juegos" : "juego";
+    const encontradosTexto = isPlural ? "encontrados" : "encontrado";
+
+    const resultsLabel =
+      resultsCount > 0
+        ? `${resultsCount} ${juegosTexto} ${encontradosTexto}`
+        : "Explorando categoría";
+
     // Memoizar estado de carga
     const loadingState = useMemo(
       () => (
@@ -82,13 +93,7 @@ export const ListTagsGames: React.FC<ListTagsGamesProps> = memo(
             <h2 className="text-3xl font-bold text-white">
               Juegos Disponibles
             </h2>
-            <p className="text-gray-400 mt-1">
-              {data?.results?.length
-                ? `${data.results.length} juego${
-                    data.results.length !== 1 ? "s" : ""
-                  } encontrado${data.results.length !== 1 ? "s" : ""}`
-                : "Explorando categoría"}
-            </p>
+            <p className="text-gray-400 mt-1">{resultsLabel}</p>
           </div>
         </header>
 

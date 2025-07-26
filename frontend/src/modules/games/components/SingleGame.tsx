@@ -1,7 +1,6 @@
 import { QueryProvider } from "@providers/QueryProvider";
 import { GameClientData } from "../services/gameClientData";
 import { ListTagCategoryGame } from "@modules/category-game/components/Tags/ListTagCategoryGame";
-import { LoadingComponent } from "@components/LoadingComponent";
 import { ListCommentGame } from "@modules/comment-game/components/ListCommentGame";
 import { NewCommentForm } from "@modules/comment-game/components/NewCommentForm";
 import { PlayCircle } from "lucide-react";
@@ -75,7 +74,7 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
                 </span>
               </h1>
               <div className="flex flex-wrap items-center gap-3">
-                <ListTagCategoryGame gameId={data.game_id as string} />
+                <ListTagCategoryGame gameId={data.game_id} />
               </div>
               <p className="text-gray-300 text-lg leading-relaxed">
                 {data.game_description}

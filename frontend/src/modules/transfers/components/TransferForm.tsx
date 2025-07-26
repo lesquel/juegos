@@ -28,19 +28,26 @@ TransferForm.displayName = "TransferForm";
 
 const InternalTransferForm: React.FC = memo(() => {
   const { mutate, error, isPending } = TransferDataClient.uploadTransfer();
-  const { data: infoAccounts, isLoading: accountsLoading } = TransferDataClient.getInfoAccounts();
+  const { data: infoAccounts, isLoading: accountsLoading } =
+    TransferDataClient.getInfoAccounts();
 
   // Memoizar valores por defecto
-  const defaultValues = useMemo((): TransferInputModel => ({
-    transfer_img: undefined as unknown as File,
-    transfer_amount: 0,
-    transfer_description: "",
-  }), []);
+  const defaultValues = useMemo(
+    (): TransferInputModel => ({
+      transfer_img: undefined as unknown as File,
+      transfer_amount: 0,
+      transfer_description: "",
+    }),
+    []
+  );
 
   // Memoizar callback de submit
-  const handleSubmit = useCallback(async ({ value }: { value: TransferInputModel }) => {
-    mutate(value);
-  }, [mutate]);
+  const handleSubmit = useCallback(
+    async ({ value }: { value: TransferInputModel }) => {
+      mutate(value);
+    },
+    [mutate]
+  );
 
   const form = useForm({
     defaultValues,
@@ -49,20 +56,29 @@ const InternalTransferForm: React.FC = memo(() => {
   });
 
   // Memoizar handler de archivo
-  const handleFileChange = useCallback((field: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) field.handleChange(file);
-  }, []);
+  const handleFileChange = useCallback(
+    (field: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) field.handleChange(file);
+    },
+    []
+  );
 
   // Memoizar handler de cantidad
-  const handleAmountChange = useCallback((field: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    field.handleChange(Number(e.target.value));
-  }, []);
+  const handleAmountChange = useCallback(
+    (field: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      field.handleChange(Number(e.target.value));
+    },
+    []
+  );
 
   // Memoizar handler de descripción
-  const handleDescriptionChange = useCallback((field: any) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    field.handleChange(e.target.value);
-  }, []);
+  const handleDescriptionChange = useCallback(
+    (field: any) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      field.handleChange(e.target.value);
+    },
+    []
+  );
 
   // Memoizar lista de cuentas
   const accountsList = useMemo(() => {
@@ -90,17 +106,27 @@ const InternalTransferForm: React.FC = memo(() => {
     return (
       <div className="grid gap-4 mb-6">
         {infoAccounts.accounts.map((account) => (
-          <div 
+          <div
             key={account.account_id}
             className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-2"
           >
-            <div className="font-semibold text-gray-800">{account.account_name}</div>
+            <div className="font-semibold text-gray-800">
+              {account.account_name}
+            </div>
             <div className="text-sm text-gray-600">
-              <div><strong>Número:</strong> {account.account_number}</div>
-              <div><strong>Titular:</strong> {account.account_owner_name}</div>
-              <div><strong>Tipo:</strong> {account.account_type}</div>
+              <div>
+                <strong>Número:</strong> {account.account_number}
+              </div>
+              <div>
+                <strong>Titular:</strong> {account.account_owner_name}
+              </div>
+              <div>
+                <strong>Tipo:</strong> {account.account_type}
+              </div>
               {account.account_description && (
-                <div><strong>Descripción:</strong> {account.account_description}</div>
+                <div>
+                  <strong>Descripción:</strong> {account.account_description}
+                </div>
               )}
             </div>
           </div>
@@ -112,29 +138,34 @@ const InternalTransferForm: React.FC = memo(() => {
   // Memoizar mensaje de error
   const errorMessage = useMemo(() => {
     if (!error) return null;
-    
+
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg" role="alert">
-        <strong>Error:</strong> {error.errors?.join(", ") || "Ocurrió un error al subir la transferencia"}
+      <div
+        className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg"
+        role="alert"
+      >
+        <strong>Error:</strong>{" "}
+        {error.errors?.join(", ") ||
+          "Ocurrió un error al subir la transferencia"}
       </div>
     );
   }, [error]);
 
   // Memoizar iconos
-  const uploadIcon = useMemo(() => (
-    <Upload className="h-5 w-5" />
-  ), []);
+  const uploadIcon = useMemo(() => <Upload className="h-5 w-5" />, []);
 
-  const moneyIcon = useMemo(() => (
-    <DollarSign className="h-5 w-5" />
-  ), []);
+  const moneyIcon = useMemo(() => <DollarSign className="h-5 w-5" />, []);
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Realizar Transferencia</h1>
-        <p className="text-gray-600">Sube el comprobante de tu transferencia para acreditar fondos</p>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          Realizar Transferencia
+        </h1>
+        <p className="text-gray-600">
+          Sube el comprobante de tu transferencia para acreditar fondos
+        </p>
       </div>
 
       {/* Accounts Section */}
@@ -173,7 +204,9 @@ const InternalTransferForm: React.FC = memo(() => {
               />
               {field.state.meta.errors.length > 0 && (
                 <p className="text-red-500 text-sm" role="alert">
-                  {field.state.meta.errors.join(", ")}
+                  {field.state.meta.errors
+                    .map((error: any) => error.message)
+                    .join(", ")}
                 </p>
               )}
               <p className="text-xs text-gray-500">
@@ -208,7 +241,9 @@ const InternalTransferForm: React.FC = memo(() => {
               </div>
               {field.state.meta.errors.length > 0 && (
                 <p className="text-red-500 text-sm" role="alert">
-                  {field.state.meta.errors.join(", ")}
+                  {field.state.meta.errors
+                    .map((error: any) => error.message)
+                    .join(", ")}
                 </p>
               )}
             </div>
@@ -219,7 +254,10 @@ const InternalTransferForm: React.FC = memo(() => {
         <form.Field name="transfer_description">
           {(field) => (
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="transfer_description"
+              >
                 Descripción (Opcional)
               </label>
               <textarea
@@ -237,7 +275,9 @@ const InternalTransferForm: React.FC = memo(() => {
               </div>
               {field.state.meta.errors.length > 0 && (
                 <p className="text-red-500 text-sm" role="alert">
-                  {field.state.meta.errors.join(", ")}
+                  {field.state.meta.errors
+                    .map((error: any) => error.message)
+                    .join(", ")}
                 </p>
               )}
             </div>

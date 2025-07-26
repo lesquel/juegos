@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { GameAdapter } from "../adapters/game.adapter";
 import { environment } from "@config/environment";
-import type { Pagination } from "@models/paguination";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 import { endpoints } from "@config/endpoints";
 import type { PaguinationGames } from "../models/paguination-games";

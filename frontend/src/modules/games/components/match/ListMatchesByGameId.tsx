@@ -9,7 +9,6 @@ import { CardMatch } from "./CardMatch";
 import MatchSearchComponent from "./MatchSearchComponent";
 import type { Game } from "@modules/games/models/game.model";
 import type { PaguinationMatch } from "@modules/games/models/paguination-match";
-import type { Info } from "@models/info.model";
 import type { SearchFilters } from "@components/SearchComponent";
 import { PersonStanding } from "lucide-react";
 import { CardMatchSkeleton } from "./CardMatchSkeleton";
@@ -163,7 +162,7 @@ const MatchesContent = memo(
       pagination
     );
 
-    // Ya no necesitamos filtrado local, el backend maneja todo
+    // Ya no necesitamos filtrado local, el backend maneja
     const matchCards = useMemo(() => {
       if (!data?.results) return [];
 
@@ -319,7 +318,7 @@ const MatchesContent = memo(
             <PaginationComponent
               pagination={pagination}
               setPagination={onPaginationChange}
-              info={data.info as Info}
+              info={data.info}
               color="bg-gradient-to-r from-teal-500 to-cyan-400"
             />
           </footer>
