@@ -57,7 +57,7 @@ class FinishMatchUseCase(BaseUseCase[MatchParticipationResultsDTO, MatchResponse
             self.logger.error(f"Match not found: {match_id}")
             raise MatchNotFoundError(f"Match with ID {match_id} not found")
 
-        if match.winner_id:
+        if match.is_finished_match():
             self.logger.error(f"Match {match_id} has already been finished")
             raise MatchScoreError("Match has already been finished")
 
@@ -70,14 +70,14 @@ class FinishMatchUseCase(BaseUseCase[MatchParticipationResultsDTO, MatchResponse
                 )
                 raise MatchScoreError("User is not a participant in this match")
 
-        match.winner_id = MatchService.get_winner(participations)
+        match.winner_id = MatchService.get_winner_id(participations)
+        match.is_finished = True
 
         self.logger.info(
             f"Determined winner {match.winner_id} for match {match_id} based on scores"
         )
 
         try:
-            # Actualizar puntuación
             updated_match = await self.match_repo.update(match_id, match)
 
             # Obtener el ganador
@@ -96,8 +96,13 @@ class FinishMatchUseCase(BaseUseCase[MatchParticipationResultsDTO, MatchResponse
 
             # Calcular recompensa
             try:
-                odds = updated_match.calculate_odds_for_match(game.house_odds)
+                odds = (
+                    updated_match.calculate_odds_for_match(game.house_odds)
+                    if not participation_data.custom_odds
+                    else participation_data.custom_odds
+                )
                 base_bet = updated_match.base_bet_amount or 0.0
+
                 reward = UserBalanceService.calculate_reward(odds, base_bet)
 
                 self.logger.info(

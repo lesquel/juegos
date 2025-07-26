@@ -17,6 +17,7 @@ class MatchAdmin(ModelView, model=MatchModel):
         MatchModel.winner,
         MatchModel.creator,
         MatchModel.participants,
+        MatchModel.is_finished,
         MatchModel.base_bet_amount,
         MatchModel.created_at,
         MatchModel.updated_at,
@@ -30,6 +31,7 @@ class MatchAdmin(ModelView, model=MatchModel):
         MatchModel.game,
         MatchModel.winner,
         MatchModel.base_bet_amount,
+        MatchModel.is_finished,
     ]
 
     # Columnas para filtrado
@@ -37,6 +39,7 @@ class MatchAdmin(ModelView, model=MatchModel):
         MatchModel.game,
         MatchModel.winner,
         MatchModel.creator,
+        MatchModel.is_finished,
         MatchModel.created_at,
         MatchModel.updated_at,
     ]

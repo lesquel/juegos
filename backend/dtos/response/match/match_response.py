@@ -60,6 +60,8 @@ class MatchResponseDTO(TimeStampBase):
         None, description="Cuota ganadora de la partida"
     )
 
+    is_finished: bool = Field(False, description="Indica si la partida ha finalizado")
+
     class Config:
         json_schema_extra = {
             "example": {

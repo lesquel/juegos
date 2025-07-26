@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, Float, ForeignKey
+from sqlalchemy import Boolean, Column, Float, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -36,6 +36,12 @@ class MatchModel(Base, TimeStampModelMixin):
     game = relationship("GameModel", back_populates="matches", lazy="joined")
     winner = relationship(
         "UserModel", back_populates="won_matches", foreign_keys=[winner_id]
+    )
+
+    is_finished = Column(
+        Boolean,
+        default=False,
+        comment="Indica si la partida ha finalizado",
     )
 
     participants = relationship(

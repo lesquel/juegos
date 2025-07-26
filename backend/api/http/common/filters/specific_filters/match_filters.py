@@ -50,10 +50,10 @@ class MatchFilterParams(BaseFilterParams):
             )
         return query
 
-    def filter_has_winner(self, query, model, value: bool):
-        if value:
-            return query.filter(model.winner_id.is_not(None))
-        return query.filter(model.winner_id.is_(None))
+    def filter_is_finished(self, query, model, value: bool):
+        if value is not None:
+            return query.filter(model.is_finished == value)
+        return query
 
     def filter_user_email(self, query, model, value):
         if value:
