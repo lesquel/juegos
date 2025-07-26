@@ -6,7 +6,7 @@ type Props = {
 
 export const ItemAuthLogout = ({ className }: Props) => {
   return (
-    <button className={`text-white ${className}`} onClick={() => AuthClientData.logout()}>
+    <button className={`text-white cursor-pointer ${className}`} onClick={() => AuthClientData.logout()}>
       Logout
     </button>
   );

@@ -37,11 +37,12 @@ export const NavbarAvatar = () => {
               className="block px-4 py-2 text-white hover:bg-gray-700"
               onClick={() => setOpen(false)}
             >
+
               Perfil
             </a>
             <div className="border-t border-gray-700" />
             <div className="px-4 py-2">
-              <ItemAuthLogout />
+              <ItemAuthLogout className="hover:bg-gray-700" />
             </div>
           </div>
         )}
