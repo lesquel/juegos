@@ -67,7 +67,7 @@ const UseListGames = memo(() => {
       <div className="container mx-auto px-4 py-8 text-white">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-cyan-400">
                 Explora Nuestros Juegos

@@ -6,7 +6,7 @@ export class CookiesSection {
 
   static set(user: UserMe) {
     Cookies.set(CookiesSection.cookieName, JSON.stringify(user), {
-      expires: 999999,
+      expires: 2.5,
     });
     console.log(Cookies.get(CookiesSection.cookieName));
   }

@@ -572,15 +572,13 @@ function updateTurnMessage() {
         "current-yellow"
       );
     }
+  } else if (playerColor === "red") {
+    updateMessage(
+      "⏳ Turno del oponente (fichas amarillas)",
+      "current-yellow"
+    );
   } else {
-    if (playerColor === "red") {
-      updateMessage(
-        "⏳ Turno del oponente (fichas amarillas)",
-        "current-yellow"
-      );
-    } else {
-      updateMessage("⏳ Turno del oponente (fichas rojas)", "current-red");
-    }
+    updateMessage("⏳ Turno del oponente (fichas rojas)", "current-red");
   }
 
   console.log("💬 Mensaje de turno actualizado:", {

@@ -1,13 +1,17 @@
 import { authRoutesConfig } from "../config/auth.routes.config";
-import { useAuthStore } from "../store/auth.store";
+import { CookiesSection } from "../utils/cookiesSection";
 
 export class MiddlewareAstroProtectUser {
   static isLogged() {
-    if (!useAuthStore.getState().isLogged()) return;
-    window.location.href = "/";
+    // Si NO hay sesión, redirige al login
+    if (!CookiesSection.get()) {
+      window.location.href = authRoutesConfig.children.login.url;
+    }
   }
   static isNotLogged() {
-    if (useAuthStore.getState().isLogged()) return;
-    window.location.href = authRoutesConfig.children.login.url;
+    // Si SÍ hay sesión, redirige al home
+    if (CookiesSection.get()) {
+      window.location.href = "/";
+    }
   }
 }

@@ -103,7 +103,7 @@ export const Navbar = memo(() => {
           <div className="flex items-center">
             <a
               href="/"
-              className="text-2xl font-bold text-white hover:text-purple-400 transition-colors duration-300 flex items-center"
+              className="text-2xl gap-2.5 font-bold text-white hover:text-purple-400 transition-colors duration-300 flex items-center"
             >
               <GamepadIcon className="w-6 h-6" />
               GameForGood

@@ -5,7 +5,7 @@ import { useAuthStore } from "../store/auth.store";
 
 export const SaveAuthProvider: React.FC = memo(() => {
   const setUser = useStore(useAuthStore, (state) => state.setUser);
-  
+
   // Memoizar el usuario de las cookies para evitar accesos repetidos
   const userFromCookies = useMemo(() => {
     return CookiesSection.get();

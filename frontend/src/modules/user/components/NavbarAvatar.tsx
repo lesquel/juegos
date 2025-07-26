@@ -42,14 +42,14 @@ export const NavbarAvatar = memo(() => {
       {/* Large screens: dropdown */}
       <div className="hidden md:block relative" ref={dropdownRef}>
         <button
-          className="text-white flex items-center focus:outline-none hover:text-gray-300 transition-colors"
+          className="text-white flex items-center focus:outline-none hover:text-gray-300 transition-colors cursor-pointer"
           onClick={toggleOpen}
           aria-label="Menú de usuario"
         >
           {userIcon}
         </button>
         {open && (
-          <div className="absolute right-0 mt-2 w-40 bg-gray-800 rounded shadow-lg z-50 border border-gray-700">
+          <div className="absolute right-0 mt-2 w-40 bg-gray-800 rounded shadow-lg z-50 border border-gray-700 min-w-44">
             <a
               href={profileUrl}
               className="block px-4 py-2 text-white hover:bg-gray-700 transition-colors"
@@ -58,18 +58,18 @@ export const NavbarAvatar = memo(() => {
               Perfil
             </a>
             <div className="border-t border-gray-700" />
-            <div className="px-4 py-2">
-              <ItemAuthLogout className="hover:bg-gray-700 transition-colors" />
+            <div className="">
+              <ItemAuthLogout className="hover:bg-gray-700 transition-colors px-4 py-2 w-full" />
             </div>
           </div>
         )}
       </div>
 
       {/* Small screens: avatar and logout stacked */}
-      <div className="md:hidden flex flex-col items-start gap-2">
+      <div className="md:hidden flex flex-col items-start gap-5">
         <a
           href={profileUrl}
-          className="text-gray-300 hover:text-white flex items-center rounded transition-colors text-lg"
+          className="text-gray-300 hover:text-white flex items-center rounded transition-colors text-md"
         >
           Mi perfil
         </a>

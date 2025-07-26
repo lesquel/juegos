@@ -7,6 +7,7 @@ import type { Match } from "@modules/games/models/match.model";
 import { MatchClientData } from "@modules/games/services/matchClientData";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 import { DollarSign, Plus } from "lucide-react";
+import { LoadingComponent } from "@components/LoadingComponent";
 
 interface CreateMatchProps {
   gameId: string;
@@ -78,10 +79,12 @@ export const BetAmountField: React.FC<BetAmountFieldProps> = ({
 
 export const CreateMatch: React.FC<CreateMatchProps> = memo(
   ({ gameId, game }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const onSuccess = useCallback(
       (data: Match) => {
+        setIsLoading(false);
         const newUrl = `${location.protocol}//${location.host}/${game?.game_url}?match_id=${data.match_id}`;
         location.href = newUrl;
       },
@@ -129,6 +132,7 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
 
     const onFormSubmit = useCallback(
       (e: React.FormEvent) => {
+        setIsLoading(true);
         e.preventDefault();
         void form.handleSubmit();
       },
@@ -170,6 +174,7 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
         </button>
 
         <Modal isOpen={isModalOpen} onClose={closeModal}>
+          {isLoading && <LoadingComponent />}
           <div className="p-6">
             <header className="mb-6">
               <h1 className="text-2xl font-bold text-white flex items-center gap-3">
