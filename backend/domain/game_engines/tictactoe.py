@@ -19,6 +19,8 @@ class TictactoeGame(BaseGameEngine):
 
         # Llamar al constructor padre después de inicializar propiedades
         super().__init__()
+        # Forzar la creación del tablero correcto para TicTacToe
+        self.board = self.create_board()
         # Sobrescribir el jugador actual para Tic Tac Toe (primer jugador es R)
         self.current_player = "R"
 
@@ -138,3 +140,7 @@ class TictactoeGame(BaseGameEngine):
         if row < 0 or row >= 3 or col < 0 or col >= 3:
             return False
         return self.board[row][col] == " "
+
+    def get_board(self) -> list:
+        """Retorna el tablero de Tic-Tac-Toe (3x3) en el formato correcto"""
+        return self.board

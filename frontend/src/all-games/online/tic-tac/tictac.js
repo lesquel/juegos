@@ -375,12 +375,82 @@ function handleWebSocketMessage(data) {
     case "game_restarted":
       handleGameRestarted(data);
       break;
+    case "game_finished_automatically":
+      handleGameFinishedAutomatically(data);
+      break;
     case "error":
       handleError(data);
       break;
     default:
       console.log("⚠️ Tipo de mensaje no reconocido:", data.type);
   }
+}
+
+function handleGameFinishedAutomatically(data) {
+  console.log("🏁 Juego finalizado automáticamente:", data);
+  
+  // Bloquear el tablero
+  gameOver = true;
+  const boardElement = document.getElementById("board");
+  if (boardElement) {
+    boardElement.style.pointerEvents = "none";
+  }
+  
+  // Extraer información del resultado
+  const winner = data.winner;
+  const isTie = data.is_tie;
+  const finalScores = data.final_scores || [];
+  
+  console.log("🏆 Ganador:", winner, "| Empate:", isTie);
+  console.log("📊 Puntuaciones finales:", finalScores);
+  
+  if (isTie) {
+    // Manejar empate
+    updateMessage("¡Es un empate! 🤝");
+    const modalTitle = "🤝 ¡Empate!";
+    const modalMessage = "¡Fue una partida muy reñida! Nadie ganó esta vez.";
+    showGameEndModal(modalTitle, modalMessage, "tie");
+    
+    // Resaltar todas las casillas para empate
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        let tile = document.getElementById(r.toString() + "-" + c.toString());
+        if (tile) {
+          tile.classList.add("tie");
+        }
+      }
+    }
+  } else if (winner) {
+    // Determinar si el jugador actual ganó o perdió
+    const currentPlayerBackendSymbol = getBackendSymbolFromFrontend(playerSymbol);
+    const isCurrentPlayerWinner = (winner === currentPlayerBackendSymbol);
+    
+    console.log("🎯 Comparación de ganador:");
+    console.log("  - Ganador del backend:", winner);
+    console.log("  - Mi símbolo frontend:", playerSymbol);
+    console.log("  - Mi símbolo backend:", currentPlayerBackendSymbol);
+    console.log("  - ¿Soy el ganador?:", isCurrentPlayerWinner);
+    
+    if (isCurrentPlayerWinner) {
+      updateMessage(`¡Has ganado! 🎉`);
+      const modalTitle = "🎉 ¡Victoria!";
+      const modalMessage = "¡Felicidades! Has ganado la partida.";
+      showGameEndModal(modalTitle, modalMessage, "victory");
+    } else {
+      updateMessage(`Has perdido 😔`);
+      const modalTitle = "😔 Derrota";
+      const modalMessage = "¡Mejor suerte la próxima vez!";
+      showGameEndModal(modalTitle, modalMessage, "defeat");
+    }
+  }
+  
+  // Desconectar WebSocket después de un breve delay para permitir que se vea el resultado
+  setTimeout(() => {
+    if (wsClient) {
+      console.log("🔌 Desconectando WebSocket después de finalización automática");
+      wsClient.disconnect();
+    }
+  }, 5000); // 5 segundos para que el usuario vea el resultado
 }
 
 function handleGameState(data) {
@@ -520,10 +590,18 @@ function updateTurnFromGameState(currentPlayer) {
   // Determinar de quién es el turno basado en current_player
   let isCurrentPlayer = false;
 
-  if (currentPlayer === "X" || currentPlayer === 1) {
+  console.log("🎯 Determinando turno:", {
+    currentPlayerFromServer: currentPlayer,
+    myPlayerSymbol: playerSymbol,
+    playerId: playerId
+  });
+
+  if (currentPlayer === "X" || currentPlayer === 1 || currentPlayer === "R") {
     isCurrentPlayer = playerSymbol === "X";
-  } else if (currentPlayer === "O" || currentPlayer === 2) {
+    console.log("🔴 Turno del jugador X/R:", { isMyTurn: isCurrentPlayer, mySymbol: playerSymbol });
+  } else if (currentPlayer === "O" || currentPlayer === 2 || currentPlayer === "Y") {
     isCurrentPlayer = playerSymbol === "O";
+    console.log("🟡 Turno del jugador O/Y:", { isMyTurn: isCurrentPlayer, mySymbol: playerSymbol });
   }
 
   isMyTurn = isCurrentPlayer;
@@ -621,11 +699,27 @@ function processValidMove(data) {
     moveCount++;
   }
 
+  // Verificar ganador localmente después de actualizar el tablero
+  console.log("🔍 Verificando ganador después del movimiento...");
+  if (checkWinner()) {
+    console.log("🏆 ¡Ganador detectado localmente!");
+    return; // checkWinner() ya maneja el final del juego
+  }
+
+  // Verificar empate
+  if (moveCount >= 9) {
+    console.log("🤝 Empate detectado localmente!");
+    handleTie();
+    return;
+  }
+
   // Actualizar el estado del juego si existe información adicional
   if (data.game_state) {
+    console.log("🎮 Actualizando estado con data.game_state:", data.game_state);
     processGameStateAfterMove(data.game_state, data.player_id);
   } else {
-    // Cambiar turno temporalmente hasta recibir el estado actualizado
+    // Si no hay game_state en la respuesta, solicitar el estado actualizado
+    console.log("🔄 No hay game_state en la respuesta, solicitando estado...");
     setTimeout(() => {
       if (wsClient.isConnected) {
         wsClient.sendMessage({
@@ -647,12 +741,35 @@ function updateTileVisualization(row, col, symbol) {
 }
 
 function processGameStateAfterMove(gameState, playerId) {
+  console.log("🎮 Procesando estado después del movimiento:", gameState);
+  
   if (gameState.winner) {
-    handleGameWinner(gameState.winner);
+    // Mapear ganador
+    let mappedWinner = gameState.winner;
+    if (gameState.winner === "R") {
+      mappedWinner = "X";
+    } else if (gameState.winner === "Y") {
+      mappedWinner = "O";
+    }
+    handleGameWinner(mappedWinner);
   } else if (gameState.game_over) {
     handleTie();
   } else {
-    updateTurnFromGameState(gameState.current_player);
+    // Mapear current_player para determinar turnos
+    let mappedCurrentPlayer = gameState.current_player;
+    if (gameState.current_player === "R") {
+      mappedCurrentPlayer = "X";
+    } else if (gameState.current_player === "Y") {
+      mappedCurrentPlayer = "O";
+    }
+    
+    console.log("🔄 Actualizando turno después del movimiento:", {
+      originalCurrentPlayer: gameState.current_player,
+      mappedCurrentPlayer: mappedCurrentPlayer,
+      mySymbol: playerSymbol
+    });
+    
+    updateTurnFromGameState(mappedCurrentPlayer);
     updateTurnMessage();
   }
 }
@@ -749,11 +866,20 @@ function getWinnerSymbolName(winner) {
 function updateBoardFromServer(serverBoard) {
   // Actualizar el tablero local con el estado del servidor
   console.log("🔄 Actualizando tablero desde servidor:", serverBoard);
+  console.log(`📋 Tablero del servidor: ${serverBoard.length}x${serverBoard[0]?.length || 0}`);
 
-  for (let r = 0; r < 3; r++) {
-    for (let c = 0; c < 3; c++) {
-      const serverValue = serverBoard[r][c];
-      updateBoardCell(r, c, serverValue);
+  // SOLUCIÓN: Si el servidor envía un tablero de Connect4 (6x7), extraer solo las primeras 3x3 celdas
+  const maxRows = Math.min(3, serverBoard.length);
+  const maxCols = Math.min(3, serverBoard[0]?.length || 0);
+
+  console.log(`📋 Procesando tablero: ${maxRows}x${maxCols}`);
+
+  for (let r = 0; r < maxRows; r++) {
+    for (let c = 0; c < maxCols; c++) {
+      if (serverBoard[r] && serverBoard[r][c] !== undefined) {
+        const serverValue = serverBoard[r][c];
+        updateBoardCell(r, c, serverValue);
+      }
     }
   }
 
@@ -780,6 +906,17 @@ function convertServerValueToLocal(serverValue) {
     return "O";
   }
   return " "; // Default for 0, null, " ", etc.
+}
+
+function getBackendSymbolFromFrontend(frontendSymbol) {
+  // Convertir símbolos del frontend (X/O) a los símbolos del backend (R/Y)
+  if (frontendSymbol === "X") {
+    return "R";
+  }
+  if (frontendSymbol === "O") {
+    return "Y";
+  }
+  return frontendSymbol; // Devolver tal como está si no coincide
 }
 
 // Eliminar window.onload duplicado - solo usar DOMContentLoaded
@@ -961,9 +1098,19 @@ function highlightWinningLine(positions) {
 
 function handleWin(winner) {
   gameOver = true;
+  console.log("🏆 Juego terminado - Ganador local:", winner);
   
-  // En modo offline, mostrar mensaje y modal
-  if (!isOnlineMode) {
+  // Bloquear el tablero
+  const boardElement = document.getElementById("board");
+  if (boardElement) {
+    boardElement.style.pointerEvents = "none";
+  }
+
+  // En modo online, manejar como victoria online
+  if (isOnlineMode) {
+    handleOnlineGameWinner(winner);
+  } else {
+    // En modo offline, mostrar mensaje y modal
     updateMessage(`¡Jugador ${winner} ha ganado! 🎉`);
     
     const modalTitle = `🎉 ¡Jugador ${winner} Gana!`;
@@ -986,7 +1133,13 @@ function handleWin(winner) {
 
 function handleTie() {
   gameOver = true;
-  updateMessage("¡Es un empate! 🤝");
+  console.log("🤝 Juego terminado - Empate");
+  
+  // Bloquear el tablero
+  const boardElement = document.getElementById("board");
+  if (boardElement) {
+    boardElement.style.pointerEvents = "none";
+  }
 
   // Resaltar todas las casillas para empate
   for (let r = 0; r < 3; r++) {
@@ -1003,14 +1156,109 @@ function handleTie() {
     restartBtn.style.display = "inline-block";
   }
 
-  // Mostrar modal de empate
-  showGameEndModal("🤝 ¡Empate!", "¡Un juego muy reñido! Nadie ha ganado esta vez.", "tie");
-
-  // En modo offline, reiniciar automáticamente después de 3 segundos
-  if (!isOnlineMode) {
+  // En modo online, manejar como empate online
+  if (isOnlineMode) {
+    handleOnlineGameTie();
+  } else {
+    // En modo offline, mostrar modal de empate
+    showGameEndModal("🤝 ¡Empate!", "¡Un juego muy reñido! Nadie ha ganado esta vez.", "tie");
+    
+    // En modo offline, reiniciar automáticamente después de 3 segundos
     setTimeout(function () {
       restartGame();
     }, 3000);
+  }
+}
+
+function handleOnlineGameTie() {
+  console.log("🤝 Manejando empate online");
+  
+  updateMessage("¡Es un empate! 🤝");
+  const modalTitle = "🤝 ¡Empate!";
+  const modalMessage = "¡Fue una partida muy reñida! Buen juego.";
+  showGameEndModal(modalTitle, modalMessage, "tie");
+  
+  // Desconectar WebSocket después de un breve delay
+  setTimeout(() => {
+    if (wsClient) {
+      wsClient.disconnect();
+    }
+  }, 3000);
+}
+
+function showGameEndModal(title, message, resultType) {
+  console.log("📱 Mostrando modal de fin de juego:", title);
+  
+  // Crear o actualizar modal
+  let modal = document.getElementById('gameEndModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'gameEndModal';
+    modal.className = 'game-end-modal';
+    document.body.appendChild(modal);
+  }
+  
+  // Determinar clase CSS según el tipo de resultado
+  let resultClass = '';
+  let emoji = '';
+  switch(resultType) {
+    case 'victory':
+      resultClass = 'victory';
+      emoji = '🎉';
+      break;
+    case 'defeat':
+      resultClass = 'defeat';
+      emoji = '😔';
+      break;
+    case 'tie':
+      resultClass = 'tie';
+      emoji = '🤝';
+      break;
+    case 'winner':
+      resultClass = 'winner';
+      emoji = '🏆';
+      break;
+    default:
+      resultClass = 'default';
+      emoji = '🎮';
+  }
+  
+  modal.innerHTML = `
+    <div class="modal-content ${resultClass}">
+      <div class="modal-header">
+        <h2>${emoji} ${title}</h2>
+      </div>
+      <div class="modal-body">
+        <p>${message}</p>
+      </div>
+      <div class="modal-footer">
+        ${isOnlineMode ? 
+          '<button id="backToLobby" class="btn btn-primary">Volver al Lobby</button>' :
+          ''
+        }
+        <button id="goBack" class="btn btn-secondary">Volver</button>
+      </div>
+    </div>
+  `;
+  
+  modal.style.display = 'flex';
+  
+  // Agregar event listeners
+  const backToLobbyBtn = document.getElementById('backToLobby');
+  const goBackBtn = document.getElementById('goBack');
+  
+  if (backToLobbyBtn) {
+    backToLobbyBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      window.location.href = '/all-games/online/';
+    });
+  }
+  
+  if (goBackBtn) {
+    goBackBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      goBackToPreviousPage();
+    });
   }
 }
 
@@ -1058,25 +1306,6 @@ function displayUserInfo() {
 }
 
 // Funciones del Modal de Fin de Juego
-function showGameEndModal(title, message, titleClass) {
-  const modal = document.getElementById("gameEndModal");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalMessage = document.getElementById("modalMessage");
-
-  if (modal && modalTitle && modalMessage) {
-    modalTitle.textContent = title;
-    modalMessage.textContent = message;
-    
-    // Limpiar clases anteriores y añadir nueva
-    modalTitle.classList.remove("winner", "loser", "tie");
-    if (titleClass) {
-      modalTitle.classList.add(titleClass);
-    }
-    
-    modal.style.display = "flex";
-  }
-}
-
 function hideGameEndModal() {
   const modal = document.getElementById("gameEndModal");
   if (modal) {
@@ -1114,4 +1343,143 @@ window.restartGameFromModal = restartGameFromModal;
 document.addEventListener("DOMContentLoaded", function () {
   // No llamar setGame aquí si ya se llama en window.onload
   setupEventListeners();
+  
+  // Agregar estilos CSS para el modal de fin de juego
+  if (!document.getElementById('gameEndModalStyles')) {
+    const style = document.createElement('style');
+    style.id = 'gameEndModalStyles';
+    style.textContent = `
+      .game-end-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+      }
+      
+      .game-end-modal .modal-content {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        animation: modalSlideIn 0.3s ease-out;
+      }
+      
+      .game-end-modal .modal-content.victory {
+        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      }
+      
+      .game-end-modal .modal-content.defeat {
+        background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+      }
+      
+      .game-end-modal .modal-content.tie {
+        background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+      }
+      
+      .game-end-modal .modal-content.winner {
+        background: linear-gradient(135deg, #ffd700 0%, #ffa000 100%);
+      }
+      
+      .game-end-modal .modal-header h2 {
+        color: white;
+        margin: 0 0 20px 0;
+        font-size: 2.5em;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        font-weight: bold;
+      }
+      
+      .game-end-modal .modal-body p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.2em;
+        margin: 0 0 30px 0;
+        line-height: 1.5;
+      }
+      
+      .game-end-modal .modal-footer {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .game-end-modal .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        min-width: 140px;
+      }
+      
+      .game-end-modal .btn-primary {
+        background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+      }
+      
+      .game-end-modal .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+      }
+      
+      .game-end-modal .btn-secondary {
+        background: linear-gradient(135deg, #9E9E9E 0%, #757575 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(158, 158, 158, 0.3);
+      }
+      
+      .game-end-modal .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(158, 158, 158, 0.4);
+      }
+      
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: scale(0.7) translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .game-end-modal .modal-content {
+          padding: 20px;
+          margin: 20px;
+        }
+        
+        .game-end-modal .modal-header h2 {
+          font-size: 2em;
+        }
+        
+        .game-end-modal .modal-footer {
+          flex-direction: column;
+          align-items: center;
+        }
+        
+        .game-end-modal .btn {
+          width: 100%;
+          max-width: 200px;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
 });
