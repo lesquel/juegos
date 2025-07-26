@@ -21,6 +21,11 @@ const CategoryGameSearchComponent = ({ onSearch, className }: CategoryGameSearch
     { value: "status", label: "Estado" },
   ], []);
 
+  const initialFilters = useMemo(() => ({
+    sortBy: "created_at",
+    sortOrder: "desc" as const,
+  }), []);
+
   return (
     <SearchComponent
       onSearch={onSearch}
@@ -29,10 +34,7 @@ const CategoryGameSearchComponent = ({ onSearch, className }: CategoryGameSearch
       placeholder="Buscar categorías..."
       showSort={true}
       className={className}
-      initialFilters={{
-        sortBy: "created_at",
-        sortOrder: "desc",
-      }}
+      initialFilters={initialFilters}
     />
   );
 };

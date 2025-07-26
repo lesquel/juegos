@@ -9,17 +9,13 @@ import CategoryGameSearchComponent from "./CategoryGameSearchComponent";
 import type { SearchFilters } from "@components/SearchComponent";
 import type { CategoryGame } from "../models/category-game.model";
 
-// Configuraciones por defecto memoizadas
+// Configuración de paginación por defecto con búsqueda
 const DEFAULT_PAGINATION: PaguinationCategory = {
   page: 1,
   limit: 10,
-};
-
-const DEFAULT_SEARCH_FILTERS: SearchFilters = {
-  searchTerm: "",
-  filterType: "all",
-  sortBy: "created_at",
-  sortOrder: "desc",
+  sort_by: "created_at",
+  sort_order: "desc",
+  search: "",
 };
 
 export const ListCategoryGame = memo(() => {
@@ -35,90 +31,30 @@ ListCategoryGame.displayName = "ListCategoryGame";
 const UseListCategoryGame = memo(() => {
   const [pagination, setPagination] = useState<PaguinationCategory>(DEFAULT_PAGINATION);
 
-  const [searchFilters, setSearchFilters] = useState<SearchFilters>(DEFAULT_SEARCH_FILTERS);
-
+  // Memoizar función de búsqueda que actualiza la paginación
   const handleSearch = useCallback((filters: SearchFilters) => {
-    setSearchFilters(filters);
-    // Actualizar la paginación con los nuevos filtros de ordenamiento
     setPagination(prev => ({
       ...prev,
-      page: 1, // Reset a la primera página
+      page: 1, // Reset a la primera página al buscar
+      search: filters.searchTerm,
       sort_by: filters.sortBy || "created_at",
       sort_order: filters.sortOrder || "desc",
+      // Mapear filterType a campos específicos según el tipo de búsqueda
+      ...(filters.filterType === "category_name" && { category_name: filters.searchTerm }),
+      ...(filters.filterType === "category_description" && { category_description: filters.searchTerm }),
+      ...(filters.filterType === "status" && { status: filters.searchTerm }),
     }));
-  }, []);
+  }, []); // Sin dependencias, la función es estable
 
-  const handlePaginationChange = useCallback((newPagination: any) => {
+  // Memoizar función de cambio de paginación
+  const handlePaginationChange = useCallback((newPagination: PaguinationCategory) => {
     setPagination(newPagination);
-  }, []);
+  }, []); // Sin dependencias, la función es estable
 
-  const { data, isLoading, error } =
-    CategoryGameClientData.getCategoryGames(pagination);
-
-  // Memoizar los resultados filtrados para evitar recálculos innecesarios
-  const filteredResults = useMemo(() => {
-    if (!data?.results) return [];
-
-    return data.results.filter((category: CategoryGame) => {
-      if (!searchFilters.searchTerm) return true;
-
-      const searchTerm = searchFilters.searchTerm.toLowerCase();
-      const filterType = searchFilters.filterType;
-
-      switch (filterType) {
-        case "category_name":
-          return category.category_name?.toLowerCase().includes(searchTerm);
-        case "category_description":
-          return category.category_description?.toLowerCase().includes(searchTerm);
-        case "status": {
-          const status = category.status ? "activo" : "inactivo";
-          return status.toLowerCase().includes(searchTerm);
-        }
-        default: { // "all"
-          const status = category.status ? "activo" : "inactivo";
-          return (
-            category.category_name?.toLowerCase().includes(searchTerm) ||
-            category.category_description?.toLowerCase().includes(searchTerm) ||
-            status.toLowerCase().includes(searchTerm)
-          );
-        }
-      }
-    });
-  }, [data?.results, searchFilters]);
-
-  // Memoizar componentes pesados
-  const categoryCards = useMemo(() => {
-    return filteredResults.map((category: CategoryGame) => (
-      <CardCategoryGame key={category.category_id} category={category} />
-    ));
-  }, [filteredResults]);
-
-  const noResultsMessage = useMemo(() => {
-    if (filteredResults.length === 0 && searchFilters.searchTerm) {
-      return (
-        <div className="text-center text-gray-400 py-8">
-          No se encontraron categorías que coincidan con "{searchFilters.searchTerm}"
-        </div>
-      );
-    }
-    return null;
-  }, [filteredResults.length, searchFilters.searchTerm]);
-
-  if (isLoading) return <LoadingComponent />;
-  if (error)
-    return (
-      <div className="text-center text-red-400">Error: {error.message}</div>
-    );
-
-  if (!data?.results || data.results.length === 0)
-    return (
-      <div className="text-center text-red-400">
-        No hay categorías de juegos
-      </div>
-    );
   return (
     <div className="container mx-auto px-4 py-8 text-white">
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <div className="max-w-7xl mx-auto flex justify-center items-center mb-8">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-center text-white">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-teal-400">
@@ -127,23 +63,121 @@ const UseListCategoryGame = memo(() => {
           </h1>
         </div>
 
-
-        <CategoryGameSearchComponent onSearch={handleSearch} />
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {categoryCards}
+        {/* Search Component - Separado y estable */}
+        <div className="mb-8">
+          <CategoryGameSearchComponent onSearch={handleSearch} />
         </div>
-        {noResultsMessage}
-      </div>
 
-      <PaginationComponent
-        pagination={pagination}
-        setPagination={handlePaginationChange}
-        info={data.info}
-        color="bg-gradient-to-r from-purple-500 to-teal-400"
-      />
+        {/* Categories Content - Componente separado que se actualiza independientemente */}
+        <CategoriesContent 
+          pagination={pagination} 
+          onPaginationChange={handlePaginationChange} 
+        />
+      </div>
     </div>
   );
 });
 
+// Componente separado para el contenido que cambia
+const CategoriesContent = memo(({ pagination, onPaginationChange }: {
+  pagination: PaguinationCategory;
+  onPaginationChange: (newPagination: PaguinationCategory) => void;
+}) => {
+  // La consulta ahora usa toda la información de paginación, incluyendo búsqueda
+  const { data, isLoading, error } = CategoryGameClientData.getCategoryGames(pagination);
+
+  // Ya no necesitamos filtrado local, el backend maneja todo
+  const categoryCards = useMemo(() => {
+    if (!data?.results) return [];
+    
+    return data.results.map((category: CategoryGame) => (
+      <CardCategoryGame key={category.category_id} category={category} />
+    ));
+  }, [data?.results]);
+
+  // Mensaje para resultados vacíos
+  const noResultsMessage = useMemo(() => {
+    if (data?.results?.length === 0 && pagination.search) {
+      return (
+        <div className="text-center py-16">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">No se encontraron categorías</h3>
+          <p className="text-gray-400 mb-6">
+            No hay categorías que coincidan con tu búsqueda: <strong>"{pagination.search}"</strong>
+          </p>
+          <button
+            onClick={() => onPaginationChange({ ...pagination, search: "", page: 1 })}
+            className="bg-gradient-to-r from-purple-500 to-teal-400 text-white font-bold py-2 px-4 rounded-lg hover:from-purple-600 hover:to-teal-500 transition duration-300"
+          >
+            Limpiar búsqueda
+          </button>
+        </div>
+      );
+    }
+    return null;
+  }, [data?.results?.length, pagination.search, pagination, onPaginationChange]);
+
+  // Estados de carga y error
+  if (isLoading) return <LoadingComponent />;
+  
+  if (error) {
+    return (
+      <div className="text-center bg-red-900 bg-opacity-50 p-8 rounded-lg border border-red-600 max-w-md mx-auto">
+        <h2 className="text-2xl font-bold text-red-400 mb-4">Error al cargar categorías</h2>
+        <p className="text-red-300 mb-6">{error.message}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="bg-gradient-to-r from-purple-500 to-teal-400 text-white font-bold py-2 px-4 rounded-lg hover:from-purple-600 hover:to-teal-500 transition duration-300"
+        >
+          Intentar de nuevo
+        </button>
+      </div>
+    );
+  }
+
+  if (!data?.results || data.results.length === 0) {
+    return (
+      <div className="text-center">
+        <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-2">No hay categorías disponibles</h3>
+        <p className="text-gray-400">Vuelve más tarde para ver nuevas categorías.</p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* Categories Grid */}
+      <div className="mb-8">
+        {categoryCards.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {categoryCards}
+          </div>
+        ) : (
+          noResultsMessage
+        )}
+      </div>
+
+      {/* Pagination */}
+      {data?.results && data.results.length > 0 && (
+        <PaginationComponent
+          pagination={pagination}
+          setPagination={onPaginationChange}
+          info={data.info}
+          color="bg-gradient-to-r from-purple-500 to-teal-400"
+        />
+      )}
+    </>
+  );
+});
+
 UseListCategoryGame.displayName = "UseListCategoryGame";
+CategoriesContent.displayName = "CategoriesContent";

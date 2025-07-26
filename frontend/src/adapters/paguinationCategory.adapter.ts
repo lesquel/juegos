@@ -42,16 +42,17 @@ export class PaguinationCategoryAdapter {
     const params: Record<string, any> = {
       page: paguination.page,
       limit: paguination.limit,
-      // Incluir otros parámetros específicos de categorías si existen
-      ...((paguination as any).search && {
-        search: (paguination as any).search,
-      }),
-      ...((paguination as any).sort_by && {
-        sort_by: (paguination as any).sort_by,
-      }),
-      ...((paguination as any).sort_order && {
-        sort_order: (paguination as any).sort_order,
-      }),
+      // Parámetros de ordenamiento
+      ...(paguination.sort_by && { sort_by: paguination.sort_by }),
+      ...(paguination.sort_order && { sort_order: paguination.sort_order }),
+      // Parámetros de búsqueda
+      ...(paguination.search && { search: paguination.search }),
+      ...(paguination.category_name && { category_name: paguination.category_name }),
+      ...(paguination.category_description && { category_description: paguination.category_description }),
+      ...(paguination.status && { status: paguination.status }),
+      // Parámetros de fechas
+      ...(paguination.created_before && { created_before: paguination.created_before }),
+      ...(paguination.created_after && { created_after: paguination.created_after }),
     };
 
     return this.buildQueryString(params);
