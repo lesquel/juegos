@@ -57,8 +57,6 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
               </div>
               <a
                 href={gameUrl}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="w-full text-center bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out text-xl transform hover:scale-105 flex items-center justify-center gap-3"
               >
                 {playIcon}

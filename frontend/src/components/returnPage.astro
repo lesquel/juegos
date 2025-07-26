@@ -1,59 +1,21 @@
-<style>
-  #returnBtn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1000;
-    background: linear-gradient(145deg, #3498db, #2980b9);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 16px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: Arial, sans-serif;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
+<button
+  id="returnBtn"
+  class="fixed top-5 left-5 z-50
+    bg-gradient-to-br from-blue-500 to-blue-700
+    text-white border border-white/20 rounded-lg
+    px-4 py-3
+    text-base font-bold
+    shadow-md
+    flex items-center gap-2
+    backdrop-blur-md
+    transition-transform duration-300 ease-in-out
+    hover:-translate-y-0.5 hover:shadow-lg hover:bg-gradient-to-br hover:from-blue-700 hover:to-blue-500
+    active:translate-y-0 active:shadow
+    font-sans"
+>
+  <span class="text-lg font-bold">←</span> Volver
+</button>
 
-  #returnBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-    background: linear-gradient(145deg, #2980b9, #3498db);
-  }
-
-  #returnBtn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
-  }
-
-  #returnBtn::before {
-    content: "←";
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-  @media (max-width: 768px) {
-    #returnBtn {
-      top: 15px;
-      left: 15px;
-      padding: 10px 14px;
-      font-size: 14px;
-    }
-    
-    #returnBtn::before {
-      font-size: 16px;
-    }
-  }
-</style>
-
-<button id="returnBtn">Volver</button>
 <script is:inline>
   const returnBtn = document.getElementById("returnBtn");
   if (returnBtn) {
