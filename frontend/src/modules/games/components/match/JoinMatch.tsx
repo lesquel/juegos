@@ -1,9 +1,10 @@
-import React, { memo, useMemo, useCallback } from "react";
+import React, { memo, useMemo, useCallback, useState } from "react";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 import type { Game } from "@modules/games/models/game.model";
 import type { Match } from "@modules/games/models/match.model";
 import { MatchClientData } from "@modules/games/services/matchClientData";
 import { Clock, Lock, Merge, Plus, Star } from "lucide-react";
+import { LoadingComponent } from "@components/LoadingComponent";
 
 interface JoinMatchProps {
   match: Match;
@@ -11,9 +12,11 @@ interface JoinMatchProps {
 }
 
 export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
+  const [isLoading, setIsLoading] = useState(false);
   // Memoizar función de éxito
   const onSuccess = useCallback(
     (data: Match) => {
+      setIsLoading(false);
       const newUrl = `${location.protocol}//${location.host}/${game?.game_url}?match_id=${data.match_id}`;
       location.href = newUrl;
     },
@@ -37,6 +40,7 @@ export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
 
   // Memoizar función de unirse/volver a la partida
   const handleJoinMatch = useCallback(async () => {
+    setIsLoading(true);
     if (matchStates.isJoined) {
       if (match.winner_id === null) {
         const gameUrl = `${location.protocol}//${location.host}/${game.game_url}?match_id=${match.match_id}`;
@@ -115,6 +119,7 @@ export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
 
   return (
     <div>
+      {isLoading && <LoadingComponent />}
       {errorMessage}
 
       <button
