@@ -1,9 +1,10 @@
-import React, { memo, useMemo, useCallback } from "react";
+import React, { memo, useMemo, useCallback, useState } from "react";
 import { z } from "zod";
 import { useForm } from "@tanstack/react-form";
 import { RatingInput } from "./RatingInput";
 import { CommentGameDataClient } from "../services/commentGameDataClient";
-import { MessageCircleCode, Send } from "lucide-react";
+import { Loader, MessageCircleCode, Send } from "lucide-react";
+import { LoadingComponent } from "@components/LoadingComponent";
 
 interface NewCommentFormProps {
   gameId: string;
@@ -16,7 +17,14 @@ interface CommentFormValues {
 
 export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
   ({ gameId }) => {
-    const { mutate, error } = CommentGameDataClient.createCommentGame(gameId);
+    const [isLoading, setIsLoading] = useState(false);
+    const onSuccess = () => {
+      setIsLoading(false);
+    };
+    const { mutate, error } = CommentGameDataClient.createCommentGame(
+      gameId,
+      onSuccess
+    );
 
     // Memoizar validadores
     const validators = useMemo(
@@ -41,6 +49,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
     // Memoizar función de submit
     const handleSubmit = useCallback(
       async ({ value }: { value: CommentFormValues }) => {
+        setIsLoading(true);
         mutate(value);
         form.reset();
       },
@@ -170,14 +179,22 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
               </form.Field>
 
               <button
+                disabled={isLoading}
                 type="submit"
                 className="w-full py-3 px-6 cursor-pointer bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-semibold rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out transform hover:scale-105"
                 aria-label="Publicar comentario"
               >
-                <span className="flex items-center justify-center gap-2">
-                  <Send className="w-5 h-5" />
-                  Publicar Comentario
-                </span>
+                {isLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader />
+                    Publicando Comentario...
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    <Send className="w-5 h-5" />
+                    Publicar Comentario
+                  </span>
+                )}
               </button>
             </form>
           </div>

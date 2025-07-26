@@ -31,7 +31,10 @@ export class CommentGameDataClient {
     });
   }
 
-  static createCommentGame(gameId: string) {
+  static createCommentGame(
+    gameId: string,
+    onSuccess?: (data: CommentGameCreate) => void
+  ) {
     const hasMounted = useHasMountedComment().hasMounted;
     const setHasMounted = useHasMountedComment().setHasMounted;
     return useMutation({
@@ -58,8 +61,8 @@ export class CommentGameDataClient {
         }
       },
       onSuccess: (data) => {
+        onSuccess?.(data);
         setHasMounted(!hasMounted);
-        console.log("Comentario creado", data);
       },
       onError: (error: ErrorResponseErrorsArray) => {
         console.error("onError:", error);
