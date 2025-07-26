@@ -39,4 +39,5 @@ class GameEntityToDTOConverter(
         )
 
         self.logger.debug("Successfully converted GameEntity to GameResponseDTO")
+        print(f"Converted GameEntity to DTO: {dto.house_odds}")
         return dto

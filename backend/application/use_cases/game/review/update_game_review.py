@@ -46,10 +46,16 @@ class UpdateGameReviewUseCase(
             )
             raise AuthenticationError("You can only update your own reviews")
 
+        existing_review.comment = update_dto.comment
+        existing_review.rating = update_dto.rating
+
         # Guardar la reseña actualizada en el repositorio
         updated_review = await self.review_repository.update(
             existing_review.review_id, existing_review
         )
+
+        print(f"Updated review: {updated_review.comment}")
+        print(f"Updated rating: {updated_review.rating}")
 
         # Convertir entidad a DTO de respuesta
         return self.converter.to_dto(updated_review)
