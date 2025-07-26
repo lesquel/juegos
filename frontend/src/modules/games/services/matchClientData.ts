@@ -11,7 +11,7 @@ import type {
   Match,
 } from "../models/match.model";
 import { useAuthStore } from "@modules/auth/store/auth.store";
-import type { Pagination } from "@models/paguination";
+import type { PaguinationMatch } from "../models/paguination-match";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 
 // Configuración optimizada para datos de partidas
@@ -40,7 +40,7 @@ const MATCH_AXIOS_CONFIG = {
 export class MatchClientData {
   private static readonly BASE_URL = environment.BASE_URL;
 
-  public static getMatchesByGameId(gameId: string, paguination: Pagination) {
+  public static getMatchesByGameId(gameId: string, paguination: PaguinationMatch) {
     return useQuery({
       queryKey: ["matches", gameId, paguination],
       ...MATCH_QUERY_CONFIG,
@@ -49,7 +49,7 @@ export class MatchClientData {
           .get(
             `${MatchClientData.BASE_URL}${endpoints.matches.getMatchesByGameId(
               gameId
-            )}${PaguinationCategoryAdapter.adaptPaguination(paguination)}`,
+            )}${PaguinationCategoryAdapter.adaptPaguinationMatch(paguination)}`,
             MATCH_AXIOS_CONFIG
           )
           .then((response) => {

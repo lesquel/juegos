@@ -7,7 +7,7 @@ import { useState, useCallback, useMemo, memo } from "react";
 import { PaginationComponent } from "@components/PaginationComponent";
 import GameSearchComponent from "./GameSearchComponent";
 import type { SearchFilters } from "@components/SearchComponent";
-import type { PaguinationGames } from "../adapters/paguination-games";
+import type { PaguinationGames } from "../models/paguination-games";
 
 // Configuración de paginación por defecto con búsqueda
 const DEFAULT_PAGINATION: PaguinationGames = {

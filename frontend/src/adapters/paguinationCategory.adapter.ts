@@ -1,6 +1,7 @@
 import type { Pagination } from "@models/paguination";
 import type { PaguinationCategory } from "@modules/category-game/models/paguination-category";
-import type { PaguinationGames } from "@modules/games/adapters/paguination-games";
+import type { PaguinationGames } from "@modules/games/models/paguination-games";
+import type { PaguinationMatch } from "@modules/games/models/paguination-match";
 
 export class PaguinationCategoryAdapter {
   /**
@@ -80,6 +81,30 @@ export class PaguinationCategoryAdapter {
       created_after: (paguination as any).created_after,
       status: (paguination as any).status,
       user_id: (paguination as any).user_id,
+    };
+
+    return this.buildQueryString(params);
+  }
+
+  /**
+   * Adapt pagination for matches with automatic parameter detection
+   */
+  static adaptPaguinationMatch(paguination: PaguinationMatch): string {
+    const params: Record<string, any> = {
+      page: paguination.page,
+      limit: paguination.limit,
+      // Parámetros de ordenamiento
+      ...(paguination.sort_by && { sort_by: paguination.sort_by }),
+      ...(paguination.sort_order && { sort_order: paguination.sort_order }),
+      // Parámetros de búsqueda
+      ...(paguination.search && { search: paguination.search }),
+      ...(paguination.user_email && { user_email: paguination.user_email }),
+      // Parámetros de rango de apuesta
+      ...(paguination.min_base_bet_amount && { min_base_bet_amount: paguination.min_base_bet_amount }),
+      ...(paguination.max_base_bet_amount && { max_base_bet_amount: paguination.max_base_bet_amount }),
+      // Parámetros de fechas
+      ...(paguination.created_before && { created_before: paguination.created_before }),
+      ...(paguination.created_after && { created_after: paguination.created_after }),
     };
 
     return this.buildQueryString(params);

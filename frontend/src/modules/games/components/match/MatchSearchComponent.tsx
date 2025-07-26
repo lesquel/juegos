@@ -10,6 +10,7 @@ const MatchSearchComponent: React.FC<MatchSearchProps> = memo(({ onSearch, class
   // Memoizar opciones de filtro para evitar recreaciones
   const filterOptions = useMemo(() => [
     { value: "all", label: "Todo" },
+    { value: "user_email", label: "Email de usuario" },
     { value: "match_name", label: "ID de partida" },
     { value: "participants", label: "ID de participantes" },
     { value: "status", label: "Estado (activa/finalizada)" },

@@ -8,10 +8,19 @@ import { CreateMatch } from "./CreateMatch";
 import { CardMatch } from "./CardMatch";
 import MatchSearchComponent from "./MatchSearchComponent";
 import type { Game } from "@modules/games/models/game.model";
-import type { Pagination } from "@models/paguination";
+import type { PaguinationMatch } from "@modules/games/models/paguination-match";
 import type { Info } from "@models/info.model";
 import type { SearchFilters } from "@components/SearchComponent";
 import { PersonStanding } from "lucide-react";
+
+// Configuración de paginación por defecto con búsqueda
+const DEFAULT_PAGINATION: PaguinationMatch = {
+  page: 1,
+  limit: 10,
+  sort_by: "created_at",
+  sort_order: "desc",
+  search: "",
+};
 
 interface ListMatchesByGameIdProps {
   id: string;
@@ -30,94 +39,42 @@ export const ListMatchesByGameId: React.FC<ListMatchesByGameIdProps> = memo(
 ListMatchesByGameId.displayName = "ListMatchesByGameId";
 
 const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
-  const [pagination, setPagination] = useState<Pagination>({
-    page: 1,
-    limit: 10,
-    sort_by: "created_at",
-    sort_order: "desc",
-  });
+  const [pagination, setPagination] = useState<PaguinationMatch>(DEFAULT_PAGINATION);
 
-  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
-    searchTerm: "",
-    filterType: "all",
-    sortBy: "created_at",
-    sortOrder: "desc",
-  });
-
-  // Memoizar función de búsqueda
+  // Memoizar función de búsqueda que actualiza la paginación
   const handleSearch = useCallback((filters: SearchFilters) => {
-    setSearchFilters(filters);
-    // Actualizar la paginación con los nuevos filtros de ordenamiento
-    setPagination((prev) => ({
+    setPagination(prev => ({
       ...prev,
-      page: 1, // Reset a la primera página
+      page: 1, // Reset a la primera página al buscar
+      search: filters.searchTerm,
       sort_by: filters.sortBy || "created_at",
       sort_order: filters.sortOrder || "desc",
+      // Mapear filterType a campos específicos según el tipo de búsqueda
+      ...(filters.filterType === "user_email" && { user_email: filters.searchTerm }),
     }));
-  }, []);
+  }, []); // Sin dependencias, la función es estable
 
-  const { data, isLoading, error } = MatchClientData.getMatchesByGameId(
-    id,
-    pagination
-  );
+  // Memoizar función de cambio de paginación
+  const handlePaginationChange = useCallback((newPagination: PaguinationMatch) => {
+    setPagination(newPagination);
+  }, []); // Sin dependencias, la función es estable
+
   const {
     data: game,
     isLoading: gameIsLoading,
     error: gameError,
   } = GameClientData.getGameDetail(id);
 
-  // Memoizar los resultados filtrados para evitar recálculos innecesarios
-  const filteredResults = useMemo(() => {
-    if (!data?.results) return [];
-
-    return data.results.filter((match) => {
-      if (!searchFilters.searchTerm) return true;
-
-      const searchTerm = searchFilters.searchTerm.toLowerCase();
-      const filterType = searchFilters.filterType;
-
-      switch (filterType) {
-        case "match_name":
-          return match.match_id?.toLowerCase().includes(searchTerm);
-        case "participants":
-          return match.participant_ids?.some((participantId) =>
-            participantId.toLowerCase().includes(searchTerm)
-          );
-        case "status": {
-          const status = match.winner_id ? "finished" : "active";
-          return status.toLowerCase().includes(searchTerm);
-        }
-        case "game_mode": {
-          const gameMode = match.base_bet_amount > 0 ? "with_bet" : "free";
-          return gameMode.toLowerCase().includes(searchTerm);
-        }
-        default: {
-          // "all"
-          const allStatus = match.winner_id ? "finished" : "active";
-          const allGameMode = match.base_bet_amount > 0 ? "with_bet" : "free";
-          return (
-            match.match_id?.toLowerCase().includes(searchTerm) ||
-            match.participant_ids?.some((participantId) =>
-              participantId.toLowerCase().includes(searchTerm)
-            ) ||
-            allStatus.toLowerCase().includes(searchTerm) ||
-            allGameMode.toLowerCase().includes(searchTerm)
-          );
-        }
-      }
-    });
-  }, [data?.results, searchFilters]);
-
   // Memoizar mensaje de error
   const errorMessage = useMemo(() => {
-    const errorText = error?.message || gameError?.message;
+    const errorText = gameError?.message;
     if (!errorText) return null;
 
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-900">
         <div className="text-center bg-red-900 bg-opacity-50 p-8 rounded-lg border border-red-600 max-w-md">
           <h2 className="text-2xl font-bold text-red-400 mb-4">
-            Error al cargar datos
+            Error al cargar el juego
           </h2>
           <p className="text-red-300 mb-6">{errorText}</p>
           <a
@@ -129,51 +86,78 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
         </div>
       </div>
     );
-  }, [error, gameError]);
+  }, [gameError]);
 
-  // Memoizar iconos
+  // Memoizar icono
   const matchIcon = useMemo(
     () => <PersonStanding className="h-8 w-8 text-teal-400" />,
     []
   );
 
-  // Memoizar estado vacío
-  const emptyState = useMemo(
-    () => (
-      <div className="text-center py-16">
-        <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
-          {matchIcon}
+  if (gameIsLoading) return <LoadingComponent />;
+  if (gameError) return errorMessage;
+
+  return (
+    <main className="min-h-screen bg-gray-900">
+      <div className="container mx-auto px-4 py-8 text-white">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <header className="mb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+              <div className="flex items-center gap-4">
+                {matchIcon}
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white">
+                    Partidas de {game?.game_name}
+                  </h1>
+                  <p className="text-gray-400 mt-1">
+                    Únete a una partida existente o crea la tuya propia
+                  </p>
+                </div>
+              </div>
+              <CreateMatch gameId={id} game={game as Game} />
+            </div>
+          </header>
+
+          {/* Search Component - Separado y estable */}
+          <section className="mb-8">
+            <MatchSearchComponent onSearch={handleSearch} />
+          </section>
+
+          {/* Matches Content - Componente separado que se actualiza independientemente */}
+          <MatchesContent 
+            gameId={id}
+            game={game as Game}
+            pagination={pagination} 
+            onPaginationChange={handlePaginationChange} 
+          />
         </div>
-        <h3 className="text-2xl font-bold text-white mb-2">
-          No hay partidas disponibles
-        </h3>
-        <p className="text-gray-400 mb-8 max-w-md mx-auto">
-          {searchFilters.searchTerm
-            ? "No se encontraron partidas que coincidan con tu búsqueda."
-            : "Sé el primero en crear una partida para este juego."}
-        </p>
-        {!searchFilters.searchTerm && game && (
-          <CreateMatch gameId={id} game={game as Game} />
-        )}
       </div>
-    ),
-    [matchIcon, searchFilters.searchTerm, game, id]
+    </main>
+  );
+});
+
+// Componente separado para el contenido que cambia
+const MatchesContent = memo(({ gameId, game, pagination, onPaginationChange }: {
+  gameId: string;
+  game: Game;
+  pagination: PaguinationMatch;
+  onPaginationChange: (newPagination: PaguinationMatch) => void;
+}) => {
+  // La consulta ahora usa toda la información de paginación, incluyendo búsqueda
+  const { data, isLoading, error } = MatchClientData.getMatchesByGameId(
+    gameId,
+    pagination
   );
 
-  // Memoizar grid de partidas
-  const matchesGrid = useMemo(() => {
-    if (filteredResults.length === 0) {
-      return emptyState;
-    }
-
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredResults.map((match) => (
-          <CardMatch key={match.match_id} match={match} game={game as Game} />
-        ))}
-      </div>
-    );
-  }, [filteredResults, game, emptyState]);
+  // Ya no necesitamos filtrado local, el backend maneja todo
+  const matchCards = useMemo(() => {
+    if (!data?.results) return [];
+    
+    return data.results.map((match) => (
+      <CardMatch key={match.match_id} match={match} game={game} />
+    ));
+  }, [data?.results, game]);
 
   // Memoizar estadísticas
   const statsInfo = useMemo(() => {
@@ -201,56 +185,96 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
     );
   }, [data?.results]);
 
-  if (isLoading || gameIsLoading) return <LoadingComponent />;
-  if (error || gameError) return errorMessage;
+  // Mensaje para resultados vacíos
+  const noResultsMessage = useMemo(() => {
+    if (data?.results?.length === 0 && pagination.search) {
+      return (
+        <div className="text-center py-16">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
+            <PersonStanding className="h-12 w-12 text-gray-400" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">No se encontraron partidas</h3>
+          <p className="text-gray-400 mb-6">
+            No hay partidas que coincidan con tu búsqueda: <strong>"{pagination.search}"</strong>
+          </p>
+          <button
+            onClick={() => onPaginationChange({ ...pagination, search: "", page: 1 })}
+            className="bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg hover:from-teal-600 hover:to-cyan-500 transition duration-300"
+          >
+            Limpiar búsqueda
+          </button>
+        </div>
+      );
+    }
+    return null;
+  }, [data?.results?.length, pagination.search, pagination, onPaginationChange]);
+
+  // Estados de carga y error
+  if (isLoading) return <LoadingComponent />;
+  
+  if (error) {
+    return (
+      <div className="text-center bg-red-900 bg-opacity-50 p-8 rounded-lg border border-red-600 max-w-md mx-auto">
+        <h2 className="text-2xl font-bold text-red-400 mb-4">Error al cargar partidas</h2>
+        <p className="text-red-300 mb-6">{error.message}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg hover:from-teal-600 hover:to-cyan-500 transition duration-300"
+        >
+          Intentar de nuevo
+        </button>
+      </div>
+    );
+  }
+
+  if (!data?.results || data.results.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
+          <PersonStanding className="h-12 w-12 text-gray-400" />
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-2">
+          No hay partidas disponibles
+        </h3>
+        <p className="text-gray-400 mb-8 max-w-md mx-auto">
+          Sé el primero en crear una partida para este juego.
+        </p>
+        <CreateMatch gameId={gameId} game={game} />
+      </div>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-gray-900">
-      <div className="container mx-auto px-4 py-8 text-white">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <header className="mb-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-              <div className="flex items-center gap-4">
-                {matchIcon}
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-white">
-                    Partidas de {game?.game_name}
-                  </h1>
-                  <p className="text-gray-400 mt-1">
-                    Únete a una partida existente o crea la tuya propia
-                  </p>
-                </div>
-              </div>
-              <CreateMatch gameId={id} game={game as Game} />
-            </div>
+    <>
+      {/* Statistics */}
+      {statsInfo}
 
-            {statsInfo}
-          </header>
+      {/* Matches Grid */}
+      <section className="mb-8">
+        {matchCards.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {matchCards}
+          </div>
+        ) : (
+          noResultsMessage
+        )}
+      </section>
 
-          {/* Search */}
-          <section className="mb-8">
-            <MatchSearchComponent onSearch={handleSearch} />
-          </section>
-
-          {/* Matches Grid */}
-          <section className="mb-8">{matchesGrid}</section>
-
-          {/* Pagination */}
-          {filteredResults.length > 0 && (
-            <footer>
-              <PaginationComponent
-                pagination={pagination}
-                setPagination={setPagination}
-                info={data?.info as Info}
-                color="bg-gradient-to-r from-teal-500 to-cyan-400"
-              />
-            </footer>
-          )}
-        </div>
-      </div>
-    </main>
+      {/* Pagination */}
+      {data?.results && data.results.length > 0 && (
+        <footer>
+          <PaginationComponent
+            pagination={pagination}
+            setPagination={onPaginationChange}
+            info={data.info as Info}
+            color="bg-gradient-to-r from-teal-500 to-cyan-400"
+          />
+        </footer>
+      )}
+    </>
   );
 });
 
 UseListMatchesByGameId.displayName = "UseListMatchesByGameId";
+
+MatchesContent.displayName = "MatchesContent";

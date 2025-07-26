@@ -5,7 +5,7 @@ import { environment } from "@config/environment";
 import type { Pagination } from "@models/paguination";
 import { PaguinationCategoryAdapter } from "@adapters/paguinationCategory.adapter";
 import { endpoints } from "@config/endpoints";
-import type { PaguinationGames } from "../adapters/paguination-games";
+import type { PaguinationGames } from "../models/paguination-games";
 
 // Configuración optimizada para mejor rendimiento
 const QUERY_CONFIG = {
