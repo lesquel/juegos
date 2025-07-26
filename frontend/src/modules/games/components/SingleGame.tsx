@@ -25,9 +25,9 @@ const UseSingleGame = ({ id }: { id: string }) => {
     );
 
   return (
-    <div className="w-full p-10">
+    <div className="w-full p-10 max-w-6xl">
       {/* Game Details Section */}
-      <div className="container mx-auto px-6 lg:max-w-5xl pt-5 pb-10">
+      <div className="container mx-auto  pt-5 pb-10">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
           {/* Left Column: Image & Play Button */}
           <div className="lg:col-span-2 flex flex-col items-center gap-6">

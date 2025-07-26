@@ -18,12 +18,12 @@ export const ListCommentGame = ({ gameId }: { gameId: string }) => {
   if (!data?.results || data.results.length === 0)
     return (
       <div className="mt-6">
-        <h1 className="text-center text-white">No hay comentarios</h1>
+        <h1 className="text-center text-white">Se el primero en comentar</h1>
       </div>
     );
   return (
     <div>
-      <div className="container mx-auto px-4 lg:px-8 py-10 flex flex-col items-center">
+      <div className="container mx-auto px-4 py-10 flex flex-col items-center">
         <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-10 text-white">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-teal-400">
             Comentarios

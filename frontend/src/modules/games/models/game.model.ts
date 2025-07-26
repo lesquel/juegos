@@ -14,6 +14,7 @@ export interface GameDetail {
   game_description: string;
   create_at: Date;
   update_at: Date;
+  house_odds: number;
   categories?: CategoryGame[];
   game_type: GameType;
   game_capacity?: number;

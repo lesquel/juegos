@@ -1,11 +1,12 @@
-import { Star, StarOff } from "lucide-react";
+import { Edit } from "lucide-react";
 import { UserClientData } from "@modules/user/services/userClientData";
 import type { CommentGame } from "../models/comment-game.model";
 import { DeleteCommentGame } from "./DeleteCommentGame";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 import { useStore } from "zustand";
 import { useEffect, useState } from "react";
-import { EditCommentGame } from "./EditCommentForm";
+import { InlineEditComment } from "./InlineEditComment";
+import { CommentDisplay } from "./CommentDisplay";
 
 export const CardCommentGame = ({
   commentGame,
@@ -14,6 +15,7 @@ export const CardCommentGame = ({
 }) => {
   const { comment, created_at, review_id, user_id, rating } = commentGame;
   const [isUserComment, setIsUserComment] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const { data: user } = UserClientData.getUser(user_id);
   const userName = user?.email || "Usuario Anónimo";
@@ -22,7 +24,16 @@ export const CardCommentGame = ({
 
   useEffect(() => {
     setIsUserComment(user?.user_id === meUser?.user.user_id);
-  }, [user]);
+  }, [user, meUser]);
+
+  const handleSaveComplete = () => {
+    setEditing(false);
+    // Aquí podrías refrescar los datos si es necesario
+  };
+
+  const handleCancelEdit = () => {
+    setEditing(false);
+  };
 
   return (
     <div className="flex items-start sm:space-x-4 gap-5 p-5 bg-gray-800 bg-opacity-50 rounded-2xl border border-gray-700 space-y-4 sm:space-y-0">
@@ -35,37 +46,37 @@ export const CardCommentGame = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <h4 className="text-lg font-bold text-white truncate">{userName}</h4>
           <div className="flex items-center space-x-2 self-end sm:self-center">
-            {isUserComment && <EditCommentGame commentId={review_id} />}
-            {isUserComment && <DeleteCommentGame commentId={review_id} />}
+            {isUserComment && !editing && (
+              <>
+                <button
+                  className="text-white hover:text-blue-400 transition"
+                  onClick={() => setEditing(true)}
+                  title="Editar comentario"
+                >
+                  <Edit className="w-5 h-5" />
+                </button>
+                <DeleteCommentGame commentId={review_id} />
+              </>
+            )}
           </div>
         </div>
 
-        {/* Mostrar estrellas */}
-        <div className="flex items-center mt-1 mb-1">
-          {[1, 2, 3, 4, 5].map((i) => {
-            const isActive = i <= rating;
-            const StarIcon = isActive ? Star : StarOff;
-            return (
-              <StarIcon
-                key={i}
-                className="w-5 h-5 mr-1 text-yellow-400"
-                fill={isActive ? "currentColor" : "none"}
-              />
-            );
-          })}
-        </div>
-
-        <p className="text-gray-300 mb-2 break-words">{comment}</p>
-        
-        <div className="flex justify-end">
-          <span className="text-xs text-gray-400">
-            {new Date(created_at).toLocaleDateString("es-ES", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </span>
-        </div>
+        {/* Mostrar estrellas o formulario de edición */}
+        {editing ? (
+          <InlineEditComment
+            commentId={review_id}
+            initialComment={comment}
+            initialRating={rating}
+            onSave={handleSaveComplete}
+            onCancel={handleCancelEdit}
+          />
+        ) : (
+          <CommentDisplay
+            comment={comment}
+            rating={rating}
+            createdAt={created_at.toString()}
+          />
+        )}
       </div>
     </div>
   );

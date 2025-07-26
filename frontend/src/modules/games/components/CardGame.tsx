@@ -2,7 +2,7 @@ import { gamesRoutesConfig } from "../config/games.routes.config";
 import type { Game } from "../models/game.model";
 
 export const CardGame = ({ game }: { game: Game }) => {
-  const { game_id, game_name, game_img, game_description } = game;
+  const { game_id, game_name, game_img, game_description, house_odds } = game;
 
   return (
     <a
@@ -24,8 +24,8 @@ export const CardGame = ({ game }: { game: Game }) => {
         <p className="text-gray-300 text-sm mb-4 h-10 overflow-hidden">{game_description}</p>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-gray-400">Total de Puntos</p>
-            <p className="text-lg font-bold text-teal-400">500p</p>
+            <p className="text-xs text-gray-400">Cuota base</p>
+            <p className="text-lg font-bold text-teal-400">{house_odds}</p>
           </div>
           <button className="bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out">
             Jugar Ahora
