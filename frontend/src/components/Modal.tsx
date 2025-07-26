@@ -62,20 +62,16 @@ export const Modal = memo(({ children, isOpen, onClose, className = "" }: ModalP
       ref={dialogRef}
       className={`bg-gray-800 rounded-lg p-8 max-w-md w-full max-h-[90vh] overflow-y-auto ${className}`}
     >
-      {/* Backdrop como div separado para manejar click y teclado */}
-      <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+      {/* Backdrop como button para manejar click y teclado */}
+      <button
+        type="button"
+        className="fixed inset-0 bg-black bg-opacity-50 z-40 border-0 p-0 cursor-pointer"
         onClick={handleBackdropClick}
         onKeyDown={handleBackdropKeyDown}
-        role="button"
-        tabIndex={0}
         aria-label="Cerrar modal"
       />
 
-      <div
-        className="relative z-50"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="relative z-50">
         {children}
       </div>
     </dialog>

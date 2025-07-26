@@ -1,4 +1,4 @@
-import React, { memo, useRef, useCallback, useMemo } from "react";
+import React, { memo, useRef, useCallback, useMemo, useEffect } from "react";
 import { Trash2 } from "lucide-react";
 import { CommentGameDataClient } from "../services/commentGameDataClient";
 
@@ -29,11 +29,21 @@ export const DeleteCommentGame: React.FC<DeleteCommentGameProps> = memo(({ comme
     });
   }, [mutate, closeDialog]);
 
-  // Memoizar handler de tecla escape
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Escape' && !isPending) {
-      closeDialog();
+  // Efecto para manejar la tecla Escape de manera global
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isPending && dialogRef.current?.open) {
+        closeDialog();
+      }
+    };
+
+    if (dialogRef.current?.open) {
+      document.addEventListener('keydown', handleKeyDown);
     }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [closeDialog, isPending]);
 
   // Memoizar icono de eliminar
@@ -69,7 +79,6 @@ export const DeleteCommentGame: React.FC<DeleteCommentGameProps> = memo(({ comme
 
       <dialog
         ref={dialogRef}
-        onKeyDown={handleKeyDown}
         className="rounded-lg p-0 max-w-sm w-full backdrop:bg-black/70 bg-transparent border-0"
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-description"

@@ -1,8 +1,7 @@
-import { useAuthStore } from "../store/auth.store";
+import { CookiesSection } from "../utils/cookiesSection";
 
 export class MiddlewareUser {
   static isLogged() {
-    if (!useAuthStore.getState().isLogged()) return false;
-    return true;
+    return !!CookiesSection.get();
   }
 }
