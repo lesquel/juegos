@@ -149,7 +149,7 @@ export const SearchComponent = memo(
     );
 
     return (
-      <div className={`bg-gray-800 rounded-lg p-4 sm:p-6 mb-6 ${className}`}>
+      <div className={`bg-gray-800 rounded-lg p-4 sm:p-6 ${className}`}>
         {/* Grid responsivo para los controles */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 items-end">
           {/* Search Input - ocupa toda la fila en mobile, 2 columnas en tablet+, 2 columnas en desktop, 3 en XL */}
@@ -267,28 +267,28 @@ export const SearchComponent = memo(
         {/* Active Filters Display - Responsivo con mejor spacing */}
         {(filters.searchTerm ||
           filters.filterType !== memoizedFilterOptions[0]?.value) && (
-          <div className="mt-4 pt-4 border-t border-gray-700">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-gray-300 font-medium">
-                Filtros activos:
-              </span>
-              {filters.searchTerm && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-blue-600 text-white font-medium">
-                  "{filters.searchTerm}"
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm text-gray-300 font-medium">
+                  Filtros activos:
                 </span>
-              )}
-              {filters.filterType !== memoizedFilterOptions[0]?.value && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-600 text-white font-medium">
-                  {
-                    memoizedFilterOptions.find(
-                      (opt) => opt.value === filters.filterType
-                    )?.label
-                  }
-                </span>
-              )}
+                {filters.searchTerm && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-blue-600 text-white font-medium">
+                    "{filters.searchTerm}"
+                  </span>
+                )}
+                {filters.filterType !== memoizedFilterOptions[0]?.value && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-600 text-white font-medium">
+                    {
+                      memoizedFilterOptions.find(
+                        (opt) => opt.value === filters.filterType
+                      )?.label
+                    }
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
     );
   }
