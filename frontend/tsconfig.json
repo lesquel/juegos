@@ -5,7 +5,10 @@
     "**/*"
   ],
   "exclude": [
-    "dist"
+    "dist",
+    "src/all-games/marketplace/dados/**/*",
+    "src/all-games/marketplace/do-not-make/**/*",
+    "src/all-games/marketplace/HIPODROMOCASINO/**/*"
   ],
   "compilerOptions": {
     "baseUrl": ".",

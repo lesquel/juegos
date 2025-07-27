@@ -8,6 +8,11 @@ RUN pnpm install
 
 COPY . .
 
-EXPOSE 4321
+# Compila tu proyecto Astro para producción
+RUN pnpm build
 
-CMD ["pnpm", "dev", "--", "--port", "4321", "--host"]
+# Expón el puerto que usará Cloud Run (siempre será 8080)
+EXPOSE 8080
+
+# Usa "preview" para servir el sitio generado
+CMD ["pnpm", "preview", "--port", "8080", "--host"]
