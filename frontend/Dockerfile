@@ -8,6 +8,9 @@ RUN pnpm install
 
 COPY . .
 
-EXPOSE 8080
+# Solo si quieres usar el build para producción
+RUN pnpm build
 
-CMD ["pnpm", "dev", "--", "--port", "8080", "--host"]
+EXPOSE 4321
+
+CMD ["pnpm", "preview", "--port", "4321", "--host"]
