@@ -1,33 +1,35 @@
-# Etapa de construcción
-FROM node:20-alpine AS builder
+# Etapa base
+FROM node:20-alpine AS base
 
+# Directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos de dependencias
-COPY package.json pnpm-lock.yaml* ./
+# Copiar e instalar dependencias
+COPY package.json pnpm-lock.yaml* package-lock.json* ./
+RUN npm install -g pnpm
+RUN pnpm install
 
-# Instalar dependencias
-RUN npm install -g pnpm && pnpm install
-
-# Copiar el resto del proyecto
+# Copiar el resto del código
 COPY . .
 
-# Construir el proyecto Astro
+# Build del proyecto
 RUN pnpm build
 
-# Etapa de producción
+# ------------------------------
+# Etapa final: Servir en producción
+# ------------------------------
 FROM node:20-alpine
+
+# Instala un servidor estático
+RUN npm install -g serve
 
 WORKDIR /app
 
-# Instalar 'serve' para servir archivos estáticos
-RUN npm install -g serve
+# Copiar archivos generados
+COPY --from=base /app/dist /app
 
-# Copiar los archivos ya compilados desde la etapa de build
-COPY --from=builder /app/dist ./dist
-
-# Exponer el puerto esperado por Cloud Run
+# Exponer puerto para Cloud Run
 EXPOSE 8080
 
 # Comando para servir la app
-CMD ["serve", "-s", "dist", "-l", "8080"]
+CMD ["serve", "-l", "8080"]
