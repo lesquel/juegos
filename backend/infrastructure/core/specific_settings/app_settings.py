@@ -4,7 +4,7 @@ from .base_settings_config import BaseSettingsConfig
 class AppSettings(BaseSettingsConfig):
     app_name: str
     environment: str
-    debug: bool = False  # Seguro por defecto - debe activarse explícitamente
+    debug: bool = False
     host: str
 
     # CORS
