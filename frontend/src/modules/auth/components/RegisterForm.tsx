@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useCallback } from "react";
+import React, { memo, useMemo, useCallback, useEffect } from "react";
 import { QueryProvider } from "@providers/QueryProvider";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
@@ -15,7 +15,11 @@ interface RegisterFormValues {
 }
 
 export const RegisterForm: React.FC = memo(() => {
-  MiddlewareAstroProtectUser.isLogged();
+  useEffect(() => {
+    // Solo ejecutar en el cliente después del montaje
+    MiddlewareAstroProtectUser.isLogged();
+  }, []);
+
   return (
     <QueryProvider>
       <UseRegisterForm />
