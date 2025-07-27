@@ -11,6 +11,44 @@ RUN pnpm install
 
 # Copiar el resto del código
 COPY . .
+# Etapa base
+FROM node:20-slim AS base
+
+# Variables de entorno para evitar errores de Puppeteer o Rollup
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+# Directorio de trabajo
+WORKDIR /app
+
+# Copiar e instalar dependencias
+COPY package.json pnpm-lock.yaml* package-lock.json* ./
+RUN npm install -g pnpm
+RUN pnpm install
+
+# Copiar el resto del código
+COPY . .
+
+# Build del proyecto
+RUN pnpm build
+
+# ------------------------------
+# Etapa final: Servir en producción
+# ------------------------------
+FROM node:20-slim
+
+# Instala un servidor estático
+RUN npm install -g serve
+
+WORKDIR /app
+
+# Copiar archivos generados
+COPY --from=base /app/dist /app
+
+# Exponer puerto para Cloud Run
+EXPOSE 8080
+
+# Comando para servir la app
+CMD ["serve", "-l", "8080"]
 
 # Build del proyecto
 RUN pnpm build
