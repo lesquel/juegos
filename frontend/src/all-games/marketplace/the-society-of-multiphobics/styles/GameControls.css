@@ -1,0 +1,373 @@
+/* Game Controls Styles */
+.game-controls {
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.controls-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  background: linear-gradient(45deg, #667EEA, #764BA2);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Phase Status */
+.phase-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 2px solid;
+}
+
+.phase-status.setup {
+  background: rgba(237, 137, 54, 0.2);
+  border-color: #ED8936;
+  color: #F6AD55;
+}
+
+.phase-status.playing {
+  background: rgba(72, 187, 120, 0.2);
+  border-color: #48BB78;
+  color: #68D391;
+  animation: playingPulse 2s infinite;
+}
+
+.phase-status.finished {
+  background: rgba(66, 153, 225, 0.2);
+  border-color: #4299E1;
+  color: #63B3ED;
+}
+
+.phase-icon {
+  font-size: 1.1rem;
+}
+
+/* Difficulty Section */
+.difficulty-section {
+  margin-bottom: 20px;
+}
+
+.difficulty-section h4 {
+  margin: 0 0 15px 0;
+  color: #E2E8F0;
+  font-size: 1.2rem;
+}
+
+.difficulty-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.difficulty-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.difficulty-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.difficulty-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #4ECDC4;
+}
+
+.difficulty-option input[type="radio"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.difficulty-option:has(input:checked) {
+  background: rgba(78, 205, 196, 0.2);
+  border-color: #4ECDC4;
+  box-shadow: 0 0 15px rgba(78, 205, 196, 0.3);
+}
+
+.difficulty-option:has(input:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.difficulty-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
+}
+
+.difficulty-label strong {
+  color: #E2E8F0;
+  font-size: 1rem;
+}
+
+.difficulty-label small {
+  color: #A0AEC0;
+  font-size: 0.8rem;
+}
+
+/* Actions Section */
+.actions-section {
+  margin-bottom: 20px;
+}
+
+.action-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.start-btn {
+  background: linear-gradient(45deg, #48BB78, #38A169);
+  color: white;
+  box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+}
+
+.start-btn:hover:not(:disabled) {
+  background: linear-gradient(45deg, #38A169, #2F855A);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(72, 187, 120, 0.6);
+}
+
+.start-btn:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: #A0AEC0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.playing-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.pause-btn {
+  background: linear-gradient(45deg, #ED8936, #DD6B20);
+  color: white;
+  flex: 1;
+}
+
+.pause-btn:hover {
+  background: linear-gradient(45deg, #DD6B20, #C05621);
+  transform: translateY(-2px);
+}
+
+.restart-btn {
+  background: linear-gradient(45deg, #4299E1, #3182CE);
+  color: white;
+  flex: 1;
+}
+
+.restart-btn:hover {
+  background: linear-gradient(45deg, #3182CE, #2C5282);
+  transform: translateY(-2px);
+}
+
+/* Game Info */
+.game-info {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  color: #A0AEC0;
+  font-size: 0.9rem;
+}
+
+.info-value {
+  color: #E2E8F0;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Final Score */
+.final-score {
+  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.final-score h4 {
+  margin: 0 0 15px 0;
+  color: white;
+  font-size: 1.3rem;
+}
+
+.score-display {
+  margin-bottom: 15px;
+}
+
+.final-score-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #FFD700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  animation: scoreGlow 2s ease-in-out infinite;
+}
+
+.game-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.game-summary p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes playingPulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(72, 187, 120, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(72, 187, 120, 0.6);
+  }
+}
+
+@keyframes scoreGlow {
+  0%, 100% {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .game-controls {
+    padding: 15px;
+  }
+  
+  .controls-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .controls-header h3 {
+    font-size: 1.3rem;
+  }
+  
+  .difficulty-selector {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .difficulty-option {
+    padding: 10px;
+  }
+  
+  .action-btn {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .playing-controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-controls {
+    padding: 12px;
+    margin-bottom: 15px;
+  }
+  
+  .controls-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .phase-status {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .difficulty-section h4 {
+    font-size: 1rem;
+  }
+  
+  .difficulty-option {
+    padding: 8px;
+  }
+  
+  .difficulty-label strong {
+    font-size: 0.9rem;
+  }
+  
+  .difficulty-label small {
+    font-size: 0.7rem;
+  }
+  
+  .final-score {
+    padding: 15px;
+  }
+  
+  .final-score-value {
+    font-size: 1.5rem;
+  }
+}
