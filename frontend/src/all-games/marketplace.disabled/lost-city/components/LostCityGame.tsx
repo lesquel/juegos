@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { GameLogic } from '../logic/GameLogic';
 import { GameProps } from '../types/GameTypes';
+import '../styles/LostCity.css';
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
@@ -315,23 +316,7 @@ const LostCityGame: React.FC<GameProps> = ({
       />
       
       {showMessage && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            color: 'white',
-            padding: '10px 20px',
-            borderRadius: '5px',
-            maxWidth: '80%',
-            textAlign: 'center',
-            zIndex: 1000,
-            fontSize: '14px',
-            fontFamily: 'monospace'
-          }}
-        >
+        <div className="lost-city-message">
           {message}
         </div>
       )}
