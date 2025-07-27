@@ -22,7 +22,7 @@ const data = await GlobalClientData.getGlobalInfo();
       html {
         scroll-behavior: smooth;
       }
-      
+
       body {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -31,14 +31,11 @@ const data = await GlobalClientData.getGlobalInfo();
   </head>
   <body class="min-h-screen flex flex-col">
     <SaveAuthProvider
+      client:load
       transition:persist
       data-astro-persist="save-auth-provider"
     />
-    <Navbar
-      client:load
-      data-astro-persist="navbar"
-      transition:persist
-    />
+    <Navbar client:load data-astro-persist="navbar" transition:persist />
     <slot />
   </body>
 </html>
