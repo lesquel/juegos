@@ -1,9 +1,14 @@
 import { QueryProvider } from "@providers/QueryProvider";
 import { UserClientData } from "../services/userClientData";
 import { LoadingComponent } from "@components/LoadingComponent";
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
+import { MiddlewareAstroProtectUser } from "@modules/auth/middleware/middlewareAstroProtectUser";
 
 export const MeComponent = memo(() => {
+  useEffect(() => {
+    // Solo ejecutar en el cliente después del montaje
+    MiddlewareAstroProtectUser.isLogged();
+  }, []);
   return (
     <QueryProvider>
       <UseMeComponent />
