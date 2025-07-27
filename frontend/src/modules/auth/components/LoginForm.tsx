@@ -16,7 +16,7 @@ interface LoginFormValues {
 export const LoginForm: React.FC = memo(() => {
   useEffect(() => {
     // Solo ejecutar en el cliente después del montaje
-    MiddlewareAstroProtectUser.isLogged();
+    MiddlewareAstroProtectUser.isNotLogged();
   }, []);
 
   return (

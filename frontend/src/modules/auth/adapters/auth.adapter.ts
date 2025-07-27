@@ -1,4 +1,3 @@
-import { environment } from "@config/environment";
 import type { RegisterModel } from "../models/auth.model";
 
 export class AuthAdapter {

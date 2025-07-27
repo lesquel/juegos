@@ -1,25 +1,13 @@
-# Etapa base
-FROM node:20-alpine
+FROM node:20-slim
 
-# Establecer directorio de trabajo
 WORKDIR /app
 
-# Copiar los archivos de dependencias
-COPY package.json package-lock.json* pnpm-lock.yaml* ./
-
-# Instalar PNPM (si usas PNPM, opcional)
+COPY package.json pnpm-lock.yaml* ./
 RUN npm install -g pnpm
+RUN pnpm install
 
-# Instalar dependencias
-RUN if [ -f pnpm-lock.yaml ]; then pnpm install; \
-    elif [ -f package-lock.json ]; then npm install; \
-    else echo "No lockfile found!" && exit 1; fi
-
-# Copiar el resto del proyecto
 COPY . .
 
-# Exponer el puerto de desarrollo de Astro
-EXPOSE 4321
+EXPOSE 8080
 
-# Comando por defecto (modo desarrollo)
-CMD ["npm", "run", "dev"]
+CMD ["pnpm", "dev", "--", "--port", "8080", "--host"]
