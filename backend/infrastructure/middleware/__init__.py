@@ -1,1 +1,2 @@
 from .logging_middleware import LoggingMiddleware
+from .proxy_header_middleware import SimpleProxyHeadersMiddleware

@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+
+# from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
+
 from infrastructure.core.settings_config import AppSettings
 from infrastructure.logging import get_logger
-from infrastructure.middleware import LoggingMiddleware
+from infrastructure.middleware import LoggingMiddleware, SimpleProxyHeadersMiddleware
 
 # Configurar logger
 logger = get_logger("middlewares")
@@ -18,6 +21,8 @@ def add_middlewares(app: FastAPI, app_settings: AppSettings) -> None:
         app_settings: Configuración de la aplicación
     """
 
+    logger.info("Configuring middlewares for FastAPI application")
+    app.add_middleware(SimpleProxyHeadersMiddleware)
     # Configurar CORS con seguridad mejorada
     cors_origins = app_settings.allowed_origins or ["*"]
     logger.info(
