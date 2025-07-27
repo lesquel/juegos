@@ -1,8 +1,25 @@
 ---
-import Connect4Component from "@all-games/online/Connect4/Connect4Component.astro";
-import LayoutForGames from "@layouts/LayoutForGames.astro"; 
+import LayoutForGames from "@layouts/LayoutForGames.astro";
 ---
 
 <LayoutForGames>
-  <Connect4Component client:load />
+  <div id="connect4-root"></div>
 </LayoutForGames>
+
+<script>
+  import { Connect4Game } from '@all-games/online/connect4/Connect4Game.tsx';
+  import React from 'react';
+  import { createRoot } from 'react-dom/client';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('connect4-root');
+    if (container) {
+      const root = createRoot(container);
+      root.render(React.createElement(Connect4Game, {
+        onBack: () => {
+          window.location.href = '/';
+        }
+      }));
+    }
+  });
+</script>

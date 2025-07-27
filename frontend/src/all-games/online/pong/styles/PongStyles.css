@@ -1,0 +1,532 @@
+w/* Pong Game Styles */
+
+.pong-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+/* Header Styles */
+.pong-header {
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.game-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.game-title h1 {
+  font-size: 2.5rem;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(45deg, #00ff88, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.status-disconnected {
+  background-color: rgba(255, 82, 82, 0.2);
+  border: 1px solid #ff5252;
+}
+
+.status-disconnected .status-indicator {
+  background-color: #ff5252;
+}
+
+.status-waiting {
+  background-color: rgba(255, 193, 7, 0.2);
+  border: 1px solid #ffc107;
+}
+
+.status-waiting .status-indicator {
+  background-color: #ffc107;
+}
+
+.status-playing {
+  background-color: rgba(76, 175, 80, 0.2);
+  border: 1px solid #4caf50;
+}
+
+.status-playing .status-indicator {
+  background-color: #4caf50;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Connection Controls */
+.connection-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.join-game-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.join-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.room-code-input {
+  padding: 10px 15px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  width: 150px;
+}
+
+.room-code-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.room-code-input:focus {
+  outline: none;
+  border-color: #00ff88;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+/* Game Info */
+.game-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+}
+
+.room-code {
+  font-family: monospace;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #00ff88;
+  letter-spacing: 2px;
+  padding: 5px 10px;
+  background-color: rgba(0, 255, 136, 0.1);
+  border-radius: 5px;
+}
+
+.player-info {
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.player-info.player-1 {
+  background-color: rgba(0, 255, 136, 0.2);
+  border: 1px solid #00ff88;
+}
+
+.player-info.player-2 {
+  background-color: rgba(0, 204, 255, 0.2);
+  border: 1px solid #00ccff;
+}
+
+.player-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.controls-hint {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Waiting Message */
+.waiting-message {
+  text-align: center;
+  padding: 20px;
+}
+
+.waiting-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #00ff88;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.share-hint {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+/* Game Controls Info */
+.game-controls-info {
+  margin-top: 10px;
+}
+
+.controls-reminder h3 {
+  margin: 0 0 15px 0;
+  color: #00ff88;
+}
+
+.controls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  text-align: center;
+}
+
+.control-set {
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.keys {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.keys kbd {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #333;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-right: 5px;
+}
+
+/* Canvas Styles */
+.pong-canvas-container {
+  margin: 20px 0;
+  border: 2px solid #333;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.pong-canvas {
+  display: block;
+  background-color: #000;
+}
+
+/* Button Styles */
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  outline: none;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #00ff88, #00ccff);
+  color: #1a1a2e;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #00e676, #00b3e6);
+}
+
+.btn-secondary {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-danger {
+  background-color: #ff5252;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #e04848;
+}
+
+.btn-copy {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 5px 10px;
+  font-size: 0.9rem;
+}
+
+/* Modal Styles */
+.pong-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.pong-modal {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.pong-modal.winner {
+  border-color: #00ff88;
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+}
+
+.pong-modal.loser {
+  border-color: #ff5252;
+  box-shadow: 0 0 30px rgba(255, 82, 82, 0.3);
+}
+
+.pong-modal.paused {
+  border-color: #ffc107;
+  box-shadow: 0 0 30px rgba(255, 193, 7, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.8rem;
+  color: white;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.modal-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.modal-content {
+  padding: 20px 25px;
+  text-align: center;
+}
+
+.modal-message {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.game-stats {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.winner-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+}
+
+.winner-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.winner-name {
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.winner-name.player1 {
+  color: #00ff88;
+  background-color: rgba(0, 255, 136, 0.2);
+}
+
+.winner-name.player2 {
+  color: #00ccff;
+  background-color: rgba(0, 204, 255, 0.2);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding: 15px 25px 25px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pong-game {
+    padding: 10px;
+  }
+  
+  .game-title h1 {
+    font-size: 2rem;
+  }
+  
+  .game-title {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .connection-controls {
+    gap: 15px;
+  }
+  
+  .join-form {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .room-code-input {
+    width: 100%;
+  }
+  
+  .controls-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .pong-canvas-container {
+    margin: 15px 0;
+  }
+  
+  .pong-modal {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-title h1 {
+    font-size: 1.5rem;
+  }
+  
+  .modal-header {
+    padding: 15px 20px 10px;
+  }
+  
+  .modal-content {
+    padding: 15px 20px;
+  }
+  
+  .modal-actions {
+    padding: 10px 20px 20px;
+  }
+}

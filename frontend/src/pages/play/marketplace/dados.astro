@@ -1,9 +1,21 @@
 ---
-// import DadosComponent from "@all-games/marketplace/dados/DadosComponent.astro";
 import LayoutForGames from "@layouts/LayoutForGames.astro";
 ---
 
 <LayoutForGames>
-  <!-- <DadosComponent client:load /> -->
-  <div>Dados game temporarily disabled</div>
+  <div id="dados-root"></div>
 </LayoutForGames>
+
+<script>
+  import DadosGame from '@all-games/marketplace/dados/DadosGame.tsx';
+  import React from 'react';
+  import { createRoot } from 'react-dom/client';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('dados-root');
+    if (container) {
+      const root = createRoot(container);
+      root.render(React.createElement(DadosGame));
+    }
+  });
+</script>

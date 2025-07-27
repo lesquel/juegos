@@ -9,7 +9,7 @@ export const API_URL =
   ENVIRONMENT === "development" ? API_URL_DEV : API_URL_PROD;
 
 export const environment = {
-  BASE_URL: import.meta.env.VITE_BASE_URL || "http://localhost:8000",
+  BASE_URL: import.meta.env.VITE_BASE_URL || "http://localhost:8000/play",
   API_URL,
   ENVIRONMENT,
 };

@@ -19,7 +19,18 @@ export default defineConfig({
       'import.meta.env.VITE_BASE_URL': JSON.stringify(process.env.VITE_BASE_URL || 'http://localhost:8000'),
       'import.meta.env.VITE_ENVIRONMENT': JSON.stringify(process.env.VITE_ENVIRONMENT || 'development'),
     },
+    esbuild: {
+      // Disable TypeScript checking for build speed and to avoid path issues
+      tsconfigRaw: '{}',
+      target: 'es2020'
+    },
+    optimizeDeps: {
+      // Force pre-bundling to avoid dynamic imports issues
+      include: ['react', 'react-dom']
+    },
     build: {
+      // Increase the chunk size limit to handle large files
+      chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
           manualChunks: {
@@ -31,6 +42,10 @@ export default defineConfig({
     },
     ssr: {
       noExternal: ['@tanstack/react-query']
+    },
+    // Add specific handling for Windows paths
+    resolve: {
+      preserveSymlinks: false
     }
   },
   prefetch: {

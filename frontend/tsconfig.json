@@ -2,13 +2,12 @@
   "extends": "astro/tsconfigs/strict",
   "include": [
     ".astro/types.d.ts",
-    "**/*"
+    "src/**/*"
   ],
   "exclude": [
     "dist",
-    "src/all-games/marketplace/dados/**/*",
-    "src/all-games/marketplace/do-not-make/**/*",
-    "src/all-games/marketplace/HIPODROMOCASINO/**/*"
+    "node_modules",
+    "src/all-games/marketplace.disabled/**/*"
   ],
   "compilerOptions": {
     "baseUrl": ".",
@@ -28,6 +27,14 @@
       "@services/*": ["src/services/*"]
     },
     "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "skipLibCheck": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node"
   }
 }

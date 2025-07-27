@@ -1,8 +1,26 @@
 ---
-import TicTacComponent from "@all-games/online/tic-tac/TicTacComponent.astro";
-import LayoutForGames from "@layouts/LayoutForGames.astro"; 
+import LayoutForGames from "@layouts/LayoutForGames.astro";
 ---
 
 <LayoutForGames>
-  <TicTacComponent client:load />
+  <div id="tic-tac-root"></div>
 </LayoutForGames>
+
+<script>
+  import { TicTacGame } from '@all-games/online/tic-tac/TicTacGame.tsx';
+  import React from 'react';
+  import { createRoot } from 'react-dom/client';
+
+  // Esperar a que el DOM esté listo
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('tic-tac-root');
+    if (container) {
+      const root = createRoot(container);
+      root.render(React.createElement(TicTacGame, {
+        onBack: () => {
+          window.location.href = '/';
+        }
+      }));
+    }
+  });
+</script>
