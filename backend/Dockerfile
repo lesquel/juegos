@@ -25,5 +25,4 @@ COPY . .
 EXPOSE 8080
 
 # Start FastAPI app with Uvicorn
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"]
-# Use the PORT environment variable for flexibility
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--forwarded-allow-ips='*'", "--proxy-headers"]
