@@ -13,11 +13,13 @@ class AppSettings(BaseSettingsConfig):
 
     def is_development(self) -> bool:
         """Verifica si estamos en ambiente de desarrollo"""
-        return self.environment.lower() in ["dev", "development", "local"]
+        env = (self.environment or "").lower()
+        return env in ["dev", "development", "local"]
 
     def is_production(self) -> bool:
         """Verifica si estamos en ambiente de producción"""
-        return self.environment.lower() in ["prod", "production"]
+        env = (self.environment or "").lower()
+        return env in ["prod", "production"]
 
     def should_enable_debug(self) -> bool:
         """Determina si el debug debe estar habilitado"""
@@ -27,6 +29,6 @@ class AppSettings(BaseSettingsConfig):
     def base_url(self) -> str:
         """Devuelve la URL base de la aplicación"""
         if self.is_development():
-            return f"https://{self.host}"
+            return f"http://{self.host}"  # Normalmente en dev HTTP
         else:
-            return f"http://{self.host}"
+            return f"https://{self.host}"  # En producción HTTPS
