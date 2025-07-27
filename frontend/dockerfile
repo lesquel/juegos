@@ -1,23 +1,25 @@
-# Etapa 1: Build
-FROM node:20-alpine AS builder
+# Etapa base
+FROM node:20-alpine
 
+# Establecer directorio de trabajo
 WORKDIR /app
 
-COPY package.json bun.lockb* ./
-RUN bun install
+# Copiar los archivos de dependencias
+COPY package.json package-lock.json* pnpm-lock.yaml* ./
 
+# Instalar PNPM (si usas PNPM, opcional)
+RUN npm install -g pnpm
+
+# Instalar dependencias
+RUN if [ -f pnpm-lock.yaml ]; then pnpm install; \
+    elif [ -f package-lock.json ]; then npm install; \
+    else echo "No lockfile found!" && exit 1; fi
+
+# Copiar el resto del proyecto
 COPY . .
-RUN npm run build  # o bun build si tienes script para bun
 
-# Etapa 2: Servir contenido estático
-FROM node:20-alpine AS runner
+# Exponer el puerto de desarrollo de Astro
+EXPOSE 4321
 
-WORKDIR /app
-
-RUN npm install -g serve
-
-COPY --from=builder /app/dist ./dist
-
-EXPOSE 3000
-
-CMD ["serve", "-s", "dist", "-l", "3000"]
+# Comando por defecto (modo desarrollo)
+CMD ["npm", "run", "dev"]
