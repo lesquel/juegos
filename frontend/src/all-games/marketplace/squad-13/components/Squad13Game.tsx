@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { GameLogic } from '../logic/GameLogic';
-import { GameProps } from '../types/GameTypes';
+import type { GameProps } from '../types/GameTypes';
 import '../styles/Squad13.css';
 
 const CANVAS_WIDTH = 800;

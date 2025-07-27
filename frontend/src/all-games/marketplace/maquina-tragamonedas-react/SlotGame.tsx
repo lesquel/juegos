@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { SlotGameLogic } from '../logic/SlotGameLogic';
-import type { SlotGameState, SpinResult } from '../types/SlotTypes';
-import { SlotMachine } from '../components/SlotMachine';
-import { GameControls } from '../components/GameControls';
-import { GameStats } from '../components/GameStats';
-import { WinDisplay } from '../components/WinDisplay';
-import '../styles/slot-game.css';
+import { SlotGameLogic } from './logic/SlotGameLogic';
+import type { SlotGameState, SpinResult } from './types/SlotTypes';
+import { SlotMachine } from './components/SlotMachine';
+import { GameControls } from './components/GameControls';
+import { GameStats } from './components/GameStats';
+import { WinDisplay } from './components/WinDisplay';
+import './styles/slot-game.css';
 
 export function SlotGame() {
   const [gameState, setGameState] = useState<SlotGameState>(() => 

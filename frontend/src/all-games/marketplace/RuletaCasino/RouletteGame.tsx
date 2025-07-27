@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { RouletteGameLogic } from '../logic/RouletteGameLogic';
-import type { RouletteGameState, SpinResult } from '../types/RouletteTypes';
-import { RouletteWheel } from '../components/RouletteWheel';
-import { BettingTable } from '../components/BettingTable';
-import { GameInfo } from '../components/GameInfo';
-import { ChipSelector } from '../components/ChipSelector';
-import { WinDisplay } from '../components/WinDisplay';
-import '../styles/roulette-game.css';
+import { RouletteGameLogic } from './logic/RouletteGameLogic';
+import type { RouletteGameState, SpinResult } from './types/RouletteTypes';
+import { RouletteWheel } from './components/RouletteWheel';
+import { BettingTable } from './components/BettingTable';
+import { GameInfo } from './components/GameInfo';
+import { ChipSelector } from './components/ChipSelector';
+import { WinDisplay } from './components/WinDisplay';
+import './styles/roulette-game.css';
 
 export function RouletteGame() {
   const [gameState, setGameState] = useState<RouletteGameState>(() => 
