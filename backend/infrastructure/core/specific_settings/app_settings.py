@@ -26,4 +26,7 @@ class AppSettings(BaseSettingsConfig):
     @property
     def base_url(self) -> str:
         """Devuelve la URL base de la aplicación"""
-        return f"http://{self.host}"
+        if self.is_development():
+            return f"https://{self.host}"
+        else:
+            return f"http://{self.host}"
