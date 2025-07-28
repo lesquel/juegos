@@ -1,12 +1,13 @@
-import { CategoryGameClientData } from "../services/categoryGameClientData";
-import { CardCategoryGame } from "./CardCategoryGame";
-import type { PaginationCategory } from "../models/pagination-category";
+import { createLazyFileRoute } from '@tanstack/react-router'
+import { CategoryGameClientData } from "../../modules/category-game/services/categoryGameClientData";
+import { CardCategoryGame } from "../../modules/category-game/components/CardCategoryGame";
+import type { PaginationCategory } from "../../modules/category-game/models/pagination-category";
 import { useState, useCallback, useMemo, memo } from "react";
 import { PaginationComponent } from "@components/PaginationComponent";
-import CategoryGameSearchComponent from "./CategoryGameSearchComponent";
+import CategoryGameSearchComponent from "../../modules/category-game/components/CategoryGameSearchComponent";
 import type { SearchFilters } from "@components/SearchComponent";
-import type { CategoryGame } from "../models/category-game.model";
-import { CardCategoryGameSkeleton } from "./CardCategoryGameSkeleton";
+import type { CategoryGame } from "../../modules/category-game/models/category-game.model";
+import { CardCategoryGameSkeleton } from "../../modules/category-game/components/CardCategoryGameSkeleton";
 import { Copy } from "lucide-react";
 
 // Configuración de paginación por defecto con búsqueda
@@ -18,13 +19,17 @@ const DEFAULT_PAGINATION: PaginationCategory = {
   search: "",
 };
 
-export const ListCategoryGame = memo(() => {
-  return (
-      <UseListCategoryGame />
-  );
-});
+export const Route = createLazyFileRoute('/category-games/')({
+  component: CategoryGamesIndexPage,
+})
 
-ListCategoryGame.displayName = "ListCategoryGame";
+function CategoryGamesIndexPage() {
+  return (
+    <main className="h-full flex-grow bg-gray-900 relative">
+      <UseListCategoryGame />
+    </main>
+  )
+}
 
 const UseListCategoryGame = memo(() => {
   const [pagination, setPagination] =
@@ -83,6 +88,8 @@ const UseListCategoryGame = memo(() => {
     </div>
   );
 });
+
+UseListCategoryGame.displayName = "UseListCategoryGame";
 
 // Componente separado para el contenido que cambia
 const CategoriesContent = memo(
@@ -214,5 +221,4 @@ const CategoriesContent = memo(
   }
 );
 
-UseListCategoryGame.displayName = "UseListCategoryGame";
 CategoriesContent.displayName = "CategoriesContent";

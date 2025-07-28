@@ -22,6 +22,7 @@ const TestLazyRouteImport = createFileRoute('/test')()
 const GamesLazyRouteImport = createFileRoute('/games')()
 const CategoryGamesLazyRouteImport = createFileRoute('/category-games')()
 const GamesIndexLazyRouteImport = createFileRoute('/games/')()
+const CategoryGamesIndexLazyRouteImport = createFileRoute('/category-games/')()
 const UserMeLazyRouteImport = createFileRoute('/user/me')()
 const TransfersNewLazyRouteImport = createFileRoute('/transfers/new')()
 const TransfersIdLazyRouteImport = createFileRoute('/transfers/$id')()
@@ -91,6 +92,13 @@ const GamesIndexLazyRoute = GamesIndexLazyRouteImport.update({
   path: '/',
   getParentRoute: () => GamesLazyRoute,
 } as any).lazy(() => import('./routes/games/index.lazy').then((d) => d.Route))
+const CategoryGamesIndexLazyRoute = CategoryGamesIndexLazyRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CategoryGamesLazyRoute,
+} as any).lazy(() =>
+  import('./routes/category-games/index.lazy').then((d) => d.Route),
+)
 const UserMeLazyRoute = UserMeLazyRouteImport.update({
   id: '/user/me',
   path: '/user/me',
@@ -251,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/transfers/$id': typeof TransfersIdLazyRoute
   '/transfers/new': typeof TransfersNewLazyRoute
   '/user/me': typeof UserMeLazyRoute
+  '/category-games/': typeof CategoryGamesIndexLazyRoute
   '/games/': typeof GamesIndexLazyRoute
   '/play/marketplace/LostOnStrangerTerra': typeof PlayMarketplaceLostOnStrangerTerraRoute
   '/play/marketplace/TheSocietyOfMultiphobics': typeof PlayMarketplaceTheSocietyOfMultiphobicsRoute
@@ -271,7 +280,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
-  '/category-games': typeof CategoryGamesLazyRouteWithChildren
   '/test': typeof TestLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
@@ -280,6 +288,7 @@ export interface FileRoutesByTo {
   '/transfers/$id': typeof TransfersIdLazyRoute
   '/transfers/new': typeof TransfersNewLazyRoute
   '/user/me': typeof UserMeLazyRoute
+  '/category-games': typeof CategoryGamesIndexLazyRoute
   '/games': typeof GamesIndexLazyRoute
   '/play/marketplace/LostOnStrangerTerra': typeof PlayMarketplaceLostOnStrangerTerraRoute
   '/play/marketplace/TheSocietyOfMultiphobics': typeof PlayMarketplaceTheSocietyOfMultiphobicsRoute
@@ -311,6 +320,7 @@ export interface FileRoutesById {
   '/transfers/$id': typeof TransfersIdLazyRoute
   '/transfers/new': typeof TransfersNewLazyRoute
   '/user/me': typeof UserMeLazyRoute
+  '/category-games/': typeof CategoryGamesIndexLazyRoute
   '/games/': typeof GamesIndexLazyRoute
   '/play/marketplace/LostOnStrangerTerra': typeof PlayMarketplaceLostOnStrangerTerraRoute
   '/play/marketplace/TheSocietyOfMultiphobics': typeof PlayMarketplaceTheSocietyOfMultiphobicsRoute
@@ -343,6 +353,7 @@ export interface FileRouteTypes {
     | '/transfers/$id'
     | '/transfers/new'
     | '/user/me'
+    | '/category-games/'
     | '/games/'
     | '/play/marketplace/LostOnStrangerTerra'
     | '/play/marketplace/TheSocietyOfMultiphobics'
@@ -363,7 +374,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/category-games'
     | '/test'
     | '/auth/login'
     | '/auth/register'
@@ -372,6 +382,7 @@ export interface FileRouteTypes {
     | '/transfers/$id'
     | '/transfers/new'
     | '/user/me'
+    | '/category-games'
     | '/games'
     | '/play/marketplace/LostOnStrangerTerra'
     | '/play/marketplace/TheSocietyOfMultiphobics'
@@ -402,6 +413,7 @@ export interface FileRouteTypes {
     | '/transfers/$id'
     | '/transfers/new'
     | '/user/me'
+    | '/category-games/'
     | '/games/'
     | '/play/marketplace/LostOnStrangerTerra'
     | '/play/marketplace/TheSocietyOfMultiphobics'
@@ -488,6 +500,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/games/'
       preLoaderRoute: typeof GamesIndexLazyRouteImport
       parentRoute: typeof GamesLazyRoute
+    }
+    '/category-games/': {
+      id: '/category-games/'
+      path: '/'
+      fullPath: '/category-games/'
+      preLoaderRoute: typeof CategoryGamesIndexLazyRouteImport
+      parentRoute: typeof CategoryGamesLazyRoute
     }
     '/user/me': {
       id: '/user/me'
@@ -660,10 +679,12 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface CategoryGamesLazyRouteChildren {
   CategoryGamesIdLazyRoute: typeof CategoryGamesIdLazyRoute
+  CategoryGamesIndexLazyRoute: typeof CategoryGamesIndexLazyRoute
 }
 
 const CategoryGamesLazyRouteChildren: CategoryGamesLazyRouteChildren = {
   CategoryGamesIdLazyRoute: CategoryGamesIdLazyRoute,
+  CategoryGamesIndexLazyRoute: CategoryGamesIndexLazyRoute,
 }
 
 const CategoryGamesLazyRouteWithChildren =

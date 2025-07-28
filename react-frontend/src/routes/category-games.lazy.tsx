@@ -1,14 +1,6 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
-import { ListCategoryGame } from '@modules/category-game/components/ListCategoryGame'
+import { createLazyFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createLazyFileRoute('/category-games')({
-  component: CategoryGamesPage,
+  component: () => <Outlet />,
 })
 
-function CategoryGamesPage() {
-  return (
-    <main className="h-full flex-grow bg-gray-900 relative">
-      <ListCategoryGame />
-    </main>
-  )
-}
