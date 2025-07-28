@@ -1,0 +1,4910 @@
+<meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1.01'>
+<title>SQUAD 13</title>
+<style is:inline>
+    * {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+body {
+    background: #000;
+}
+
+#t {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#g {
+    display: block;
+    cursor: none;
+}
+
+</style>
+
+<div id=t>
+    <canvas id=g>
+</div>
+
+<script is:inline>
+    let can,
+    ctx,
+    G,
+    lastFrame = 0,
+    w = window,
+    canvasPrototype = CanvasRenderingContext2D.prototype,
+    CANVAS_WIDTH = 1600,
+    CANVAS_HEIGHT = 900;
+
+inputMode = navigator.userAgent.match(/*nomangle*//andro|ipho|ipa|ipo/i/*/nomangle*/) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    ? 1
+    : 0;
+
+MONTHS = [
+    // You didn't think I would include all the months, did you? Bytes are expensive!
+    /*nomangle*/'January'/*/nomangle*/,
+    /*nomangle*/'March'/*/nomangle*/,
+    /*nomangle*/'April'/*/nomangle*/,
+    /*nomangle*/'May'/*/nomangle*/,
+    /*nomangle*/'June'/*/nomangle*/,
+    /*nomangle*/'August'/*/nomangle*/,
+    /*nomangle*/'September'/*/nomangle*/,
+    /*nomangle*/'October'/*/nomangle*/,
+];
+COUNTRIES = [
+    /*nomangle*/'Warkistan'/*/nomangle*/,
+    /*nomangle*/'Murdavia'/*/nomangle*/,
+    /*nomangle*/'Kingdom of Zarathar'/*/nomangle*/,
+    /*nomangle*/'Khaldonia'/*/nomangle*/,
+    /*nomangle*/'Republic of Eldrania'/*/nomangle*/,
+    /*nomangle*/'Wabanka'/*/nomangle*/,
+    /*nomangle*/'Simian Islands'/*/nomangle*/,
+    /*nomangle*/'Serkhan Territories'/*/nomangle*/,
+    /*nomangle*/'Vashir Confederacy'/*/nomangle*/,
+    /*nomangle*/'Drazara Islands'/*/nomangle*/,
+];
+
+function firstItem(iterable) {
+    for (let item of iterable) return item;
+    return 0;
+}
+
+onresize = () => {
+    let windowWidth = innerWidth,
+        windowHeight = innerHeight,
+
+        availableRatio = windowWidth / windowHeight, // available ratio
+        canvasRatio = CANVAS_WIDTH / CANVAS_HEIGHT, // base ratio
+        appliedWidth,
+        appliedHeight,
+        containerStyle = t.style;
+
+    CANVAS_WIDTH = 1600;
+    CANVAS_HEIGHT = 900;
+
+    let expectedPixels = CANVAS_WIDTH * CANVAS_HEIGHT;
+
+    if (inputMode === 1) {
+        // Flip the aspect ratio if in portrait
+        if (windowWidth > windowHeight) {
+            let tmpWidth = CANVAS_WIDTH;
+            CANVAS_WIDTH = CANVAS_HEIGHT
+            CANVAS_HEIGHT = tmpWidth;
+        }
+
+        // Adjust the ratio so we fill the screen
+        let currentAspectRatio = CANVAS_WIDTH / CANVAS_HEIGHT;
+        if (currentAspectRatio < availableRatio) {
+            CANVAS_HEIGHT = CANVAS_WIDTH / availableRatio;
+        } else {
+            CANVAS_WIDTH = CANVAS_HEIGHT * availableRatio;
+        }
+
+        // Hack so we have enough pixels that we aren't zoomed in too much
+        while (CANVAS_WIDTH * CANVAS_HEIGHT / expectedPixels < 0.5) {
+            CANVAS_WIDTH *= 2;
+            CANVAS_HEIGHT *= 2;
+        }
+    } else {
+        // Desktop mode, keep the aspect ratio intact
+        if (availableRatio <= canvasRatio) {
+            appliedWidth = windowWidth;
+            appliedHeight = appliedWidth / canvasRatio;
+        } else {
+            appliedHeight = windowHeight;
+            appliedWidth = appliedHeight * canvasRatio;
+        }
+    }
+
+    can.width = CANVAS_WIDTH;
+    can.height = CANVAS_HEIGHT;
+
+    containerStyle.width = appliedWidth + 'px';
+    containerStyle.height = appliedHeight + 'px';
+};
+
+between = (a, b, c) => b < a ? a : (b > c ? c : b);
+isBetween = (a, b, c) => a <= b && b <= c || a >= b && b >= c;
+rnd = (min, max) => random() * (max - min) + min;
+distP = (x1, y1, x2, y2) => hypot(x1 - x2, y1 - y2);
+dist = (a, b) => distP(a.x, a.y, b.x, b.y);
+normalize = x => moduloWithNegative(x, PI);
+angleBetween = (a, b) => atan2(b.y - a.y, b.x - a.x);
+roundToNearest = (x, precision) => round(x / precision) * precision;
+pick = a => a[~~(random() * a.length)];
+
+// Easing
+linear = x => x;
+easeOutQuint = x => 1 - pow(1 - x, 5);
+easeOutBack = (x) => {
+    let c1 = 1.70158;
+    let c3 = c1 + 1;
+
+    return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2);
+}
+interpolate = (from, to, ratio, easing = linear) => {
+    return easing(between(0, ratio, 1)) * (to - from) + from;
+}
+
+// Modulo centered around zero: the result will be between -y and +y
+moduloWithNegative = (x, y) => {
+    x = x % (y * 2);
+    if (x > y) {
+        x -= y * 2;
+    }
+    if (x < -y) {
+        x += y * 2;
+    }
+    return x;
+};
+
+// Make Math global
+Object.getOwnPropertyNames(Math).forEach(n => w[n] = w[n] || Math[n]);
+
+TWO_PI = PI * 2;
+
+intersects = (a,b,c,d,p,q,r,s) => {
+    var det, gamma, lambda;
+    det = (c - a) * (s - q) - (r - p) * (d - b);
+    if (det === 0) {
+      return 0;
+    } else {
+      lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
+      gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
+      return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
+    }
+  };
+
+function colorStrToInt(color) {
+    let colorHex = color.slice(1);
+    if (colorHex.length === 3) {
+        colorHex = `${colorHex.charAt(0)}0${colorHex.charAt(1)}0${colorHex.charAt(2)}0`;
+    }
+
+    return parseInt(colorHex, 16);
+}
+
+function rgbToStr(r, g, b) {
+    return '#' + ((r << (8 * 2)) | (g << (8 * 1)) | (b << (8  * 0))).toString(16).padStart(6, '0');
+}
+
+function strToRgb(color) {
+    let colorNum = colorStrToInt(color);
+    return [
+        (colorNum >> (8 * 2)) % 256,
+        (colorNum >> (8 * 1)) % 256,
+        (colorNum >> (8 * 0)) % 256,
+    ];
+}
+
+function multiplyColor(color, factor) {
+    let [r, g, b] = strToRgb(color);
+
+    return rgbToStr(
+        r * factor,
+        g * factor,
+        b * factor,
+    );
+}
+
+
+function addColors(color1, color2) {
+    let [r1, g1, b1] = strToRgb(color1);
+    let [r2, g2, b2] = strToRgb(color2);
+
+    return rgbToStr(
+        r1 + r2,
+        g1 + g2,
+        b1 + b2,
+    );
+}
+
+addZeroes = x => {
+    return (x < 10 ? '0' : '') + ~~x;
+};
+
+formatTime = seconds => {
+    return addZeroes(~~(seconds / 60)) + ':' + addZeroes(~~seconds % 60) + '.' + addZeroes(100 * (seconds % 1));
+};
+
+class RNG {
+    constructor() {
+        this.index = 0;
+        this.elements = [];
+    }
+
+    next(min = 0, max = 1) {
+        if (this.index >= this.elements.length) {
+            this.elements.push(random());
+        }
+        return this.elements[this.index++ % this.elements.length] * (max - min) + min;
+    }
+
+    reset() {
+        this.index = 0;
+    }
+}
+
+function explosion(
+    world,
+    position,
+    radius,
+    owner,
+) {
+
+    sound(...[,,74,.06,.29,.54,4,3.1,,-8,,,,1.3,,.2,,.4,.24]);
+
+    for (let i = 0 ; i < 10 ; i++) {
+        world.add(new Fireball(
+            position.x + rnd(-radius * 5 / 8, radius * 5 / 8),
+            position.y + rnd(-radius * 5 / 8, radius * 5 / 8),
+            -rnd(PI / 4, PI * 3 / 4),
+            rnd(300, 600),
+        ));
+    }
+
+    // Particles
+    for (let i = 0 ; i < 30 ; i++) {
+        let x = position.x + rnd(-radius * 5 / 8, radius * 5 / 8);
+        let y = position.y + rnd(-radius * 5 / 8, radius * 5 / 8);
+        world.add(new Particle(
+            pick(['#000', '#ff0', '#f80']),
+            [rnd(25, 30), 0],
+            [x, x + rnd(-100, 100)],
+            [y, y - rnd(50, 150)],
+            rnd(1.2, 3),
+        ));
+    }
+
+    // Damage targets
+    for (let target of targets(world, owner)) { // TODO
+        if (target === owner) continue;
+        if (dist(target, position) > radius) continue;
+
+        if (target.push) {
+            target.push();
+        } else {
+            target.explode();
+        }
+    }
+
+    // Camera shake
+    for (let player of world.bucket('player')) {
+        let power = 1 - dist(player, position) / (CANVAS_WIDTH / 2);
+        if (power <= 0) continue;
+        let camera = firstItem(world.bucket('camera'));
+        camera.shake(power);
+    }
+}
+
+function * targets(
+    world,
+    owner,
+) {
+    for (let target of world.bucket('human')) {
+        if (target === owner) continue;
+        yield target;
+    }
+    for (let target of world.bucket('chopper')) {
+        if (target === owner) continue;
+        yield target;
+    }
+}
+
+class Entity {
+
+    constructor() {
+        this.x = this.y = this.age = this.angle = 0;
+        this.buckets = [];
+    }
+
+    cycle(elapsed) {
+        this.age += elapsed;
+    }
+
+    render(camera) {
+
+    }
+
+    destroy() {
+
+    }
+
+    agesBy(duration) {
+        let age = this.age + duration;
+        return this.world.waitFor(() => this.age > age);
+    }
+
+    removed() {
+        return this.world.waitFor(() => !this.world.contains(this));
+    }
+}
+
+class World {
+    constructor() {
+        this.entities = new Set();
+        this.buckets = new Map();
+
+        this.add(new Camera());
+    }
+
+    bucket(bucket) {
+        if (!this.buckets.has(bucket)) {
+            this.buckets.set(bucket, new Set());
+        }
+        return this.buckets.get(bucket);
+    }
+
+    contains(entity) {
+        return this.entities.has(entity);
+    }
+
+    destroy() {
+        for (let entity of this.entities) {
+            entity.destroy();
+        }
+    }
+
+    add(...entities) {
+        for (let entity of entities) {
+            if (this.contains(entity)) return;
+
+            this.entities.add(entity);
+            for (let bucket of entity.buckets)  {
+                this.bucket(bucket).add(entity);
+            }
+            entity.world = this;
+        }
+    }
+
+    remove(entity) {
+        this.entities.delete(entity);
+        for (let bucket of entity.buckets)  {
+            this.bucket(bucket).delete(entity);
+        }
+    }
+
+    cycle(elapsed) {
+        for (let entity of this.entities) {
+            entity.cycle(elapsed);
+        }
+    }
+
+    render() {
+        let camera = firstItem(this.bucket('camera'));
+        ctx.save();
+        ctx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2)
+        ctx.scale(camera.zoom, camera.zoom);
+        ctx.translate(-~~camera.x, -~~camera.y);
+
+        for (let entity of this.entities) {
+            ctx.wrap(() => entity.render(camera));
+        }
+
+        ctx.restore();
+    }
+
+    waitFor(condition) {
+        let conditionEntity = new Condition(condition);
+        this.add(conditionEntity);
+        return conditionEntity.promise();
+    }
+}
+
+class Hitbox {
+    constructor(x, y, radius) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.isLanding = 0;
+        this.readjusted = 0;
+        this.vital = 0;
+    }
+}
+
+class Chopper extends Entity {
+
+    constructor(facing = 1) {
+        super();
+
+        this.buckets.push('chopper');
+
+        this.controls = {
+            up: 0,
+            left: 0,
+            right: 0,
+            shoot: 0,
+            down: 0,
+        };
+
+        this.radius = 35;
+
+        this.lastShot = 0;
+        this.shotInterval = 1;
+
+        this.propellerAngle = 0;
+
+        this.facing = facing;
+
+        this.simplifiedPhysics = 0;
+
+        this.hitBoxes = [
+            new Hitbox(-10, 18, 5),
+            new Hitbox(10, 18, 5),
+
+            // Top
+            new Hitbox(20, -15, 20),
+            new Hitbox(-20, -15, 20),
+
+            // Front (nose)
+            new Hitbox(15, 0, 10),
+
+            // Back propeller
+            new Hitbox(-55, -10, 10),
+        ];
+
+        for (let hitbox of this.hitBoxes) {
+            hitbox.x *= this.facing;
+        }
+
+        for (let landingHitbox of [
+            this.hitBoxes[0],
+            this.hitBoxes[1],
+        ]) {
+            landingHitbox.isLanding = 1;
+        }
+
+        for (let hitbox of this.hitBoxes) {
+            hitbox.vital = !hitbox.isLanding;
+        }
+
+        this.globalHitBoxes = [];
+
+        this.propellerPower = 0;
+        this.momentum = {x: 0, y: 0, angle: 0};
+
+        this.landed = 0;
+        this.landedTime = 0;
+        this.lastLanded = 0;
+
+        this.damagedStart = 0;
+        this.damagedEnd = 0;
+
+        this.lockDuration = 1;
+        this.lockedTarget = 0;
+        this.lockedTargetFactor = 0;
+        this.lockedTargetTime = 0;
+        this.lockedTargetAcquireAngle = PI / 8;
+        this.lockedTargetKeepAngle = PI / 4;
+
+        this.lastCollisionSound = 0;
+
+        this.uncontrollableDuration = 1;
+    }
+
+    updateGlobalHitboxes() {
+        for (let i = 0 ; i < this.hitBoxes.length ; i++) {
+            if (!this.globalHitBoxes[i]) {
+                this.globalHitBoxes[i] = new Hitbox(0, 0, 0);
+            }
+
+            let hitBox = this.hitBoxes[i];
+            let hitBoxAngle = atan2(hitBox.y, hitBox.x);
+            let dist = distP(0, 0, hitBox.x, hitBox.y);
+            this.globalHitBoxes[i].x = this.x + cos(this.angle + hitBoxAngle) * dist;
+            this.globalHitBoxes[i].y = this.y + sin(this.angle + hitBoxAngle) * dist;
+            this.globalHitBoxes[i].radius = hitBox.radius;
+            this.globalHitBoxes[i].isLanding = hitBox.isLanding;
+            this.globalHitBoxes[i].vital = hitBox.vital;
+            this.globalHitBoxes[i].readjusted = 0;
+        }
+    }
+
+    get averagePoint() {
+        let x = 0, y = 0;
+        for (let hitBox of this.globalHitBoxes) {
+            x += hitBox.x;
+            y += hitBox.y;
+        }
+        return {
+            x: x / this.hitBoxes.length,
+            y: y / this.hitBoxes.length,
+        };
+    }
+
+    get readyToShoot() {
+        if (this.age < this.damagedEnd) return 0;
+        return this.age - this.lastShot > this.shotInterval;
+    }
+
+    shootingTarget() {
+        if (!this.readyToShoot) return 0;
+
+        let { angle } = this;
+        if (this.facing < 0) {
+            angle = atan2(sin(angle), -cos(angle));
+        }
+
+        let bestTarget;
+        let bestTargetAngleDiff = this.lockedTargetAcquireAngle;
+        for (let target of targets(this.world, this)) {
+            if (dist(target, this) > 600) continue;
+            if (target instanceof Prisoner) continue; // Don't lock on prisoners
+            if (target instanceof Rebel && !this.buckets.includes('player')) continue; // Dear reader, please don't judge me
+            let angleToTarget = normalize(angleBetween(this, target));
+
+            let angleDiff = abs(normalize(angleToTarget - normalize(angle)));
+            if (target === this.lockedTarget && angleDiff < this.lockedTargetKeepAngle) {
+                return target;
+            }
+
+            if (angleDiff < bestTargetAngleDiff) {
+                bestTarget = target;
+                bestTargetAngleDiff = angleDiff;
+            }
+        }
+
+        return bestTarget;
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        this.propellerAngle += interpolate(3, 5, this.propellerPower) * PI * elapsed;
+
+        for (let chopper of this.world.bucket('chopper')) {
+            if (chopper === this) continue;
+            if (dist(chopper, this) > this.radius) continue;
+            this.push();
+            chopper.push();
+
+            if (this.age - this.lastCollisionSound > 0.2) {
+                this.lastCollisionSound = this.age;
+                sound(...[,,63,.05,.2,.3,4,,,6,,,.15,1.3,,.1,,.32,.15,.01]); // Explosion 424
+            }
+        }
+
+        // Target lock on
+        let bestTarget = this.shootingTarget();
+        if (bestTarget !== this.lockedTarget) {
+            this.lockedTarget = bestTarget;
+            this.lockedTargetFactor = 0;
+        }
+
+        if (this.lockedTarget) {
+            this.lockedTargetFactor = min(
+                1,
+                this.lockedTargetFactor + elapsed / this.lockDuration,
+            );
+        }
+
+        if (this.lockedTargetFactor >= 1) {
+            this.lockedTargetTime += elapsed;
+        } else {
+            this.lockedTargetTime = 0;
+        }
+
+        // Shooting
+        if (this.readyToShoot && this.controls.shoot) {
+            let missile = new Missile(this);
+            this.world.add(missile);
+
+            if (this.lockedTarget && this.lockedTargetFactor >= 1) {
+                missile.angle = angleBetween(this, this.lockedTarget);
+                if (this.buckets.includes('player')) { // Boy this is ugly, please forgive me for my sin
+                    missile.target = this.lockedTarget;
+                }
+            }
+
+            this.lastShot = this.age;
+        }
+
+        this.updateGlobalHitboxes();
+
+        let { averagePoint } = this;
+
+        for (let obstacle of this.world.bucket('obstacle')) {
+            if (!isBetween(obstacle.minX - 100, this.x, obstacle.maxX + 100)) continue;
+
+            for (let hitBox of this.globalHitBoxes) {
+                hitBox.readjusted = hitBox.readjusted || obstacle.pushAway(hitBox);
+            }
+        }
+
+        let landed = !this.globalHitBoxes.some(hitBox => hitBox.isLanding && !hitBox.readjusted);
+        let crashed = this.globalHitBoxes.some(hitBox => (hitBox.vital || this.damagedEnd > this.age) && hitBox.readjusted);
+
+        for (let water of this.world.bucket('water')) {
+            if (this.y >= water.y) {
+                crashed = 1;
+
+                for (let i = 0 ; i < 20 ; i++) {
+                    this.world.add(new Fireball(
+                        this.x + rnd(-20, 20),
+                        this.y + rnd(-20, 20),
+                        -rnd(PI / 4, PI * 3 / 4),
+                        rnd(400, 600),
+                        ['#27c6dc'],
+                    ));
+                }
+
+            }
+        }
+
+        if (crashed) {
+            this.explode();
+            return;
+        }
+
+        let newAverage = this.averagePoint;
+
+        let dX = newAverage.x - averagePoint.x;
+        let dY = newAverage.y - averagePoint.y;
+
+        if (dX || dY) {
+            this.x += dX;
+            this.y += dY;
+        }
+
+        let idealAngle = 0;
+        let angleVelocity = PI / 6;
+        if (!landed) {
+            if (this.controls.left) idealAngle = -PI / 4;
+            if (this.controls.right) idealAngle = PI / 4;
+            if (this.controls.left || this.controls.right) angleVelocity = PI / 1.5;
+        }
+
+        if (this.age >= this.damagedEnd) {
+            let x = 0, y = 0;
+            if (this.controls.left) x -= 1;
+            if (this.controls.right) x += 1;
+            if (this.controls.up) y -= 1;
+            if (this.controls.down) y += 1;
+
+            let targetPower = this.controls.up ? 1 : 0;
+            this.propellerPower += between(
+                -elapsed * 4,
+                targetPower - this.propellerPower,
+                elapsed * 4,
+            );
+
+            this.angle += between(
+                -elapsed * angleVelocity,
+                idealAngle - this.angle,
+                elapsed * angleVelocity
+            );
+        } else {
+            let x = this.x + rnd(-20, 20);
+            let y = this.y + rnd(-20, 20);
+            let particle = new Particle(
+                pick(['#000', '#ff0', '#f80', '#f00']),
+                [rnd(10, 20), 0],
+                [x, x + rnd(-100, 100)],
+                [y, y - rnd(50, 150)],
+                rnd(1.2, 3),
+            );
+            this.world.add(particle);
+        }
+        this.momentum.angle = 0;
+
+        if (this.simplifiedPhysics) {
+            this.momentum.x += cos(idealAngle - PI / 2) * elapsed * 400 * 1.5;
+            this.momentum.y -= this.propellerPower * elapsed * 400;
+        } else {
+            this.momentum.x += interpolate(0.5, 1.5, this.propellerPower) * cos(this.angle - PI / 2) * elapsed * 400;
+            this.momentum.y += this.propellerPower * sin(this.angle - PI / 2) * elapsed * 400;
+        }
+
+        // Air resistance on X
+        let opposition = sign(sin(this.angle)) !== sign(this.momentum.x) || this.simplifiedPhysics
+            ? 200
+            : 50;
+        this.momentum.x += between(
+            -elapsed * opposition,
+            -this.momentum.x,
+            elapsed * opposition,
+        );
+
+        // Gravity on Y
+        let maxFallSpeed = this.simplifiedPhysics
+            ? (this.controls.left || this.controls.right ? 20 : 200)
+            : 400;
+        let fallAccel = this.simplifiedPhysics
+            ? 200
+            : (this.controls.down ? 300 : 150);
+        this.momentum.y += between(
+            -elapsed * (this.simplifiedPhysics ? 150 : 200),
+            maxFallSpeed - this.momentum.y,
+            elapsed * fallAccel,
+        );
+
+        // Cap max momentum on simplified physics
+        if (this.simplifiedPhysics) {
+            this.momentum.x = between(-300, this.momentum.x, 300);
+            this.momentum.y = between(-300, this.momentum.y, 200);
+        }
+
+        if (landed && !this.propellerPower) {
+            this.momentum.y = 0;
+        }
+
+        this.x += this.momentum.x * elapsed;
+        this.y += this.momentum.y * elapsed;
+        this.angle += this.momentum.angle * elapsed;
+
+        let camera = firstItem(this.world.bucket('camera'));
+        // this.x = between(camera.minX, this.x, camera.maxX);
+        // this.y = between(camera.minY, this.y, camera.maxY);
+
+        this.angle = between(-PI / 4, this.angle, PI / 4);
+
+        let wasLanded = this.landed;
+        let { lastLanded } = this;
+        this.landed = landed;
+        if (this.landed) {
+            this.lastLanded = this.age;
+            this.landedTime += elapsed;
+        } else {
+            this.landedTime = 0;
+        }
+
+        if (this.landed && !wasLanded && this.age - lastLanded > 0.5) {
+            let [a, b] = this.globalHitBoxes.filter(hitBox => hitBox.isLanding);
+
+            for (let i = 0 ; i < 10 ; i++) {
+                let ratio = rnd(-0.5, 1.5);
+                let x = a.x + ratio * (b.x - a.x);
+                let y = a.y + ratio * (b.y - a.y);
+                let particle = new Particle(
+                    '#fff',
+                    [rnd(10, 15), 0],
+                    [x, x + rnd(-30, 30)],
+                    [y, y + rnd(-20, -10)],
+                    rnd(0.8, 1.5),
+                );
+                this.world.add(particle);
+            }
+
+            sound(...[0.5,,400,.02,.08,.09,4,2.5,-1,9,,,,.3,,.1,.14,.63,.02,,-2063]); // Hit 200
+        }
+
+        if (!isBetween(camera.minX, this.x, camera.maxX)) {
+            this.momentum.x = 0;
+            this.x = between(camera.minX, this.x, camera.maxX);
+        }
+
+        if (!isBetween(camera.minY, this.y, camera.maxY)) {
+            this.momentum.y = 0;
+            this.y = between(camera.minY, this.y, camera.maxY);
+        }
+    }
+
+    push(duration = 1) {
+        let angle = rnd(PI / 4, PI * 3 / 4);
+        this.momentum.x = cos(angle) * 300;
+        this.momentum.y = sin(angle) * 300;
+
+        this.damagedStart = this.age;
+        this.damagedEnd = this.age + this.uncontrollableDuration;
+    }
+
+    explode() {
+        this.world.remove(this);
+        this.destroy();
+        explosion(this.world, this, 80, this);
+    }
+
+    render() {
+        ctx.wrap(() => {
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle);
+            ctx.scale(this.facing, 1);
+
+            // Spin around when damaged
+            if (this.age < this.damagedEnd) {
+                let ratio = (this.age - this.damagedStart) / (this.damagedEnd - this.damagedStart);
+                ctx.scale(cos(ratio * PI * 2), 1);
+            }
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(-20, -15, 40, 30);
+
+            ctx.fillRect(0, -10, -50, 5);
+            ctx.fillRect(-60, -20, 10, 15);
+
+            ctx.fillRect(-20, 20, 40, 2);
+            ctx.fillRect(-10, 15, 2, 5);
+            ctx.fillRect(10, 15, 2, 5);
+
+
+            ctx.fillRect(-2, 0, 4, -22);
+
+            ctx.wrap(() => {
+                ctx.translate(0, -22);
+                ctx.scale(1, 0.45);
+                this.renderPropeller(100, 6);
+            });
+
+            ctx.wrap(() => {
+                ctx.translate(-55, -15);
+                this.renderPropeller(24, 4);
+            });
+
+            // ctx.strokeStyle = '#fff';
+            // ctx.beginPath();
+            // ctx.moveTo(0, 0);
+            // ctx.lineTo(100, 0);
+            // ctx.stroke();
+        });
+
+        // ctx.wrap(() => {
+        //     ctx.translate(this.x, this.y);
+        //     ctx.fillStyle = '#fff';
+        //     ctx.translate(0, 50);
+        //     for (let line of [
+        //         `propeller: ${round(this.propellerPower * 100)}`,
+        //         `momentum: ${round(this.momentum.x)},${round(this.momentum.y)},${this.momentum.angle}`,
+        //     ]) {
+        //         ctx.fillText(line, 0, 0);
+        //         ctx.translate(0, 20);
+        //     }
+        // });
+
+        // for (let hitBox of this.globalHitBoxes) {
+        //     ctx.fillStyle = hitBox.readjusted ? '#ff0' : '#0f0';
+        //     ctx.beginPath();
+        //     ctx.arc(hitBox.x, hitBox.y, hitBox.radius, 0, PI * 2);
+        //     ctx.fill();
+        // }
+
+        // let { averagePoint } = this;
+        // ctx.fillStyle = '#00f';
+        // ctx.fillRect(averagePoint.x - 2, averagePoint.y - 2, 4, 4);
+
+        // let future = this.futurePosition();
+
+        // ctx.strokeStyle = '#ff0';
+        // ctx.lineWidth = 4;
+        // ctx.beginPath();
+        // ctx.moveTo(this.x, this.y);
+        // ctx.lineTo(future.x, future.y);
+        // ctx.stroke();
+    }
+
+    crashed() {
+        return this.world.waitFor(() => {
+            if (!this.world.contains(this)) throw new Error();
+        })
+    }
+
+    futurePosition() {
+        let x = this.x + this.momentum.x * 1;
+        let y = this.y + this.momentum.y * 1;
+        return { x, y };
+    }
+
+    renderPropeller(length, thickness) {
+        ctx.rotate(this.propellerAngle);
+
+        ctx.fillRect(-length / 2, -thickness / 2, length, thickness);
+
+        // Blur effect
+        let effectAngle = interpolate(PI / 8, PI / 3, this.propellerPower);
+
+        ctx.globalAlpha = 0.2;
+        ctx.beginPath();
+
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, length / 2, 0, -effectAngle, 1);
+
+        ctx.rotate(PI);
+
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, length / 2, 0, -effectAngle, 1);
+
+        ctx.fill();
+    }
+}
+
+class Player extends Chopper {
+
+    constructor() {
+        super();
+        this.buckets.push('player');
+
+        this.ladderLength = 0;
+        this.hangingPrisoner = 0;
+        this.rescuedPrisoners = 0;
+
+        this.lastDamageBeep = 0;
+    }
+
+    destroy() {
+        if (this.sound) {
+            this.sound.stop();
+            this.sound = 0;
+        }
+    }
+
+    cycle(elapsed) {
+        let { lockedTargetFactor } = this;
+
+        if (!this.sound && this.age > 0.5) {
+            this.sound = new FunZZfx(zzfxG(...[,,317,,20,0,,3.2,-12,16,,,.07,.1,,,,.59,.18,.12])); // Shoot 71
+            this.sound.source.loop = 1;
+            this.sound.start();
+        }
+
+        super.cycle(elapsed);
+
+        let { controls } = this;
+
+        // Keyboard controls
+        controls.left = (DOWN[37] || DOWN[65] || DOWN[81]);
+        controls.right = (DOWN[39] || DOWN[68]);
+        controls.up = (DOWN[38] || DOWN[87] || DOWN[90]);
+        controls.down = (DOWN[40] || DOWN[83]);
+        controls.shoot = DOWN[32];
+
+        // Touch controls
+        for (let touch of TOUCHES) {
+            let relX = touch.x / CANVAS_WIDTH;
+
+            controls.left = controls.left || isBetween(0, relX, 0.25);
+            controls.right = controls.right || isBetween(0.25, relX, 0.5);
+            controls.shoot = controls.shoot || isBetween(0.5, relX, 0.75);
+            controls.up = controls.up || isBetween(0.75, relX, 1);
+        }
+
+        let hasPrisoner;
+        for (let prisoner of this.world.bucket('prisoner')) {
+            if (dist(prisoner, this) < 150) {
+                hasPrisoner = prisoner;
+            }
+        }
+
+        let targetLadderLength = hasPrisoner && !this.hangingPrisoner ? 100 : 0;
+
+        if (targetLadderLength && !this.ladderLength) {
+            sound(...[,,100,.01,.08,.14,1,.8,10,,,,,,,,,.55,.02]); // Jump 405
+        }
+
+        this.ladderLength += between(
+            -elapsed * 100,
+            targetLadderLength - this.ladderLength,
+            elapsed * 100,
+        );
+
+        if (this.sound) {
+            this.sound.setVolume(interpolate(0.5, 1, this.propellerPower));
+            this.sound.setRate(interpolate(0.5, 1, this.propellerPower));
+        }
+
+        // Warning beep
+        if (this.age < this.damagedEnd && this.age - this.lastDamageBeep > 0.25) {
+            this.lastDamageBeep = this.age;
+            // sound(...[1,,154,,.07,.04,3,2.1,,,,,,.4,,,,.45,.04,.07,680]); // Hit 406
+            sound(...[.4,,434,,.03,.01,3,2,,5,,,,,168,,,.76,.03,,520]); // Blip 639
+        }
+
+        // Target locking
+        if (lockedTargetFactor === 0 && this.lockedTargetFactor > 0) {
+            sound(...[,,354,.02,.28,.32,,.9,5,160,491,.07,.09,,,,,.66,.17,.39]); // Powerup 616
+        }
+
+        // Target locked
+        if (lockedTargetFactor < 1 && this.lockedTargetFactor >= 1) {
+            sound(...[2,,12,.01,.04,.006,,2.8,,,-436,.01,.02,,,,.14,.61,.02]); // Blip 591
+        }
+    }
+
+    render(camera) {
+        // Target lock on indicator
+        ctx.wrap(() => {
+            if (!this.lockedTarget) return;
+
+            if (this.lockedTargetFactor >= 1 && this.lockedTargetTime < 1 && (this.lockedTargetTime / 0.2 % 1) < 0.5) {
+                return;
+            }
+
+            ctx.strokeStyle = ctx.fillStyle = this.lockedTargetFactor >= 1 ? '#f00' : '#ff0';
+            ctx.globalAlpha = interpolate(0, 0.2, this.lockedTargetFactor);
+            ctx.beginPath();
+            ctx.lineWidth = interpolate(40, 4, this.lockedTargetFactor);
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.lockedTarget.x, this.lockedTarget.y);
+            ctx.stroke();
+
+            ctx.translate(this.lockedTarget.x, this.lockedTarget.y);
+
+            ctx.globalAlpha = this.lockedTargetFactor;
+            ctx.shadowColor = '#000';
+            ctx.shadowOffsetY = 2;
+
+            let s = interpolate(2, 1, this.lockedTargetFactor);
+            ctx.scale(s, s);
+
+            ctx.rotate(this.age * PI);
+
+            let radius = max(this.lockedTarget.radius, 20);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, 2 * PI);
+            ctx.stroke();
+
+            for (let i = 0 ; i < 4 ; i++) {
+                ctx.rotate(PI / 2);
+                ctx.fillRect(radius - 5, 0, 10, 2);
+            }
+        });
+
+        // Ladder
+        ctx.wrap(() => {
+            ctx.translate(this.x, this.y);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(-5, 0, 2, this.ladderLength);
+            ctx.fillRect(5, 0, -2, this.ladderLength);
+
+            for (let y = this.ladderLength ; y >= 0 ; y -= 10) {
+                ctx.fillRect(-5, y, 10, 2);
+            }
+        });
+
+        super.render(camera);
+    }
+}
+
+class EnemyChopper extends Chopper {
+
+    constructor() {
+        super(-1);
+
+        this.buckets.push('enemy-chopper');
+
+        this.reachedTarget = 0;
+        this.path = [];
+
+        this.lastWarningBeep = 0;
+
+        this.lockedTargetKeepAngle = PI;
+    }
+
+    follow(path) {
+        this.path = path;
+        return this;
+    }
+
+    render(camera) {
+        ctx.wrap(() => {
+            if (this.lockedTargetFactor <= 0) return;
+
+            ctx.translate(this.x, this.y);
+
+            let repeatedLockFactor = (this.lockedTargetFactor % 0.25) / 0.25;
+
+            ctx.fillStyle = '#f00';
+            ctx.globalAlpha = interpolate(1, 0, repeatedLockFactor);
+
+            let s = interpolate(0, 1, repeatedLockFactor);
+            ctx.scale(s, s);
+
+            ctx.beginPath();
+            ctx.arc(0, 0, 150, 0, PI * 2);
+            ctx.fill();
+        });
+
+        super.render(camera);
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        this.controls.up = 0;
+        this.controls.left = 0;
+        this.controls.right = 0;
+
+        let target = this.path[0]
+        if (!target) return;
+
+        let distToTarget = dist(target, this);
+
+        if (distToTarget > 10) {
+            let future = this.futurePosition();
+            this.controls.right = future.x < target.x - 10;
+            this.controls.left = future.x > target.x + 10;
+            this.controls.up = future.y > target.y;
+        } else {
+            this.path.push(this.path.shift());
+        }
+
+        this.controls.shoot = this.lockedTargetFactor >= 1;
+
+        if (this.lockedTargetFactor > 0 && this.age - this.lastWarningBeep > 0.2) {
+            this.lastWarningBeep = this.age;
+            sound(...[.4,,434,,.03,.01,3,2,,5,,,,,168,,,.76,.03,,520]); // Blip 639
+        }
+    }
+}
+
+class Flashlight extends Entity {
+
+    constructor() {
+        super();
+
+        this.light = createCanvas(500, 400, (ctx, can) => {
+            // ctx.fillStyle = '#f00';
+            // ctx.fillRect(0, 0, can.width, can.height);
+
+            let shadow = 50;
+
+            ctx.shadowColor = '#fff';
+            ctx.shadowBlur = shadow;
+
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.moveTo(shadow, can.height / 2);
+            ctx.arc(
+                can.width - 200 - shadow,
+                can.height / 2,
+                can.height / 2,
+                PI / 3,
+                -PI / 3,
+                1,
+            );
+            ctx.fill();
+        });
+    }
+
+    render(camera) {
+        let player = firstItem(this.world.bucket('player'));
+        if (!player) return;
+
+        ctx.translate(player.x, player.y);
+        ctx.rotate(player.angle);
+        ctx.translate(-20, 0);
+        ctx.rotate(PI / 16);
+
+        // ctx.fillStyle = '#fff';
+        // ctx.fillRect(0, 0, 100, 100);
+        ctx.globalAlpha = 0.05;
+
+        ctx.drawImage(this.light, 0, -this.light.height / 2);
+    }
+}
+
+class Obstacle extends Entity {
+
+    constructor() {
+        super();
+        this.buckets = ['obstacle'];
+        this.points = [];
+        this.directionY = 1;
+    }
+
+    get minX() { return this.points[0].x; }
+    get maxX() { return this.points[this.points.length - 1].x; }
+
+    pushVertically(hitbox) {
+        let i = 0;
+        while (this.points[i] && this.points[i].x < hitbox.x) {
+            i++;
+        }
+
+        let a = this.points[i - 1];
+        let b = this.points[i];
+
+        if (!a || !b) return;
+
+        let ratio = (hitbox.x - a.x) / (b.x - a.x);
+
+        let idealY = interpolate(a.y, b.y, ratio) - this.directionY * hitbox.radius;
+        if (!isBetween(idealY, hitbox.y, idealY + this.directionY * 100)) return;
+
+        hitbox.y = idealY;
+
+        return 1;
+    }
+
+    contains(x, y) {
+        let yOnEdge = this.yAt(x);
+        if (yOnEdge === 0) return 0;
+        return sign(yOnEdge - y) !== this.directionY;
+    }
+
+    yAt(x) {
+        let i = 0;
+        while (this.points[i] && this.points[i].x < x) {
+            i++;
+        }
+
+        let a = this.points[i - 1];
+        let b = this.points[i];
+
+        if (!a || !b) return 0;
+
+        let ratio = (x - a.x) / (b.x - a.x);
+
+        return interpolate(a.y, b.y, ratio);
+    }
+
+    pushAway(hitbox) {
+        let i = 0;
+        while (this.points[i] && this.points[i].x < hitbox.x) {
+            i++;
+        }
+
+        let a = this.points[i - 1];
+        let b = this.points[i];
+
+        if (!a || !b) return;
+
+        let length = dist(a, b);
+        let angle = normalize(atan2(b.y - a.y, b.x - a.x));
+        let alpha = normalize(normalize(atan2(hitbox.y - a.y, hitbox.x - a.x)) - angle);
+        let l = cos(alpha) * dist(a, hitbox);
+        let h = abs(sin(alpha) * dist(a, hitbox));
+
+        let ratio = l / length;
+
+        if (h > hitbox.radius) return;
+        if (!isBetween(0, ratio, 1) && dist(a, hitbox) > hitbox.radius && dist(b, hitbox) > hitbox.radius) return;
+
+        let adjustedX = a.x + ratio * (b.x - a.x);
+        let adjustedY = a.y + ratio * (b.y - a.y);
+
+        hitbox.x = adjustedX - this.directionY * cos(angle + PI / 2) * hitbox.radius;
+        hitbox.y = adjustedY - this.directionY * sin(angle + PI / 2) * hitbox.radius;
+
+        return 1;
+    }
+
+    render(camera) {
+        if (camera.x + CANVAS_WIDTH / 2 < this.minX) return;
+        if (camera.x - CANVAS_WIDTH / 2 > this.maxX) return;
+
+        ctx.wrap(() => {
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+
+            let maxY = this.points[0].y;
+            let minY = maxY;
+            for (let point of this.points) {
+                ctx.lineTo(point.x, point.y);
+                maxY = max(maxY, point.y + 100);
+                minY = min(minY, point.y - 100);
+            }
+
+            if (this.directionY > 0) {
+                ctx.lineTo(this.points[this.points.length - 1].x, camera.maxY);
+                ctx.lineTo(this.points[0].x, camera.maxY);
+            } else {
+                ctx.lineTo(this.points[this.points.length - 1].x, camera.minY);
+                ctx.lineTo(this.points[0].x, camera.minY);
+            }
+
+            ctx.fill();
+        });
+
+        // ctx.fillStyle = '#f00';
+        // ctx.fillRect(this.minX, 0, 2, 400);
+        // ctx.fillRect(this.maxX, 0, 2, 400);
+    }
+}
+
+class LandingArea extends Entity {
+    constructor() {
+        super();
+        this.buckets.push('landing-area');
+    }
+
+    render() {
+        let player = firstItem(this.world.bucket('player'));
+
+        ctx.wrap(() => {
+            ctx.translate(this.x, this.y);
+
+            ctx.globalAlpha = 0.2;
+            ctx.fillStyle = '#0f0';
+            ctx.fillRect(-100, 0, 200, 50);
+            ctx.fillRect(-100, 0, interpolate(0, 200, this.landedRatio(player)), 50);
+
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = '#000';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold 24pt Impact';
+            ctx.fillText('FINISH', 0, 25);
+        });
+    }
+
+    landed(chopper) {
+        return this.world.waitFor(() => {
+            return this.landedRatio(chopper) >= 1;
+        });
+    }
+
+    landedRatio(chopper) {
+        if (!chopper) return 0;
+        if (!isBetween(this.x - 100, chopper.x, this.x + 100)) return 0;
+        if (!isBetween(this.y - 100, chopper.y, this.y + 100)) return 0;
+        return chopper.landedTime / 1;
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        let player = firstItem(this.world.bucket('player'));
+        let landedRatio = this.landedRatio(player);
+
+        if (landedRatio > 0) {
+            if (!this.landingSound) {
+                this.landingSound = zzfx(...[,,379,.02,.28,.31,,3.2,,-19,259,.06,.06,,,,,.56,.23]);
+                this.landingSound.start();
+            }
+        } else if (this.landingSound) {
+            this.landingSound.stop();
+            this.landingSound = 0;
+        }
+    }
+}
+
+class Water extends Entity {
+
+    constructor(y) {
+        super();
+        this.buckets.push('water');
+        this.y = y;
+
+        let amplitude = 10;
+        this.patterns = [0.8, 1].map(factor => {
+            let color = multiplyColor('#27c6dc', factor);
+            let patt = createCanvasPattern(100, amplitude * 2, (ctx) => {
+                ctx.fillStyle = color;
+
+                ctx.beginPath();
+                ctx.moveTo(0, amplitude * 2);
+                for (let x = 0 ; x <= 100 ; x += 2) {
+                    ctx.lineTo(
+                        x,
+                        amplitude + abs(sin(x / 100 * PI * 2)) * amplitude,
+                    );
+                }
+                ctx.lineTo(100, amplitude * 2);
+                ctx.fill();
+            });
+            patt.color = color;
+            patt.factor = factor;
+            return patt;
+        });
+    }
+
+    render(camera) {
+        if (camera.y + CANVAS_HEIGHT / 2 < this.y) return;
+
+        ctx.translate(~~camera.x - CANVAS_WIDTH / 2, this.y);
+
+        let baseY = 0;
+        let speedX = 50;
+        for (let patt of this.patterns) {
+            ctx.wrap(() => {
+                let offsetX = this.age * speedX - camera.x;
+                ctx.translate(offsetX, baseY);
+
+                ctx.fillStyle = patt;
+                ctx.fillRect(-offsetX, 0, CANVAS_WIDTH, 100);
+
+                ctx.fillStyle = patt.color;
+                ctx.fillRect(-offsetX, patt.height, CANVAS_WIDTH, 1000);
+
+            });
+
+            baseY += 20;
+            speedX *= 1.1;
+        }
+    }
+}
+
+class Particle extends Entity {
+
+    constructor(
+        color,
+        valuesSize,
+        valuesX,
+        valuesY,
+        duration,
+    ) {
+        super();
+        this.color = color;
+        this.valuesSize = valuesSize;
+        this.valuesX = valuesX;
+        this.valuesY = valuesY;
+        this.duration = duration;
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+        if (this.age > this.duration) {
+            this.world.remove(this);
+        }
+    }
+
+    interp(property) {
+        let progress = this.age / this.duration;
+        return property[0] + progress * (property[1] - property[0]);
+    }
+
+    render() {
+        let size = this.interp(this.valuesSize);
+        ctx.translate(this.interp(this.valuesX), this.interp(this.valuesY));
+        ctx.rotate(PI / 4);
+
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.interp([1, 0]);
+        ctx.fillRect(-size / 2, -size / 2, size, size);
+    }
+}
+
+class Fireball extends Entity {
+    constructor(x, y, angle, speed, colors = ['#ff0', '#f80', '#000']) {
+        super();
+
+        this.x = x;
+        this.y = y;
+        this.angle = angle;
+        this.speed = speed;
+        this.colors = colors;
+
+        this.nextParticle = 0;
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        if (this.age > 1) {
+            this.world.remove(this);
+            return;
+        }
+
+        let angleSin = sin(this.angle);
+        angleSin += between(
+            -elapsed * 2,
+            1 - sin(this.angle),
+            elapsed * 2,
+        )
+        this.angle = atan2(angleSin, cos(this.angle));
+
+        this.x += cos(this.angle) * elapsed * this.speed;
+        this.y += sin(this.angle) * elapsed * this.speed;
+
+        if ((this.nextParticle -= elapsed) <= 0) {
+            this.nextParticle = 1 / 60;
+
+            this.world.add(new Particle(
+                pick(this.colors),
+                [rnd(5, 10), 0],
+                [this.x, this.x + rnd(-5, 5)],
+                [this.y, this.y - rnd(20, 30)],
+                rnd(1.2, 3),
+            ));
+        }
+    }
+}
+
+class Background extends Entity {
+
+    constructor(topColor, bottomColor) {
+        super();
+
+        let ctx = document.createElement('canvas').getContext('2d');
+        this.gradient = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
+        this.gradient.addColorStop(0, topColor);
+        this.gradient.addColorStop(1, bottomColor);
+    }
+
+    render(camera) {
+        ctx.translate(camera.x - CANVAS_WIDTH / 2, camera.y - CANVAS_HEIGHT / 2);
+        ctx.fillStyle = this.gradient;
+        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    }
+}
+
+class Sun extends Entity {
+    constructor(color)  {
+        super();
+        this.color = color;
+        this.radius = 200;
+    }
+
+    render(camera) {
+        ctx.translate(camera.x * 0.9 + CANVAS_WIDTH / 4, camera.y * 0.1);
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(0, 0, 200, 0, PI * 2);
+        ctx.fill();
+    }
+}
+
+class Stars extends Entity {
+
+    constructor() {
+        super();
+        this.rng = new RNG();
+    }
+
+    render(camera) {
+        ctx.translate(~~camera.x - CANVAS_WIDTH / 2, ~~camera.y - CANVAS_HEIGHT / 2);
+
+        ctx.fillStyle = 'white';
+
+        this.rng.reset();
+        for (let i = 0 ; i < 100 ; i++)  {
+            ctx.fillRect(
+                this.rng.next(0, CANVAS_WIDTH),
+                this.rng.next(0, CANVAS_HEIGHT),
+                1,
+                1,
+            );
+        }
+    }
+}
+
+class Mountains extends Entity {
+
+    constructor(baseColor) {
+        super();
+
+        this.mountains = [0.8, 0.6, 0.4].map(factor => {
+            let color = multiplyColor(baseColor, factor);
+            let patt = createCanvasPattern(400, 100, (ctx) => {
+                ctx.fillStyle = color;
+
+                let offset1 = random() * 800;
+                let offset2 = random() * 800;
+
+                ctx.beginPath();
+                ctx.moveTo(0, 400);
+                for (let x = 0 ; x <= 800 ; x += 100) {
+                    ctx.lineTo(
+                        x,
+                        50
+                            + sin((x + offset1) / 400 * PI * 2) * 25
+                            + sin((x + offset2) / 200 * PI * 2) * 12
+                    );
+                }
+                ctx.lineTo(800, 400);
+                ctx.fill();
+            });
+            patt.color = color;
+            patt.factor = factor;
+            return patt;
+        });
+    }
+
+    render(camera) {
+        let baseY = 0;
+        for (let i = 0 ; i < this.mountains.length ; i++) {
+            let mountains = this.mountains[i];
+            let ratio = i / (this.mountains.length - 1);
+
+            let factorX = interpolate(0.3, 0.8, ratio);
+            let factorY = interpolate(0.1, 0.1, ratio);
+
+            ctx.wrap(() => {
+                let topY = ~~(camera.y * factorY + baseY);
+                ctx.translate(camera.x - CANVAS_WIDTH / 2, topY);
+
+                ctx.wrap(() => {
+                    let offsetX = camera.x * factorX;
+                    ctx.translate(-offsetX, 0);
+                    ctx.fillStyle = mountains;
+                    ctx.fillRect(offsetX, 0, CANVAS_WIDTH, mountains.height);
+                })
+
+                ctx.fillStyle = mountains.color;
+                ctx.fillRect(0, mountains.height, CANVAS_WIDTH, camera.y + CANVAS_HEIGHT - topY - 200);
+            });
+
+            baseY += 50;
+        }
+    }
+}
+
+class Rain extends Entity {
+
+    constructor() {
+        super();
+        this.rng = new RNG();
+    }
+
+    render(camera) {
+        ctx.translate(~~camera.x - CANVAS_WIDTH / 2, ~~camera.y - CANVAS_HEIGHT / 2);
+
+        ctx.fillStyle = '#fff';
+
+        if (this.age % 4 < 0.4) {
+            ctx.wrap(() => {
+                ctx.globalAlpha = sin(this.age * PI * 10) * 0.1 + 0.1;
+                ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            });
+        }
+
+        this.rng.reset();
+        for (let i = 0 ; i < 200 ; i++)  {
+            let baseX = this.rng.next(0, CANVAS_WIDTH);
+            let finalX = baseX + this.rng.next(20, 50);
+            let period = this.rng.next(0.5, 1.5);
+            let offset = this.rng.next(0, period);
+
+            let ratio = ((this.age + offset) % period) / period;
+
+            ctx.fillRect(
+                interpolate(baseX, finalX, ratio),
+                interpolate(0, CANVAS_HEIGHT, ratio),
+                1,
+                10,
+            );
+        }
+    }
+}
+
+class Camera extends Entity {
+
+    constructor() {
+        super();
+        this.buckets = ['camera'];
+
+        this.minX = this.minY = this.maxX = this.maxY = 0;
+        this.shakeEnd = 0;
+        this.nextShake = 0;
+        this.shakePower = 1;
+    }
+
+    shake(power) {
+        this.shakePower = power;
+        this.shakeEnd = this.age + 0.4;
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        // Readjust bounds in case they are smaller than the canvas
+        let width = max(this.maxX - this.minX, CANVAS_WIDTH) / 2;
+        let height = max(this.maxY - this.minY, CANVAS_HEIGHT) / 2;
+        let midX = (this.maxX + this.minX) / 2;
+        let midY = (this.maxY + this.minY) / 2;
+
+        this.minX = midX - width;
+        this.maxX = midX + width;
+
+        this.minY = midY - height;
+        this.maxY = midY + height;
+
+        let player = firstItem(this.world.bucket('player'));
+        if (!player) return;
+
+        this.nextShake -= elapsed;
+        if (this.age < this.shakeEnd) {
+            if (this.nextShake <= 0) {
+                this.nextShake = 1 / 60;
+                this.x += rnd(-this.shakePower, this.shakePower) * 20;
+                this.y += rnd(-this.shakePower, this.shakePower) * 20;
+            }
+        }
+
+        let targetX = between(
+            this.minX + CANVAS_WIDTH / 2,
+            player.x + CANVAS_WIDTH / 4,
+            this.maxX - CANVAS_WIDTH / 2,
+        );
+
+        let targetY = between(
+            this.minY + CANVAS_HEIGHT / 2,
+            player.y,
+            this.maxY - CANVAS_HEIGHT / 2,
+        );
+
+        let diffX = abs(targetX - this.x);
+        let diffY = abs(targetY - this.y);
+        let velX = diffX / 0.5;
+        let velY = diffY / 0.5;
+
+        this.x += between(
+            -elapsed * velX,
+            targetX - this.x,
+            elapsed * velX,
+        );
+        this.y += between(
+            -elapsed * velY,
+            targetY - this.y,
+            elapsed * velY,
+        );
+
+        this.x = between(
+            this.minX + CANVAS_WIDTH / 2,
+            this.x,
+            this.maxX - CANVAS_WIDTH / 2,
+        );
+
+        this.y = between(
+            this.minY + CANVAS_HEIGHT / 2,
+            this.y,
+            this.maxY - CANVAS_HEIGHT / 2,
+        );
+    }
+}
+
+class Missile extends Entity {
+    constructor(owner) {
+        super();
+
+        this.x = owner.x + cos(owner.angle) * 20;
+        this.y = owner.y + sin(owner.angle) * 20;
+        this.angle = owner.angle;
+        this.owner = owner;
+        this.speed = 500;
+        this.radius = 10;
+
+        this.nextParticle = 0;
+
+        sound(...[2.1,,51,.01,.12,.15,2,2.7,17,-19,,,,,,.2,.29,.93,.16]);
+    }
+
+    explode() {
+        this.world.remove(this);
+        sound(...[,,74,.06,.29,.54,4,3.1,,-8,,,,1.3,,.2,,.4,.24]);
+        explosion(this.world, this, 80, this.owner);
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        if (this.age > 2) {
+            this.explode();
+            return;
+        }
+
+        for (let obstacle of this.world.bucket('obstacle')) {
+            if (!isBetween(obstacle.minX, this.x, obstacle.maxX)) continue;
+
+            let idealY = obstacle.yAt(this.x);
+            if (sign(idealY - this.y) !== obstacle.directionY) {
+                this.explode();
+            }
+        }
+
+        for (let target of targets(this.world, this.owner)) {
+            if (dist(target, this) > target.radius) continue;
+            this.explode();
+        }
+
+        if (this.target) {
+            let angleToTarget = normalize(angleBetween(this, this.target));
+            this.angle += between(
+                -elapsed * PI * 2,
+                normalize(angleToTarget - normalize(this.angle)),
+                elapsed * PI * 2,
+            );
+        } else {
+            let angleSin = sin(this.angle);
+            angleSin += between(
+                -elapsed * 0.2,
+                1 - sin(this.angle),
+                elapsed * 0.2,
+            );
+            this.angle = atan2(angleSin, cos(this.angle));
+        }
+
+        this.x += cos(this.angle) * elapsed * this.speed;
+        this.y += sin(this.angle) * elapsed * this.speed;
+
+        if ((this.nextParticle -= elapsed) <= 0) {
+            this.nextParticle = 1 / 60;
+
+            this.world.add(new Particle(
+                '#fff',
+                [rnd(5, 10), rnd(10, 20)],
+                [this.x, this.x + rnd(-10, 10)],
+                [this.y, this.y + rnd(-10, 10)],
+                rnd(1.2, 3),
+            ));
+        }
+    }
+}
+
+let SHIFT = 160;
+
+class Transition extends Entity {
+
+    constructor(fromX, toX) {
+        super();
+        this.fromX = fromX;
+        this.toX = toX;
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        if (this.age > 0.3 && this.direction < 0) this.world.remove(this);
+    }
+
+    render(camera) {
+        ctx.translate(~~camera.x - CANVAS_WIDTH / 2, ~~camera.y - CANVAS_HEIGHT / 2);
+
+        ctx.translate(interpolate(
+            this.fromX,
+            this.toX,
+            this.age / 0.3
+        ), 0);
+
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(CANVAS_WIDTH + SHIFT, 0);
+        ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctx.lineTo(-SHIFT, CANVAS_HEIGHT);
+        ctx.fill();
+    }
+}
+
+class TransitionIn extends Transition {
+    constructor() {
+        super(0, CANVAS_WIDTH + SHIFT);
+    }
+}
+
+class TransitionOut extends Transition {
+    constructor() {
+        super(-CANVAS_WIDTH - SHIFT, 0);
+    }
+}
+
+class Condition extends Entity {
+    constructor(isValid) {
+        super();
+        this.isValid = isValid;
+    }
+
+    promise() {
+        return new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        try {
+            if (this.isValid()) {
+                this.resolve();
+            } else {
+                return;
+            }
+        } catch (e) {
+            this.reject(e);
+        }
+
+        this.world.remove(this);
+    }
+}
+
+class Human extends Entity {
+    constructor() {
+        super();
+        this.buckets.push('human');
+        this.radius = 10;
+    }
+
+    explode() {
+        this.world.remove(this);
+
+        for (let i = 0 ; i < 10 ; i++) {
+            this.world.add(new Fireball(
+                this.x + rnd(-20, 20),
+                this.y + rnd(-20, 20),
+                -rnd(PI / 4, PI * 3 / 4),
+                rnd(100, 150),
+                ['#f00', '#900'],
+            ));
+        }
+
+        // Particles
+        for (let i = 0 ; i < 50 ; i++) {
+            let x = this.x + rnd(-20, 20);
+            let y = this.y + rnd(-20, 20);
+            let angle = rnd(0, PI * 2);
+            let dist = rnd(30, 80);
+            this.world.add(new Particle(
+                pick(['#f00', '#900']),
+                [rnd(10, 20), 0],
+                [x, x + cos(angle) * dist],
+                [y, y + sin(angle) * dist],
+                rnd(2, 4),
+            ));
+        }
+    }
+}
+
+class Rebel extends Human {
+    constructor() {
+        super();
+        this.buckets.push('rebel');
+        this.lastShot = 0;
+        this.shotInterval = 6;
+        this.aimLockRatio = 0;
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        this.angle = PI;
+
+        let player = firstItem(this.world.bucket('player'));
+        if (player && dist(player, this) < 500) {
+            this.angle = angleBetween(this, player);
+
+            let x = this.x + cos(this.angle) * 30;
+            let y = this.y + sin(this.angle) * 30;
+
+            let obstacle = 0;
+            for (let candidate of this.world.bucket('obstacle')) {
+                if (candidate.directionY < 0) continue;
+                if (!isBetween(candidate.minX, this.x, candidate.maxX)) continue;
+                obstacle = candidate;
+            }
+
+            if (obstacle && obstacle.contains(x, y)) {
+                this.aimLockRatio = 0;
+                return;
+            }
+
+            if (this.age - this.lastShot > this.shotInterval) {
+                if (this.aimLockRatio === 0) {
+                    sound(...[1.7,,391,.01,.12,.08,,3.4,18,-9,,,.02,.7,,,.13,.71,.1,.02]); // Shoot 767
+                }
+                this.aimLockRatio += elapsed * 2;
+            }
+
+            if (this.aimLockRatio >= 1) {
+                let missile = new Missile(this);
+                missile.speed *= 0.5;
+                this.world.add(missile);
+                this.lastShot = this.age;
+
+                this.aimLockRatio = 0;
+            }
+        } else {
+            this.aimLockRatio = 0;
+        }
+    }
+
+    render() {
+        ctx.translate(this.x, this.y);
+
+        ctx.wrap(() => {
+            if (this.aimLockRatio <= 0) return;
+
+            ctx.fillStyle = '#ff0';
+            ctx.globalAlpha = interpolate(0, 0.5, this.aimLockRatio);
+            let s = interpolate(1, 0, this.aimLockRatio);
+            ctx.scale(s, s);
+            ctx.beginPath();
+            ctx.arc(0, 0, 40, 0, PI * 2);
+            ctx.fill();
+        })
+
+        ctx.fillStyle = ctx.strokeStyle = '#000';
+        ctx.scale(0.8, 0.8);
+
+        // Head
+        ctx.beginPath();
+        ctx.arc(0, -12, 4, 0, PI * 2);
+        ctx.fill();
+
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+
+        ctx.wrap(() => {
+            ctx.translate(0, -4);
+            ctx.rotate(this.angle);
+            ctx.moveTo(-8, 2);
+        });
+        ctx.lineTo(-5, -5);
+        ctx.lineTo(5, -5);
+
+        ctx.wrap(() => {
+            ctx.translate(0, -4);
+            ctx.rotate(this.angle);
+            ctx.lineTo(8, 2);
+        });
+        ctx.stroke();
+
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(-3, 0);
+        ctx.lineTo(-3, 16);
+
+        ctx.moveTo(3, 0);
+        ctx.lineTo(3, 16);
+        ctx.stroke();
+
+        // ctx.fillStyle = '#00f';
+        ctx.fillRect(-5, -8, 10, 16);
+
+        ctx.wrap(() => {
+            ctx.translate(0, -4);
+            ctx.rotate(this.angle);
+
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(-10, -2.5, 24, 5);
+        });
+    }
+}
+
+class Prisoner extends Human {
+    constructor() {
+        super();
+        this.buckets.push('prisoner');
+
+        this.grabbingLadderRatio = 0;
+    }
+
+    explode() {
+        super.explode();
+
+        // Just in case, get off the ladder
+        let player = firstItem(this.world.bucket('player'));
+        if (player.hangingPrisoner === this) {
+            player.hangingPrisoner = 0;
+        }
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        this.walking = 0;
+
+        let player = firstItem(this.world.bucket('player'));
+
+        if (player) {
+            // Run towards the player
+            if (dist(player, this) < 200) {
+                let obstacle = 0;
+                for (let candidate of this.world.bucket('obstacle')) {
+                    if (candidate.directionY < 0) continue;
+                    if (!isBetween(candidate.minX, this.x, candidate.maxX)) continue;
+                    obstacle = candidate;
+                }
+
+                if (!obstacle) return;
+
+                this.x += between(
+                    -elapsed * 10,
+                    player.x - this.x,
+                    elapsed * 10,
+                );
+                this.x = between(obstacle.minX, this.x, obstacle.maxX);
+                this.y = obstacle.yAt(this.x) - this.radius;
+
+                this.walking = 1;
+            }
+
+            // Grab the ladder
+            if (!player.hangingPrisoner && abs(player.x - this.x) < 20 && isBetween(player.y, this.y, player.y + player.ladderLength)) {
+                this.grabbingLadderRatio += elapsed * 4;
+
+                if (this.grabbingLadderRatio > 1) {
+                    this.climbing = 1;
+
+                    player.hangingPrisoner = this;
+                    player.ladderLength = this.y - player.y;
+
+                    // sound(...[,,618,.01,.13,.11,1,3.1,,2,174,.05,.09,,,,,.58,.27]); // Powerup 216
+                    // sound(...[1.2,,800,.06,.19,.12,,.4,,,361,.06,.08,,,,.05,.52,.27,.18,140]); // Powerup 251
+                    // sound(...[1.2,,258,.05,.28,.28,1,3.2,,,45,.07,.06,,,,.07,.99,.27]); // Powerup 261
+                    sound(...[.6,,370,.01,.01,.13,,.9,40,76,,,,,,,,.91,.03,,925]); // Jump 279
+                }
+            } else {
+                this.grabbingLadderRatio = 0;
+            }
+
+            // Climb with the ladder
+            if (player.hangingPrisoner === this) {
+                this.x = player.x;
+                this.y = player.y + player.ladderLength;
+
+                if (dist(player, this) < 20) {
+                    player.hangingPrisoner = 0;
+                    player.rescuedPrisoners++;
+                    this.world.remove(this);
+
+                    // sound(...[1.1,,600,.05,.03,,,4,,,291,.09,,,,,,.79,.01]); // Pickup 373
+                    sound(...[1.2,,529,.06,.19,.12,,.4,,,361,.06,.08,,,,.05,.52,.27,.18,140]); // Loaded Sound 375
+                }
+            }
+        }
+    }
+
+    render() {
+        ctx.translate(this.x, this.y);
+
+        ctx.fillStyle = '#0c0';
+        ctx.scale(0.8, 0.8);
+
+        // Head
+        ctx.beginPath();
+        ctx.arc(0, -12, 4, 0, PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#0c0';
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        if (!this.climbing) {
+            ctx.moveTo(-8 + sin(this.age * PI * 2) * 3, -14);
+        } else {
+            ctx.moveTo(-8, -15);
+        }
+        ctx.lineTo(-5, -5);
+        ctx.lineTo(5, -5);
+
+        if (!this.climbing) {
+            ctx.lineTo(8, 4);
+        } else {
+            ctx.lineTo(8, -14);
+        }
+        ctx.stroke();
+
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(-3, 0);
+        ctx.lineTo(-3, 16 + sin(this.age * PI * 4) * 2 * this.walking);
+
+        ctx.moveTo(3, 0);
+        ctx.lineTo(3, 16 - sin(this.age * PI * 4) * 2 * this.walking);
+        ctx.stroke();
+
+        // ctx.fillStyle = '#00f';
+        ctx.fillRect(-5, -8, 10, 16);
+    }
+}
+
+class Instruction extends Entity {
+
+    constructor(instruction) {
+        super();
+        this.instruction = instruction;
+        this.lastRenderedInstruction = 0;
+    }
+
+    render(camera) {
+        ctx.translate(this.x, this.y);
+
+        ctx.fillStyle = '#000';
+        ctx.textAlign = /*nomangle*/'center'/*/nomangle*/;
+        ctx.textBaseline = /*nomangle*/'middle'/*/nomangle*/;
+        ctx.font = /*nomangle*/'bold 48pt Impact'/*/nomangle*/;
+
+        if (this.lastRenderedInstruction !== this.instruction) {
+            this.age = 0;
+            this.lastRenderedInstruction = this.instruction;
+        }
+
+        ctx.globalAlpha = interpolate(0, 0.3, this.age / 0.5);
+        ctx.translate(0, interpolate(-25, 0, this.age / 0.5));
+
+        ctx.fillText(this.instruction, 0, 25);
+    }
+}
+
+class Title extends Entity {
+
+    constructor(title, textBackground = 'rgba(0,0,0,0)', mainBackground = '#000') {
+        super();
+
+        this.buckets.push('title');
+
+        this.textBackground = textBackground;
+
+        this.canvas = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT, (ctx) => {
+            ctx.fillStyle = mainBackground;
+            ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+            ctx.globalCompositeOperation = /*nomangle*/'destination-out'/*/nomangle*/;
+            ctx.textAlign = /*nomangle*/'center'/*/nomangle*/;
+            ctx.textBaseline = /*nomangle*/'middle'/*/nomangle*/;
+            ctx.font = /*nomangle*/'bold 148pt Impact'/*/nomangle*/;
+
+            let y = CANVAS_HEIGHT / 2 - 100;
+            for (let line of title.split('\n')) {
+                ctx.fillText(line, CANVAS_WIDTH / 2, y);
+                y += 200;
+            }
+        });
+
+        this.fromAge = 0;
+        this.toAge = 1;
+        this.fromAlpha = 1;
+        this.toAlpha = 1;
+    }
+
+    fade(fromAlpha, toAlpha, duration) {
+        this.fromAge = this.age;
+        this.toAge = this.fromAge + duration;
+
+        this.fromAlpha = fromAlpha;
+        this.toAlpha = toAlpha;
+
+        return this.agesBy(duration);
+    }
+
+    get alpha() {
+        return interpolate(this.fromAlpha, this.toAlpha, (this.age - this.fromAge) / (this.toAge - this.fromAge));
+    }
+
+    render(camera) {
+        if (this.alpha <= 0) return;
+        ctx.globalAlpha = this.alpha;
+
+        ctx.translate(~~camera.x - CANVAS_WIDTH / 2, ~~camera.y - CANVAS_HEIGHT / 2);
+
+        ctx.fillStyle = this.textBackground;
+        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        ctx.drawImage(this.canvas, 0, 0);
+    }
+}
+
+class StartPrompt extends Entity {
+    constructor(text, keyCodes, onKeyDown) {
+        super();
+        this.text = text;
+        this.keyCodes = keyCodes;
+        this.onKeyDown = onKeyDown;
+        this.released = 0;
+        this.buckets.push('start-prompt');
+    }
+
+    render(camera) {
+        if (this.age / 2 % 1 < 0.2) return;
+        ctx.font = /*nomangle*/'18pt Courier'/*/nomangle*/;
+        ctx.textAlign = /*nomangle*/'center'/*/nomangle*/;
+        ctx.textBaseline = /*nomangle*/'middle'/*/nomangle*/;
+        ctx.fillStyle = '#fff';
+        ctx.fillText(this.text, 0, 0);
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+
+        let released = 1;
+        for (let keyCode of this.keyCodes) {
+            let isDown = DOWN[keyCode];
+
+            if (keyCode === 32) isDown = isDown || TOUCHES.length > 0;
+
+            released = released && !isDown;
+
+            if (isDown && this.released) {
+                sound(...[2,,409,,.02,.02,1,.5,-2,,-316,.05,,,137,,.43,.82,.02]); // Blip 189
+                this.released = 0;
+                this.onKeyDown();
+            }
+        }
+        this.released = released;
+    }
+}
+
+class PromptSet extends Entity {
+    constructor(prompts) {
+        super();
+        this.prompts = prompts.filter(x => x);
+    }
+
+    cycle(elapsed) {
+        super.cycle(elapsed);
+        for (let prompt of this.prompts) {
+            prompt.cycle(elapsed);
+        }
+    }
+
+    render(camera) {
+        ctx.translate(camera.x, camera.y + 100);
+
+        if (inputMode === 1) {
+            ctx.scale(2, 2);
+        }
+
+        for (let prompt of this.prompts) {
+            prompt.render(camera);
+            ctx.translate(0, 50);
+        }
+    }
+}
+
+class Exposition extends Entity {
+    constructor(lines, skippable) {
+        super();
+        this.buckets.push('exposition');
+        this.lines = lines;
+        this.text = this.lines.join('\n');
+        this.totalChars = this.lines.reduce((acc, line) => acc + line.length, 0);
+
+        this.skippable = skippable;
+
+        this.computedLinesCanvasWidth = 0;
+    }
+
+    get latestChar() {
+        return this.text.charAt(this.visibleChars - 1);
+    }
+
+    get visibleChars() {
+        return min(this.totalChars, ~~(this.age * 15));
+    }
+
+    complete() {
+        return this.world.waitFor(() => this.visibleChars >= this.totalChars);
+    }
+
+    cycle(elapsed) {
+        let { visibleChars } = this;
+
+        if (this.skippable && (DOWN[32] || TOUCHES.length)) elapsed *= 8;
+
+        super.cycle(elapsed);
+
+        if (visibleChars < this.visibleChars && this.latestChar !== ' ' && this.latestChar !== '\n') {
+            if (this.previousSound) {
+                this.previousSound.stop();
+            }
+            this.previousSound = zzfx(...[.2,,634,,.01,.02,3,3.3,,,,,,.1,278,,,.95,.03,,518]); // Blip 687
+            this.previousSound.start();
+        }
+    }
+
+    calculateLines(availableWidth) {
+        let newLines = [];
+
+        ctx.font = /*nomangle*/'18pt Courier'/*/nomangle*/;
+
+        for (let line of this.lines) {
+            let currentLine = '';
+            let currentLineWidth = 0;
+
+            let i = 0;
+            while (i < line.length) {
+                let k = i;
+
+                while (k < line.length && line.charAt(k) !== ' ') {
+                    k++;
+                }
+
+                let addedWord = line.slice(i, k + 1);
+                let addedWordWidth = ctx.measureText(addedWord).width;
+                if (k > i) {
+                    // let addedWord = line.slice(i, k + 1);
+
+                    if (addedWordWidth + currentLineWidth < availableWidth) {
+                        // The word fits, keep building the current line
+                        currentLine += addedWord;
+                        currentLineWidth += addedWordWidth;
+                    } else {
+                        // The word doesn't fit, add the current line and start a new one
+                        newLines.push(currentLine);
+                        currentLine = addedWord;
+                        currentLineWidth = addedWordWidth;
+                    }
+                } else {
+                    currentLine += addedWord;
+                    currentLineWidth += addedWordWidth;
+                }
+
+                i = k + 1;
+            }
+
+            if (currentLine.length) {
+                newLines.push(currentLine);
+            }
+        }
+
+        return newLines;
+    }
+
+    render(camera) {
+        ctx.translate(~~camera.x - CANVAS_WIDTH / 2, ~~camera.y - CANVAS_HEIGHT / 2);
+
+        ctx.fillStyle = '#fff';
+        ctx.shadowColor = '#000';
+        ctx.shadowOffsetY = 2;
+        ctx.font = /*nomangle*/'18pt Courier'/*/nomangle*/;
+        ctx.textAlign = /*nomangle*/'left'/*/nomangle*/;
+        ctx.textBaseline = /*nomangle*/'middle'/*/nomangle*/;
+
+        if (this.computedLinesCanvasWidth !== CANVAS_WIDTH) {
+            this.computedLinesCanvasWidth = CANVAS_WIDTH;
+            this.computedLines = this.calculateLines(CANVAS_WIDTH - 100);
+        }
+
+        let y = CANVAS_HEIGHT / 2 - (this.computedLines.length * 25) / 2;
+
+        let longestLine = 0;
+
+        for (let line of this.computedLines) {
+            longestLine = max(ctx.measureText(line).width, longestLine);
+        }
+
+        let charCount = 0;
+        for (let line of this.computedLines) {
+            ctx.fillText(line.slice(0, max(0, this.visibleChars - charCount)), (CANVAS_WIDTH - longestLine) / 2, y);
+            y += 25;
+            charCount += line.length;
+        }
+
+        if (this.skippable) {
+            ctx.textAlign = /*nomangle*/'right'/*/nomangle*/;
+            ctx.fillText(
+                inputMode === 0
+                    ? /*nomangle*/'Hold [SPACE] to fast forward'/*/nomangle*/
+                    : /*nomangle*/'Hold to fast forward'/*/nomangle*/,
+                CANVAS_WIDTH - 50,
+                CANVAS_HEIGHT - 50,
+            );
+        }
+    }
+}
+
+class RunRecap extends Entity {
+
+    constructor(label, value) {
+        super();
+        this.label = label;
+        this.value = value;
+    }
+
+    render() {
+        ctx.textBaseline = /*nomangle*/'middle'/*/nomangle*/;
+        ctx.fillStyle = '#fff';
+        ctx.font = /*nomangle*/'18pt Courier'/*/nomangle*/;
+
+        ctx.textAlign = /*nomangle*/'right'/*/nomangle*/;
+        ctx.fillText(this.label, -20, 0);
+
+        ctx.textAlign = /*nomangle*/'left'/*/nomangle*/;
+        ctx.fillText(this.value, 20, 0);
+    }
+}
+
+class ProgressIndicator extends Entity {
+
+    constructor(labels) {
+        super();
+        this.labels = labels;
+    }
+
+    render(camera) {
+        ctx.translate(~~camera.x + CANVAS_WIDTH / 2 - 50, ~~camera.y - CANVAS_HEIGHT / 2 + 50);
+        ctx.textAlign = /*nomangle*/'right'/*/nomangle*/;
+        ctx.textBaseline = /*nomangle*/'top'/*/nomangle*/;
+        ctx.shadowColor = '#000';
+        ctx.shadowOffsetY = 2;
+        ctx.fillStyle = '#fff';
+
+        if (inputMode === 1) {
+            ctx.scale(1.5, 1.5);
+        }
+
+        let y = 0;
+        for (let [label, value] of this.labels()) {
+            ctx.font = /*nomangle*/'14pt Courier'/*/nomangle*/;
+            ctx.fillText(label, 0, y);
+            y += 20;
+
+            ctx.fillText(value, 0, y);
+            y += 30;
+        }
+    }
+}
+
+mobileControlsHeight = () => max(CANVAS_HEIGHT * 0.1, 150);
+
+renderArrow = () => {
+    ctx.beginPath();
+    ctx.moveTo(mobileControlsHeight() / 4, 0);
+    ctx.lineTo(-mobileControlsHeight() / 4, -mobileControlsHeight() / 4);
+    ctx.lineTo(-mobileControlsHeight() / 4, mobileControlsHeight() / 4);
+    ctx.fill();
+}
+
+let controls = [
+    [(player) => player.controls.left, () => {
+        ctx.rotate(PI);
+        renderArrow();
+    }],
+    [(player) => player.controls.right, () => {
+        renderArrow();
+    }],
+    [(player) => player.controls.shoot, () => {
+        ctx.rotate(-PI / 2);
+
+        ctx.beginPath();
+        ctx.arc(0, 0, mobileControlsHeight() / 4, 0, PI * 2);
+        ctx.fill();
+    }],
+    [(player) => player.controls.up, () => {
+        ctx.rotate(-PI / 2);
+        renderArrow();
+    }],
+];
+
+class MobileControls extends Entity {
+    render(camera) {
+        let player = firstItem(this.world.bucket('player'));
+        if (!player) return;
+
+        ctx.translate(~~camera.x - CANVAS_WIDTH / 2, ~~camera.y + CANVAS_HEIGHT / 2 - mobileControlsHeight());
+
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(0, 0, CANVAS_WIDTH, mobileControlsHeight());
+
+        let controlWidth = CANVAS_WIDTH / controls.length;
+
+        for (let i = 0 ; i < controls.length ; i++) {
+            let [isDown, render] = controls[i];
+
+            ctx.wrap(() => {
+                ctx.translate(i * controlWidth, 0);
+
+                if (isDown(player)) {
+                    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                    ctx.fillRect(0, 0, controlWidth, mobileControlsHeight());
+                }
+
+                ctx.fillStyle = isDown(player) ? '#000' : '#fff';
+                ctx.translate(controlWidth / 2, mobileControlsHeight() / 2);
+
+                render();
+            });
+        }
+    }
+}
+
+canvasPrototype.wrap = function(f) {
+    let { resolveColor } = this;
+    this.save();
+    f();
+    this.restore();
+    this.resolveColor = resolveColor || (x => x);
+};
+
+createCanvas = (w, h, render) => {
+    let can = document.createElement('canvas');
+    can.width = w;
+    can.height = h;
+
+    let ctx = can.getContext('2d');
+
+    return render(ctx, can) || can;
+};
+
+canvasPrototype.slice = (radius, sliceUp, ratio) => {
+    ctx.beginPath();
+    if (sliceUp) {
+        ctx.moveTo(-radius, -radius);
+        ctx.lineTo(radius, -radius);
+    } else {
+        ctx.lineTo(-radius, radius);
+        ctx.lineTo(radius, radius);
+    }
+
+    ctx.lineTo(radius, -radius * ratio);
+    ctx.lineTo(-radius, radius * ratio);
+    ctx.clip();
+};
+
+createCanvasPattern = (patternWidth, patternHeight, instructions) => {
+    let x = createCanvas(patternWidth, patternHeight, instructions);
+    let patt = x.getContext('2d').createPattern(x, /*nomangle*/'repeat'/*/nomangle*/);
+
+    // Add some extra properties (background rendering needs to know the size of patterns)
+    patt.width = patternWidth;
+    patt.height = patternHeight;
+
+    return patt;
+};
+
+// ZzFX - Zuper Zmall Zound Zynth - Micro Edition
+// MIT License - Copyright 2019 Frank Force
+// https://github.com/KilledByAPixel/ZzFX
+
+// This is a minified build of zzfx for use in size coding projects.
+// You can use zzfxV to set volume.
+// Feel free to minify it further for your own needs!
+
+// 'use strict';
+
+///////////////////////////////////////////////////////////////////////////////
+
+// ZzFXMicro - Zuper Zmall Zound Zynth - v1.1.8
+
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @output_file_name ZzFXMicro.min.js
+// @js_externs zzfx, zzfxG, zzfxP, zzfxV, zzfxX
+// @language_out ECMASCRIPT_2019
+// ==/ClosureCompiler==
+
+let zzfx = (...z)=> zzfxP(zzfxG(...z)); // generate and play sound
+let zzfxV = .3;    // volume
+let zzfxR = 44100; // sample rate
+let zzfxX = new AudioContext; // audio context
+let zzfxP = (...samples) =>  // play samples
+{
+    // create buffer and source
+    let buffer = zzfxX.createBuffer(samples.length, samples[0].length, zzfxR),
+        source = zzfxX.createBufferSource();
+
+    // copy samples to buffer and play
+    samples.map((d,i)=> buffer.getChannelData(i).set(d));
+    source.buffer = buffer;
+    source.connect(zzfxX.destination);
+    return source;
+}
+
+class FunZZfx {
+    constructor(...samples) {
+        this.samples = samples;
+
+        // create buffer and source
+        let buffer = zzfxX.createBuffer(samples.length, samples[0].length, zzfxR);
+        this.source = zzfxX.createBufferSource();
+
+        // copy samples to buffer and play
+        samples.map((d,i)=> buffer.getChannelData(i).set(d));
+        this.source.buffer = buffer;
+
+        this.gainNode = zzfxX.createGain();
+        this.gainNode.connect(zzfxX.destination);
+
+        this.source.connect(this.gainNode);
+    }
+
+    setRate(rate) {
+        this.source.playbackRate.value = rate;
+    }
+
+    setVolume(volume) {
+        this.gainNode.gain.value = volume;
+    }
+
+    start() {
+        this.source.start();
+    }
+
+    stop() {
+        this.source.stop();
+    }
+}
+
+
+let zzfxG = // generate samples
+(
+    // parameters
+    volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
+    release = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlide = 0,
+    pitchJump = 0, pitchJumpTime = 0, repeatTime = 0, noise = 0, modulation = 0,
+    bitCrush = 0, delay = 0, sustainVolume = 1, decay = 0, tremolo = 0
+)=>
+{
+    // init parameters
+    let PI2 = PI*2,
+    sign = v => v>0?1:-1,
+    startSlide = slide *= 500 * PI2 / zzfxR / zzfxR,
+    startFrequency = frequency *= (1 + randomness*2*random() - randomness)
+        * PI2 / zzfxR,
+    b=[], t=0, tm=0, i=0, j=1, r=0, c=0, s=0, f, length;
+
+    // scale by sample rate
+    attack = attack * zzfxR + 9; // minimum attack to prevent pop
+    decay *= zzfxR;
+    sustain *= zzfxR;
+    release *= zzfxR;
+    delay *= zzfxR;
+    deltaSlide *= 500 * PI2 / zzfxR**3;
+    modulation *= PI2 / zzfxR;
+    pitchJump *= PI2 / zzfxR;
+    pitchJumpTime *= zzfxR;
+    repeatTime = repeatTime * zzfxR | 0;
+
+    // generate waveform
+    for(length = attack + decay + sustain + release + delay | 0;
+        i < length; b[i++] = s)
+    {
+        if (!(++c%(bitCrush*100|0)))                      // bit crush
+        {
+            s = shape? shape>1? shape>2? shape>3?         // wave shape
+                sin((t%PI2)**3) :                    // 4 noise
+                max(min(tan(t),1),-1):     // 3 tan
+                1-(2*t/PI2%2+2)%2:                        // 2 saw
+                1-4*abs(round(t/PI2)-t/PI2):    // 1 triangle
+                sin(t);                              // 0 sin
+
+            s = (repeatTime ?
+                    1 - tremolo + tremolo*sin(PI2*i/repeatTime) // tremolo
+                    : 1) *
+                sign(s)*(abs(s)**shapeCurve) *       // curve 0=square, 2=pointy
+                volume * zzfxV * (                        // envelope
+                i < attack ? i/attack :                   // attack
+                i < attack + decay ?                      // decay
+                1-((i-attack)/decay)*(1-sustainVolume) :  // decay falloff
+                i < attack  + decay + sustain ?           // sustain
+                sustainVolume :                           // sustain volume
+                i < length - delay ?                      // release
+                (length - i - delay)/release *            // release falloff
+                sustainVolume :                           // release volume
+                0);                                       // post release
+
+            s = delay ? s/2 + (delay > i ? 0 :            // delay
+                (i<length-delay? 1 : (length-i)/delay) *  // release delay
+                b[i-delay|0]/2) : s;                      // sample delay
+        }
+
+        f = (frequency += slide += deltaSlide) *          // frequency
+            cos(modulation*tm++);                    // modulation
+        t += f - f*noise*(1 - (sin(i)+1)*1e9%2);     // noise
+
+        if (j && ++j > pitchJumpTime)       // pitch jump
+        {
+            frequency += pitchJump;         // apply pitch jump
+            startFrequency += pitchJump;    // also apply to start
+            j = 0;                          // reset pitch jump time
+        }
+
+        if (repeatTime && !(++r % repeatTime)) // repeat
+        {
+            frequency = startFrequency;     // reset frequency
+            slide = startSlide;             // reset slide
+            j = j || 1;                     // reset pitch jump time
+        }
+    }
+
+    return b;
+}
+
+sound = (...def) => new FunZZfx(zzfxG(...def)).start();
+
+//
+// Sonant-X
+//
+// Copyright (c) 2014 Nicolas Vanhoren
+//
+// Sonant-X is a fork of js-sonant by Marcus Geelnard and Jake Taylor. It is
+// still published using the same license (zlib license, see below).
+//
+// Copyright (c) 2011 Marcus Geelnard
+// Copyright (c) 2008-2009 Jake Taylor
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//    claim that you wrote the original software. If you use this software
+//    in a product, an acknowledgment in the product documentation would be
+//    appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such, and must not be
+//    misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source
+//    distribution.
+
+
+let WAVE_SPS = 44100;                    // Samples per second
+let WAVE_CHAN = 2;                       // Channels
+let MAX_TIME = 33; // maximum time, in millis, that the generator can use consecutively
+
+let audioCtx;
+
+// Oscillators
+function osc_sin(value)
+{
+    return sin(value * 6.283184);
+}
+
+function osc_square(value) {
+    return osc_sin(value) < 0 ? -1 : 1;
+}
+
+function osc_saw(value)
+{
+    return (value % 1) - 0.5;
+}
+
+function osc_tri(value)
+{
+    let v2 = (value % 1) * 4;
+    return v2 < 2 ? v2 - 1 : 3 - v2;
+}
+
+// Array of oscillator functions
+let oscillators = [
+    osc_sin,
+    osc_square,
+    osc_saw,
+    osc_tri
+];
+
+function getnotefreq(n)
+{
+    return 0.00390625 * pow(1.059463094, n - 128);
+}
+
+function genBuffer(waveSize, callBack) {
+    setTimeout(() => {
+        // Create the channel work buffer
+        var buf = new Uint8Array(waveSize * WAVE_CHAN * 2);
+        var b = buf.length - 2;
+        var iterate = () => {
+            var begin = new Date();
+            var count = 0;
+            while(b >= 0)
+            {
+                buf[b] = 0;
+                buf[b + 1] = 128;
+                b -= 2;
+                count += 1;
+                if (count % 1000 === 0 && (new Date() - begin) > MAX_TIME) {
+                    setTimeout(iterate, 0);
+                    return;
+                }
+            }
+            setTimeout(() => callBack(buf), 0);
+        };
+        setTimeout(iterate, 0);
+    }, 0);
+}
+
+function applyDelay(chnBuf, waveSamples, instr, rowLen, callBack) {
+    let p1 = (instr.fx_delay_time * rowLen) >> 1;
+    let t1 = instr.fx_delay_amt / 255;
+
+    let n1 = 0;
+    let iterate = () => {
+        let beginning = new Date();
+        let count = 0;
+        while (n1 < waveSamples - p1) {
+            var b1 = 4 * n1;
+            var l = 4 * (n1 + p1);
+
+            // Left channel = left + right[-p1] * t1
+            var x1 = chnBuf[l] + (chnBuf[l+1] << 8) +
+                (chnBuf[b1+2] + (chnBuf[b1+3] << 8) - 32768) * t1;
+            chnBuf[l] = x1 & 255;
+            chnBuf[l+1] = (x1 >> 8) & 255;
+
+            // Right channel = right + left[-p1] * t1
+            x1 = chnBuf[l+2] + (chnBuf[l+3] << 8) +
+                (chnBuf[b1] + (chnBuf[b1+1] << 8) - 32768) * t1;
+            chnBuf[l+2] = x1 & 255;
+            chnBuf[l+3] = (x1 >> 8) & 255;
+            ++n1;
+            count += 1;
+            if (count % 1000 === 0 && (new Date() - beginning) > MAX_TIME) {
+                setTimeout(iterate, 0);
+                return;
+            }
+        }
+        setTimeout(callBack, 0);
+    };
+    setTimeout(iterate, 0);
+}
+
+class AudioGenerator {
+
+    constructor(mixBuf) {
+        this.mixBuf = mixBuf;
+        this.waveSize = mixBuf.length / WAVE_CHAN / 2;
+    }
+
+    getWave() {
+        let mixBuf = this.mixBuf;
+        let waveSize = this.waveSize;
+        // Local variables
+        let b, k, x, wave, l1, l2, y;
+
+        // Turn critical object properties into local variables (performance)
+        let waveBytes = waveSize * WAVE_CHAN * 2;
+
+        // Convert to a WAVE file (in a binary string)
+        l1 = waveBytes - 8;
+        l2 = l1 - 36;
+        wave = String.fromCharCode(82,73,70,70,
+                                   l1 & 255,(l1 >> 8) & 255,(l1 >> 16) & 255,(l1 >> 24) & 255,
+                                   87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,
+                                   68,172,0,0,16,177,2,0,4,0,16,0,100,97,116,97,
+                                   l2 & 255,(l2 >> 8) & 255,(l2 >> 16) & 255,(l2 >> 24) & 255);
+        b = 0;
+        while (b < waveBytes) {
+            // This is a GC & speed trick: don't add one char at a time - batch up
+            // larger partial strings
+            x = "";
+            for (k = 0; k < 256 && b < waveBytes; ++k, b += 2)
+            {
+                // Note: We amplify and clamp here
+                y = 4 * (mixBuf[b] + (mixBuf[b+1] << 8) - 32768);
+                y = y < -32768 ? -32768 : (y > 32767 ? 32767 : y);
+                x += String.fromCharCode(y & 255, (y >> 8) & 255);
+            }
+            wave += x;
+        }
+        return wave;
+    }
+
+    getAudioBuffer(callBack) {
+        if (!audioCtx) {
+            audioCtx = new AudioContext();
+        }
+
+        let mixBuf = this.mixBuf;
+        let waveSize = this.waveSize;
+
+        let buffer = audioCtx.createBuffer(WAVE_CHAN, this.waveSize, WAVE_SPS); // Create Mono Source Buffer from Raw Binary
+        let lchan = buffer.getChannelData(0);
+        let rchan = buffer.getChannelData(1);
+        let b = 0;
+        let iterate = () => {
+            var beginning = new Date();
+            var count = 0;
+            while (b < waveSize) {
+                var y = 4 * (mixBuf[b * 4] + (mixBuf[(b * 4) + 1] << 8) - 32768);
+                y = y < -32768 ? -32768 : (y > 32767 ? 32767 : y);
+                lchan[b] = y / 32768;
+                y = 4 * (mixBuf[(b * 4) + 2] + (mixBuf[(b * 4) + 3] << 8) - 32768);
+                y = y < -32768 ? -32768 : (y > 32767 ? 32767 : y);
+                rchan[b] = y / 32768;
+                b += 1;
+                count += 1;
+                if (count % 1000 === 0 && new Date() - beginning > MAX_TIME) {
+                    setTimeout(iterate, 0);
+                    return;
+                }
+            }
+            setTimeout(() => callBack(buffer), 0);
+        };
+        setTimeout(iterate, 0);
+    }
+}
+
+class SoundGenerator {
+
+    constructor(instr, rowLen) {
+        this.instr = instr;
+        this.rowLen = rowLen || 5605;
+
+        this.osc_lfo = oscillators[instr.lfo_waveform];
+        this.osc1 = oscillators[instr.osc1_waveform];
+        this.osc2 = oscillators[instr.osc2_waveform];
+        this.attack = instr.env_attack;
+        this.sustain = instr.env_sustain;
+        this.release = instr.env_release;
+        this.panFreq = pow(2, instr.fx_pan_freq - 8) / this.rowLen;
+        this.lfoFreq = pow(2, instr.lfo_freq - 8) / this.rowLen;
+    }
+
+    genSound(n, chnBuf, currentpos) {
+        var c1 = 0;
+        var c2 = 0;
+
+        // Precalculate frequencues
+        var o1t = getnotefreq(n + (this.instr.osc1_oct - 8) * 12 + this.instr.osc1_det) * (1 + 0.0008 * this.instr.osc1_detune);
+        var o2t = getnotefreq(n + (this.instr.osc2_oct - 8) * 12 + this.instr.osc2_det) * (1 + 0.0008 * this.instr.osc2_detune);
+
+        // State variable init
+        var q = this.instr.fx_resonance / 255;
+        var low = 0;
+        var band = 0;
+        for (var j = this.attack + this.sustain + this.release - 1; j >= 0; --j)
+        {
+            let k = j + currentpos;
+
+            // LFO
+            let lfor = this.osc_lfo(k * this.lfoFreq) * this.instr.lfo_amt / 512 + 0.5;
+
+            // Envelope
+            let e = 1;
+            if (j < this.attack)
+                e = j / this.attack;
+            else if (j >= this.attack + this.sustain)
+                e -= (j - this.attack - this.sustain) / this.release;
+
+            // Oscillator 1
+            var t = o1t;
+            if (this.instr.lfo_osc1_freq) t += lfor;
+            if (this.instr.osc1_xenv) t *= e * e;
+            c1 += t;
+            var rsample = this.osc1(c1) * this.instr.osc1_vol;
+
+            // Oscillator 2
+            t = o2t;
+            if (this.instr.osc2_xenv) t *= e * e;
+            c2 += t;
+            rsample += this.osc2(c2) * this.instr.osc2_vol;
+
+            // Noise oscillator
+            if(this.instr.noise_fader) rsample += (2*random()-1) * this.instr.noise_fader * e;
+
+            rsample *= e / 255;
+
+            // State variable filter
+            var f = this.instr.fx_freq;
+            if(this.instr.lfo_fx_freq) f *= lfor;
+            f = 1.5 * sin(f * 3.141592 / WAVE_SPS);
+            low += f * band;
+            var high = q * (rsample - band) - low;
+            band += f * high;
+            switch(this.instr.fx_filter)
+            {
+                case 1: // Hipass
+                    rsample = high;
+                    break;
+                case 2: // Lopass
+                    rsample = low;
+                    break;
+                case 3: // Bandpass
+                    rsample = band;
+                    break;
+                case 4: // Notch
+                    rsample = low + high;
+                    break;
+                default:
+            }
+
+            // Panning & master volume
+            t = osc_sin(k * this.panFreq) * this.instr.fx_pan_amt / 512 + 0.5;
+            rsample *= 39 * this.instr.env_master;
+
+            // Add to 16-bit channel buffer
+            k = k * 4;
+            if (k + 3 < chnBuf.length) {
+                var x = chnBuf[k] + (chnBuf[k+1] << 8) + rsample * (1 - t);
+                chnBuf[k] = x & 255;
+                chnBuf[k+1] = (x >> 8) & 255;
+                x = chnBuf[k+2] + (chnBuf[k+3] << 8) + rsample * t;
+                chnBuf[k+2] = x & 255;
+                chnBuf[k+3] = (x >> 8) & 255;
+            }
+        }
+    }
+
+    createAudioBuffer(n, callBack) {
+        this.getAudioGenerator(n, ag => {
+            ag.getAudioBuffer(callBack);
+        });
+    }
+
+    getAudioGenerator(n, callBack) {
+        var bufferSize = (this.attack + this.sustain + this.release - 1) + (32 * this.rowLen);
+        var self = this;
+        genBuffer(bufferSize, buffer => {
+            self.genSound(n, buffer, 0);
+            applyDelay(buffer, bufferSize, self.instr, self.rowLen, function() {
+                callBack(new AudioGenerator(buffer));
+            });
+        });
+    }
+}
+
+class MusicGenerator {
+
+    constructor(song) {
+        this.song = song;
+        // Wave data configuration
+        this.waveSize = WAVE_SPS * song.songLen; // Total song size (in samples)
+    }
+
+    generateTrack(instr, mixBuf, callBack) {
+        genBuffer(this.waveSize, chnBuf => {
+            // Preload/precalc some properties/expressions (for improved performance)
+            var waveSamples = this.waveSize,
+                waveBytes = this.waveSize * WAVE_CHAN * 2,
+                rowLen = this.song.rowLen,
+                endPattern = this.song.endPattern,
+                soundGen = new SoundGenerator(instr, rowLen);
+
+            let currentpos = 0;
+            let p = 0;
+            let row = 0;
+            let recordSounds = () => {
+                var beginning = new Date();
+                while (1) {
+                    if (row === 32) {
+                        row = 0;
+                        p += 1;
+                        continue;
+                    }
+                    if (p === endPattern - 1) {
+                        setTimeout(delay, 0);
+                        return;
+                    }
+                    var cp = instr.p[p];
+                    if (cp) {
+                        var n = instr.c[cp - 1].n[row];
+                        if (n) {
+                            soundGen.genSound(n, chnBuf, currentpos);
+                        }
+                    }
+                    currentpos += rowLen;
+                    row += 1;
+                    if (new Date() - beginning > MAX_TIME) {
+                        setTimeout(recordSounds, 0);
+                        return;
+                    }
+                }
+            };
+
+            let delay = () => applyDelay(chnBuf, waveSamples, instr, rowLen, finalize);
+
+            var b2 = 0;
+            let finalize = () => {
+                let beginning = new Date();
+                let count = 0;
+
+                // Add to mix buffer
+                while(b2 < waveBytes) {
+                    var x2 = mixBuf[b2] + (mixBuf[b2+1] << 8) + chnBuf[b2] + (chnBuf[b2+1] << 8) - 32768;
+                    mixBuf[b2] = x2 & 255;
+                    mixBuf[b2+1] = (x2 >> 8) & 255;
+                    b2 += 2;
+                    count += 1;
+                    if (count % 1000 === 0 && (new Date() - beginning) > MAX_TIME) {
+                        setTimeout(finalize, 0);
+                        return;
+                    }
+                }
+                setTimeout(callBack, 0);
+            };
+            setTimeout(recordSounds, 0);
+        });
+    }
+
+    getAudioGenerator(callBack) {
+        genBuffer(this.waveSize, mixBuf => {
+            let t = 0;
+            let recu = () => {
+                if (t < this.song.songData.length) {
+                    t += 1;
+                    this.generateTrack(this.song.songData[t - 1], mixBuf, recu);
+                } else {
+                    callBack(new AudioGenerator(mixBuf));
+                }
+            };
+            recu();
+        });
+    }
+
+    createAudioBuffer(callBack) {
+        this.getAudioGenerator(ag => ag.getAudioBuffer(callBack));
+    }
+}
+
+SONG = {
+    "rowLen": 7350,
+    "endPattern": 11,
+    "songData": [
+        {
+            "osc1_oct": 4,
+            "osc1_det": 0,
+            "osc1_detune": 0,
+            "osc1_xenv": 0,
+            "osc1_vol": 192,
+            "osc1_waveform": 3,
+            "osc2_oct": 4,
+            "osc2_det": 0,
+            "osc2_detune": 7,
+            "osc2_xenv": 0,
+            "osc2_vol": 201,
+            "osc2_waveform": 3,
+            "noise_fader": 0,
+            "env_attack": 789,
+            "env_sustain": 1234,
+            "env_release": 13636,
+            "env_master": 191,
+            "fx_filter": 2,
+            "fx_freq": 5839,
+            "fx_resonance": 254,
+            "fx_delay_time": 6,
+            "fx_delay_amt": 121,
+            "fx_pan_freq": 6,
+            "fx_pan_amt": 147,
+            "lfo_osc1_freq": 0,
+            "lfo_fx_freq": 1,
+            "lfo_freq": 6,
+            "lfo_amt": 195,
+            "lfo_waveform": 0,
+            "p": [
+                2,
+                3,
+                2,
+                2,
+                2,
+                3,
+                2,
+                3,
+                4,
+                5
+            ],
+            "c": [
+                {
+                    "n": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "n": [
+                        161,
+                        0,
+                        0,
+                        0,
+                        161,
+                        0,
+                        0,
+                        0,
+                        164,
+                        0,
+                        0,
+                        0,
+                        163,
+                        0,
+                        0,
+                        0,
+                        161,
+                        0,
+                        0,
+                        0,
+                        168,
+                        0,
+                        0,
+                        0,
+                        166,
+                        0,
+                        0,
+                        0,
+                        164,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "n": [
+                        168,
+                        0,
+                        0,
+                        0,
+                        166,
+                        0,
+                        0,
+                        0,
+                        164,
+                        0,
+                        0,
+                        0,
+                        163,
+                        0,
+                        0,
+                        0,
+                        161,
+                        0,
+                        0,
+                        0,
+                        161,
+                        0,
+                        0,
+                        0,
+                        163,
+                        0,
+                        0,
+                        0,
+                        164,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "n": [
+                        164,
+                        0,
+                        0,
+                        0,
+                        163,
+                        0,
+                        0,
+                        0,
+                        161,
+                        0,
+                        0,
+                        0,
+                        161,
+                        0,
+                        0,
+                        0,
+                        166,
+                        0,
+                        0,
+                        0,
+                        164,
+                        0,
+                        0,
+                        0,
+                        163,
+                        0,
+                        0,
+                        0,
+                        163,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "n": [
+                        168,
+                        0,
+                        0,
+                        0,
+                        166,
+                        0,
+                        0,
+                        0,
+                        164,
+                        0,
+                        0,
+                        0,
+                        164,
+                        0,
+                        0,
+                        0,
+                        163,
+                        0,
+                        0,
+                        0,
+                        163,
+                        0,
+                        0,
+                        0,
+                        168,
+                        0,
+                        0,
+                        0,
+                        166,
+                        0,
+                        0,
+                        0
+                    ]
+                }
+            ]
+        },
+        {
+            "osc1_oct": 7,
+            "osc1_det": 0,
+            "osc1_detune": 0,
+            "osc1_xenv": 1,
+            "osc1_vol": 128,
+            "osc1_waveform": 0,
+            "osc2_oct": 7,
+            "osc2_det": 0,
+            "osc2_detune": 0,
+            "osc2_xenv": 1,
+            "osc2_vol": 128,
+            "osc2_waveform": 0,
+            "noise_fader": 255,
+            "env_attack": 100,
+            "env_sustain": 0,
+            "env_release": 3636,
+            "env_master": 59,
+            "fx_filter": 2,
+            "fx_freq": 500,
+            "fx_resonance": 254,
+            "fx_delay_time": 0,
+            "fx_delay_amt": 27,
+            "fx_pan_freq": 0,
+            "fx_pan_amt": 0,
+            "lfo_osc1_freq": 0,
+            "lfo_fx_freq": 0,
+            "lfo_freq": 0,
+            "lfo_amt": 0,
+            "lfo_waveform": 0,
+            "p": [
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2
+            ],
+            "c": [
+                {
+                    "n": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "n": [
+                        137,
+                        0,
+                        0,
+                        0,
+                        137,
+                        0,
+                        0,
+                        0,
+                        135,
+                        0,
+                        0,
+                        0,
+                        135,
+                        0,
+                        0,
+                        0,
+                        134,
+                        0,
+                        0,
+                        0,
+                        132,
+                        0,
+                        0,
+                        0,
+                        132,
+                        0,
+                        0,
+                        0,
+                        132,
+                        0,
+                        0,
+                        0
+                    ]
+                }
+            ]
+        },
+        {
+            "osc1_oct": 8,
+            "osc1_det": 0,
+            "osc1_detune": 0,
+            "osc1_xenv": 0,
+            "osc1_vol": 0,
+            "osc1_waveform": 0,
+            "osc2_oct": 8,
+            "osc2_det": 0,
+            "osc2_detune": 0,
+            "osc2_xenv": 0,
+            "osc2_vol": 0,
+            "osc2_waveform": 0,
+            "noise_fader": 60,
+            "env_attack": 50,
+            "env_sustain": 419,
+            "env_release": 4607,
+            "env_master": 130,
+            "fx_filter": 1,
+            "fx_freq": 10332,
+            "fx_resonance": 120,
+            "fx_delay_time": 4,
+            "fx_delay_amt": 16,
+            "fx_pan_freq": 5,
+            "fx_pan_amt": 108,
+            "lfo_osc1_freq": 0,
+            "lfo_fx_freq": 0,
+            "lfo_freq": 5,
+            "lfo_amt": 187,
+            "lfo_waveform": 0,
+            "p": [
+                0,
+                0,
+                2,
+                2,
+                0,
+                0,
+                2,
+                2,
+                2,
+                2
+            ],
+            "c": [
+                {
+                    "n": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "n": [
+                        111,
+                        0,
+                        0,
+                        0,
+                        120,
+                        0,
+                        0,
+                        0,
+                        111,
+                        0,
+                        0,
+                        0,
+                        120,
+                        0,
+                        0,
+                        0,
+                        111,
+                        0,
+                        0,
+                        0,
+                        120,
+                        0,
+                        0,
+                        0,
+                        111,
+                        0,
+                        0,
+                        0,
+                        120,
+                        0,
+                        0,
+                        0
+                    ]
+                }
+            ]
+        }
+    ],
+    "songLen": 50
+}
+
+playSong = () => new MusicGenerator(SONG).createAudioBuffer(buffer => {
+    let source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = 1;
+
+    let gainNode = audioCtx.createGain();
+    gainNode.gain.value = SONG_VOLUME;
+    gainNode.connect(audioCtx.destination);
+    source.connect(gainNode);
+    source./*nomangle*/start/*/nomangle*/();
+
+    playSong = () => 0;
+    setSongVolume = (x) => {
+        SONG_VOLUME = x;
+        gainNode.gain.value = x;
+    }
+});
+
+SONG_VOLUME = 0.5;
+setSongVolume = (x) => SONG_VOLUME = x;
+
+let DOWN = {};
+onkeydown = e => DOWN[e.keyCode] = 1;
+onkeyup = e => DOWN[e.keyCode] = 0;
+
+// Reset inputs when window loses focus
+onblur = onfocus = () => {
+    DOWN = {};
+    MOUSE_RIGHT_DOWN = MOUSE_DOWN = 0;
+};
+
+let MOUSE = {x: 0, y: 0, down: 0};
+onmousemove = event => {
+    getEventPosition(event, can, MOUSE);
+};
+
+onmousedown = e => {
+    MOUSE.down = 1;
+};
+
+onmouseup = e => {
+    MOUSE.down = 0;
+};
+
+oncontextmenu = (event) => event.preventDefault();
+
+getEventPosition = (event, can, out) => {
+    if (!can) return;
+    let canvasRect = can.getBoundingClientRect();
+    out.x = (event.pageX - canvasRect.left) / canvasRect.width * can.width;
+    out.y = (event.pageY - canvasRect.top) / canvasRect.height * can.height;
+}
+
+let TOUCHES = [];
+
+updateTouches = (event) => {
+    inputMode = 1;
+
+    TOUCHES = [];
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    for (let touch of event.touches) {
+        TOUCHES.push({});
+        getEventPosition(touch, can, TOUCHES[TOUCHES.length - 1]);
+    }
+};
+
+ontouchstart = updateTouches;
+ontouchmove = updateTouches;
+ontouchend = updateTouches;
+
+DIFFICULTY_SETTINGS = [
+    DIFFICULTY_EASY = [
+        /*nomangle*/'EASY'/*/nomangle*/,
+        1, // simplifiedPhysics
+        0.5, // uncontrollableDuration
+        0.5, // playerShotInterval
+        0.5, // playerLockDuration
+        6, // rebelShotInterval
+        6, // chopperShotInterval
+    ],
+    DIFFICULTY_NORMAL = [
+        /*nomangle*/'NORMAL'/*/nomangle*/,
+        0, // simplifiedPhysics
+        1, // uncontrollableDuration
+        1, // playerShotInterval
+        1, // playerLockDuration
+        4, // rebelShotInterval
+        3, // chopperShotInterval
+    ],
+    DIFFICULTY_HARD = [
+        /*nomangle*/'HARD'/*/nomangle*/,
+        0, // simplifiedPhysics
+        3, // uncontrollableDuration
+        999, // playerShotInterval
+        1, // playerLockDuration
+        4, // rebelShotInterval
+        3, // chopperShotInterval
+    ],
+];
+
+applyDifficulty = (world, [label, simplifiedPhysics, uncontrollableDuration, playerShotInterval, playerLockDuration, rebelShotInterval, chopperShotInterval]) => {
+    if (1) {
+        console.log('Applying difficulty', {
+            label, simplifiedPhysics, uncontrollableDuration, playerShotInterval, playerLockDuration, rebelShotInterval, chopperShotInterval
+        })
+    }
+
+    let player = firstItem(world.bucket('player'));
+    if (player) {
+        player.simplifiedPhysics = simplifiedPhysics;
+        player.uncontrollableDuration = uncontrollableDuration;
+        player.shotInterval = playerShotInterval;
+        player.lockDuration = playerLockDuration;
+    }
+
+    for (let rebel of world.bucket('rebel')) {
+        rebel.shotInterval = rebelShotInterval;
+    }
+
+    for (let chopper of world.bucket('enemy-chopper')) {
+        chopper.shotInterval = chopperShotInterval;
+    }
+}
+
+class Game {
+    constructor() {
+        this.world = new World();
+
+        this.age = 0;
+
+        let savedDifficulty = parseInt(localStorage['df']);
+        this.difficulty = savedDifficulty >= 0
+            ? DIFFICULTY_SETTINGS[savedDifficulty]
+            : inputMode == 1
+            ? DIFFICULTY_EASY
+            : DIFFICULTY_NORMAL;
+
+        if (0) {
+            CANVAS_WIDTH = 4096;
+            CANVAS_HEIGHT = 4096;
+            can.width = CANVAS_WIDTH;
+            can.height = CANVAS_HEIGHT;
+
+            let world = new World();
+
+            let camera = firstItem(world.bucket('camera'));
+            camera.zoom = 20;
+
+            let chopper = new Chopper();
+            chopper.angle = PI / 6;
+            chopper.age = -0.01;
+            world.add(chopper);
+
+            world.render();
+
+            throw new Error('plz taek screenshot');
+        }
+
+        (async () => {
+            while (1) {
+                await this.gameLoop();
+            }
+        })();
+    }
+
+    cycleDifficulty() {
+        let index = DIFFICULTY_SETTINGS.indexOf(this.difficulty);
+        index = (index - 1 + DIFFICULTY_SETTINGS.length) % DIFFICULTY_SETTINGS.length;
+        this.difficulty = DIFFICULTY_SETTINGS[index];
+        localStorage['df'] = index;
+
+        for (let exposition of this.world.bucket('exposition')) {
+            exposition.world.remove(exposition);
+        }
+
+        if (!this.pauseWorld) {
+            (async () => {
+                let exposition = new Exposition([
+                    /*nomangle*/'DIFFICULTY: '/*/nomangle*/ + this.difficulty[0],
+                ]);
+                this.world.add(exposition);
+
+                await exposition.complete();
+                await exposition.agesBy(2);
+                exposition.world.remove(exposition);
+            })();
+        }
+    }
+
+    difficultyPrompt(withText) {
+        let text = () => withText
+            ? /*nomangle*/'DIFFICULTY: '/*/nomangle*/ + this.difficulty[0] + /*nomangle*/' - PRESS [K] TO CHANGE'/*/nomangle*/
+            : '';
+
+        let prompt = new StartPrompt(
+            text(),
+            [75],
+            () => {
+                this.cycleDifficulty();
+                if (this.world) {
+                    applyDifficulty(this.world, this.difficulty);
+                }
+
+                prompt.text = text();
+            },
+        );
+        return prompt;
+    }
+
+    async missionFailed() {
+        this.pauseWorld = new World();
+
+        let worldOut = new TransitionOut();
+        this.pauseWorld.add(worldOut);
+        await worldOut.agesBy(0.3);
+
+        this.paused = 1;
+        this.world.destroy();
+
+        let title = new Title(/*nomangle*/'MISSION\nFAILED'/*/nomangle*/, '#f00');
+        this.pauseWorld.add(title);
+        title.fade(0, 1, 0.2);
+        await title.agesBy(1);
+
+        let transitionOut = new TransitionOut();
+        this.pauseWorld.add(transitionOut);
+        await transitionOut.agesBy(0.3);
+
+        this.paused = 0;
+        this.pauseWorld = 0;
+    }
+
+    async missionSuccess() {
+        this.pauseWorld = new World();
+
+        let worldOut = new TransitionOut();
+        this.pauseWorld.add(worldOut);
+        await worldOut.agesBy(0.3);
+
+        this.paused = 1;
+        this.world.destroy();
+
+        let title = new Title(/*nomangle*/'MISSION\nSUCCESS'/*/nomangle*/, '#fff');
+        this.pauseWorld.add(title);
+        title.fade(0, 1, 0.2);
+        await title.agesBy(1);
+
+        let transitionOut = new TransitionOut();
+        this.pauseWorld.add(transitionOut);
+        await transitionOut.agesBy(0.3);
+
+        this.paused = 0;
+        this.pauseWorld = 0;
+    }
+
+    async titleScreen() {
+        this.paused = 1;
+        this.pauseWorld = new World();
+
+        let title = new Title(/*nomangle*/'SQUAD 13'/*/nomangle*/);
+
+        let promptSet = new PromptSet([
+            new StartPrompt(
+                inputMode === 1
+                    ? /*nomangle*/'TAP TO DEPLOY'/*/nomangle*/
+                    : /*nomangle*/'PRESS [SPACE] TO DEPLOY'/*/nomangle*/,
+                [32],
+                () => {
+                    promptSet.world.remove(promptSet);
+                },
+            ),
+            inputMode != 1
+                ? this.difficultyPrompt(1)
+                : 0,
+            inputMode != 1
+                ? this.mutePrompt(1)
+                : 0,
+        ]);
+
+        this.pauseWorld.add(
+            title,
+            promptSet,
+            new TransitionIn(),
+        );
+
+        await promptSet.removed();
+        this.paused = 0;
+        await title.fade(1, 0, 1, 0.3);
+
+        this.pauseWorld = 0;
+    }
+
+    mutePrompt(withText) {
+        let text = () => withText
+            ? /*nomangle*/'MUSIC: '/*/nomangle*/ + (SONG_VOLUME > 0 ? /*nomangle*/'ON'/*/nomangle*/ : /*nomangle*/'OFF'/*/nomangle*/) + /*nomangle*/' - PRESS [M] TO '/*/nomangle*/ + (SONG_VOLUME > 0 ? /*nomangle*/'MUTE'/*/nomangle*/ : /*nomangle*/'UNMUTE'/*/nomangle*/)
+            : '';
+
+        let prompt = new StartPrompt(
+            text(),
+            [77],
+            () => {
+                setSongVolume(SONG_VOLUME > 0 ? 0 : 0.5);
+                prompt.text = text();
+            },
+        );
+        return prompt;
+    }
+
+    pause() {
+        if (this.pauseWorld) {
+            return;
+        }
+
+        this.world.destroy();
+
+        this.paused = 1;
+        this.pauseWorld = new World();
+
+        let title = new Title(/*nomangle*/'PAUSED'/*/nomangle*/, 'rgba(0,0,0,0)', 'rgba(0,0,0,0.95)');
+
+        let promptSet = new PromptSet([
+            new StartPrompt(/*nomangle*/'PRESS [SPACE] TO RESUME'/*/nomangle*/, [32, 27, 80], () => {
+                promptSet.world.remove(promptSet);
+            }),
+            this.difficultyPrompt(1),
+            this.mutePrompt(1),
+        ]);
+        this.pauseWorld.add(title, promptSet);
+
+        (async () => {
+            await promptSet.removed();
+            this.pauseWorld = 0;
+            this.paused = 0;
+
+            DOWN = {};
+        })();
+    }
+
+    async gameLoop() {
+        let levels = [
+            tutorialFly,
+            firstMountain,
+            mountainThenCeiling,
+            tutorialShoot,
+            caveThenCeiling,
+            lowCeiling,
+            mountainChopperCeilingChopper,
+            hardMountains,
+            tightSqueezes,
+            doubleChopperNonsense,
+            smallMountainSuccession,
+            nightMountains,
+            upAndDown,
+        ]
+        let levelIndex = 0;
+        let attemptIndex = 0;
+        let startTime = this.age;
+        let missionStartTime = this.age;
+        let totalDeaths = 0;
+        let lowestDifficultyIndex = 9;
+        let promptedEasyMode = 0;
+        let missionFailures = 0;
+
+        let totalPrisoners = levels.reduce((sum, level) => {
+            let world = new World();
+            level(world);
+            return sum + Array.from(world.bucket('prisoner')).length;
+        }, 0);
+        let totalRescuedPrisoners = 0;
+
+        while (levelIndex < levels.length) {
+            if (this.world) this.world.destroy();
+            this.world = new World();
+
+            // Invisible prompt to change difficulty
+            this.world.add(this.difficultyPrompt(0));
+            this.world.add(this.mutePrompt(0));
+
+            let lowestDifficultyIndexInMission = 9;
+            let level = levels[levelIndex];
+            try {
+                let settings = [
+                    sunset,
+                    daytime,
+                    night,
+                ];
+
+                let setting = settings[~~(levelIndex / 2) % settings.length];
+                this.world.add(...setting());
+
+                let levelPromise = level(this.world);
+
+                applyDifficulty(this.world, this.difficulty);
+
+                // Force camera to update
+                let camera = firstItem(this.world.bucket('camera'));
+                camera.cycle(2);
+
+                let missionPrisoners = Array.from(this.world.bucket('prisoner')).length;
+
+                if (attemptIndex++ === 0) {
+                    await this.titleScreen();
+                    startTime = this.age;
+                    startTime = this.age;
+
+                    playSong();
+                } else {
+                    this.world.add(new TransitionIn());
+                }
+
+                if (missionFailures === 0) {
+                    missionStartTime = this.age;
+
+                    if (levelIndex > 0) {
+                        (async () => {
+                            await camera.agesBy(1);
+
+                            let exposition = new Exposition([
+                                COUNTRIES[levelIndex % COUNTRIES.length],
+                                MONTHS[levelIndex % MONTHS.length] + ' ' + (1 + (levelIndex * 7) % 27) + ', ' + (2017 + ~~(levelIndex / 2)),
+                            ]);
+                            this.world.add(exposition);
+
+                            await exposition.complete();
+                            await exposition.agesBy(2);
+                            exposition.world.remove(exposition);
+                        })();
+                    }
+                }
+
+                // Invisible prompt to pause the game
+                this.world.add(new StartPrompt('', [27, 80], () => {
+                    this.pause();
+                }));
+
+                this.world.add(new ProgressIndicator(() => {
+                    let player = firstItem(this.world.bucket('player'));
+                    return [
+                        [/*nomangle*/'MISSION'/*/nomangle*/, `${levelIndex + 1}/${levels.length}`],
+                        [/*nomangle*/'PRISONERS'/*/nomangle*/, (player ? player.rescuedPrisoners : 0) + '/' + missionPrisoners],
+                        [/*nomangle*/'TIME'/*/nomangle*/, formatTime(this.age - missionStartTime)],
+                        [/*nomangle*/'OVERALL'/*/nomangle*/, formatTime(this.age - startTime)],
+                        [/*nomangle*/'DIFFICULTY [K]'/*/nomangle*/, this.difficulty[0]],
+                    ];
+                }));
+
+                this.world.waitFor(() => {
+                    lowestDifficultyIndexInMission = min(lowestDifficultyIndexInMission, DIFFICULTY_SETTINGS.indexOf(this.difficulty));
+                });
+
+                if (inputMode === 1) {
+                    this.world.add(new MobileControls());
+                }
+
+                await levelPromise;
+
+                missionFailures = 0;
+                lowestDifficultyIndex = min(lowestDifficultyIndex, lowestDifficultyIndexInMission);
+
+                let player = firstItem(this.world.bucket('player'));
+                if (player) totalRescuedPrisoners += player.rescuedPrisoners;
+
+                if (levelIndex === 0) {
+                    await this.exposition();
+                } else {
+                    await this.missionSuccess();
+                }
+
+                // Move on to the next level
+                levelIndex++;
+
+            } catch (err) {
+                totalDeaths++;
+                missionFailures++;
+                console.log(err);
+
+                await new Promise(resolve => setTimeout(resolve, 250));
+                await this.missionFailed();
+
+                if (missionFailures % 5 === 0 && this.difficulty === DIFFICULTY_NORMAL && !promptedEasyMode) {
+                    promptedEasyMode = 1;
+                    if (confirm(/*nomangle*/'Enable easy mode? (simplified physics, less aggressive enemies)'/*/nomangle*/)) {
+                        this.difficulty = DIFFICULTY_EASY;
+                    }
+                }
+            }
+
+            // let transitionOut = new Transition(1);
+            // this.world.add(transitionOut);
+            // await this.world.waitFor(() => transitionOut.age > 0.3);
+        }
+
+        this.world.destroy();
+
+        await this.runRecap([
+            [/*nomangle*/'TOTAL TIME'/*/nomangle*/, formatTime(this.age - startTime)],
+            [/*nomangle*/'DIFFICULTY'/*/nomangle*/, DIFFICULTY_SETTINGS[lowestDifficultyIndex][0]],
+            [/*nomangle*/'RESCUED PRISONERS'/*/nomangle*/, `${totalRescuedPrisoners}/${totalPrisoners}`],
+            [/*nomangle*/'CRASHES'/*/nomangle*/, `${totalDeaths}`],
+            ['', ''],
+        ], [
+            /*nomangle*/`I finished SQUAD 13 in `/*/nomangle*/,
+            formatTime(this.age - startTime),
+            /*nomangle*/' after crashing '/*/nomangle*/,
+            totalDeaths,
+            /*nomangle*/' times and rescued '/*/nomangle*/,
+            totalRescuedPrisoners,
+            '/',
+            totalPrisoners,
+            ' prisoners! (',
+            DIFFICULTY_SETTINGS[lowestDifficultyIndex][0],
+            ' mode)',
+        ].join(''));
+    }
+
+    async exposition() {
+        this.pauseWorld = new World();
+
+        let worldOut = new TransitionOut();
+        this.pauseWorld.add(worldOut);
+        await worldOut.agesBy(0.3);
+        this.paused = 1;
+        this.world.destroy();
+
+        {
+            this.pauseWorld = new World();
+            let exposition = new Exposition([
+                /*nomangle*/'When all hope is lost, the World Police Organization sends SQUAD 13.'/*/nomangle*/,
+                ' '.repeat(10),
+                /*nomangle*/'They are tasked with the most dangerous missions.'/*/nomangle*/,
+            ], 1);
+            this.pauseWorld.add(
+                new Background('#000', '#000'),
+                exposition,
+            );
+
+            await exposition.complete();
+            await exposition.agesBy(1);
+        }
+
+        {
+            this.pauseWorld = new World();
+            let exposition = new Exposition([
+                /*nomangle*/'SQUAD 13 is feared even by the most wicked evil terrorists.'/*/nomangle*/,
+                ' '.repeat(10),
+                /*nomangle*/'This is their story.'/*/nomangle*/,
+            ], 1);
+            this.pauseWorld.add(
+                new Background('#000', '#000'),
+                exposition,
+            );
+
+            await exposition.complete();
+            await exposition.agesBy(1);
+        }
+
+        this.paused = 0;
+        this.pauseWorld = 0;
+    }
+
+    async runRecap(recap, tweetText) {
+        this.pauseWorld = new World();
+        this.paused = 1;
+
+        let transitionIn = new Transition(1);
+        this.pauseWorld.add(transitionIn);
+        await transitionIn.agesBy(0.3);
+
+        let title = new Title(/*nomangle*/'THX FOR PLAYING'/*/nomangle*/, '#fff');
+
+        let promptSet = new PromptSet([
+            ...recap.map(([label, value]) => new RunRecap(label, value)),
+            new StartPrompt(
+                inputMode === 1
+                    ? /*nomangle*/'TAP TO REDEPLOY'/*/nomangle*/
+                    : /*nomangle*/'PRESS [SPACE] TO REDEPLOY'/*/nomangle*/,
+                [32],
+                () => promptSet.world.remove(promptSet),
+            ),
+            inputMode != 1
+                ? new StartPrompt(
+                    /*nomangle*/'PRESS [T] TO TWEET YOUR SCORE'/*/nomangle*/,
+                    [84],
+                    () => tweet(tweetText),
+                )
+                : 0
+        ])
+
+        this.pauseWorld.add(title, promptSet);
+
+        await promptSet.removed();
+
+        this.paused = 0;
+        this.pauseWorld = 0;
+    }
+
+    cycle(elapsed) {
+        let before = performance.now();
+        this.age += elapsed;
+
+        if (!this.pauseWorld || !this.paused) {
+            this.world.cycle(min(elapsed, 1 / 30));
+        }
+
+        this.world.render();
+
+        if (this.pauseWorld) {
+            this.pauseWorld.cycle(elapsed);
+            this.pauseWorld.render();
+        }
+
+        let after = performance.now();
+
+        if (1) {
+            ctx.fillStyle = '#fff';
+            ctx.strokeStyle = '#000';
+            ctx.textAlign = /*nomangle*/'left'/*/nomangle*/;
+            ctx.textBaseline = /*nomangle*/'bottom'/*/nomangle*/;
+            ctx.font = /*nomangle*/'14pt Courier'/*/nomangle*/;
+            ctx.lineWidth = 3;
+
+            let player = firstItem(this.world.bucket('player'));
+
+            let y = CANVAS_HEIGHT - 10;
+            for (let line of [
+                /*nomangle*/'FPS: '/*/nomangle*/ + ~~(1 / elapsed),
+                /*nomangle*/'FPS (theoretical): '/*/nomangle*/ + ~~(1000 / (after - before)),
+                /*nomangle*/'Entities: '/*/nomangle*/ + this.world.entities.size,
+                /*nomangle*/'Player: '/*/nomangle*/ + (player ? `${~~player.x},${~~player.y}` : ''),
+            ].reverse()) {
+                ctx.strokeText(line, 10, y);
+                ctx.fillText(line, 10, y);
+                y -= 20;
+            }
+        }
+    }
+}
+
+sunset = () => ([
+    new Background('#f22f00', '#fa7f02'),
+    new Sun('#faf857'),
+    new Mountains('#fa7f02'),
+])
+daytime = () => ([
+    new Background('#51ccfc', '#c2e9fc'),
+    new Sun('#faf857'),
+    new Mountains('#c2e9fc'),
+])
+night = () => ([
+    // new Background('#01010a', '#092644'),
+    new Background('#092644', '#01010a'),
+    new Stars(),
+    new Sun('#fff'),
+    new Mountains('#092644'),
+    new Rain(),
+    new Flashlight(),
+])
+spawn = (world, x, y = 100) => {
+    landingObstacle(world, x, y, 200);
+
+    let player = new Player();
+    player.x = x;
+    player.y = y - 20;
+    world.add(player);
+
+    let camera = firstItem(world.bucket('camera'));
+    camera.minX = min(camera.minX, x - 300);
+
+    return player;
+}
+setTarget = (world, x, y = 100) => {
+    landingObstacle(world, x, y, 200);
+
+    let target = new LandingArea();
+    target.x = x;
+    target.y = 100;
+    world.add(target);
+
+    let camera = firstItem(world.bucket('camera'));
+    camera.maxX = x + 500;
+
+    return target;
+}
+promise = (world) => {
+    let player = firstItem(world.bucket('player'));
+    let target = firstItem(world.bucket('landing-area'));
+
+    return Promise.race([
+        player.crashed(),
+        target.landed(player),
+    ]);
+}
+rebel = (world, x) => {
+    let rebel = new Rebel();
+    rebel.x = x;
+    world.add(rebel);
+
+    for (let obstacle of world.bucket('obstacle')) {
+        if (obstacle.directionY < 0) continue;
+        if (!isBetween(obstacle.minX, rebel.x, obstacle.maxX)) continue;
+
+        let idealY = obstacle.yAt(rebel.x);
+        if (idealY === 0) {
+            // throw new Error('idealY is 0');
+        }
+        rebel.y = idealY - rebel.radius;
+    }
+}
+
+enemyChopper = (world, path) => {
+    let enemyChopper = new EnemyChopper();
+    enemyChopper.x = path[0].x;
+    enemyChopper.y = path[0].y;
+    enemyChopper.follow(path);
+    world.add(enemyChopper);
+}
+
+prisoner = (world, x) => {
+    let prisoner = new Prisoner();
+    prisoner.x = x;
+    world.add(prisoner);
+
+    for (let obstacle of world.bucket('obstacle')) {
+        if (obstacle.directionY < 0) continue;
+        if (!isBetween(obstacle.minX, prisoner.x, obstacle.maxX)) continue;
+
+        let idealY = obstacle.yAt(prisoner.x);
+        if (idealY === 0) {
+            throw new Error('idealY is 0');
+        }
+        prisoner.y = obstacle.yAt(prisoner.x) - prisoner.radius;
+    }
+}
+
+water = (world, y) => {
+    let camera = firstItem(world.bucket('camera'));
+    world.add(new Water(y));
+    camera.maxY = max(camera.maxY, y + 300);
+}
+
+landingObstacle = (world, x, y, length = 100) => {
+    let obstacle = new Obstacle();
+    obstacle.points = [
+        { x: x - length, y: y + 2000 },
+        { x: x - length / 2 - 50, y: y - 10 },
+        { x: x - length / 2, y },
+        { x: x + length / 2, y },
+        { x: x + length / 2 + 50, y: y - 10 },
+        { x: x + length, y: y + 2000 },
+    ];
+    world.add(obstacle);
+
+    let camera = firstItem(world.bucket('camera'));
+    camera.minY = min(camera.minY, y - CANVAS_HEIGHT / 2 - 200);
+};
+
+sinePoints = (world, points, startX, endX, minY, maxY, periodCount) => {
+    let length = endX - startX;
+    let amplitude = maxY - minY;
+
+    for (let x = startX; x <= endX; x += 100) {
+        points.push({
+            x: x,
+            y: minY + amplitude / 2
+                + sin(x / length * PI * 2 * periodCount) * amplitude / 2
+                + sin(x / length * PI * 2 * periodCount * 4) * amplitude / 4,
+        });
+    }
+
+    let camera = firstItem(world.bucket('camera'));
+    camera.minY = min(camera.minY, minY - 200, maxY - 200);
+    camera.maxY = max(camera.maxY, minY + 300, maxY + 300);
+}
+
+mountain = (world, startX, endX, minY, maxY, periodCount = 1) => {
+    let obstacle = new Obstacle();
+    obstacle.points.push({ x: startX - 100, y: maxY + 2000 });
+    sinePoints(world, obstacle.points, startX, endX, minY, maxY, periodCount);
+    obstacle.points.push({ x: endX + 100, y: maxY + 2000 });
+    world.add(obstacle);
+}
+
+ceiling = (world, startX, endX, minY, maxY, periodCount = 1) => {
+    let obstacle = new Obstacle();
+    obstacle.directionY = -1;
+    obstacle.points.push({ x: startX - 100, y: maxY - 2000 });
+    sinePoints(world, obstacle.points, startX, endX, minY, maxY, periodCount);
+    obstacle.points.push({ x: endX + 100, y: maxY - 2000 });
+    world.add(obstacle);
+}
+
+tutorialFly = (world) => {
+    let player = spawn(world, 0);
+    setTarget(world, 1000);
+
+    water(world, 400);
+
+    let upInstruction = new Instruction('');
+    upInstruction.y = -200;
+    world.add(upInstruction);
+
+    let tiltInstruction = new Instruction('');
+    tiltInstruction.x = 500;
+    tiltInstruction.y = -200;
+    world.add(tiltInstruction);
+
+    let downInstruction = new Instruction('');
+    downInstruction.x = 1000;
+    downInstruction.y = -200;
+    world.add(downInstruction);
+
+    world.waitFor(() => {
+        let down = abs(player.x - 1000) < 200;
+        let tilt = !down && distP(player.x, player.y, 0, 100) > 200;
+        let up = !down && !tilt;
+
+        upInstruction.instruction = up ? /*nomangle*/'HOLD [UP] TO FLY'/*/nomangle*/ : '';
+        tiltInstruction.instruction = tilt ? /*nomangle*/'HOLD [LEFT/RIGHT] TO TILT'/*/nomangle*/ : '';
+        downInstruction.instruction = down && !player.simplifiedPhysics ? /*nomangle*/'HOLD [DOWN] TO DESCEND FASTER'/*/nomangle*/ : '';
+    });
+
+    return promise(world);
+}
+
+firstMountain = (world) => {
+
+    spawn(world, 0);
+    mountain(world, 500, 2500, -200, 200, 1);
+    ceiling(world, 2700, 3500, -400, -300, 2);
+
+    setTarget(world, 3000);
+
+    water(world, 400);
+
+    return promise(world)
+};
+
+mountainThenCeiling = (world) => {
+
+    spawn(world, 0);
+
+    mountain(world, 500, 2500, -200, 200, 1);
+    ceiling(world, 3000, 5500, -200, 100, 1);
+    mountain(world, 4000, 5000, 100, 300, 0.5);
+    mountain(world, 5700, 6000, 200, 300, 0.5);
+
+    setTarget(world, 6500);
+
+    water(world, 400);
+
+    let rescueInstruction = new Instruction(/*nomangle*/'PRISONERS CAN BE RESCUED'/*/nomangle*/);
+    rescueInstruction.x = 500;
+    rescueInstruction.y = -200;
+    world.add(rescueInstruction);
+
+    prisoner(world, 1000);
+    prisoner(world, 2400);
+    prisoner(world, 4500);
+
+    return promise(world)
+};
+
+tutorialShoot = (world) => {
+    let player = spawn(world, 0);
+    mountain(world, 500, 2500, -150, 100, 1.5);
+    mountain(world, 2700, 3000, 0, 200, 2);
+    ceiling(world, 2000, 3000, -500, -350, 2);
+    mountain(world, 3700, 3950, 400, 300, 0.5);
+
+    setTarget(world, 3500);
+
+    water(world, 400);
+
+    for (let x of [800, 850, 1500, 2300]) {
+        rebel(world, x);
+    }
+
+    prisoner(world, 2000);
+    prisoner(world, 3800);
+
+    let instruction = new Instruction(
+        inputMode === 1
+            ? /*nomangle*/'TAP CIRCLE TO SHOOT'/*/nomangle*/
+            : /*nomangle*/'PRESS [SPACE] TO SHOOT'/*/nomangle*/
+    );
+    instruction.x = 500;
+    instruction.y = -200;
+    world.add(instruction);
+
+    world.waitFor(() => {
+        instruction.instruction = player.shotInterval < 9
+            ? /*nomangle*/'PRESS [SPACE] TO SHOOT'/*/nomangle*/
+            : /*nomangle*/'NO MISSILES ON HARD MODE'/*/nomangle*/;
+    });
+
+    return promise(world)
+};
+
+caveThenCeiling = (world) => {
+    spawn(world, 0);
+    mountain(world, 500, 2000, -200, 200, 0.5);
+    ceiling(world, 400, 1500, -500, -200, 0.5);
+    ceiling(world, 2500, 3500, -600, 0, 1);
+    mountain(world, 2300, 2700, 200, 300, 0.5);
+    ceiling(world, 3700, 4200, -300, -450, 2);
+
+    setTarget(world, 4000);
+
+    water(world, 400);
+
+    for (let x of [650, 1200, 1750, 1850, 2650]) {
+        rebel(world, x);
+    }
+
+    prisoner(world, 950);
+    prisoner(world, 1350);
+    prisoner(world, 2350);
+
+    return promise(world)
+};
+
+lowCeiling = (world) => {
+    spawn(world, 0);
+
+    ceiling(world, 500, 1500, -200, 100, 0.5);
+    mountain(world, 900, 1500, 300, 400, 1);
+    mountain(world, 1800, 2200, 50, 150, 1);
+
+    mountain(world, 2300, 2800, 300, 350, 2);
+    ceiling(world, 2500, 4000, -200, 100, 1);
+    mountain(world, 3800, 4200, 250, 350, 3);
+
+    setTarget(world, 4500);
+
+    water(world, 400);
+
+    for (let x of [1450, 2050, 2650, 4050]) {
+        rebel(world, x);
+    }
+
+    prisoner(world, 1050);
+    prisoner(world, 2450);
+    prisoner(world, 4150);
+    enemyChopper(world, [
+        { x: 1800, y: -300 },
+        { x: 2200, y: -200 },
+    ])
+
+    return promise(world)
+}
+
+hardMountains = (world) => {
+    spawn(world, 0);
+    ceiling(world, -200, 600, -300, -400, 2.2);
+    mountain(world, 500, 4500, -200, 200, 2);
+    ceiling(world, 800, 1100, -300, -400, 4);
+    ceiling(world, 2500, 3500, -600, -200, 0.5);
+    mountain(world, 4700, 5200, 200, 400, 1);
+    ceiling(world, 4000, 4300, -600, -200, 0.5);
+    ceiling(world, 5500, 6000, -400, 0, 0.5);
+
+    setTarget(world, 5500);
+
+    water(world, 400);
+
+    for (let x of [1000, 1900, 2050, 2500, 3000, 3500, 4400, 4200]) {
+        rebel(world, x);
+    }
+
+    prisoner(world, 1150);
+    prisoner(world, 4750);
+
+    return promise(world)
+}
+
+smallMountainSuccession = world => {
+    spawn(world, 0);
+    mountain(world, 500, 1000, 0, 200, 2);
+    ceiling(world, 900, 1500, -400, -500, 2);
+    mountain(world, 1500, 2000, -200, 0, 1.5);
+    ceiling(world, 1800, 2600, -400, -500, 2.5);
+    mountain(world, 2500, 3500, -200, 200, 3);
+    mountain(world, 2050, 2350, 250, 350, 1.2);
+    ceiling(world, 3000, 4000, -400, -550, 4);
+    ceiling(world, 3800, 4500, -300, -450, 4);
+
+    setTarget(world, 4000);
+
+    water(world, 400);
+
+    for (let x of [850, 1600, 1850, 2580, 2880, 3350, 3450]) {
+        rebel(world, x)
+    }
+
+    enemyChopper(world, [
+        { x: 950, y: -150 },
+        { x: 1250, y: -50 },
+    ]);
+
+    prisoner(world, 650);
+    prisoner(world, 2150);
+
+    return promise(world)
+}
+
+nightMountains = (world) => {
+    spawn(world, 0, 0);
+    mountain(world, 500, 2500, -300, 0, 1);
+    ceiling(world, 2700, 3800, -400, 0, 2);
+    mountain(world, 2900, 3450, 400, 300, 1);
+    mountain(world, 3800, 4500, -200, 200, 1);
+    ceiling(world, 4500, 5500, -600, -200, 2);
+
+    setTarget(world, 5000);
+
+    water(world, 400);
+
+    enemyChopper(world, [
+        { x: 2000, y: -500 },
+        { x: 1200, y: -600 },
+    ]);
+
+    rebel(world, 4050);
+    rebel(world, 4150);
+    rebel(world, 4250);
+
+    prisoner(world, 1750);
+    prisoner(world, 3250);
+
+    return promise(world)
+};
+
+upAndDown = (world) => {
+    spawn(world, 0);
+    mountain(world, 500, 1000, 0, 200, 2);
+    ceiling(world, 900, 1500, -500, -300, 2);
+    mountain(world, 1400, 2500, -150, 200, 2);
+    ceiling(world, 2400, 3500, -400, -200, 2);
+    mountain(world, 2800, 4000, -50, 200, 1.5);
+    // mountain(world, 1500, 2000, -200, 0, 1.5);
+    // ceiling(world, 1800, 2600, -400, -500, 2.5);
+    // mountain(world, 2500, 3500, -200, 200, 3);
+    // ceiling(world, 3000, 4000, -400, -550, 4);
+
+    setTarget(world, 4500);
+
+    water(world, 400);
+
+    for (let x of [850, 1600, 1850, 2600, 2900, 3350, 3450, 3900]) {
+        rebel(world, x)
+    }
+
+    prisoner(world, 1950);
+    prisoner(world, 3550);
+
+    return promise(world)
+}
+
+mountainChopperCeilingChopper = (world) => {
+    spawn(world, 0);
+    mountain(world, 500, 1000, -400, 200, 1);
+    ceiling(world, 2000, 3400, -200, 150, 1);
+    mountain(world, 2400, 2700, 280, 350, 0.5);
+    mountain(world, 1200, 1500, 200, 250, 0.5);
+    mountain(world, 3750, 4100, 300, 350, 0.5);
+    ceiling(world, 4300, 4600, -300, -550, 1);
+
+    setTarget(world, 4500);
+
+    prisoner(world, 1450);
+    prisoner(world, 3800);
+    rebel(world, 750);
+    rebel(world, 2450);
+
+    enemyChopper(world, [
+        { x: 1700, y: -200 },
+        { x: 1500, y: 100 },
+    ]);
+
+    enemyChopper(world, [
+        { x: 3800, y: -200 },
+        { x: 4200, y: 200 },
+    ]);
+
+    water(world, 400);
+
+    return promise(world);
+}
+
+tightSqueezes = (world) => {
+    spawn(world, 0);
+
+    ceiling(world, 500, 1000, 0, 150, 1);
+    mountain(world, 550, 1200, 400, 550, 1);
+    ceiling(world, 1200, 1700, -400, -500, 0.7);
+
+    mountain(world, 1500, 2300, 0, 250, 0.5);
+    ceiling(world, 2000, 2450, -300, -200, 1);
+    ceiling(world, 2700, 3150, -50, 50, 1);
+
+    mountain(world, 2900, 3400, 600, 550, 1.2);
+    mountain(world, 3500, 4000, -200, -300, 1.2);
+    ceiling(world, 3750, 4000, -500, -600, 0.8);
+
+    setTarget(world, 4500);
+
+    rebel(world, 950);
+    rebel(world, 1550);
+    rebel(world, 2250);
+    rebel(world, 2200);
+    rebel(world, 3000);
+    rebel(world, 3850);
+
+    prisoner(world, 1850);
+    prisoner(world, 3250);
+
+    enemyChopper(world, [
+        { x: 2900, y: 150 },
+        { x: 2600, y: 250 },
+    ]);
+
+    enemyChopper(world, [
+        { x: 4650, y: -350 },
+        { x: 4400, y: -150 },
+    ]);
+
+    water(world, 600);
+
+    return promise(world);
+};
+
+doubleChopperNonsense = (world) => {
+    spawn(world, 0);
+
+    mountain(world, 500, 1500, -200, 0, 1);
+    ceiling(world, 450, 1500, -600, -400, 1);
+
+    enemyChopper(world, [
+        { x: 1800, y: -300 },
+        { x: 1800, y: 200 },
+    ]);
+
+    enemyChopper(world, [
+        { x: 5150, y: -250 },
+        { x: 5500, y: -350 },
+    ]);
+
+    mountain(world, 1750, 2150, 400, 300, 1);
+    ceiling(world, 2650, 3400, 300, 200, 1);
+    ceiling(world, 1750, 2800, -750, -450, 4);
+    mountain(world, 2250, 2500, 500, 450, 0.5);
+    mountain(world, 3100, 3250, 550, 560, 1);
+    mountain(world, 3550, 4150, 500, 0, 1);
+    ceiling(world, 3600, 4200, -300, -500, 0.8);
+
+    ceiling(world, 4400, 5000, -400, -600, 0.8);
+    mountain(world, 4400, 4950, -200, -100, 0.7);
+    mountain(world, 5600, 5900, 500, 550, 0.7);
+
+    setTarget(world, 5500);
+
+    prisoner(world, 3150);
+    prisoner(world, 4100);
+    prisoner(world, 5800);
+
+    rebel(world, 710);
+    rebel(world, 1150);
+    rebel(world, 1800);
+    rebel(world, 2430);
+    rebel(world, 3700);
+    rebel(world, 3900);
+    rebel(world, 4550);
+    rebel(world, 4900);
+
+    water(world, 600);
+
+    return promise(world);
+}
+
+tweet = message => {
+    open(
+        /*nomangle*/'//twitter.com/intent/tweet?'/*/nomangle*/ +
+        /*nomangle*/'hashtags=js13k'/*/nomangle*/ +
+        /*nomangle*/'&url='/*/nomangle*/ + location +
+        /*nomangle*/'&text='/*/nomangle*/ + encodeURIComponent(message)
+    );
+};
+
+onload = () => {
+    can = document.querySelector('canvas');
+    can.width = CANVAS_WIDTH;
+    can.height = CANVAS_HEIGHT;
+
+    ctx = can.getContext('2d');
+
+    onresize();
+
+    G = new Game();
+
+    frame();
+}
+
+frame = () => {
+    let current = performance.now();
+    let elapsed = (current - lastFrame) / 1000;
+    lastFrame = current;
+
+    G.cycle(elapsed);
+
+    requestAnimationFrame(frame);
+}
+
+</script>

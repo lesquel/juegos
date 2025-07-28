@@ -1,0 +1,47 @@
+<style is:inline>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html,
+  body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #000;
+  }
+  
+  #body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+  }
+  
+  #game {
+    width: 90vw;
+    height: 90vh;
+    object-fit: cover;
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+    image-rendering: pixelated;
+  }
+  
+  #test {
+    display: none;
+  }
+</style>
+<div id="body">
+  <canvas id="game" width="256" height="192"></canvas>
+  <canvas id="test" width="256" height="192"></canvas>
+</div>
+<script src="./script.js"></script>

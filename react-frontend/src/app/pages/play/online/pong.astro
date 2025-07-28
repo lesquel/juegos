@@ -1,0 +1,21 @@
+---
+import LayoutForGames from "@layouts/LayoutForGames.astro";
+---
+
+<LayoutForGames>
+  <div id="pong-root"></div>
+</LayoutForGames>
+
+<script>
+  import PongGame from '@all-games/online/pong/PongGame.tsx';
+  import React from 'react';
+  import { createRoot } from 'react-dom/client';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('pong-root');
+    if (container) {
+      const root = createRoot(container);
+      root.render(React.createElement(PongGame));
+    }
+  });
+</script>

@@ -1,0 +1,21 @@
+---
+import LayoutForGames from "@layouts/LayoutForGames.astro";
+---
+
+<LayoutForGames>
+  <div id="hipodromocasino-react-root"></div>
+</LayoutForGames>
+
+<script>
+  import HorseRacingGame from '@all-games/marketplace/hipodromocasino-react';
+  import React from 'react';
+  import { createRoot } from 'react-dom/client';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('hipodromocasino-react-root');
+    if (container) {
+      const root = createRoot(container);
+      root.render(React.createElement(HorseRacingGame));
+    }
+  });
+</script>

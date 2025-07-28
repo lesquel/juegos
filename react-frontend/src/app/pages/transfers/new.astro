@@ -1,0 +1,10 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { TransferForm } from "@modules/transfers/components/TransferForm";
+---
+
+<Layout>
+  <main class="h-full flex-grow">
+    <TransferForm client:load />
+  </main>
+</Layout>

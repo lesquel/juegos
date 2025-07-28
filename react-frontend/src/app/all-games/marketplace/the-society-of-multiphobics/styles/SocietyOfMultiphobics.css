@@ -1,0 +1,365 @@
+/* Main Game Component Styles */
+.society-game {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0F0F23 0%, #1a1a2e 50%, #16213e 100%);
+  color: white;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: auto;
+}
+
+/* Header */
+.game-header {
+  text-align: center;
+  padding: 30px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-header h1 {
+  margin: 0 0 15px 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 4s ease-in-out infinite;
+  text-shadow: none;
+}
+
+.game-description {
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  color: #CBD5E0;
+  line-height: 1.6;
+}
+
+/* Layout */
+.game-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.game-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.game-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  min-height: 600px;
+}
+
+/* Overlays */
+.setup-overlay,
+.pause-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 10;
+}
+
+.setup-instructions,
+.pause-message {
+  background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  text-align: center;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.setup-instructions h3,
+.pause-message h3 {
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+  color: #E2E8F0;
+}
+
+.setup-instructions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.setup-instructions li {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  border-left: 4px solid #4ECDC4;
+  text-align: left;
+}
+
+.start-hint {
+  color: #A0AEC0;
+  font-style: italic;
+  margin: 0;
+}
+
+.pause-message p {
+  color: #CBD5E0;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* Footer */
+.game-footer {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 30px 20px;
+  margin-top: 40px;
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-tips {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.game-tips h4 {
+  margin: 0 0 20px 0;
+  font-size: 1.3rem;
+  color: #E2E8F0;
+}
+
+.game-tips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.game-tips li {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border-left: 4px solid #4ECDC4;
+  text-align: left;
+  color: #CBD5E0;
+  transition: all 0.3s ease;
+}
+
+.game-tips li:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Error State */
+.error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.error-message {
+  background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid rgba(245, 101, 101, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  max-width: 500px;
+}
+
+.error-message h2 {
+  margin: 0 0 15px 0;
+  color: #F56565;
+  font-size: 1.8rem;
+}
+
+.error-message p {
+  margin: 0 0 25px 0;
+  color: #CBD5E0;
+  font-size: 1.1rem;
+}
+
+.retry-btn {
+  background: linear-gradient(45deg, #F56565, #FC8181);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+  background: linear-gradient(45deg, #E53E3E, #F56565);
+  transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .game-layout {
+    grid-template-columns: 320px 1fr;
+    gap: 15px;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-header {
+    padding: 20px 15px;
+  }
+  
+  .game-header h1 {
+    font-size: 2rem;
+  }
+  
+  .game-description {
+    font-size: 1rem;
+  }
+  
+  .game-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 15px;
+  }
+  
+  .game-sidebar {
+    position: static;
+    order: 2;
+  }
+  
+  .game-main {
+    order: 1;
+    min-height: auto;
+  }
+  
+  .setup-instructions,
+  .pause-message {
+    padding: 20px;
+    margin: 10px;
+  }
+  
+  .game-tips ul {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-header {
+    padding: 15px 10px;
+  }
+  
+  .game-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .game-description {
+    font-size: 0.9rem;
+  }
+  
+  .game-layout {
+    padding: 10px;
+    gap: 15px;
+  }
+  
+  .setup-instructions,
+  .pause-message {
+    padding: 15px;
+    margin: 5px;
+  }
+  
+  .setup-instructions h3,
+  .pause-message h3 {
+    font-size: 1.2rem;
+  }
+  
+  .game-footer {
+    padding: 20px 10px;
+  }
+  
+  .game-tips h4 {
+    font-size: 1.1rem;
+  }
+  
+  .error-message {
+    padding: 25px;
+    margin: 10px;
+  }
+  
+  .error-message h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .society-game {
+    background: #000;
+  }
+  
+  .game-header,
+  .game-footer,
+  .setup-overlay,
+  .pause-overlay {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .game-header h1 {
+    animation: none;
+    background: #4ECDC4;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .setup-instructions,
+  .pause-message,
+  .game-tips li {
+    transition: none;
+  }
+  
+  .setup-instructions:hover,
+  .pause-message:hover,
+  .game-tips li:hover {
+    transform: none;
+  }
+}

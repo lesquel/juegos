@@ -1,0 +1,211 @@
+.lost-on-stranger-terra-game {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #1a0033, #330066);
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.game-canvas {
+  border: 3px solid #00FFFF;
+  border-radius: 8px;
+  background: #000011;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.game-canvas:focus {
+  outline: none;
+  border-color: #FFFF00;
+  box-shadow: 0 0 25px rgba(255, 255, 0, 0.5);
+}
+
+.game-start-screen {
+  text-align: center;
+  color: #FFFFFF;
+  max-width: 400px;
+}
+
+.game-start-screen h2 {
+  color: #00FFFF;
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+.game-start-screen p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #CCCCCC;
+  font-family: 'Courier New', monospace;
+}
+
+.controls-info {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  border: 1px solid #00FFFF;
+}
+
+.controls-info p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #00FFFF;
+}
+
+.start-button {
+  background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.start-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.game-hud {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 256px;
+  margin-bottom: 10px;
+  font-family: 'Courier New', monospace;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.hud-item {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #00FFFF;
+  color: #00FFFF;
+}
+
+.game-over-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #FFFFFF;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  border: 3px solid #FF6B6B;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+}
+
+.game-over-screen h2 {
+  color: #FF6B6B;
+  font-size: 24px;
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.8);
+}
+
+.game-over-screen p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #CCCCCC;
+}
+
+.restart-button {
+  background: linear-gradient(45deg, #4ECDC4, #44A08D);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+}
+
+.restart-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+}
+
+.game-controls {
+  margin-top: 10px;
+  padding: 8px 15px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  color: #CCCCCC;
+  border: 1px solid #00FFFF;
+}
+
+/* Pixel art styling */
+.lost-on-stranger-terra-game * {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Retro glow effects */
+@keyframes neonGlow {
+  0%, 100% {
+    text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+  }
+  50% {
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+  }
+}
+
+.game-start-screen h2,
+.game-over-screen h2 {
+  animation: neonGlow 2s ease-in-out infinite;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .lost-on-stranger-terra-game {
+    padding: 10px;
+  }
+  
+  .game-start-screen h2 {
+    font-size: 24px;
+  }
+  
+  .game-start-screen p {
+    font-size: 14px;
+  }
+  
+  .start-button {
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+  
+  .game-hud {
+    font-size: 12px;
+  }
+  
+  .game-controls {
+    font-size: 10px;
+  }
+}

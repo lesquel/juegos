@@ -1,0 +1,28 @@
+---
+import LayoutForGames from "@layouts/LayoutForGames.astro";
+---
+
+<LayoutForGames>
+  <div id="do-not-make-root"></div>
+</LayoutForGames>
+
+<script>
+  import DoNotMakeGame from '@all-games/marketplace/do-not-make';
+  import React from 'react';
+  import { createRoot } from 'react-dom/client';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('do-not-make-root');
+    if (container) {
+      const root = createRoot(container);
+      root.render(React.createElement(DoNotMakeGame));
+    }
+  });
+</script>mport DoNotMakeComponent from "@all-games/marketplace/do-not-make/doNotMakeComponent.astro";
+import LayoutForGames from "@layouts/LayoutForGames.astro";
+---
+
+<LayoutForGames>
+  <!-- <DoNotMakeComponent client:load /> -->
+  <div>Do Not Make game temporarily disabled</div>
+</LayoutForGames>
