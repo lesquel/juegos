@@ -5,8 +5,8 @@ import { NewCommentForm } from "@modules/comment-game/components/NewCommentForm"
 import { PlayCircle } from "lucide-react";
 import { GameType } from "../models/game.model";
 import { memo, useMemo } from "react";
-import { Link } from "@tanstack/react-router";
 import { SingleGameSkeleton } from "./SingleGameSkeleton";
+import { Link } from "@tanstack/react-router";
 
 interface SingleGameProps {
   id: string;
@@ -88,13 +88,13 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <a
-              href={gameUrl}
+            <Link
+              to={gameUrl}
               className="w-full text-center bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out text-xl transform hover:scale-105 flex items-center justify-center gap-3"
             >
               {playIcon}
               <span>Jugar Ahora</span>
-            </a>
+            </Link>
           </div>
 
           {/* Right Column: Info */}
