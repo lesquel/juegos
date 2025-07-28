@@ -20,6 +20,8 @@ export const CardCommentGame = memo(({ commentGame }: CardCommentGameProps) => {
   const { data: user } = useUser(user_id);
   const meUser = useStore(useAuthStore).user;
 
+  console.log("user", user);
+
   // Memoizar información del usuario
   const userInfo = useMemo(() => {
     const userName = user?.email || "Usuario Anónimo";

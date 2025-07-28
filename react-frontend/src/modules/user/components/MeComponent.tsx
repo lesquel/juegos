@@ -1,4 +1,4 @@
-import { UserClientData } from "../services/userClientData";
+import { useMe } from "../services/userClientData";
 import { LoadingComponent } from "@components/LoadingComponent";
 import { memo, useEffect, useMemo } from "react";
 import { MiddlewareAstroProtectUser } from "@modules/auth/middleware/middlewareAstroProtectUser";
@@ -8,15 +8,13 @@ export const MeComponent = memo(() => {
     // Solo ejecutar en el cliente después del montaje
     MiddlewareAstroProtectUser.isLogged();
   }, []);
-  return (
-      <UseMeComponent />
-  );
+  return <UseMeComponent />;
 });
 
 MeComponent.displayName = "MeComponent";
 
 const UseMeComponent = memo(() => {
-  const { data, isLoading, error } = UserClientData.getmMe();
+  const { data, isLoading, error } = useMe();
 
   // Memoizar contenido del usuario
   const userContent = useMemo(() => {
