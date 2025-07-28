@@ -7,9 +7,6 @@ interface CardTransferProps {
 }
 
 export const CardTransfer: React.FC<CardTransferProps> = memo(({ transfer }) => {
-  // Memoizar URL de transferencia
-  const transferUrl = useMemo(() => `/transfers/${transfer.transfer_id}`, [transfer.transfer_id]);
-
   // Memoizar estado de transferencia con estilo
   const statusBadge = useMemo(() => {
     const statusClasses = {
@@ -49,8 +46,9 @@ export const CardTransfer: React.FC<CardTransferProps> = memo(({ transfer }) => 
 
   return (
     <article className="bg-gray-800 bg-opacity-50 rounded-2xl p-6 shadow-lg backdrop-blur-lg backdrop-filter border border-gray-700 hover:bg-gray-700 transition-all duration-300 transform hover:scale-105">
-      <a 
-        href={transferUrl}
+      <Link 
+        to="/transfers/$id"
+        params={{ id: transfer.transfer_id }}
         className="block text-decoration-none"
         aria-label={`Ver detalles de transferencia ${transfer.transfer_id}`}
       >
@@ -103,7 +101,7 @@ export const CardTransfer: React.FC<CardTransferProps> = memo(({ transfer }) => 
             </span>
           </footer>
         </div>
-      </a>
+      </Link>
     </article>
   );
 });
