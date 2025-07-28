@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { CookiesSection } from '../utils/cookiesSection';
+import { useAuthStore } from '../store/auth.store';
 import { authRoutesConfig } from '../config/auth.routes.config';
 
 /**
@@ -12,14 +12,18 @@ export function withAuthRequired<P extends object>(
   const ProtectedComponent: React.FC<P> = (props) => {
     const navigate = useNavigate();
     const [isChecking, setIsChecking] = useState(true);
+    const { isLogged, syncWithCookies } = useAuthStore();
 
     useEffect(() => {
       const checkAuth = () => {
         if (typeof window === 'undefined') return;
         
-        const hasSession = CookiesSection.get();
+        // Sincronizar con cookies en caso de discrepancia
+        syncWithCookies();
         
-        if (!hasSession) {
+        const isAuthenticated = isLogged();
+        
+        if (!isAuthenticated) {
           navigate({
             to: authRoutesConfig.children.login.url as '/auth/login',
             search: {
@@ -31,11 +35,16 @@ export function withAuthRequired<P extends object>(
         }
       };
 
-      checkAuth();
-    }, [navigate]);
+      // Agregar un pequeño delay para asegurar que el store esté hidratado
+      const timer = setTimeout(checkAuth, 100);
+      
+      return () => clearTimeout(timer);
+    }, [navigate, isLogged, syncWithCookies]);
 
     if (isChecking) {
-      return <div>Loading...</div>;
+      return <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+      </div>;
     }
 
     return <Component {...props} />;
@@ -55,25 +64,34 @@ export function withGuestOnly<P extends object>(
   const GuestOnlyComponent: React.FC<P> = (props) => {
     const navigate = useNavigate();
     const [isChecking, setIsChecking] = useState(true);
+    const { isLogged, syncWithCookies } = useAuthStore();
 
     useEffect(() => {
       const checkAuth = () => {
         if (typeof window === 'undefined') return;
         
-        const hasSession = CookiesSection.get();
+        // Sincronizar con cookies en caso de discrepancia
+        syncWithCookies();
         
-        if (hasSession) {
+        const isAuthenticated = isLogged();
+        
+        if (isAuthenticated) {
           navigate({ to: '/' });
         } else {
           setIsChecking(false);
         }
       };
 
-      checkAuth();
-    }, [navigate]);
+      // Agregar un pequeño delay para asegurar que el store esté hidratado
+      const timer = setTimeout(checkAuth, 100);
+      
+      return () => clearTimeout(timer);
+    }, [navigate, isLogged, syncWithCookies]);
 
     if (isChecking) {
-      return <div>Loading...</div>;
+      return <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+      </div>;
     }
 
     return <Component {...props} />;
@@ -90,29 +108,36 @@ export function withGuestOnly<P extends object>(
 export const useAuthProtection = (requireAuth: boolean = true) => {
   const navigate = useNavigate();
   const [isChecking, setIsChecking] = useState(true);
+  const { isLogged, syncWithCookies } = useAuthStore();
 
   useEffect(() => {
     const checkAuth = () => {
       if (typeof window === 'undefined') return;
       
-      const hasSession = CookiesSection.get();
+      // Sincronizar con cookies en caso de discrepancia
+      syncWithCookies();
       
-      if (requireAuth && !hasSession) {
+      const isAuthenticated = isLogged();
+      
+      if (requireAuth && !isAuthenticated) {
         navigate({
           to: authRoutesConfig.children.login.url as '/auth/login',
           search: {
             redirect: window.location.pathname,
           },
         });
-      } else if (!requireAuth && hasSession) {
+      } else if (!requireAuth && isAuthenticated) {
         navigate({ to: '/' });
       } else {
         setIsChecking(false);
       }
     };
 
-    checkAuth();
-  }, [requireAuth, navigate]);
+    // Agregar un pequeño delay para asegurar que el store esté hidratado
+    const timer = setTimeout(checkAuth, 100);
+    
+    return () => clearTimeout(timer);
+  }, [navigate, requireAuth, isLogged, syncWithCookies]);
 
   return { isChecking };
 };

@@ -1,5 +1,5 @@
 import { redirect } from '@tanstack/react-router';
-import { CookiesSection } from '../utils/cookiesSection';
+import { useAuthStore } from '../store/auth.store';
 import { authRoutesConfig } from '../config/auth.routes.config';
 
 export class AuthMiddleware {
@@ -11,9 +11,10 @@ export class AuthMiddleware {
     // Solo ejecutar en el cliente
     if (typeof window === 'undefined') return;
     
-    const hasSession = CookiesSection.get();
+    // Usar el store que sincroniza con cookies automáticamente
+    const isAuthenticated = useAuthStore.getState().isLogged();
     
-    if (!hasSession) {
+    if (!isAuthenticated) {
       throw redirect({
         to: authRoutesConfig.children.login.url as '/auth/login',
         search: {
@@ -31,9 +32,10 @@ export class AuthMiddleware {
     // Solo ejecutar en el cliente
     if (typeof window === 'undefined') return;
     
-    const hasSession = CookiesSection.get();
+    // Usar el store que sincroniza con cookies automáticamente
+    const isAuthenticated = useAuthStore.getState().isLogged();
     
-    if (hasSession) {
+    if (isAuthenticated) {
       throw redirect({
         to: '/',
       });
@@ -48,10 +50,10 @@ export class AuthMiddleware {
     return {
       isAuthenticated: () => {
         if (typeof window === 'undefined') return false;
-        return !!CookiesSection.get();
+        return useAuthStore.getState().isLogged();
       },
       logout: () => {
-        CookiesSection.remove();
+        useAuthStore.getState().clearUser();
         // En lugar de redirect, usamos window.location para evitar problemas con hooks
         window.location.href = authRoutesConfig.children.login.url;
       },
@@ -64,18 +66,26 @@ export class AuthMiddleware {
  * Este SÍ es un hook real que puede usar useEffect
  */
 export const useAuth = () => {
+  const store = useAuthStore();
+  
   const isAuthenticated = () => {
     if (typeof window === 'undefined') return false;
-    return !!CookiesSection.get();
+    return store.isLogged();
   };
 
   const logout = () => {
-    CookiesSection.remove();
+    store.clearUser();
     window.location.href = authRoutesConfig.children.login.url;
+  };
+
+  const syncWithCookies = () => {
+    store.syncWithCookies();
   };
 
   return {
     isAuthenticated,
     logout,
+    syncWithCookies,
+    user: store.user,
   };
 };
