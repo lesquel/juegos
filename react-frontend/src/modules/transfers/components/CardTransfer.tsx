@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import type { Transfer } from "../models/transfer.model";
 
 interface CardTransferProps {

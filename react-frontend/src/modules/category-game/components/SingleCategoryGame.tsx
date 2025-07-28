@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { ListTagsGames } from "@modules/games/components/tags/ListTagsGames";
 import { SingleCategoryGameSkeleton } from "./SingleCategoryGameSkeleton";
@@ -32,12 +33,12 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
             Error al cargar categoría
           </h2>
           <p className="text-red-300 mb-6">{error.message}</p>
-          <a
-            href="/categories"
+          <Link
+            to="/categories"
             className="inline-block bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg hover:from-teal-600 hover:to-cyan-500 transition duration-300"
           >
             Volver a categorías
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -70,12 +71,12 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
       <nav className="mb-6" aria-label="Breadcrumb">
         <ol className="flex items-center space-x-2 text-sm">
           <li>
-            <a
-              href="/"
+            <Link
+              to="/"
               className="text-gray-400 hover:text-white transition-colors"
             >
               Inicio
-            </a>
+            </Link>
           </li>
           <li>
             <ArrowRight className="h-4 w-4 text-gray-400" />
