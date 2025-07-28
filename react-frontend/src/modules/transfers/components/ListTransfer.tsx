@@ -1,15 +1,12 @@
 import React, { memo, useMemo } from "react";
 import { LoadingComponent } from "@components/LoadingComponent";
-import { QueryProvider } from "@providers/QueryProvider";
 import { TransferDataClient } from "../services/transferDataClient";
 import { CardTransfer } from "./CardTransfer";
 import { Landmark, Plus } from "lucide-react";
 
 export const ListTransfer: React.FC = memo(() => {
   return (
-    <QueryProvider>
       <UseListTransfer />
-    </QueryProvider>
   );
 });
 

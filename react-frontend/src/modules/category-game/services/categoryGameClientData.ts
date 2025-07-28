@@ -20,14 +20,19 @@ const CATEGORY_QUERY_CONFIG = {
 const CATEGORY_AXIOS_CONFIG = {
   timeout: 5000,
   headers: {
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  },
 };
 
 export class CategoryGameClientData {
   private static readonly BASE_URL = environment.BASE_URL;
 
   public static getCategoryGames(paguination: PaginationCategory) {
+    console.log("paguination", paguination);
+    console.log(
+      "url",
+      `${CategoryGameClientData.BASE_URL}${endpoints.categories.get}`
+    );
     return useQuery({
       queryKey: ["category-games", paguination],
       ...CATEGORY_QUERY_CONFIG,

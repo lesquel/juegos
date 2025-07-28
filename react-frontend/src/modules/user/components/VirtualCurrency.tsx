@@ -1,4 +1,3 @@
-import { QueryProvider } from "@providers/QueryProvider";
 import { UserClientData } from "../services/userClientData";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 import { memo, useMemo } from "react";
@@ -6,16 +5,12 @@ import { memo, useMemo } from "react";
 export const VirtualCurrency = memo(() => {
   const userStore = useAuthStore();
   const { user } = userStore;
-  
+
   if (!user) {
     return null;
   }
-  
-  return (
-    <QueryProvider>
-      <UseVirtualCurrency />
-    </QueryProvider>
-  );
+
+  return <UseVirtualCurrency />;
 });
 
 VirtualCurrency.displayName = "VirtualCurrency";
@@ -37,11 +32,7 @@ const UseVirtualCurrency = memo(() => {
     }
 
     if (error) {
-      return (
-        <div className="text-red-500 text-sm">
-          Error al cargar saldo
-        </div>
-      );
+      return <div className="text-red-500 text-sm">Error al cargar saldo</div>;
     }
 
     return (

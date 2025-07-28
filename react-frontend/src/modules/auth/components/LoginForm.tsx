@@ -1,5 +1,4 @@
 import React, { memo, useMemo, useCallback, useEffect } from "react";
-import { QueryProvider } from "@providers/QueryProvider";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { AuthClientData } from "../services/authClientData";
@@ -20,9 +19,7 @@ export const LoginForm: React.FC = memo(() => {
   }, []);
 
   return (
-    <QueryProvider>
       <UseLoginForm />
-    </QueryProvider>
   );
 });
 

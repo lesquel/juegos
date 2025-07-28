@@ -1,6 +1,5 @@
 import React, { memo, useMemo } from "react";
 import { LoadingComponent } from "@components/LoadingComponent";
-import { QueryProvider } from "@providers/QueryProvider";
 import { TransferDataClient } from "../services/transferDataClient";
 import { ArrowRight, Clock, Image, Info, Landmark } from "lucide-react";
 
@@ -10,9 +9,7 @@ interface SingleTransferProps {
 
 export const SingleTransfer: React.FC<SingleTransferProps> = memo(({ id }) => {
   return (
-    <QueryProvider>
       <UseSingleTransfer id={id} />
-    </QueryProvider>
   );
 });
 

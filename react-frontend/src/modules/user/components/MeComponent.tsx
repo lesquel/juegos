@@ -1,4 +1,3 @@
-import { QueryProvider } from "@providers/QueryProvider";
 import { UserClientData } from "../services/userClientData";
 import { LoadingComponent } from "@components/LoadingComponent";
 import { memo, useEffect, useMemo } from "react";
@@ -10,9 +9,7 @@ export const MeComponent = memo(() => {
     MiddlewareAstroProtectUser.isLogged();
   }, []);
   return (
-    <QueryProvider>
       <UseMeComponent />
-    </QueryProvider>
   );
 });
 

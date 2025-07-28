@@ -2,7 +2,6 @@ import React, { memo, useMemo, useCallback } from "react";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { TransferDataClient } from "../services/transferDataClient";
-import { QueryProvider } from "@providers/QueryProvider";
 import type { TransferInputModel } from "../models/transfer.model";
 import { DollarSign, Landmark, Loader, Upload } from "lucide-react";
 import { Account } from "./Account";
@@ -20,9 +19,7 @@ const transferSchema = z.object({
 });
 
 export const TransferForm: React.FC = memo(() => (
-  <QueryProvider>
     <InternalTransferForm />
-  </QueryProvider>
 ));
 
 TransferForm.displayName = "TransferForm";

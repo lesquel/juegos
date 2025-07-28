@@ -1,5 +1,4 @@
 import React, { memo, useMemo } from "react";
-import { QueryProvider } from "@providers/QueryProvider";
 import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { ListTagsGames } from "@modules/games/components/tags/ListTagsGames";
 import { SingleCategoryGameSkeleton } from "./SingleCategoryGameSkeleton";
@@ -11,11 +10,7 @@ interface SingleCategoryGameProps {
 
 export const SingleCategoryGame: React.FC<SingleCategoryGameProps> = memo(
   ({ id }) => {
-    return (
-      <QueryProvider>
-        <UseSingleCategoryGame id={id} />
-      </QueryProvider>
-    );
+    return <UseSingleCategoryGame id={id} />;
   }
 );
 
