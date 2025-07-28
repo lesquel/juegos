@@ -1,7 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
 import { TransferForm } from '@modules/transfers/components/TransferForm'
 
-export const Route = createLazyFileRoute('/transfers-new')({
+export const Route = createLazyFileRoute('/transfers/new')({
   component: NewTransferPage,
 })
 
