@@ -1,4 +1,4 @@
-import type { Account as AccountModel } from "@models/globalInfo";
+wimport type { Account as AccountModel } from "@models/globalInfo";
 import { useCallback, useState } from "react";
 
 export const Account = ({ account }: { account: AccountModel }) => {

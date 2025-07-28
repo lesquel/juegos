@@ -27,13 +27,16 @@ export class GameAdapter {
       game_type: game.game_type,
       game_description: game.game_description,
       house_odds: game.house_odds,
-      create_at: new Date(game.create_at),
-      update_at: new Date(game.update_at),
+      create_at: new Date(game.created_at),
+      update_at: new Date(game.updated_at),
       game_capacity: game.game_capacity,
-      categories: game.categorys
-        ? game.categorys.map((category: any) =>
-            CategoryGameGameAdapter.adapt(category)
-          )
+      categories: game.category_ids // Asumiendo que category_ids son los IDs de las categorías
+        ? game.category_ids.map((categoryId: string) => ({
+            category_id: categoryId,
+            category_name: "", // Puedes rellenar esto con una llamada adicional si necesitas el nombre
+            category_img: "",
+            category_description: "",
+          }))
         : undefined,
     };
   }

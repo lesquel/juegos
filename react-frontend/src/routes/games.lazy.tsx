@@ -1,6 +1,5 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
-import { ListGames } from '@modules/games/components/ListGames'
+import { createLazyFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createLazyFileRoute('/games')({
-  component: ListGames,
+  component: () => <Outlet />,
 })

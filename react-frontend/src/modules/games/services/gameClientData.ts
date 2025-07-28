@@ -13,8 +13,8 @@ const QUERY_CONFIG = {
   refetchOnWindowFocus: false,
   refetchOnMount: false,
   refetchOnReconnect: false,
-  retry: 1, // Solo 1 reintento para fallos
-  retryDelay: 1000, // 1 segundo entre reintentos
+  retry: 3, // Aumentado a 3 reintentos
+  retryDelay: 2000, // Aumentado a 2 segundos entre reintentos
 };
 
 const BASE_URL = environment.API_URL;
@@ -30,7 +30,7 @@ export const useGames = (paguination: PaginationGames) => {
             endpoints.games.get +
             PaginationCategoryAdapter.adaptPaginationGames(paguination),
           {
-            timeout: 5000, // 5 segundos timeout
+            timeout: 10000, // Aumentado a 10 segundos timeout
           }
         )
         .then((response) => {
@@ -44,10 +44,11 @@ export const useGameDetail = (id: string) => {
   return useQuery({
     queryKey: ["game-detail", id],
     ...QUERY_CONFIG,
+    enabled: !!id, // Solo habilitar la consulta si el ID es válido
     queryFn: () =>
       axios
         .get(`${BASE_URL}${endpoints.games.getId(id)}`, {
-          timeout: 5000,
+          timeout: 10000, // Aumentado a 10 segundos timeout
         })
         .then((response) => {
           console.log("response", response.data);
@@ -70,7 +71,7 @@ export const useGamesByCategoryId = (id: string) => {
         .get(
           `${BASE_URL}${endpoints.categories.getGamesByCategoryId(id)}`,
           {
-            timeout: 5000,
+            timeout: 10000, // Aumentado a 10 segundos timeout
           }
         )
         .then((response) => {

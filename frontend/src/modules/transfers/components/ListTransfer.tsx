@@ -85,7 +85,7 @@ const UseListTransfer: React.FC = memo(() => {
   if (error) return errorMessage;
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="mx-auto px-4 py-8">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">

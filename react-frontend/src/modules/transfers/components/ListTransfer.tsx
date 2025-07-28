@@ -83,14 +83,14 @@ const UseListTransfer: React.FC = memo(() => {
   if (error) return errorMessage;
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+    <main className="max-w-6xl mx-auto px-4 py-8">
+      <header className="flex flex-col items-center justify-center md:flex-row md:justify-between md:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-white mb-2 flex items-center justify-center md:justify-start gap-3">
             {transferIcon}
             Mis Transferencias
           </h1>
-          <p className="text-gray-400">
+          <p className="text-gray-400 text-center">
             Gestiona y revisa el historial de tus transferencias
           </p>
         </div>

@@ -22,11 +22,11 @@ body {
   line-height: 1.6;
 }
 
-#root {
+/* #root {
   min-height: 100vh;
-  /* display: flex;
-  flex-direction: column; */
-}
+  display: flex;
+  flex-direction: column;
+} */
 
 #root main {
   flex-grow: 1;

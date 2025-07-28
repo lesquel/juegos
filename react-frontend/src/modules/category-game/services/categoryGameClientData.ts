@@ -53,6 +53,7 @@ export const useCategoryGameDetail = (id: string) => {
   return useQuery({
     queryKey: ["category-games", id],
     ...CATEGORY_QUERY_CONFIG,
+    enabled: !!id, // Solo habilitar la consulta si el ID es válido
     queryFn: () =>
       axios
         .get(

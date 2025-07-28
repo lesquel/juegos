@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 const TestLazyRouteImport = createFileRoute('/test')()
 const GamesLazyRouteImport = createFileRoute('/games')()
 const CategoryGamesLazyRouteImport = createFileRoute('/category-games')()
+const GamesIndexLazyRouteImport = createFileRoute('/games/')()
 const UserMeLazyRouteImport = createFileRoute('/user/me')()
 const TransfersNewLazyRouteImport = createFileRoute('/transfers/new')()
 const TransfersIdLazyRouteImport = createFileRoute('/transfers/$id')()
@@ -91,6 +92,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+const GamesIndexLazyRoute = GamesIndexLazyRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GamesLazyRoute,
+} as any).lazy(() => import('./routes/games/index.lazy').then((d) => d.Route))
 const UserMeLazyRoute = UserMeLazyRouteImport.update({
   id: '/user/me',
   path: '/user/me',
@@ -266,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/transfers/$id': typeof TransfersIdLazyRoute
   '/transfers/new': typeof TransfersNewLazyRoute
   '/user/me': typeof UserMeLazyRoute
+  '/games/': typeof GamesIndexLazyRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
   '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
@@ -286,7 +293,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/category-games': typeof CategoryGamesLazyRouteWithChildren
-  '/games': typeof GamesLazyRouteWithChildren
   '/test': typeof TestLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
@@ -295,6 +301,7 @@ export interface FileRoutesByTo {
   '/transfers/$id': typeof TransfersIdLazyRoute
   '/transfers/new': typeof TransfersNewLazyRoute
   '/user/me': typeof UserMeLazyRoute
+  '/games': typeof GamesIndexLazyRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
   '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
@@ -325,6 +332,7 @@ export interface FileRoutesById {
   '/transfers/$id': typeof TransfersIdLazyRoute
   '/transfers/new': typeof TransfersNewLazyRoute
   '/user/me': typeof UserMeLazyRoute
+  '/games/': typeof GamesIndexLazyRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
   '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
@@ -356,6 +364,7 @@ export interface FileRouteTypes {
     | '/transfers/$id'
     | '/transfers/new'
     | '/user/me'
+    | '/games/'
     | '/games/$id/matches'
     | '/play/marketplace/dados-react'
     | '/play/marketplace/do-not-make'
@@ -376,7 +385,6 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/category-games'
-    | '/games'
     | '/test'
     | '/auth/login'
     | '/auth/register'
@@ -385,6 +393,7 @@ export interface FileRouteTypes {
     | '/transfers/$id'
     | '/transfers/new'
     | '/user/me'
+    | '/games'
     | '/games/$id/matches'
     | '/play/marketplace/dados-react'
     | '/play/marketplace/do-not-make'
@@ -414,6 +423,7 @@ export interface FileRouteTypes {
     | '/transfers/$id'
     | '/transfers/new'
     | '/user/me'
+    | '/games/'
     | '/games/$id/matches'
     | '/play/marketplace/dados-react'
     | '/play/marketplace/do-not-make'
@@ -492,6 +502,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/games/': {
+      id: '/games/'
+      path: '/'
+      fullPath: '/games/'
+      preLoaderRoute: typeof GamesIndexLazyRouteImport
+      parentRoute: typeof GamesLazyRoute
     }
     '/user/me': {
       id: '/user/me'
@@ -687,10 +704,12 @@ const GamesIdLazyRouteWithChildren = GamesIdLazyRoute._addFileChildren(
 
 interface GamesLazyRouteChildren {
   GamesIdLazyRoute: typeof GamesIdLazyRouteWithChildren
+  GamesIndexLazyRoute: typeof GamesIndexLazyRoute
 }
 
 const GamesLazyRouteChildren: GamesLazyRouteChildren = {
   GamesIdLazyRoute: GamesIdLazyRouteWithChildren,
+  GamesIndexLazyRoute: GamesIndexLazyRoute,
 }
 
 const GamesLazyRouteWithChildren = GamesLazyRoute._addFileChildren(
