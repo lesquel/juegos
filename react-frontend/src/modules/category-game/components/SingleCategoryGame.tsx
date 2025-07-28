@@ -34,7 +34,7 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
           </h2>
           <p className="text-red-300 mb-6">{error.message}</p>
           <Link
-            to="/categories"
+            to="/category-games"
             className="inline-block bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg hover:from-teal-600 hover:to-cyan-500 transition duration-300"
           >
             Volver a categorías

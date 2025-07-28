@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from "react";
 import { Link } from "@tanstack/react-router";
 import { LoadingComponent } from "@components/LoadingComponent";
-import { TransferDataClient } from "../services/transferDataClient";
+import { useTransfers } from "../services/transferDataClient";
 import { CardTransfer } from "./CardTransfer";
 import { Landmark, Plus } from "lucide-react";
 
@@ -14,7 +14,7 @@ export const ListTransfer: React.FC = memo(() => {
 ListTransfer.displayName = "ListTransfer";
 
 const UseListTransfer: React.FC = memo(() => {
-  const { data, isLoading, error } = TransferDataClient.getTransfers();
+  const { data, isLoading, error } = useTransfers();
 
   // Memoizar mensaje de error
   const errorMessage = useMemo(() => {
