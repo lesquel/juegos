@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import type { UserMe } from "@modules/user/models/user.model";
 import { UserAdapter } from "@modules/user/adapters/user.adapter";
-import { CookiesSection } from "../utils/cookiesSection";
 import { useAuthStore } from "../store/auth.store";
 import { authRoutesConfig } from "../config/auth.routes.config";
 import { ErrorResponseAdapter } from "@adapters/errorResponse.adapter";
@@ -28,7 +27,7 @@ const AXIOS_CONFIG = {
 const baseUrl = environment.API_URL;
 
 export const useLoginMutation = () => {
-  const setUser = useAuthStore.getState().setUser;
+  const { setUser } = useAuthStore();
   return useMutation({
     ...MUTATION_CONFIG,
     mutationFn: async (data: LoginModel) => {
@@ -47,7 +46,7 @@ export const useLoginMutation = () => {
       }
     },
     onSuccess: (data) => {
-      CookiesSection.set(data);
+      // El store ahora maneja automáticamente las cookies
       setUser(data);
       if (window.history.length > 1) {
         window.history.back();
@@ -89,9 +88,10 @@ export const useRegisterMutation = () => {
 };
 
 export const logoutUser = () => {
-  if (useAuthStore.getState().isLogged()) {
-    CookiesSection.clear();
-    useAuthStore.getState().clearUser();
+  const { isLogged, clearUser } = useAuthStore.getState();
+  if (isLogged()) {
+    // El store ahora maneja automáticamente las cookies
+    clearUser();
     if (window.history.length > 1) {
       window.history.back();
     } else {
@@ -101,7 +101,7 @@ export const logoutUser = () => {
 };
 
 export class AuthClientData {
-  static login = useLoginMutation;
-  static register = useRegisterMutation;
-  static logout = logoutUser;
+  static readonly login = useLoginMutation;
+  static readonly register = useRegisterMutation;
+  static readonly logout = logoutUser;
 }

@@ -1,21 +1,13 @@
-import React, { memo, useEffect, useMemo } from "react";
-import { useStore } from "zustand";
-import { CookiesSection } from "../utils/cookiesSection";
+import React, { memo, useEffect } from "react";
 import { useAuthStore } from "../store/auth.store";
 
 export const SaveAuthProvider: React.FC = memo(() => {
-  const setUser = useStore(useAuthStore, (state) => state.setUser);
-
-  // Memoizar el usuario de las cookies para evitar accesos repetidos
-  const userFromCookies = useMemo(() => {
-    return CookiesSection.get();
-  }, []);
+  const { syncWithCookies } = useAuthStore();
 
   useEffect(() => {
-    if (userFromCookies) {
-      setUser(userFromCookies);
-    }
-  }, [userFromCookies, setUser]);
+    // Sincronizar con cookies al inicializar la aplicación
+    syncWithCookies();
+  }, [syncWithCookies]);
 
   return null;
 });
