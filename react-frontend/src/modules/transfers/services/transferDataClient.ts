@@ -33,7 +33,7 @@ const TRANSFER_AXIOS_CONFIG = {
 };
 
 export class TransferDataClient {
-  private static readonly BASE_URL = environment.BASE_URL;
+  private static readonly BASE_URL = environment.API_URL;
   private static readonly user = useAuthStore.getState().user;
   static getTransfers() {
     return useQuery({

@@ -10,6 +10,9 @@ import { routeTree } from './routeTree.gen'
 // Import styles
 import './styles/global.css'
 
+// Import and validate environment
+import './config/validation'
+
 // Create a new router instance
 const router = createRouter({ routeTree })
 

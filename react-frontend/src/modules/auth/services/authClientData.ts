@@ -26,7 +26,7 @@ const AXIOS_CONFIG = {
 };
 
 export class AuthClientData {
-  private static readonly baseUrl = environment.BASE_URL;
+  private static readonly baseUrl = environment.API_URL;
   static login() {
     const setUser = useAuthStore.getState().setUser;
     return useMutation({

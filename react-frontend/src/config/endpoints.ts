@@ -1,10 +1,24 @@
+import { environment } from './environment'
+
 export const endpoints = {
+  // App info
   appInfo: {
-    get: "/app-info",
+    get: `${environment.API_URL}/app-info`,
   },
+  
+  // Auth endpoints
+  auth: {
+    login: `${environment.API_URL}/auth/login`,
+    register: `${environment.API_URL}/auth/register`,
+    logout: `${environment.API_URL}/auth/logout`,
+    me: `${environment.API_URL}/auth/me`,
+  },
+  
+  // User endpoints
   user: {
-    get: "/users",
-    getId: (id: string) => `/users/${id}`,
+    get: `${environment.API_URL}/users`,
+    getId: (id: string) => `${environment.API_URL}/users/${id}`,
+    me: `${environment.API_URL}/users/me`,
   },
   transferPayment: {
     get: (userId: string) => `/users/${userId}/transfers/`,

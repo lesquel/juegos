@@ -24,7 +24,7 @@ const USER_AXIOS_CONFIG = {
 };
 
 export class UserClientData {
-  private static readonly baseUrl = environment.BASE_URL;
+  private static readonly baseUrl = environment.API_URL;
   static getmMe() {
     const user = useAuthStore.getState().user;
     return useQuery({

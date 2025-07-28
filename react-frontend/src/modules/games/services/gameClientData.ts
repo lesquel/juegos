@@ -18,7 +18,7 @@ const QUERY_CONFIG = {
 };
 
 export class GameClientData {
-  private static readonly BASE_URL = environment.BASE_URL;
+  private static readonly BASE_URL = environment.API_URL;
 
   public static getGames(paguination: PaginationGames) {
     return useQuery({

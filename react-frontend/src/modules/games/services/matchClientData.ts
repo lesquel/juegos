@@ -38,7 +38,7 @@ const MATCH_AXIOS_CONFIG = {
 };
 
 export class MatchClientData {
-  private static readonly BASE_URL = environment.BASE_URL;
+  private static readonly BASE_URL = environment.API_URL;
 
   public static getMatchesByGameId(gameId: string, paguination: PaginationMatch) {
     return useQuery({

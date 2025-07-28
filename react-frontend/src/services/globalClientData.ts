@@ -6,7 +6,7 @@ import axios from "axios";
 
 export class GlobalClientData {
   private static readonly baseUrl =
-    environment.BASE_URL + endpoints.appInfo.get;
+    environment.API_URL + endpoints.appInfo.get;
   public static getGlobalInfo() {
     return axios
       .get<GlobalInfo>(GlobalClientData.baseUrl)

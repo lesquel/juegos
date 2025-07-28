@@ -25,7 +25,7 @@ const CATEGORY_AXIOS_CONFIG = {
 };
 
 export class CategoryGameClientData {
-  private static readonly BASE_URL = environment.BASE_URL;
+  private static readonly BASE_URL = environment.API_URL;
 
   public static getCategoryGames(paguination: PaginationCategory) {
     console.log("paguination", paguination);

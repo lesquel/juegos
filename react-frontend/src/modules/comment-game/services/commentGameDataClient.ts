@@ -9,7 +9,7 @@ import { endpoints } from "@config/endpoints";
 import { useHasMountedComment } from "../store/hasMountedComment";
 
 export class CommentGameDataClient {
-  private static readonly BASE_URL = environment.BASE_URL;
+  private static readonly BASE_URL = environment.API_URL;
 
   static getCommentGames(gameId: string) {
     const hasMounted = useHasMountedComment().hasMounted;
