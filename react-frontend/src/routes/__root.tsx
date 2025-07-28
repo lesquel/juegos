@@ -3,6 +3,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { Navbar } from '@components/Navbar'
 import { SaveAuthProvider } from '@modules/auth/providers/SaveAuthProvider'
 import { AuthDebugger } from '@modules/auth/components/AuthDebugger'
+import "../styles/global.css"
 
 function NotFound() {
   return (
@@ -55,7 +56,7 @@ export const Route = createRootRoute({
   component: () => (
     <>
       <SaveAuthProvider />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-800">
         <Navbar />
         <main>
           <Outlet />
