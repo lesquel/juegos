@@ -1,6 +1,5 @@
 import React, { memo, useMemo } from "react";
 import { Link } from "@tanstack/react-router";
-import { categoryGameRoutesConfig } from "../../config/category-game.routes.config";
 import type { CategoryGame } from "../../models/category-game.model";
 import { Tag } from "lucide-react";
 
@@ -13,10 +12,6 @@ export const TagCategoryGame: React.FC<TagCategoryGameProps> = memo(
     const { category_id, category_name } = category;
 
     // Memoizar URL de navegación
-    const categoryUrl = useMemo(
-      () => `${categoryGameRoutesConfig.base}/${category_id}`,
-      [category_id]
-    );
 
     // Memoizar icono de categoría
     const categoryIcon = useMemo(() => <Tag className="h-4 w-4" />, []);
