@@ -24,10 +24,14 @@ body {
 
 #root {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
 }
 
+#root main {
+  flex-grow: 1;
+  min-height: 100%;
+}
 /* button {
   cursor: pointer;
   transition: all 0.2s ease-in-out;

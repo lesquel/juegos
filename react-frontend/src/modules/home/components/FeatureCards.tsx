@@ -10,7 +10,7 @@ interface FeatureProps {
 
 const Feature: React.FC<FeatureProps> = memo(({ icon, title, description }) => {
   return (
-    <article className="transform transition-all duration-300 hover:scale-105 h-full rounded-2xl bg-gray-800 bg-opacity-50 p-6 text-center hover:bg-gray-700">
+    <article className="transform transition-all duration-300 hover:scale-105 h-full rounded-2xl bg-gray-800 bg-opacity-50 p-6 text-center hover:bg-gray-700 flex flex-col gap-2">
       <div className="flex justify-center items-center">
         <div className="w-13 h-13 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 flex items-center justify-center shadow-lg">
           {icon}
@@ -61,7 +61,7 @@ const FeatureCards: React.FC = memo(() => {
   );
 
   return (
-    <section className="w-[90%] grid grid-cols-1 md:grid-cols-3 gap-6">
+    <section className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
                 {features.map((feature, _index) => (
         <Feature
           key={feature.title}

@@ -98,7 +98,7 @@ export const Navbar = memo(() => {
       <header
         id="header"
         data-astro-persist="navbar-header"
-        className="fixed top-0 left-0 w-full z-50 bg-gray-900/50 backdrop-blur-lg border-b border-gray-800 transition-all duration-300 ease-in-out"
+        className="sticky top-0 left-0 w-full z-50 bg-gray-900/50 backdrop-blur-lg border-b border-gray-800 transition-all duration-300 ease-in-out"
       >
         <nav className="flex h-16 items-center justify-between w-full px-6">
           <div className="flex items-center">
@@ -111,7 +111,7 @@ export const Navbar = memo(() => {
             </Link>
           </div>
 
-          <div className="flex">
+          <div className="flex md:gap-4">
             {/* Desktop Menu */}
             <div className="hidden items-center gap-8 md:flex">
               <div className="hidden md:flex">

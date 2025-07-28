@@ -3,7 +3,7 @@ import React, { memo } from "react";
 const WelcomeSection: React.FC = memo(() => {
   return (
     <section
-      className="text-center mx-auto"
+      className="text-center mx-auto "
       aria-labelledby="welcome-heading"
     >
       <h2
