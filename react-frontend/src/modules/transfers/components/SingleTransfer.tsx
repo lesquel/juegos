@@ -9,9 +9,7 @@ interface SingleTransferProps {
 }
 
 export const SingleTransfer: React.FC<SingleTransferProps> = memo(({ id }) => {
-  return (
-      <UseSingleTransfer id={id} />
-  );
+  return <UseSingleTransfer id={id} />;
 });
 
 SingleTransfer.displayName = "SingleTransfer";
