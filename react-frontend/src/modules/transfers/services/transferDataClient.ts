@@ -134,33 +134,4 @@ export const useInfoAccounts = () => {
   });
 };
 
-// Keep class for backward compatibility if needed
-export class TransferDataClient {
-  private static readonly BASE_URL = environment.API_URL;
-  private static readonly user = useAuthStore.getState().user;
 
-  // Note: These static methods are deprecated - use the hook exports above
-  static getTransfers() {
-    console.warn('TransferDataClient.getTransfers is deprecated. Use useTransfers hook instead.');
-    // Return a placeholder for backward compatibility
-    return { data: null, isLoading: false, error: null };
-  }
-
-  static uploadTransfer() {
-    console.warn('TransferDataClient.uploadTransfer is deprecated. Use useUploadTransfer hook instead.');
-    // Return a placeholder for backward compatibility
-    return { mutate: () => {}, isLoading: false, error: null };
-  }
-
-  static getTransferDetail(_id: string) {
-    console.warn('TransferDataClient.getTransferDetail is deprecated. Use useTransferDetail hook instead.');
-    // Return a placeholder for backward compatibility
-    return { data: null, isLoading: false, error: null };
-  }
-
-  static getInfoAccounts() {
-    console.warn('TransferDataClient.getInfoAccounts is deprecated. Use useInfoAccounts hook instead.');
-    // Return a placeholder for backward compatibility
-    return { data: null, isLoading: false, error: null };
-  }
-}

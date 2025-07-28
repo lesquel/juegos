@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from "react";
 import { Link } from "@tanstack/react-router";
 import { LoadingComponent } from "@components/LoadingComponent";
-import { TransferDataClient } from "../services/transferDataClient";
+import { useTransferDetail } from "../services/transferDataClient";
 import { ArrowRight, Clock, Image, Info, Landmark } from "lucide-react";
 
 interface SingleTransferProps {
@@ -17,7 +17,7 @@ export const SingleTransfer: React.FC<SingleTransferProps> = memo(({ id }) => {
 SingleTransfer.displayName = "SingleTransfer";
 
 const UseSingleTransfer: React.FC<{ id: string }> = memo(({ id }) => {
-  const { data, isLoading, error } = TransferDataClient.getTransferDetail(id);
+  const { data, isLoading, error } = useTransferDetail(id);
 
   // Memoizar mensaje de error
   const errorMessage = useMemo(() => {

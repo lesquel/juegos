@@ -1,10 +1,10 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
-import { TransferDataClient } from "../services/transferDataClient";
 import type { TransferInputModel } from "../models/transfer.model";
 import { DollarSign, Landmark, Loader, Upload } from "lucide-react";
 import { Account } from "./Account";
+import { useInfoAccounts, useUploadTransfer } from "../services/transferDataClient";
 
 // Memoizar schema para evitar recreaciones
 const transferSchema = z.object({
@@ -25,9 +25,8 @@ export const TransferForm: React.FC = memo(() => (
 TransferForm.displayName = "TransferForm";
 
 const InternalTransferForm: React.FC = memo(() => {
-  const { mutate, error, isPending } = TransferDataClient.uploadTransfer();
-  const { data: infoAccounts, isLoading: accountsLoading } =
-    TransferDataClient.getInfoAccounts();
+  const { mutate, error, isPending } = useUploadTransfer();
+  const { data: infoAccounts, isLoading: accountsLoading } = useInfoAccounts();
 
   // Memoizar valores por defecto
   const defaultValues = useMemo(
