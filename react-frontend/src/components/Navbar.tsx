@@ -102,13 +102,13 @@ export const Navbar = memo(() => {
       >
         <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="text-2xl gap-2.5 font-bold text-white hover:text-purple-400 transition-colors duration-300 flex items-center"
             >
               <GamepadIcon className="w-6 h-6" />
               GameForGood
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Menu */}
@@ -116,8 +116,8 @@ export const Navbar = memo(() => {
           <div className="hidden md:flex items-center space-x-8">
             <VirtualCurrency />
 
-            <a
-              href="/"
+            <Link
+              to="/"
               className={`relative transition-all duration-300 ${
                 isActivePage("/")
                   ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
@@ -128,9 +128,9 @@ export const Navbar = memo(() => {
               {isActivePage("/") && (
                 <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
               )}
-            </a>
-            <a
-              href={gamesRoutesConfig.base}
+            </Link>
+            <Link
+              to={gamesRoutesConfig.base}
               className={`relative transition-all duration-300 ${
                 isActivePage(gamesRoutesConfig.base)
                   ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
@@ -141,9 +141,9 @@ export const Navbar = memo(() => {
               {isActivePage(gamesRoutesConfig.base) && (
                 <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
               )}
-            </a>
-            <a
-              href={categoryGameRoutesConfig.base}
+            </Link>
+            <Link
+              to={categoryGameRoutesConfig.base}
               className={`relative transition-all duration-300 ${
                 isActivePage(categoryGameRoutesConfig.base)
                   ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
@@ -154,7 +154,7 @@ export const Navbar = memo(() => {
               {isActivePage(categoryGameRoutesConfig.base) && (
                 <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
               )}
-            </a>
+            </Link>
             <NavbarAuthLoginRegister />
           </div>
 
@@ -191,8 +191,8 @@ export const Navbar = memo(() => {
         } md:hidden`}
       >
         <div className="p-8 flex flex-col space-y-6">
-          <a
-            href="/"
+          <Link
+            to="/"
             className={`relative text-lg transition-all duration-300 ${
               isActivePage("/")
                 ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
@@ -203,9 +203,9 @@ export const Navbar = memo(() => {
             {isActivePage("/") && (
               <span className="absolute -bottom-1 left-0 w-12 h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
             )}
-          </a>
-          <a
-            href={gamesRoutesConfig.base}
+          </Link>
+          <Link
+            to={gamesRoutesConfig.base}
             className={`relative text-lg transition-all duration-300 ${
               isActivePage(gamesRoutesConfig.base)
                 ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
@@ -216,9 +216,9 @@ export const Navbar = memo(() => {
             {isActivePage(gamesRoutesConfig.base) && (
               <span className="absolute -bottom-1 left-0 w-12 h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
             )}
-          </a>
-          <a
-            href={categoryGameRoutesConfig.base}
+          </Link>
+          <Link
+            to={categoryGameRoutesConfig.base}
             className={`relative text-lg transition-all duration-300 ${
               isActivePage(categoryGameRoutesConfig.base)
                 ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
@@ -229,7 +229,7 @@ export const Navbar = memo(() => {
             {isActivePage(categoryGameRoutesConfig.base) && (
               <span className="absolute -bottom-1 left-0 w-12 h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
             )}
-          </a>
+          </Link>
           <div className=" flex justify-between items-start pt-6 border-t border-gray-700">
             <NavbarAuthLoginRegister />
             <VirtualCurrency />

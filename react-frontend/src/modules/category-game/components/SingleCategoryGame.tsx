@@ -82,12 +82,12 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
             <ArrowRight className="h-4 w-4 text-gray-400" />
           </li>
           <li>
-            <a
-              href="/category-games"
+            <Link
+              to="/category-games"
               className="text-gray-400 hover:text-white transition-colors"
             >
               Categorías
-            </a>
+            </Link>
           </li>
           <li>
             <ArrowRight className="h-4 w-4 text-gray-400" />

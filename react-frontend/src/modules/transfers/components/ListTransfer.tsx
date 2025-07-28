@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import { LoadingComponent } from "@components/LoadingComponent";
 import { TransferDataClient } from "../services/transferDataClient";
 import { CardTransfer } from "./CardTransfer";
@@ -38,14 +39,14 @@ const UseListTransfer: React.FC = memo(() => {
   // Memoizar botón de nueva transferencia
   const newTransferButton = useMemo(
     () => (
-      <a
-        href="/transfers/new"
+      <Link
+        to="/transfers/new"
         className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out transform hover:scale-105"
         aria-label="Crear nueva transferencia"
       >
         <Plus className="h-5 w-5 text-teal-400" />
         Nueva Transferencia
-      </a>
+      </Link>
     ),
     []
   );

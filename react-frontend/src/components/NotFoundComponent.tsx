@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { Link } from "@tanstack/react-router";
 
 export const NotFoundComponent = memo(() => {
   return (
@@ -11,12 +12,12 @@ export const NotFoundComponent = memo(() => {
         <p className="text-gray-400 max-w-md">
           Lo sentimos, no pudimos encontrar la página que estás buscando.
         </p>
-        <a
-          href="/"
+        <Link
+          to="/"
           className="inline-block bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform duration-300"
         >
           Volver al inicio
-        </a>
+        </Link>
       </div>
     </div>
   );
