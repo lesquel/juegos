@@ -1,4 +1,5 @@
 import { useEffect, useState, memo, useCallback } from "react";
+import { Link } from "@tanstack/react-router";
 import { gamesRoutesConfig } from "@modules/games/config/games.routes.config";
 import { categoryGameRoutesConfig } from "@modules/category-game/config/category-game.routes.config";
 import { NavbarAuthLoginRegister } from "@modules/auth/components/NavbarAuthLoginRegister";
