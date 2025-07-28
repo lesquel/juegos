@@ -13,11 +13,7 @@ interface SingleGameProps {
 }
 
 export const SingleGame = memo(({ id }: SingleGameProps) => {
-  return (
-    <QueryProvider>
-      <UseSingleGame id={id} />
-    </QueryProvider>
-  );
+  return <UseSingleGame id={id} />;
 });
 
 SingleGame.displayName = "SingleGame";

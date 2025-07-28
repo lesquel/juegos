@@ -35,6 +35,7 @@ export class GameClientData {
             }
           )
           .then((response) => {
+            console.log("response", response.data);
             return GameAdapter.adaptList(response.data);
           }),
     });

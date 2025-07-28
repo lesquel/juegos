@@ -1,4 +1,3 @@
-import { QueryProvider } from "@providers/QueryProvider";
 import { CategoryGameClientData } from "../services/categoryGameClientData";
 import { CardCategoryGame } from "./CardCategoryGame";
 import type { PaginationCategory } from "../models/pagination-category";
@@ -21,9 +20,7 @@ const DEFAULT_PAGINATION: PaginationCategory = {
 
 export const ListCategoryGame = memo(() => {
   return (
-    <QueryProvider>
       <UseListCategoryGame />
-    </QueryProvider>
   );
 });
 
