@@ -25,78 +25,83 @@ const AXIOS_CONFIG = {
   },
 };
 
-export class AuthClientData {
-  private static readonly baseUrl = environment.API_URL;
-  static login() {
-    const setUser = useAuthStore.getState().setUser;
-    return useMutation({
-      ...MUTATION_CONFIG,
-      mutationFn: async (data: LoginModel) => {
-        try {
-          const response = await axios.post(
-            `${AuthClientData.baseUrl}${endpoints.authentication.login}`,
-            data,
-            AXIOS_CONFIG
-          );
-          console.log(response.data);
-          return UserAdapter.adaptMe(response.data);
-        } catch (error: any) {
-          throw ErrorResponseAdapter.adaptErrorResponseErrorsArray(
-            ErrorResponseAdapter.adaptErrorResponse(error)
-          );
-        }
-      },
-      onSuccess: (data) => {
-        CookiesSection.set(data);
-        setUser(data);
-        if (window.history.length > 1) {
-          window.history.back();
-        } else {
-          window.location.href = "/";
-        }
-      },
-      onError: (error: ErrorResponseErrorsArray) => {
-        console.error("onError:", error);
-      },
-    });
-  }
+const baseUrl = environment.API_URL;
 
-  static register() {
-    return useMutation({
-      ...MUTATION_CONFIG,
-      mutationFn: async (data: RegiterInpustModel) => {
-        try {
-          const response = await axios.post<UserMe>(
-            `${AuthClientData.baseUrl}${endpoints.authentication.register}`,
-            data,
-            AXIOS_CONFIG
-          );
-          return response.data;
-        } catch (error: any) {
-          throw ErrorResponseAdapter.adaptErrorResponseErrorsArray(
-            ErrorResponseAdapter.adaptErrorResponse(error)
-          );
-        }
-      },
-      onSuccess: (data) => {
-        window.location.href = authRoutesConfig.children.login.url;
-        return data;
-      },
-      onError: (error: ErrorResponseErrorsArray) => {
-        console.log(error);
-      },
-    });
-  }
-
-  static logout() {
-    if (useAuthStore.getState().isLogged()) {
-      CookiesSection.clear();
-      useAuthStore.getState().clearUser();
+export const useLoginMutation = () => {
+  const setUser = useAuthStore.getState().setUser;
+  return useMutation({
+    ...MUTATION_CONFIG,
+    mutationFn: async (data: LoginModel) => {
+      try {
+        const response = await axios.post(
+          `${baseUrl}${endpoints.authentication.login}`,
+          data,
+          AXIOS_CONFIG
+        );
+        console.log(response.data);
+        return UserAdapter.adaptMe(response.data);
+      } catch (error: any) {
+        throw ErrorResponseAdapter.adaptErrorResponseErrorsArray(
+          ErrorResponseAdapter.adaptErrorResponse(error)
+        );
+      }
+    },
+    onSuccess: (data) => {
+      CookiesSection.set(data);
+      setUser(data);
       if (window.history.length > 1) {
         window.history.back();
       } else {
         window.location.href = "/";
       }
+    },
+    onError: (error: ErrorResponseErrorsArray) => {
+      console.error("onError:", error);
+    },
+  });
+};
+
+export const useRegisterMutation = () => {
+  return useMutation({
+    ...MUTATION_CONFIG,
+    mutationFn: async (data: RegiterInpustModel) => {
+      try {
+        const response = await axios.post<UserMe>(
+          `${baseUrl}${endpoints.authentication.register}`,
+          data,
+          AXIOS_CONFIG
+        );
+        return response.data;
+      } catch (error: any) {
+        throw ErrorResponseAdapter.adaptErrorResponseErrorsArray(
+          ErrorResponseAdapter.adaptErrorResponse(error)
+        );
+      }
+    },
+    onSuccess: (data) => {
+      window.location.href = authRoutesConfig.children.login.url;
+      return data;
+    },
+    onError: (error: ErrorResponseErrorsArray) => {
+      console.log(error);
+    },
+  });
+};
+
+export const logoutUser = () => {
+  if (useAuthStore.getState().isLogged()) {
+    CookiesSection.clear();
+    useAuthStore.getState().clearUser();
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = "/";
     }
   }
+};
+
+export class AuthClientData {
+  static login = useLoginMutation;
+  static register = useRegisterMutation;
+  static logout = logoutUser;
 }

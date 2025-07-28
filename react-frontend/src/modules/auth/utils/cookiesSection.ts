@@ -23,6 +23,10 @@ export class CookiesSection {
     }
   }
 
+  static remove() {
+    Cookies.remove(CookiesSection.cookieName);
+  }
+
   static clear() {
     Cookies.remove(CookiesSection.cookieName);
   }

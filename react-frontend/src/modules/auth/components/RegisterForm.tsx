@@ -2,7 +2,7 @@ import React, { memo, useMemo, useCallback, useEffect } from "react";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { AuthClientData } from "../services/authClientData";
-import { MiddlewareAstroProtectUser } from "../middleware/middlewareAstroProtectUser";
+import { useAuth } from "../middleware/authMiddleware";
 import { authRoutesConfig } from "../config/auth.routes.config";
 import { FormInput } from "@modules/auth/components/FormInputAuth";
 import { LockIcon, Mail, User } from "lucide-react";
@@ -14,10 +14,15 @@ interface RegisterFormValues {
 }
 
 export const RegisterForm: React.FC = memo(() => {
+  const { isAuthenticated } = useAuth();
+  
   useEffect(() => {
-    // Solo ejecutar en el cliente después del montaje
-    MiddlewareAstroProtectUser.isNotLogged();
-  }, []);
+    // Si el usuario ya está autenticado, no debería estar aquí
+    // TanStack Router manejará la redirección automáticamente
+    if (typeof window !== 'undefined' && isAuthenticated()) {
+      console.log('Usuario ya autenticado, será redirigido');
+    }
+  }, [isAuthenticated]);
 
   return (
       <UseRegisterForm />
