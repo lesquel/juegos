@@ -12,23 +12,6 @@ export const TagCategoryGame: React.FC<TagCategoryGameProps> = memo(
   ({ category }) => {
     const { category_id, category_name } = category;
 
-    // Memoizar icono de categoríategory }) => {
-    const { category_id, category_name } = category;
-
-    // Memoizar icono de categoría useMemo } from "react";
-import { Link } from "@tanstack/react-router";
-import { categoryGameRoutesConfig } from "../../config/category-game.routes.config";
-import type { CategoryGame } from "../../models/category-game.model";
-import { Tag } from "lucide-react";
-
-interface TagCategoryGameProps {
-  category: CategoryGame;
-}
-
-export const TagCategoryGame: React.FC<TagCategoryGameProps> = memo(
-  ({ category }) => {
-    const { category_id, category_name } = category;
-
     // Memoizar URL de navegación
     const categoryUrl = useMemo(
       () => `${categoryGameRoutesConfig.base}/${category_id}`,
