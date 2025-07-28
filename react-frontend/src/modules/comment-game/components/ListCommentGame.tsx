@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from "react";
 import type { CommentGame } from "../models/comment-game.model";
-import { CommentGameDataClient } from "../services/commentGameDataClient";
+import { useCommentGames } from "../services/commentGameDataClient";
 import { CardCommentGame } from "./CardCommentGame";
 import { LoadingComponent } from "@components/LoadingComponent";
 import { MessageCircleCode, MessageCircleMore } from "lucide-react";
@@ -11,9 +11,7 @@ interface ListCommentGameProps {
 
 export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
   ({ gameId }) => {
-    const { data, isLoading, error } = CommentGameDataClient.getCommentGames(
-      gameId
-    );
+    const { data, isLoading, error } = useCommentGames(gameId);
 
     // Memoizar mensaje de error
     const errorMessage = useMemo(() => {
@@ -34,7 +32,6 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
         <section className="text-center py-12">
           <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
             <MessageCircleMore className="h-10 w-10 text-gray-500" />
-
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">
             Sé el primero en comentar

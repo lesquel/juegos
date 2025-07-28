@@ -2,7 +2,7 @@ import React, { memo, useMemo, useCallback, useState } from "react";
 import { z } from "zod";
 import { useForm } from "@tanstack/react-form";
 import { RatingInput } from "./RatingInput";
-import { CommentGameDataClient } from "../services/commentGameDataClient";
+import { CommentGameDataClient, useCreateCommentGame } from "../services/commentGameDataClient";
 import { Loader, MessageCircleCode, Send } from "lucide-react";
 
 interface NewCommentFormProps {
@@ -20,10 +20,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
     const onSuccess = () => {
       setIsLoading(false);
     };
-    const { mutate, error } = CommentGameDataClient.createCommentGame(
-      gameId,
-      onSuccess
-    );
+    const { mutate, error } = useCreateCommentGame(gameId, onSuccess);
 
     // Memoizar validadores
     const validators = useMemo(

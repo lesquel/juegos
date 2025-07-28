@@ -1,6 +1,6 @@
 import React, { memo, useState, useCallback, useMemo } from "react";
 import { Star, StarOff } from "lucide-react";
-import { CommentGameDataClient } from "../services/commentGameDataClient";
+import { CommentGameDataClient, useEditCommentGame } from "../services/commentGameDataClient";
 
 interface InlineEditCommentProps {
   commentId: string;
@@ -20,7 +20,7 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(({
   const [editComment, setEditComment] = useState(initialComment);
   const [editRating, setEditRating] = useState(initialRating);
 
-  const { mutate, isPending, error } = CommentGameDataClient.editCommentGame(commentId);
+  const { mutate, isPending, error } = useEditCommentGame(commentId); 
 
   // Memoizar handler de guardado
   const handleSave = useCallback(() => {
