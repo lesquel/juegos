@@ -183,7 +183,7 @@ const PlayMarketplaceLostOnStrangerTerraLazyRoute =
   } as any).lazy(() =>
     import('./routes/play/marketplace/lost-on-stranger-terra.lazy').then(
       (d) => d.Route,
-    ),./routes/play/marketplace/maquinaTragamonedas
+    ),
   )
 const PlayMarketplaceLostCityLazyRoute =
   PlayMarketplaceLostCityLazyRouteImport.update({
