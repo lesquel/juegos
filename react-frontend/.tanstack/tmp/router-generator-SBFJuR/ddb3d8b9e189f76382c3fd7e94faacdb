@@ -30,20 +30,18 @@ const CategoryGamesIdLazyRouteImport = createFileRoute('/category-games/$id')()
 const AuthRegisterLazyRouteImport = createFileRoute('/auth/register')()
 const AuthLoginLazyRouteImport = createFileRoute('/auth/login')()
 const PlayOnlineTictacLazyRouteImport = createFileRoute('/play/online/tictac')()
+const PlayOnlinePongLazyRouteImport = createFileRoute('/play/online/pong')()
 const PlayOnlineConnect4LazyRouteImport = createFileRoute(
   '/play/online/connect4',
 )()
 const PlayMarketplaceSquad13LazyRouteImport = createFileRoute(
   '/play/marketplace/squad13',
 )()
-const PlayMarketplaceRuletacasinoLazyRouteImport = createFileRoute(
-  '/play/marketplace/ruletacasino',
+const PlayMarketplaceRuletaCasinoLazyRouteImport = createFileRoute(
+  '/play/marketplace/ruleta-casino',
 )()
 const PlayMarketplacePuzleLazyRouteImport = createFileRoute(
   '/play/marketplace/puzle',
-)()
-const PlayMarketplacePongLazyRouteImport = createFileRoute(
-  '/play/marketplace/pong',
 )()
 const PlayMarketplaceHipodromocasinoLazyRouteImport = createFileRoute(
   '/play/marketplace/hipodromocasino',
@@ -135,6 +133,13 @@ const PlayOnlineTictacLazyRoute = PlayOnlineTictacLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/play.online.tictac.lazy').then((d) => d.Route),
 )
+const PlayOnlinePongLazyRoute = PlayOnlinePongLazyRouteImport.update({
+  id: '/play/online/pong',
+  path: '/play/online/pong',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/play.online.pong.lazy').then((d) => d.Route),
+)
 const PlayOnlineConnect4LazyRoute = PlayOnlineConnect4LazyRouteImport.update({
   id: '/play/online/connect4',
   path: '/play/online/connect4',
@@ -150,13 +155,13 @@ const PlayMarketplaceSquad13LazyRoute =
   } as any).lazy(() =>
     import('./routes/play/marketplace/squad13.lazy').then((d) => d.Route),
   )
-const PlayMarketplaceRuletacasinoLazyRoute =
-  PlayMarketplaceRuletacasinoLazyRouteImport.update({
-    id: '/play/marketplace/ruletacasino',
-    path: '/play/marketplace/ruletacasino',
+const PlayMarketplaceRuletaCasinoLazyRoute =
+  PlayMarketplaceRuletaCasinoLazyRouteImport.update({
+    id: '/play/marketplace/ruleta-casino',
+    path: '/play/marketplace/ruleta-casino',
     getParentRoute: () => rootRouteImport,
   } as any).lazy(() =>
-    import('./routes/play/marketplace/ruletacasino.lazy').then((d) => d.Route),
+    import('./routes/play/marketplace/ruleta-casino.lazy').then((d) => d.Route),
   )
 const PlayMarketplacePuzleLazyRoute =
   PlayMarketplacePuzleLazyRouteImport.update({
@@ -166,13 +171,6 @@ const PlayMarketplacePuzleLazyRoute =
   } as any).lazy(() =>
     import('./routes/play/marketplace/puzle.lazy').then((d) => d.Route),
   )
-const PlayMarketplacePongLazyRoute = PlayMarketplacePongLazyRouteImport.update({
-  id: '/play/marketplace/pong',
-  path: '/play/marketplace/pong',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() =>
-  import('./routes/play/marketplace/pong.lazy').then((d) => d.Route),
-)
 const PlayMarketplaceHipodromocasinoLazyRoute =
   PlayMarketplaceHipodromocasinoLazyRouteImport.update({
     id: '/play/marketplace/hipodromocasino',
@@ -261,11 +259,11 @@ export interface FileRoutesByFullPath {
   '/play/marketplace/doNotMake': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
   '/play/marketplace/hipodromocasino': typeof PlayMarketplaceHipodromocasinoLazyRoute
-  '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
-  '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
+  '/play/marketplace/ruleta-casino': typeof PlayMarketplaceRuletaCasinoLazyRoute
   '/play/marketplace/squad13': typeof PlayMarketplaceSquad13LazyRoute
   '/play/online/connect4': typeof PlayOnlineConnect4LazyRoute
+  '/play/online/pong': typeof PlayOnlinePongLazyRoute
   '/play/online/tictac': typeof PlayOnlineTictacLazyRoute
 }
 export interface FileRoutesByTo {
@@ -290,11 +288,11 @@ export interface FileRoutesByTo {
   '/play/marketplace/doNotMake': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
   '/play/marketplace/hipodromocasino': typeof PlayMarketplaceHipodromocasinoLazyRoute
-  '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
-  '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
+  '/play/marketplace/ruleta-casino': typeof PlayMarketplaceRuletaCasinoLazyRoute
   '/play/marketplace/squad13': typeof PlayMarketplaceSquad13LazyRoute
   '/play/online/connect4': typeof PlayOnlineConnect4LazyRoute
+  '/play/online/pong': typeof PlayOnlinePongLazyRoute
   '/play/online/tictac': typeof PlayOnlineTictacLazyRoute
 }
 export interface FileRoutesById {
@@ -321,11 +319,11 @@ export interface FileRoutesById {
   '/play/marketplace/doNotMake': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
   '/play/marketplace/hipodromocasino': typeof PlayMarketplaceHipodromocasinoLazyRoute
-  '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
-  '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
+  '/play/marketplace/ruleta-casino': typeof PlayMarketplaceRuletaCasinoLazyRoute
   '/play/marketplace/squad13': typeof PlayMarketplaceSquad13LazyRoute
   '/play/online/connect4': typeof PlayOnlineConnect4LazyRoute
+  '/play/online/pong': typeof PlayOnlinePongLazyRoute
   '/play/online/tictac': typeof PlayOnlineTictacLazyRoute
 }
 export interface FileRouteTypes {
@@ -353,11 +351,11 @@ export interface FileRouteTypes {
     | '/play/marketplace/doNotMake'
     | '/play/marketplace/golfrog'
     | '/play/marketplace/hipodromocasino'
-    | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
-    | '/play/marketplace/ruletacasino'
+    | '/play/marketplace/ruleta-casino'
     | '/play/marketplace/squad13'
     | '/play/online/connect4'
+    | '/play/online/pong'
     | '/play/online/tictac'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -382,11 +380,11 @@ export interface FileRouteTypes {
     | '/play/marketplace/doNotMake'
     | '/play/marketplace/golfrog'
     | '/play/marketplace/hipodromocasino'
-    | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
-    | '/play/marketplace/ruletacasino'
+    | '/play/marketplace/ruleta-casino'
     | '/play/marketplace/squad13'
     | '/play/online/connect4'
+    | '/play/online/pong'
     | '/play/online/tictac'
   id:
     | '__root__'
@@ -412,11 +410,11 @@ export interface FileRouteTypes {
     | '/play/marketplace/doNotMake'
     | '/play/marketplace/golfrog'
     | '/play/marketplace/hipodromocasino'
-    | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
-    | '/play/marketplace/ruletacasino'
+    | '/play/marketplace/ruleta-casino'
     | '/play/marketplace/squad13'
     | '/play/online/connect4'
+    | '/play/online/pong'
     | '/play/online/tictac'
   fileRoutesById: FileRoutesById
 }
@@ -437,11 +435,11 @@ export interface RootRouteChildren {
   PlayMarketplaceDoNotMakeLazyRoute: typeof PlayMarketplaceDoNotMakeLazyRoute
   PlayMarketplaceGolfrogLazyRoute: typeof PlayMarketplaceGolfrogLazyRoute
   PlayMarketplaceHipodromocasinoLazyRoute: typeof PlayMarketplaceHipodromocasinoLazyRoute
-  PlayMarketplacePongLazyRoute: typeof PlayMarketplacePongLazyRoute
   PlayMarketplacePuzleLazyRoute: typeof PlayMarketplacePuzleLazyRoute
-  PlayMarketplaceRuletacasinoLazyRoute: typeof PlayMarketplaceRuletacasinoLazyRoute
+  PlayMarketplaceRuletaCasinoLazyRoute: typeof PlayMarketplaceRuletaCasinoLazyRoute
   PlayMarketplaceSquad13LazyRoute: typeof PlayMarketplaceSquad13LazyRoute
   PlayOnlineConnect4LazyRoute: typeof PlayOnlineConnect4LazyRoute
+  PlayOnlinePongLazyRoute: typeof PlayOnlinePongLazyRoute
   PlayOnlineTictacLazyRoute: typeof PlayOnlineTictacLazyRoute
 }
 
@@ -545,6 +543,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayOnlineTictacLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/online/pong': {
+      id: '/play/online/pong'
+      path: '/play/online/pong'
+      fullPath: '/play/online/pong'
+      preLoaderRoute: typeof PlayOnlinePongLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/play/online/connect4': {
       id: '/play/online/connect4'
       path: '/play/online/connect4'
@@ -559,11 +564,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayMarketplaceSquad13LazyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/play/marketplace/ruletacasino': {
-      id: '/play/marketplace/ruletacasino'
-      path: '/play/marketplace/ruletacasino'
-      fullPath: '/play/marketplace/ruletacasino'
-      preLoaderRoute: typeof PlayMarketplaceRuletacasinoLazyRouteImport
+    '/play/marketplace/ruleta-casino': {
+      id: '/play/marketplace/ruleta-casino'
+      path: '/play/marketplace/ruleta-casino'
+      fullPath: '/play/marketplace/ruleta-casino'
+      preLoaderRoute: typeof PlayMarketplaceRuletaCasinoLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/play/marketplace/puzle': {
@@ -571,13 +576,6 @@ declare module '@tanstack/react-router' {
       path: '/play/marketplace/puzle'
       fullPath: '/play/marketplace/puzle'
       preLoaderRoute: typeof PlayMarketplacePuzleLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play/marketplace/pong': {
-      id: '/play/marketplace/pong'
-      path: '/play/marketplace/pong'
-      fullPath: '/play/marketplace/pong'
-      preLoaderRoute: typeof PlayMarketplacePongLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/play/marketplace/hipodromocasino': {
@@ -716,11 +714,11 @@ const rootRouteChildren: RootRouteChildren = {
   PlayMarketplaceGolfrogLazyRoute: PlayMarketplaceGolfrogLazyRoute,
   PlayMarketplaceHipodromocasinoLazyRoute:
     PlayMarketplaceHipodromocasinoLazyRoute,
-  PlayMarketplacePongLazyRoute: PlayMarketplacePongLazyRoute,
   PlayMarketplacePuzleLazyRoute: PlayMarketplacePuzleLazyRoute,
-  PlayMarketplaceRuletacasinoLazyRoute: PlayMarketplaceRuletacasinoLazyRoute,
+  PlayMarketplaceRuletaCasinoLazyRoute: PlayMarketplaceRuletaCasinoLazyRoute,
   PlayMarketplaceSquad13LazyRoute: PlayMarketplaceSquad13LazyRoute,
   PlayOnlineConnect4LazyRoute: PlayOnlineConnect4LazyRoute,
+  PlayOnlinePongLazyRoute: PlayOnlinePongLazyRoute,
   PlayOnlineTictacLazyRoute: PlayOnlineTictacLazyRoute,
 }
 export const routeTree = rootRouteImport

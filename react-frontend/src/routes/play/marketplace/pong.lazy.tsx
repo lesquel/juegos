@@ -1,7 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
 import PongGame from '@all-games/online/pong/PongGame'
 
-export const Route = createLazyFileRoute('/play/online/pong')({
+export const Route = createLazyFileRoute('/play/marketplace/pong')({
   component: PongGamePage,
 })
 
