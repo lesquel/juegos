@@ -1,4 +1,5 @@
 import React, { memo, useState, useCallback, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import { QueryProvider } from "@providers/QueryProvider";
 import { LoadingComponent } from "@components/LoadingComponent";
 import { PaginationComponent } from "@components/PaginationComponent";
@@ -83,12 +84,12 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
             Error al cargar el juego
           </h2>
           <p className="text-red-300 mb-6">{errorText}</p>
-          <a
-            href="/games"
+          <Link
+            to="/games"
             className="inline-block bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg hover:from-teal-600 hover:to-cyan-500 transition duration-300"
           >
             Volver a juegos
-          </a>
+          </Link>
         </div>
       </div>
     );

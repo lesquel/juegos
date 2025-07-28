@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import type { Game } from "@modules/games/models/game.model";
 import { Play } from "lucide-react";
 
@@ -8,9 +9,6 @@ interface CardTagsGameProps {
 
 export const CardTagsGame: React.FC<CardTagsGameProps> = memo(({ game }) => {
   const { game_id, game_name, game_img, game_description } = game;
-
-  // Memoizar URL de navegación
-  const gameUrl = useMemo(() => `/games/${game_id}`, [game_id]);
 
   // Memoizar icono de juego
   const playIcon = useMemo(() => <Play className="h-5 w-5" />, []);
@@ -25,8 +23,9 @@ export const CardTagsGame: React.FC<CardTagsGameProps> = memo(({ game }) => {
 
   return (
     <article className="group">
-      <a
-        href={gameUrl}
+      <Link
+        to="/games/$id"
+        params={{ id: game_id }}
         className="relative block rounded-2xl overflow-hidden transform transition-all duration-300 ease-in-out hover:scale-105 shadow-lg hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-purple-500 focus:ring-opacity-50"
         aria-label={`Jugar ${game_name}`}
       >
@@ -70,7 +69,7 @@ export const CardTagsGame: React.FC<CardTagsGameProps> = memo(({ game }) => {
             </button>
           </footer>
         </div>
-      </a>
+      </Link>
     </article>
   );
 });
