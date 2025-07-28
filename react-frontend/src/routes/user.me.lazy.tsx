@@ -9,12 +9,18 @@ export const Route = createLazyFileRoute('/user/me')({
 
 function UserMePage() {
   // Proteger esta ruta para usuarios autenticados únicamente
-  useAuthProtection(true)
+  const { isChecking } = useAuthProtection(true);
+
+  if (isChecking) {
+    return <div className="min-h-screen flex items-center justify-center">
+      <div>Loading...</div>
+    </div>;
+  }
 
   return (
     <>
       <MeComponent />
       <ListTransfer />
     </>
-  )
+  );
 }

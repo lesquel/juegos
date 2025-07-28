@@ -10,7 +10,7 @@ export interface CategoryGameDetail {
   updated_at: Date;
 }
 
-export interface CategoryGame extends Omit<CategoryGameDetail, ""> {}
+export interface CategoryGame extends CategoryGameDetail {}
 
 export interface CategoryGameList {
   info: Info;

@@ -24,66 +24,67 @@ const CATEGORY_AXIOS_CONFIG = {
   },
 };
 
+const BASE_URL = environment.API_URL;
+
+export const useCategoryGames = (paguination: PaginationCategory) => {
+  console.log("paguination", paguination);
+  console.log(
+    "url",
+    `${BASE_URL}${endpoints.categories.get}`
+  );
+  return useQuery({
+    queryKey: ["category-games", paguination],
+    ...CATEGORY_QUERY_CONFIG,
+    queryFn: () =>
+      axios
+        .get(
+          BASE_URL +
+            endpoints.categories.get +
+            PaginationCategoryAdapter.adaptPaguinationCategory(paguination),
+          CATEGORY_AXIOS_CONFIG
+        )
+        .then((response) => {
+          return CategoryGameGameAdapter.adaptList(response.data);
+        }),
+  });
+};
+
+export const useCategoryGameDetail = (id: string) => {
+  return useQuery({
+    queryKey: ["category-games", id],
+    ...CATEGORY_QUERY_CONFIG,
+    queryFn: () =>
+      axios
+        .get(
+          `${BASE_URL}${endpoints.categories.getId(id)}`,
+          CATEGORY_AXIOS_CONFIG
+        )
+        .then((response) => {
+          return CategoryGameGameAdapter.adaptDetail(response.data);
+        }),
+  });
+};
+
+export const useCategoriesByGameId = (id: string) => {
+  return useQuery({
+    queryKey: ["category-games", id],
+    ...CATEGORY_QUERY_CONFIG,
+    queryFn: () =>
+      axios
+        .get(
+          `${BASE_URL}${endpoints.games.getCategoriesByGameId(id)}`,
+          CATEGORY_AXIOS_CONFIG
+        )
+        .then((response) => {
+          console.log(response.data);
+          return CategoryGameGameAdapter.adaptList(response.data);
+        }),
+  });
+};
+
+// Clase para compatibilidad hacia atrás
 export class CategoryGameClientData {
-  private static readonly BASE_URL = environment.API_URL;
-
-  public static getCategoryGames(paguination: PaginationCategory) {
-    console.log("paguination", paguination);
-    console.log(
-      "url",
-      `${CategoryGameClientData.BASE_URL}${endpoints.categories.get}`
-    );
-    return useQuery({
-      queryKey: ["category-games", paguination],
-      ...CATEGORY_QUERY_CONFIG,
-      queryFn: () =>
-        axios
-          .get(
-            CategoryGameClientData.BASE_URL +
-              endpoints.categories.get +
-              PaginationCategoryAdapter.adaptPaguinationCategory(paguination),
-            CATEGORY_AXIOS_CONFIG
-          )
-          .then((response) => {
-            return CategoryGameGameAdapter.adaptList(response.data);
-          }),
-    });
-  }
-
-  public static getCategoryGameDetail(id: string) {
-    return useQuery({
-      queryKey: ["category-games", id],
-      ...CATEGORY_QUERY_CONFIG,
-      queryFn: () =>
-        axios
-          .get(
-            `${CategoryGameClientData.BASE_URL}${endpoints.categories.getId(
-              id
-            )}`,
-            CATEGORY_AXIOS_CONFIG
-          )
-          .then((response) => {
-            return CategoryGameGameAdapter.adaptDetail(response.data);
-          }),
-    });
-  }
-
-  public static getCategoriesByGameId(id: string) {
-    return useQuery({
-      queryKey: ["category-games", id],
-      ...CATEGORY_QUERY_CONFIG,
-      queryFn: () =>
-        axios
-          .get(
-            `${
-              CategoryGameClientData.BASE_URL
-            }${endpoints.games.getCategoriesByGameId(id)}`,
-            CATEGORY_AXIOS_CONFIG
-          )
-          .then((response) => {
-            console.log(response.data);
-            return CategoryGameGameAdapter.adaptList(response.data);
-          }),
-    });
-  }
+  static readonly getCategoryGames = useCategoryGames;
+  static readonly getCategoryGameDetail = useCategoryGameDetail;
+  static readonly getCategoriesByGameId = useCategoriesByGameId;
 }

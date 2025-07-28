@@ -41,9 +41,10 @@ export class AuthMiddleware {
   }
 
   /**
-   * Hook para verificar estado de autenticación en componentes
+   * Utilidad para verificar estado de autenticación en componentes
+   * No es un hook, es una función utilitaria
    */
-  static useAuthCheck() {
+  static getAuthStatus() {
     return {
       isAuthenticated: () => {
         if (typeof window === 'undefined') return false;
@@ -51,9 +52,8 @@ export class AuthMiddleware {
       },
       logout: () => {
         CookiesSection.remove();
-        throw redirect({
-          to: authRoutesConfig.children.login.url as '/auth/login',
-        });
+        // En lugar de redirect, usamos window.location para evitar problemas con hooks
+        window.location.href = authRoutesConfig.children.login.url;
       },
     };
   }
@@ -61,7 +61,21 @@ export class AuthMiddleware {
 
 /**
  * Hook personalizado para usar en componentes React
+ * Este SÍ es un hook real que puede usar useEffect
  */
 export const useAuth = () => {
-  return AuthMiddleware.useAuthCheck();
+  const isAuthenticated = () => {
+    if (typeof window === 'undefined') return false;
+    return !!CookiesSection.get();
+  };
+
+  const logout = () => {
+    CookiesSection.remove();
+    window.location.href = authRoutesConfig.children.login.url;
+  };
+
+  return {
+    isAuthenticated,
+    logout,
+  };
 };

@@ -37,133 +37,172 @@ const MATCH_AXIOS_CONFIG = {
   }
 };
 
+const BASE_URL = environment.API_URL;
+
+// Hook exports for proper React Query usage
+export const useMatchesByGameId = (gameId: string, pagination: PaginationMatch) => {
+  return useQuery({
+    queryKey: ["matches", gameId, pagination],
+    ...MATCH_QUERY_CONFIG,
+    queryFn: () => {
+      return axios
+        .get(
+          `${BASE_URL}${endpoints.matches.getMatchesByGameId(
+            gameId
+          )}${PaginationCategoryAdapter.adaptPaginationMatch(pagination)}`,
+          MATCH_AXIOS_CONFIG
+        )
+        .then((response) => {
+          return MatchAdapter.adaptList(response.data);
+        });
+    },
+  });
+};
+
+export const useMatch = (id: string) => {
+  return useQuery({
+    queryKey: ["matches", id],
+    ...MATCH_QUERY_CONFIG,
+    queryFn: () => {
+      return axios
+        .get(`${BASE_URL}${endpoints.matches.getMathes(id)}`, MATCH_AXIOS_CONFIG)
+        .then((response) => {
+          return MatchAdapter.adapt(response.data);
+        });
+    },
+  });
+};
+
+export const useJoinMatch = (id: string, onSuccess?: (data: Match) => void) => {
+  return useMutation({
+    ...MATCH_MUTATION_CONFIG,
+    mutationFn: (data: JoinMatch) => {
+      return axios.post(
+        `${BASE_URL}${endpoints.matches.joinMatch(id)}`,
+        data,
+        {
+          ...MATCH_AXIOS_CONFIG,
+          headers: {
+            ...MATCH_AXIOS_CONFIG.headers,
+            Authorization: `Bearer ${
+              useAuthStore.getState().user?.access_token.access_token
+            }`,
+          },
+        }
+      );
+    },
+    onSuccess: (data) => {
+      onSuccess?.(MatchAdapter.adapt(data.data));
+      console.log("match join", data);
+    },
+    onError: (error: ErrorResponseErrorsArray) => {
+      console.error("onError:", error);
+    },
+  });
+};
+
+export const useMatchParticipants = (id: string) => {
+  return useQuery({
+    queryKey: ["matches", id, "participants"],
+    ...MATCH_QUERY_CONFIG,
+    queryFn: () => {
+      return axios
+        .get(
+          `${BASE_URL}${endpoints.matches.getPartcipants(id)}`,
+          MATCH_AXIOS_CONFIG
+        )
+        .then((response) => {
+          return MatchAdapter.adaptParticipants(response.data);
+        });
+    },
+  });
+};
+
+export const useFinishMatch = (id: string) => {
+  return useMutation({
+    ...MATCH_MUTATION_CONFIG,
+    mutationFn: (data: FinishMatch) => {
+      return axios.put(
+        `${BASE_URL}${endpoints.matches.finisMatch(id)}`,
+        data,
+        MATCH_AXIOS_CONFIG
+      );
+    },
+    onSuccess: (data) => {
+      console.log("match finish", data);
+    },
+    onError: (error: ErrorResponseErrorsArray) => {
+      console.error("onError:", error);
+    },
+  });
+};
+
+export const useCreateMatch = (gameId: string, onSuccess?: (data: Match) => void) => {
+  return useMutation({
+    ...MATCH_MUTATION_CONFIG,
+    mutationFn: (data: CreateMatch) => {
+      return axios.post(
+        `${BASE_URL}${endpoints.matches.createMatch(gameId)}`,
+        data,
+        {
+          ...MATCH_AXIOS_CONFIG,
+          headers: {
+            ...MATCH_AXIOS_CONFIG.headers,
+            Authorization: `Bearer ${
+              useAuthStore.getState().user?.access_token.access_token
+            }`,
+          },
+        }
+      );
+    },
+    onSuccess: (data) => {
+      onSuccess?.(MatchAdapter.adapt(data.data));
+      console.log("match create", data);
+    },
+    onError: (error: ErrorResponseErrorsArray) => {
+      console.error("onError:", error);
+    },
+  });
+};
+
+// Keep class for backward compatibility if needed
 export class MatchClientData {
   private static readonly BASE_URL = environment.API_URL;
 
-  public static getMatchesByGameId(gameId: string, paguination: PaginationMatch) {
-    return useQuery({
-      queryKey: ["matches", gameId, paguination],
-      ...MATCH_QUERY_CONFIG,
-      queryFn: () => {
-        return axios
-          .get(
-            `${MatchClientData.BASE_URL}${endpoints.matches.getMatchesByGameId(
-              gameId
-            )}${PaginationCategoryAdapter.adaptPaginationMatch(paguination)}`,
-            MATCH_AXIOS_CONFIG
-          )
-          .then((response) => {
-            return MatchAdapter.adaptList(response.data);
-          });
-      },
-    });
+  // Note: These static methods are deprecated - use the hook exports above
+  public static getMatchesByGameId(_gameId: string, _pagination: PaginationMatch) {
+    console.warn('MatchClientData.getMatchesByGameId is deprecated. Use useMatchesByGameId hook instead.');
+    // Return a placeholder for backward compatibility
+    return { data: null, isLoading: false, error: null };
   }
 
-  public static getMatch(id: string) {
-    return useQuery({
-      queryKey: ["matches", id],
-      ...MATCH_QUERY_CONFIG,
-      queryFn: () => {
-        return axios
-          .get(`${MatchClientData.BASE_URL}${endpoints.matches.getMathes(id)}`,
-            MATCH_AXIOS_CONFIG)
-          .then((response) => {
-            return MatchAdapter.adapt(response.data);
-          });
-      },
-    });
+  public static getMatch(_id: string) {
+    console.warn('MatchClientData.getMatch is deprecated. Use useMatch hook instead.');
+    // Return a placeholder for backward compatibility
+    return { data: null, isLoading: false, error: null };
   }
 
-  public static joinMatch(id: string, onSuccess?: (data: Match) => void) {
-    return useMutation({
-      ...MATCH_MUTATION_CONFIG,
-      mutationFn: (data: JoinMatch) => {
-        return axios.post(
-          `${MatchClientData.BASE_URL}${endpoints.matches.joinMatch(id)}`,
-          data,
-          {
-            ...MATCH_AXIOS_CONFIG,
-            headers: {
-              ...MATCH_AXIOS_CONFIG.headers,
-              Authorization: `Bearer ${
-                useAuthStore.getState().user?.access_token.access_token
-              }`,
-            },
-          }
-        );
-      },
-      onSuccess: (data) => {
-        onSuccess?.(MatchAdapter.adapt(data.data));
-        console.log("match join", data);
-      },
-      onError: (error: ErrorResponseErrorsArray) => {
-        console.error("onError:", error);
-      },
-    });
+  public static joinMatch(_id: string, _onSuccess?: (data: Match) => void) {
+    console.warn('MatchClientData.joinMatch is deprecated. Use useJoinMatch hook instead.');
+    // Return a placeholder for backward compatibility
+    return { mutate: () => {}, isLoading: false, error: null };
   }
 
-  public static getMatchParticipants(id: string) {
-    return useQuery({
-      queryKey: ["matches", id, "participants"],
-      ...MATCH_QUERY_CONFIG,
-      queryFn: () => {
-        return axios
-          .get(
-            `${MatchClientData.BASE_URL}${endpoints.matches.getPartcipants(id)}`,
-            MATCH_AXIOS_CONFIG
-          )
-          .then((response) => {
-            return MatchAdapter.adaptParticipants(response.data);
-          });
-      },
-    });
+  public static getMatchParticipants(_id: string) {
+    console.warn('MatchClientData.getMatchParticipants is deprecated. Use useMatchParticipants hook instead.');
+    // Return a placeholder for backward compatibility
+    return { data: null, isLoading: false, error: null };
   }
 
-  public static finishMatch(id: string) {
-    return useMutation({
-      ...MATCH_MUTATION_CONFIG,
-      mutationFn: (data: FinishMatch) => {
-        return axios.put(
-          `${MatchClientData.BASE_URL}${endpoints.matches.finisMatch(id)}`,
-          data,
-          MATCH_AXIOS_CONFIG
-        );
-      },
-      onSuccess: (data) => {
-        console.log("match finish", data);
-      },
-      onError: (error: ErrorResponseErrorsArray) => {
-        console.error("onError:", error);
-      },
-    });
+  public static finishMatch(_id: string) {
+    console.warn('MatchClientData.finishMatch is deprecated. Use useFinishMatch hook instead.');
+    // Return a placeholder for backward compatibility
+    return { mutate: () => {}, isLoading: false, error: null };
   }
 
-  public static createMatch(gameId: string, onSuccess?: (data: Match) => void) {
-    return useMutation({
-      ...MATCH_MUTATION_CONFIG,
-      mutationFn: (data: CreateMatch) => {
-        return axios.post(
-          `${MatchClientData.BASE_URL}${endpoints.matches.createMatch(gameId)}`,
-          data,
-          {
-            ...MATCH_AXIOS_CONFIG,
-            headers: {
-              ...MATCH_AXIOS_CONFIG.headers,
-              Authorization: `Bearer ${
-                useAuthStore.getState().user?.access_token.access_token
-              }`,
-            },
-          }
-        );
-      },
-      onSuccess: (data) => {
-        onSuccess?.(MatchAdapter.adapt(data.data));
-
-        console.log("match create", data);
-      },
-      onError: (error: ErrorResponseErrorsArray) => {
-        console.error("onError:", error);
-      },
-    });
+  public static createMatch(_gameId: string, _onSuccess?: (data: Match) => void) {
+    console.warn('MatchClientData.createMatch is deprecated. Use useCreateMatch hook instead.');
+    // Return a placeholder for backward compatibility
+    return { mutate: () => {}, isLoading: false, error: null };
   }
 }

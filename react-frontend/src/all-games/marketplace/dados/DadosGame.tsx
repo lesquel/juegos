@@ -24,7 +24,7 @@ const DadosGame: React.FC = () => {
     if (gameState.gameMode === 'double') diceCount = 2;
     else if (gameState.gameMode === 'triple') diceCount = 3;
     
-    const initialDice = Array.from({ length: diceCount }, (_, i) => ({
+    const initialDice = Array.from({ length: diceCount }, () => ({
       value: 0,
       face: '?'
     }));
@@ -37,7 +37,7 @@ const DadosGame: React.FC = () => {
     if (gameState.gameMode === 'double') diceCount = 2;
     else if (gameState.gameMode === 'triple') diceCount = 3;
     
-    const newDice = Array.from({ length: diceCount }, (_, i) => ({
+    const newDice = Array.from({ length: diceCount }, () => ({
       value: 0,
       face: '?'
     }));

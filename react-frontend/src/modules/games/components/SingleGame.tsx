@@ -1,4 +1,3 @@
-import { QueryProvider } from "@providers/QueryProvider";
 import { GameClientData } from "../services/gameClientData";
 import { ListTagCategoryGame } from "@modules/category-game/components/Tags/ListTagCategoryGame";
 import { ListCommentGame } from "@modules/comment-game/components/ListCommentGame";

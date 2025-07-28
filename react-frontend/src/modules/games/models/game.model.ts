@@ -20,7 +20,7 @@ export interface GameDetail {
   game_capacity?: number;
 }
 
-export interface Game extends Omit<GameDetail, "categories" | "comments"> {}
+export interface Game extends Omit<GameDetail, "categories"> {}
 
 export interface GameList {
   info: Info;

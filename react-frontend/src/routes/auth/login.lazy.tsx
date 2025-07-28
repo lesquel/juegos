@@ -8,11 +8,17 @@ export const Route = createLazyFileRoute('/auth/login')({
 
 function LoginPage() {
   // Proteger esta ruta para invitados únicamente
-  useAuthProtection(false)
+  const { isChecking } = useAuthProtection(false);
+
+  if (isChecking) {
+    return <div className="min-h-screen flex items-center justify-center">
+      <div>Loading...</div>
+    </div>;
+  }
 
   return (
     <div className="bg-gray-200 min-h-screen flex items-center justify-center p-4">
       <LoginForm />
     </div>
-  )
+  );
 }
