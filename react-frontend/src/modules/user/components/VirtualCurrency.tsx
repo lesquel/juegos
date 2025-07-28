@@ -1,4 +1,4 @@
-import { UserClientData } from "../services/userClientData";
+import { useMyVirtualCurrency, UserClientData } from "../services/userClientData";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 import { memo, useMemo } from "react";
 
@@ -16,7 +16,7 @@ export const VirtualCurrency = memo(() => {
 VirtualCurrency.displayName = "VirtualCurrency";
 
 const UseVirtualCurrency = memo(() => {
-  const { data, isLoading, error } = UserClientData.getMyVirtualCurrency();
+  const { data, isLoading, error } = useMyVirtualCurrency();
 
   // Memoizar el contenido del saldo
   const currencyContent = useMemo(() => {
