@@ -26,7 +26,7 @@ export const NavbarAuthLoginRegister: React.FC = memo(() => {
     console.log('🎭 NavbarAuth rendering. isLogged:', isLogged, 'user:', !!user);
 
     return (
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 justify-between w-full">
         <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded font-mono">
           DEBUG: {isLogged ? 'LOGGED' : 'NOT LOGGED'}
         </span>

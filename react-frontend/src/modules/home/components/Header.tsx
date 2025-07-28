@@ -14,12 +14,12 @@ const Header: React.FC = memo(() => {
         {smileyIcon}
       </div>
       <div>
-        <h1 className="text-4xl font-extrabold tracking-tight">
+        <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-teal-300">
             GameForGood
           </span>
         </h1>
-        <p className="text-gray-400 text-lg">Plataforma de minijuegos benéfica</p>
+        <p className="text-base text-gray-400 md:text-lg">Plataforma de minijuegos benéfica</p>
       </div>
     </header>
   );

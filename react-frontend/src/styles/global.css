@@ -3,8 +3,6 @@
 /* Global styles for the games platform */
 *, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
@@ -30,8 +28,7 @@ body {
   flex-direction: column;
 }
 
-/* Enhanced Button styles */
-button {
+/* button {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   border: none;
@@ -52,7 +49,6 @@ button:disabled {
   opacity: 0.6;
 }
 
-/* Enhanced Form styles */
 input, textarea, select {
   outline: none;
   transition: all 0.2s ease-in-out;
@@ -78,7 +74,6 @@ input:invalid:focus {
   border-color: #ef4444;
 }
 
-/* Loading animations */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -108,7 +103,6 @@ input:invalid:focus {
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* Game canvas styles */
 canvas {
   display: block;
   margin: 0 auto;
@@ -116,7 +110,6 @@ canvas {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-/* Enhanced Game styles */
 .game-container {
   display: flex;
   flex-direction: column;
@@ -152,7 +145,6 @@ canvas {
   opacity: 1;
 }
 
-/* Card styles */
 .card {
   background: white;
   border-radius: 0.75rem;
@@ -166,7 +158,6 @@ canvas {
   transform: translateY(-2px);
 }
 
-/* Navigation styles */
 .nav-link {
   position: relative;
   transition: all 0.2s ease-in-out;
@@ -188,7 +179,6 @@ canvas {
   width: 100%;
 }
 
-/* Responsive styles */
 @media (max-width: 768px) {
   .game-frame {
     border-radius: 0;
@@ -215,11 +205,10 @@ canvas {
   }
   
   input, textarea, select {
-    font-size: 16px; /* Prevent zoom on iOS */
+    font-size: 16px;
   }
 }
 
-/* Dark mode support */
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #0f172a;
@@ -238,11 +227,10 @@ canvas {
   }
 }
 
-/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
+} */

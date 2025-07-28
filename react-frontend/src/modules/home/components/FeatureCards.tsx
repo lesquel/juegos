@@ -9,25 +9,14 @@ interface FeatureProps {
 }
 
 const Feature: React.FC<FeatureProps> = memo(({ icon, title, description }) => {
-  // Memoizar clases CSS
-  const cardClasses = useMemo(
-    () =>
-      "bg-gray-800 bg-opacity-50 rounded-2xl p-6 text-center transform transition-all duration-300 hover:scale-105 hover:bg-gray-700 w-full",
-    []
-  );
-
-  const iconContainerClasses = useMemo(
-    () =>
-      "w-16 h-16 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 flex items-center justify-center shadow-lg",
-    []
-  );
-
   return (
-    <article className={cardClasses}>
-      <div className="flex justify-center mb-4">
-        <div className={iconContainerClasses}>{icon}</div>
+    <article className="transform transition-all duration-300 hover:scale-105 h-full rounded-2xl bg-gray-800 bg-opacity-50 p-6 text-center hover:bg-gray-700">
+      <div className="flex justify-center items-center">
+        <div className="w-13 h-13 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 flex items-center justify-center shadow-lg">
+          {icon}
+        </div>
       </div>
-      <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
+      <h3 className="text-xl font-bold text-white">{title}</h3>
       <p className="text-gray-400 text-sm">{description}</p>
     </article>
   );
@@ -37,10 +26,10 @@ Feature.displayName = "Feature";
 
 const FeatureCards: React.FC = memo(() => {
   // Memoizar iconos
-  const heartIcon = useMemo(() => <Heart className="h-8 w-8 text-white" />, []);
+  const heartIcon = useMemo(() => <Heart className="h-6 w-6 text-white" />, []);
 
   const communityIcon = useMemo(
-    () => <ChartArea className="h-8 w-8 text-white" />,
+    () => <ChartArea className="h-6 w-6 text-white" />,
     []
   );
 
@@ -72,7 +61,7 @@ const FeatureCards: React.FC = memo(() => {
   );
 
   return (
-    <section className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+    <section className="w-[90%] grid grid-cols-1 md:grid-cols-3 gap-6">
                 {features.map((feature, _index) => (
         <Feature
           key={feature.title}

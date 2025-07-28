@@ -98,75 +98,88 @@ export const Navbar = memo(() => {
       <header
         id="header"
         data-astro-persist="navbar-header"
-        className="sticky top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out bg-gray-900 bg-opacity-50 backdrop-blur-lg border-b border-gray-800"
+        className="fixed top-0 left-0 w-full z-50 bg-gray-900/50 backdrop-blur-lg border-b border-gray-800 transition-all duration-300 ease-in-out"
       >
-        <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
+        <nav className="flex h-16 items-center justify-between w-full px-6">
           <div className="flex items-center">
             <Link
               to="/"
-              className="text-2xl gap-2.5 font-bold text-white hover:text-purple-400 transition-colors duration-300 flex items-center"
+              className="flex items-center gap-2 text-2xl font-bold text-white transition-colors hover:text-purple-400"
             >
-              <GamepadIcon className="w-6 h-6" />
-              GameForGood
+              <GamepadIcon className="h-6 w-6" />
+              <span>GameForGood</span>
             </Link>
           </div>
 
-          {/* Desktop Menu */}
+          <div className="flex">
+            {/* Desktop Menu */}
+            <div className="hidden items-center gap-8 md:flex">
+              <div className="hidden md:flex">
+                <VirtualCurrency />
+              </div>
+              <Link
+                to="/"
+                className={`relative transition-all duration-300 ${
+                  isActivePage("/")
+                    ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
+                    : "text-gray-300 hover:text-white"
+                }`}
+              >
+                Inicio
+                {isActivePage("/") && (
+                  <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
+                )}
+              </Link>
+              <Link
+                to={gamesRoutesConfig.base}
+                className={`relative transition-all duration-300 ${
+                  isActivePage(gamesRoutesConfig.base)
+                    ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
+                    : "text-gray-300 hover:text-white"
+                }`}
+              >
+                Juegos
+                {isActivePage(gamesRoutesConfig.base) && (
+                  <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
+                )}
+              </Link>
+              <Link
+                to={categoryGameRoutesConfig.base}
+                className={`relative transition-all duration-300 ${
+                  isActivePage(categoryGameRoutesConfig.base)
+                    ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
+                    : "text-gray-300 hover:text-white"
+                }`}
+              >
+                Categorías
+                {isActivePage(categoryGameRoutesConfig.base) && (
+                  <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
+                )}
+              </Link>
+            </div>
 
-          <div className="hidden md:flex items-center space-x-8">
-            <VirtualCurrency />
+            {/* Right side actions */}
+            <div className="flex items-center gap-4">
+              <div className="hidden md:flex">
+                <NavbarAuthLoginRegister />
+              </div>
 
-            <Link
-              to="/"
-              className={`relative transition-all duration-300 ${
-                isActivePage("/")
-                  ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
-                  : "text-gray-300 hover:text-white"
-              }`}
-            >
-              Inicio
-              {isActivePage("/") && (
-                <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
-              )}
-            </Link>
-            <Link
-              to={gamesRoutesConfig.base}
-              className={`relative transition-all duration-300 ${
-                isActivePage(gamesRoutesConfig.base)
-                  ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
-                  : "text-gray-300 hover:text-white"
-              }`}
-            >
-              Juegos
-              {isActivePage(gamesRoutesConfig.base) && (
-                <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
-              )}
-            </Link>
-            <Link
-              to={categoryGameRoutesConfig.base}
-              className={`relative transition-all duration-300 ${
-                isActivePage(categoryGameRoutesConfig.base)
-                  ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
-                  : "text-gray-300 hover:text-white"
-              }`}
-            >
-              Categorías
-              {isActivePage(categoryGameRoutesConfig.base) && (
-                <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
-              )}
-            </Link>
-            <NavbarAuthLoginRegister />
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
-            <button
-              id="mobile-menu-button"
-              onClick={toggleMobileMenu}
-              className="text-white focus:outline-none z-50 cursor-pointer"
-            >
-              {mobileMenuOpen ? <X /> : <Menu />}
-            </button>
+              {/* Mobile Menu Button */}
+              <div className="flex items-center md:hidden">
+                <button
+                  id="mobile-menu-button"
+                  onClick={toggleMobileMenu}
+                  className="text-white focus:outline-none z-50 cursor-pointer"
+                  aria-label="Toggle mobile menu"
+                >
+                  {mobileMenuOpen ? (
+                    <X className="h-6 w-6" />
+                  ) : (
+                    <Menu className="h-6 w-6" />
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </nav>
       </header>
@@ -186,11 +199,11 @@ export const Navbar = memo(() => {
       <div
         id="mobile-menu"
         data-astro-persist="mobile-menu-panel"
-        className={`fixed top-0 right-0 h-full w-4/6 max-w-sm bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-16 right-0 h-full w-4/6 max-w-sm bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
         } md:hidden`}
       >
-        <div className="p-8 flex flex-col space-y-6">
+        <div className="p-6 flex flex-col space-y-6">
           <Link
             to="/"
             className={`relative text-lg transition-all duration-300 ${
@@ -230,7 +243,7 @@ export const Navbar = memo(() => {
               <span className="absolute -bottom-1 left-0 w-12 h-1 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></span>
             )}
           </Link>
-          <div className=" flex justify-between items-start pt-6 border-t border-gray-700">
+          <div className="flex flex-col justify-between items-start pt-6 border-t border-gray-700">
             <NavbarAuthLoginRegister />
             <VirtualCurrency />
           </div>

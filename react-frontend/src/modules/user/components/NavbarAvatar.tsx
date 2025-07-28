@@ -58,10 +58,7 @@ export const NavbarAvatar = memo(() => {
             >
               Perfil
             </Link>
-            <div className="border-t border-gray-700" />
-            <div className="">
-              <ItemAuthLogout className="hover:bg-gray-700 transition-colors px-4 py-2 w-full" />
-            </div>
+            <ItemAuthLogout className="hover:bg-gray-700 transition-colors px-4 py-2 w-full" />
           </div>
         )}
       </div>
