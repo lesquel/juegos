@@ -1,6 +1,7 @@
 
 import { useState, useRef, useEffect, memo, useCallback, useMemo } from "react";
 import { User } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { userRoutesConfig } from "../config/user.routes.config";
 import { ItemAuthLogout } from "@modules/auth/components/ItemAuthLogout";
 
@@ -50,13 +51,13 @@ export const NavbarAvatar = memo(() => {
         </button>
         {open && (
           <div className="absolute right-0 mt-2 w-40 bg-gray-800 rounded shadow-lg z-50 border border-gray-700 min-w-44">
-            <a
-              href={profileUrl}
+            <Link
+              to={profileUrl}
               className="block px-4 py-2 text-white hover:bg-gray-700 transition-colors"
               onClick={closeDropdown}
             >
               Perfil
-            </a>
+            </Link>
             <div className="border-t border-gray-700" />
             <div className="">
               <ItemAuthLogout className="hover:bg-gray-700 transition-colors px-4 py-2 w-full" />
@@ -67,12 +68,12 @@ export const NavbarAvatar = memo(() => {
 
       {/* Small screens: avatar and logout stacked */}
       <div className="md:hidden flex flex-col items-start gap-5">
-        <a
-          href={profileUrl}
+        <Link
+          to={profileUrl}
           className="text-gray-300 hover:text-white flex items-center rounded transition-colors text-md"
         >
           Mi perfil
-        </a>
+        </Link>
         <div>
           <ItemAuthLogout className="text-lg text-gray-300 hover:text-white transition-colors" />
         </div>

@@ -1,6 +1,7 @@
 import React, { memo, useMemo, useCallback, useEffect } from "react";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
+import { Link } from "@tanstack/react-router";
 import { AuthClientData } from "../services/authClientData";
 import { useAuth } from "../middleware/authMiddleware";
 import { authRoutesConfig } from "../config/auth.routes.config";
@@ -159,12 +160,12 @@ const UseLoginForm: React.FC = memo(() => {
 
       <footer className="text-sm text-gray-400 mt-6 text-center">
         ¿No tienes una cuenta?{" "}
-        <a
-          href={registerUrl}
+        <Link
+          to={registerUrl}
           className="text-purple-400 hover:text-purple-300 font-semibold"
         >
           Regístrate aquí
-        </a>
+        </Link>
       </footer>
     </main>
   );

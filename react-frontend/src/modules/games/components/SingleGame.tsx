@@ -5,6 +5,7 @@ import { NewCommentForm } from "@modules/comment-game/components/NewCommentForm"
 import { PlayCircle } from "lucide-react";
 import { GameType } from "../models/game.model";
 import { memo, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import { SingleGameSkeleton } from "./SingleGameSkeleton";
 
 interface SingleGameProps {
@@ -18,7 +19,48 @@ export const SingleGame = memo(({ id }: SingleGameProps) => {
 SingleGame.displayName = "SingleGame";
 
 const UseSingleGame = memo(({ id }: SingleGameProps) => {
+  console.log('🎯 SingleGame component rendering with ID:', id);
+  
   const { data, isLoading, error } = GameClientData.getGameDetail(id);
+
+  console.log('📊 SingleGame data state:', { 
+    hasData: !!data, 
+    isLoading, 
+    hasError: !!error,
+    errorMessage: error?.message 
+  });
+
+  if (isLoading) {
+    console.log('⏳ SingleGame showing loading state');
+    return <SingleGameSkeleton />;
+  }
+
+  if (error) {
+    console.log('❌ SingleGame showing error state:', error);
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+        <div className="text-center bg-red-900 bg-opacity-50 p-8 rounded-lg border border-red-600 max-w-md">
+          <h2 className="text-2xl font-bold text-red-400 mb-4">Error loading game</h2>
+          <p className="text-red-300 mb-6">{error.message}</p>
+          <p className="text-gray-400 text-sm">Game ID: {id}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    console.log('📭 SingleGame no data available');
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+        <div className="text-center text-white">
+          <h2 className="text-2xl font-bold mb-4">No game data found</h2>
+          <p className="text-gray-400">Game ID: {id}</p>
+        </div>
+      </div>
+    );
+  }
+
+  console.log('✅ SingleGame rendering with data:', data.game_name);
 
   // Memoizar la URL del juego
   const gameUrl = useMemo(() => {
@@ -94,7 +136,7 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
   if (isLoading) return ListSkeleton;
   if (error)
     return (
-      <div className="text-center text-red-400 p-8">Error: {error.message}</div>
+      <div className="text-center text-red-400 p-8">Error: {error}</div>
     );
 
   return gameContent;

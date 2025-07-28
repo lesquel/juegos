@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import type { CategoryGame } from "../models/category-game.model";
 import { memo, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 
 interface CardCategoryGameProps {
   category: CategoryGame;
@@ -26,8 +27,8 @@ export const CardCategoryGame = memo(({ category }: CardCategoryGameProps) => {
   ), []);
 
   return (
-    <a
-      href={categoryUrl}
+    <Link
+      to={categoryUrl}
       className="relative block rounded-2xl overflow-hidden group transform transition-all duration-300 ease-in-out hover:scale-105 shadow-lg"
     >
       <div className="absolute inset-0 bg-black opacity-50 z-10 group-hover:opacity-60 transition-opacity duration-300"></div>
@@ -49,7 +50,7 @@ export const CardCategoryGame = memo(({ category }: CardCategoryGameProps) => {
           {arrowIcon}
         </div>
       </div>
-    </a>
+    </Link>
   );
 });
 

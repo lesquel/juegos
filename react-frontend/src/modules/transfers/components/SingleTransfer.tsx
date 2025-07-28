@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import { LoadingComponent } from "@components/LoadingComponent";
 import { TransferDataClient } from "../services/transferDataClient";
 import { ArrowRight, Clock, Image, Info, Landmark } from "lucide-react";

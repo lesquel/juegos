@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import { homeRoutesConfig } from "../config/home.routes.config";
 import { MiddlewareUser } from "@modules/auth/middleware/middlewareUser";
 import { LogIn, NotebookPen } from "lucide-react";
@@ -23,22 +24,22 @@ const ActionButtons: React.FC = memo(() => {
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-lg mx-auto">
-      <a
-        href={loginUrl}
+      <Link
+        to={loginUrl}
         className="w-full sm:w-auto flex-1 text-center bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
         aria-label="Ir a página de inicio de sesión"
       >
         {loginIcon}
         <span>Iniciar Sesión</span>
-      </a>
-      <a
-        href={registerUrl}
+      </Link>
+      <Link
+        to={registerUrl}
         className="w-full sm:w-auto flex-1 text-center bg-gray-700 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2"
         aria-label="Ir a página de registro"
       >
         {registerIcon}
         <span>Registrarse</span>
-      </a>
+      </Link>
     </div>
   );
 });

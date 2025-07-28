@@ -17,6 +17,8 @@
     "@tanstack/react-router": "^1.130.2",
     "@tanstack/react-router-devtools": "^1.130.2",
     "axios": "^1.11.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "js-cookie": "^3.0.5",
     "kontra": "^10.0.2",
     "lucide-react": "^0.525.0",
