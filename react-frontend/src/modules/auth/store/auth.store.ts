@@ -30,20 +30,26 @@ export const useAuthStore = create<AuthStore>()(
         const storeUser = get().user;
         const cookieUser = CookiesSection.get();
         
+        console.log('🔍 isLogged check:', { storeUser: !!storeUser, cookieUser: !!cookieUser });
+        
         // Si hay discrepancia, sincronizar
         if (storeUser && !cookieUser) {
           // El store tiene usuario pero no hay cookie - limpiar store
+          console.log('⚠️ Store has user but no cookie - clearing store');
           set({ user: null });
           return false;
         }
         
         if (!storeUser && cookieUser) {
           // Hay cookie pero no store - sincronizar
+          console.log('✅ Cookie exists but no store - syncing');
           set({ user: cookieUser });
           return true;
         }
         
-        return !!storeUser;
+        const result = !!storeUser;
+        console.log('🎯 Final isLogged result:', result);
+        return result;
       },
       syncWithCookies: () => {
         // Función para sincronizar manualmente con cookies

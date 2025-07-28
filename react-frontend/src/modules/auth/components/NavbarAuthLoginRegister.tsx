@@ -8,24 +8,38 @@ import { LogInIcon, UserPlus } from "lucide-react";
 export const NavbarAuthLoginRegister: React.FC = memo(() => {
   const [hasMounted, setHasMounted] = useState(false);
   const isLogged = useStore(useAuthStore, (state) => state.isLogged());
+  const user = useStore(useAuthStore, (state) => state.user);
 
   useEffect(() => {
     setHasMounted(true);
-  }, []);
+    console.log('🔄 NavbarAuth mounted. isLogged:', isLogged, 'user:', !!user);
+  }, [isLogged, user]);
 
   // Memoizar el contenido renderizado
   const content = useMemo(() => {
-    if (!hasMounted) return null;
+    if (!hasMounted) {
+      console.log('⏳ NavbarAuth not mounted yet');
+      return null;
+    }
 
-    return isLogged ? (
-      <>
-        <NavbarAvatar />
-        {/* <LinkMyTransfer /> */}
-      </>
-    ) : (
-      <ItemAuthLoginRegister />
+    console.log('🎭 NavbarAuth rendering. isLogged:', isLogged, 'user:', !!user);
+
+    return (
+      <div className="flex items-center gap-4">
+        <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded font-mono">
+          DEBUG: {isLogged ? 'LOGGED' : 'NOT LOGGED'}
+        </span>
+        {isLogged ? (
+          <>
+            <NavbarAvatar />
+            {/* <LinkMyTransfer /> */}
+          </>
+        ) : (
+          <ItemAuthLoginRegister />
+        )}
+      </div>
     );
-  }, [hasMounted, isLogged]);
+  }, [hasMounted, isLogged, user]);
 
   return content;
 });
