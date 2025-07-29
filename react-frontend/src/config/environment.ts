@@ -1,10 +1,10 @@
 // Configuración con valores por defecto seguros - FORZADOS para evitar conflictos
-const API_URL_DEV = "http://localhost:8000"; // Forzado - Corregido al puerto del backend
+const API_URL_DEV = "http://localhost:8080"; // Forzado - Corregido al puerto del backend
 const API_URL_PROD = "https://juegosbackend-910998875911.northamerica-south1.run.app"; // Forzado
 const ENVIRONMENT = import.meta.env.VITE_ENVIRONMENT || "development";
 
 // WebSocket URLs - detecta automáticamente según el entorno
-const WS_URL_DEV = import.meta.env.VITE_WS || "ws://localhost:8000";
+const WS_URL_DEV = import.meta.env.VITE_WS || "ws://localhost:8080";
 const WS_URL_PROD = import.meta.env.VITE_WS_PROD || import.meta.env.VITE_WS_PRO || "wss://juegosbackend-910998875911.northamerica-south1.run.app";
 
 // Selección automática de WebSocket URL según entorno
