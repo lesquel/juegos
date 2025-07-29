@@ -1,145 +1,142 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { TicTacGameLogic } from './TicTacGameLogic';
-import { TicTacBoard } from './components/TicTacBoard';
-import { TicTacHeader } from './components/TicTacHeader';
-import { TicTacModal } from './components/TicTacModal';
-import type { GameState } from './types/TicTacTypes';
-import './styles/TicTacStyles.css';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { TicTacGameLogic } from "./TicTacGameLogic";
+import { TicTacBoard } from "./components/TicTacBoard";
+import { TicTacHeader } from "./components/TicTacHeader";
+import { TicTacModal } from "./components/TicTacModal";
+import type { GameState } from "./types/TicTacTypes";
+import "./styles/TicTacStyles.css";
+import { environment } from "@/config/environment";
 
 interface TicTacGameProps {
   onBack?: () => void;
+  isOnlineMode?: boolean;
+  roomCode?: string;
+  authToken?: string;
+  wsUrl?: string;
 }
 
-export const TicTacGame: React.FC<TicTacGameProps> = ({ onBack }) => {
+export const TicTacGame: React.FC<TicTacGameProps> = ({
+  onBack,
+  isOnlineMode = false,
+  roomCode,
+  authToken = "",
+  wsUrl = environment.WS_URL + "/ws/games",
+}) => {
   const [gameState, setGameState] = useState<GameState>({
     board: Array(9).fill(null),
-    currentPlayer: 'X',
-    gameStatus: 'waiting',
+    currentPlayer: "X",
+    gameStatus: isOnlineMode ? "waiting" : "playing",
     winner: null,
-    isConnected: false,
-    playersInfo: '👥 0/2 jugadores',
+    winningPositions: [],
     playerSymbol: null,
-    opponentSymbol: null,
-    isMyTurn: false,
-    userInfo: null,
-    matchId: null,
-    moveCount: 0,
-    winningPositions: []
+    isConnected: false,
+    roomCode: roomCode || null,
+    playerName: "Jugador",
+    opponentName: null,
+    isPlayerTurn: !isOnlineMode,
+    lastMove: null,
+    gameId: null,
+    spectators: 0,
   });
 
   const [showModal, setShowModal] = useState(false);
-  const [gameLogic] = useState(() => new TicTacGameLogic());
+  const gameLogicRef = useRef<TicTacGameLogic | null>(null);
 
-  const handleStateChange = useCallback((newState: GameState) => {
-    console.log("🔄 Estado del juego actualizado:", newState);
-    setGameState(newState);
-    
-    if (newState.gameStatus === 'finished') {
-      setShowModal(true);
+  // Initialize game logic
+  useEffect(() => {
+    const config = {
+      isOnline: isOnlineMode,
+      wsUrl,
+      authToken,
+      playerName: "Jugador1", // Default player name
+      roomCode,
+    };
+
+    console.log("config", config);
+    gameLogicRef.current = new TicTacGameLogic(config, setGameState);
+
+    if (isOnlineMode) {
+      gameLogicRef.current.connect().catch(console.error);
+    } else {
+      gameLogicRef.current.startOfflineGame();
+    }
+
+    return () => {
+      if (gameLogicRef.current) {
+        gameLogicRef.current.disconnect();
+      }
+    };
+  }, [isOnlineMode, wsUrl, authToken, roomCode]);
+
+  const handleCellClick = useCallback((index: number) => {
+    if (gameLogicRef.current) {
+      gameLogicRef.current.makeMove(index);
     }
   }, []);
 
-  useEffect(() => {
-    // Initialize WebSocket connection
-    gameLogic.initialize(handleStateChange);
-
-    return () => {
-      gameLogic.disconnect();
-    };
-  }, [gameLogic, handleStateChange]);
-
-  const handleCellClick = useCallback((index: number) => {
-    console.log(`🎯 Click en celda ${index}:`, {
-      isMyTurn: gameState.isMyTurn,
-      gameStatus: gameState.gameStatus,
-      cellValue: gameState.board[index],
-      playerSymbol: gameState.playerSymbol
-    });
-    
-    gameLogic.makeMove(index);
-  }, [gameLogic, gameState.isMyTurn, gameState.gameStatus, gameState.board, gameState.playerSymbol]);
-
   const handlePlayAgain = useCallback(() => {
-    console.log("🔄 Jugando de nuevo...");
+    if (gameLogicRef.current) {
+      gameLogicRef.current.resetGame();
+    }
     setShowModal(false);
-    gameLogic.playAgain();
-  }, [gameLogic]);
+  }, []);
 
   const handleBack = useCallback(() => {
-    console.log("🏠 Volviendo atrás...");
-    setShowModal(false);
-    gameLogic.disconnect();
-    if (onBack) {
-      onBack();
-    } else {
-      window.history.back();
+    if (gameLogicRef.current) {
+      gameLogicRef.current.disconnect();
     }
-  }, [gameLogic, onBack]);
+    onBack?.();
+  }, [onBack]);
+
+  // Show modal when game is finished
+  useEffect(() => {
+    if (gameState.gameStatus === "finished") {
+      setShowModal(true);
+    }
+  }, [gameState.gameStatus]);
 
   const getStatusMessage = useCallback(() => {
-    if (gameState.gameStatus === 'waiting') {
-      return gameState.matchId 
-        ? '⏳ Esperando que se una otro jugador...'
-        : '🎮 Modo práctica - ¡Comienza a jugar!';
+    if (gameLogicRef.current) {
+      return gameLogicRef.current.getPlayerTurnMessage();
     }
-    
-    if (gameState.gameStatus === 'playing') {
-      if (gameState.matchId) {
-        // Modo online
-        if (gameState.isMyTurn) {
-          return `🎯 Tu turno (${gameState.playerSymbol})`;
-        } else {
-          return `⏳ Turno del oponente`;
-        }
-      } else {
-        // Modo práctica
-        return `🎮 Turno del jugador ${gameState.currentPlayer}`;
-      }
-    }
-    
-    if (gameState.gameStatus === 'finished') {
-      if (gameState.winner === 'draw') {
-        return '🤝 ¡Es un empate!';
-      }
-      
-      if (gameState.matchId) {
-        // Modo online
-        const didIWin = gameState.winner === gameState.playerSymbol;
-        return didIWin ? '🏆 ¡Ganaste!' : '😞 Perdiste';
-      } else {
-        // Modo práctica
-        return `🏆 ¡Ganó el jugador ${gameState.winner}!`;
-      }
-    }
-    
-    return '';
+    return "";
   }, [gameState]);
+
+  const isGameDisabled = useCallback(() => {
+    if (!isOnlineMode) {
+      return gameState.gameStatus !== "playing";
+    }
+    return gameState.gameStatus !== "playing" || !gameState.isPlayerTurn;
+  }, [isOnlineMode, gameState.gameStatus, gameState.isPlayerTurn]);
+
 
   return (
     <div className="tic-tac-game">
-      <TicTacHeader 
-        gameState={gameState}
+      <TicTacHeader
+        currentPlayer={gameState.currentPlayer}
         statusMessage={getStatusMessage()}
+        gameStatus={gameState.gameStatus}
+        playerSymbol={gameState.playerSymbol}
+        opponentName={gameState.opponentName}
+        isOnlineMode={isOnlineMode}
+        roomCode={gameState.roomCode}
         onBack={handleBack}
       />
-      
-      <TicTacBoard 
+
+      <TicTacBoard
         board={gameState.board}
         onCellClick={handleCellClick}
-        disabled={
-          gameState.gameStatus !== 'playing' || 
-          (gameState.matchId ? !gameState.isMyTurn : false)
-        }
+        disabled={isGameDisabled()}
         winningPositions={gameState.winningPositions}
       />
 
-      {showModal && (
+      {showModal && gameState.winner !== null && (
         <TicTacModal
           winner={gameState.winner}
           playerSymbol={gameState.playerSymbol}
-          isOnlineMode={!!gameState.matchId}
           onPlayAgain={handlePlayAgain}
           onBack={handleBack}
+          isOnlineMode={isOnlineMode}
         />
       )}
     </div>

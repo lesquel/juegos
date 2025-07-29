@@ -2,7 +2,6 @@ import { createRootRoute, Outlet, Link } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { Navbar } from '@components/Navbar'
 import { SaveAuthProvider } from '@modules/auth/providers/SaveAuthProvider'
-import { AuthDebugger } from '@modules/auth/components/AuthDebugger'
 import "../styles/global.css"
 
 function NotFound() {

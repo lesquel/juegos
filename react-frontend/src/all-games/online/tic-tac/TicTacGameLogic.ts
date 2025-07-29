@@ -4,7 +4,6 @@ import type {
   Player, 
   WebSocketMessage, 
   GameConfig,
-  CellValue 
 } from './types/TicTacTypes';
 
 export class TicTacGameLogic {
@@ -47,20 +46,48 @@ export class TicTacGameLogic {
   public async connect(): Promise<void> {
     try {
       const token = this.config.authToken;
-      const wsUrl = `${this.config.wsUrl}?token=${encodeURIComponent(token)}`;
+      const wsUrl = `${this.config.wsUrl}/${this.config.roomCode}?token=${encodeURIComponent(token)}&player_name=${this.config.playerName}`;
       
+      console.log('🔌 Connecting to WebSocket:', wsUrl);
       this.ws = new WebSocket(wsUrl);
       
       this.ws.onopen = () => {
-        console.log('WebSocket connected');
+        console.log('🔌 WebSocket connected for Tic-Tac-Toe');
         this.updateState({ isConnected: true });
         this.reconnectAttempts = 0;
         
-        // Join or create room
+        // Join the game using match_id if available
         if (this.config.roomCode) {
-          this.joinRoom(this.config.roomCode);
-        } else {
-          this.createRoom();
+          this.joinGame(this.config.roomCode);
+        }
+      };
+
+      this.ws.onmessage = (event) => {
+        try {
+          const message: WebSocketMessage = JSON.parse(event.data);
+          this.handleMessage(message);
+        } catch (error) {
+          console.error('Error parsing WebSocket message:', error);
+        }
+      };
+
+      this.ws.onclose = (event) => {
+        console.log('WebSocket closed:', event.code, event.reason);
+        this.updateState({ isConnected: false });
+        
+        if (!event.wasClean && this.reconnectAttempts < this.maxReconnectAttempts) {
+          this.scheduleReconnect();
+        }
+      };
+
+      this.ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        this.updateState({ isConnected: false });
+        
+        // If connection fails, switch to offline mode
+        if (this.reconnectAttempts === 0) {
+          console.log('⚠️ WebSocket connection failed, switching to offline mode');
+          this.switchToOfflineMode();
         }
       };
 
@@ -107,67 +134,163 @@ export class TicTacGameLogic {
   }
 
   private handleMessage(message: WebSocketMessage): void {
-    console.log('Received message:', message);
+    console.log('📨 Received message:', message);
 
     switch (message.type) {
-      case 'room_created':
-        this.updateState({
-          roomCode: message.data.roomCode,
-          gameId: message.data.gameId,
-          playerSymbol: 'X',
-          gameStatus: 'waiting'
-        });
-        break;
-
-      case 'room_joined':
-        this.updateState({
-          roomCode: message.data.roomCode,
-          gameId: message.data.gameId,
-          playerSymbol: message.data.playerSymbol,
-          gameStatus: message.data.gameStatus,
-          opponentName: message.data.opponentName
-        });
+      case 'game_state':
+        this.handleGameState(message.data);
         break;
 
       case 'player_joined':
-        this.updateState({
-          opponentName: message.data.playerName,
-          gameStatus: 'playing',
-          isPlayerTurn: this.gameState.playerSymbol === 'X'
-        });
-        break;
-
-      case 'player_left':
-        this.updateState({
-          opponentName: null,
-          gameStatus: 'waiting',
-          isPlayerTurn: false
-        });
+        this.handlePlayerJoined(message.data);
         break;
 
       case 'move_made':
-        this.handleOpponentMove(message.data);
+        this.handleMoveMade(message.data);
         break;
 
+      case 'game_finished_automatically':
       case 'game_over':
         this.handleGameOver(message.data);
         break;
 
+      case 'game_restarted':
       case 'game_reset':
         this.resetGame();
         break;
 
       case 'error':
-        console.error('Server error:', message.data.message);
-        break;
-
-      case 'spectator_count':
-        this.updateState({ spectators: message.data.count });
+        console.error('💥 Server error:', message.data.message);
         break;
 
       default:
-        console.warn('Unknown message type:', message.type);
+        console.warn('⚠️ Unknown message type:', message.type);
     }
+  }
+
+  private handleGameState(data: any): void {
+    console.log('🎮 Game state received:', data);
+    
+    if (data.game_state) {
+      // New format with game_state object
+      const gameState = data.game_state;
+      const playersMapping = data.players;
+      
+      // Map player symbols from backend (R/Y) to frontend (X/O)
+      if (playersMapping?.[this.config.playerName]) {
+        const backendSymbol = playersMapping[this.config.playerName];
+        this.updateState({
+          playerSymbol: backendSymbol === 'R' ? 'X' : 'O'
+        });
+      }
+      
+      // Update board if available
+      if (gameState.board) {
+        this.updateBoardFromServer(gameState.board);
+      }
+      
+      // Update game status
+      if (gameState.game_over) {
+        this.updateState({
+          gameStatus: 'finished',
+          winner: gameState.winner === 'R' ? 'X' : gameState.winner === 'Y' ? 'O' : gameState.winner
+        });
+      } else {
+        this.updateState({
+          gameStatus: 'playing',
+          currentPlayer: gameState.current_player === 'R' ? 'X' : 'O',
+          isPlayerTurn: this.isMyTurn(gameState.current_player)
+        });
+      }
+    } else {
+      // Original format
+      this.updateState({
+        playerSymbol: data.player_symbol === 'R' ? 'X' : 'O',
+        gameStatus: data.state === 'waiting_for_players' ? 'waiting' : 'playing'
+      });
+    }
+  }
+
+  private handlePlayerJoined(data: any): void {
+    console.log('✅ Player joined:', data);
+    this.updateState({
+      gameStatus: data.players_count === 2 ? 'playing' : 'waiting'
+    });
+  }
+
+  private handleMoveMade(data: any): void {
+    console.log('🎯 Move made:', data);
+    
+    if (data.result?.valid) {
+      const move = data.move;
+      const playerSymbol = data.player_symbol === 'R' ? 'X' : 'O';
+      
+      // Convert row/col to linear position for our board
+      const position = move.row * 3 + move.column;
+      
+      const newBoard = [...this.gameState.board] as Board;
+      if (position >= 0 && position < 9) {
+        newBoard[position] = playerSymbol;
+        
+        this.updateState({
+          board: newBoard,
+          currentPlayer: this.getNextPlayer(playerSymbol),
+          isPlayerTurn: !this.gameState.isPlayerTurn
+        });
+        
+        // Check for game end
+        const gameResult = this.checkGameResult(newBoard);
+        if (gameResult.isFinished) {
+          this.updateState({
+            gameStatus: 'finished',
+            winner: gameResult.winner,
+            winningPositions: gameResult.winningPositions
+          });
+        }
+      }
+    }
+  }
+
+  private isMyTurn(currentPlayer: string): boolean {
+    const myBackendSymbol = this.gameState.playerSymbol === 'X' ? 'R' : 'Y';
+    return currentPlayer === myBackendSymbol;
+  }
+
+  private updateBoardFromServer(serverBoard: any[][]): void {
+    if (!serverBoard || !Array.isArray(serverBoard)) return;
+    
+    const newBoard = [...this.gameState.board] as Board;
+    
+    // Take only first 3x3 from server board (in case it's larger like Connect4)
+    for (let r = 0; r < Math.min(3, serverBoard.length); r++) {
+      for (let c = 0; c < Math.min(3, serverBoard[r]?.length || 0); c++) {
+        const position = r * 3 + c;
+        const serverValue = serverBoard[r][c];
+        
+        if (serverValue === 'R' || serverValue === 1) {
+          newBoard[position] = 'X';
+        } else if (serverValue === 'Y' || serverValue === 2) {
+          newBoard[position] = 'O';
+        } else {
+          newBoard[position] = null;
+        }
+      }
+    }
+    
+    this.updateState({ board: newBoard });
+  }
+
+  private joinGame(matchId: string): void {
+    console.log('🚪 Joining game with match_id:', matchId);
+    
+    this.sendMessage({
+      type: 'join_game',
+      data: {
+        match_id: matchId,
+        game_type: 'tictactoe',
+        player_id: this.config.playerName
+      }
+    });
   }
 
   private handleOpponentMove(data: any): void {
@@ -208,43 +331,29 @@ export class TicTacGameLogic {
 
     // For online mode
     if (!this.gameState.isPlayerTurn || !this.gameState.playerSymbol) {
+      console.log('❌ Not my turn or no player symbol');
       return false;
     }
 
-    // Send move to server
+    // Convert linear position to row/col for backend
+    const row = Math.floor(position / 3);
+    const col = position % 3;
+
+    // Send move to server using the same format as the JavaScript version
     this.sendMessage({
       type: 'make_move',
       data: {
-        position,
-        gameId: this.gameState.gameId
+        match_id: this.config.roomCode,
+        game_type: 'tictactoe',
+        move: {
+          row: row,
+          column: col
+        },
+        player_id: this.config.playerName
       }
     });
 
-    // Optimistically update local state
-    const newBoard = [...this.gameState.board] as Board;
-    newBoard[position] = this.gameState.playerSymbol;
-
-    this.updateState({
-      board: newBoard,
-      currentPlayer: this.getNextPlayer(this.gameState.playerSymbol),
-      isPlayerTurn: false,
-      lastMove: {
-        player: this.gameState.playerSymbol,
-        position,
-        timestamp: Date.now()
-      }
-    });
-
-    // Check for win/draw
-    const gameResult = this.checkGameResult(newBoard);
-    if (gameResult.isFinished) {
-      this.updateState({
-        gameStatus: 'finished',
-        winner: gameResult.winner,
-        winningPositions: gameResult.winningPositions
-      });
-    }
-
+    console.log('🎯 Move sent to server:', { row, col, position });
     return true;
   }
 
@@ -298,7 +407,7 @@ export class TicTacGameLogic {
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
         return {
           isFinished: true,
-          winner: board[a] as Player,
+          winner: board[a]!,
           winningPositions: pattern
         };
       }
@@ -325,18 +434,20 @@ export class TicTacGameLogic {
   }
 
   public resetGame(): void {
-    if (this.config.isOnline && this.gameState.gameId) {
+    if (this.config.isOnline && this.config.roomCode) {
       this.sendMessage({
-        type: 'reset_game',
-        data: { gameId: this.gameState.gameId }
+        type: 'restart_game',
+        data: { 
+          match_id: this.config.roomCode,
+          game_type: 'tictactoe'
+        }
       });
     }
 
-    const resetState = {
-      ...this.gameState,
+    const resetState: Partial<GameState> = {
       board: Array(9).fill(null) as Board,
-      currentPlayer: 'X' as Player,
-      gameStatus: this.config.isOnline ? 'playing' : 'playing',
+      currentPlayer: 'X',
+      gameStatus: 'playing' as const,
       winner: null,
       winningPositions: [],
       isPlayerTurn: this.config.isOnline ? this.gameState.playerSymbol === 'X' : true,
@@ -402,6 +513,12 @@ export class TicTacGameLogic {
       isPlayerTurn: true,
       currentPlayer: 'X'
     });
+  }
+
+  private switchToOfflineMode(): void {
+    console.log('🔄 Switching to offline mode due to connection failure');
+    this.config = { ...this.config, isOnline: false };
+    this.startOfflineGame();
   }
 
   public canPlayerMove(): boolean {

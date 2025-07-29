@@ -20,6 +20,7 @@ let gameConfig = {
   gameType: "tictactoe",
 };
 
+// ws://wslocalhost:8080/ws/games/2c4b89fe-9d28-45b4-8a4a-15cffa874932?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMzQ3ODY4Zi0yYzcwLTQ5YWYtYjhiZi1lOThhNWE5NDFlNDEiLCJleHAiOjE3NTM5NTI5MjgsImlhdCI6MTc1MzczNjkyOCwidHlwZSI6ImFjY2Vzc190b2tlbiJ9.bjGrhZ6eqRsmoelKa6hW9kgCMu60Xc6xdUbySCKo3sU
 // Constantes
 const WEBSOCKET_URL = "ws://localhost:8000/ws/games";
 const MAX_RETRIES = 3;
@@ -63,7 +64,9 @@ class TicTacWebSocketClient {
 
     try {
       // Incluir el matchId en la URL del WebSocket como requiere el backend
-      const wsUrl = `${WEBSOCKET_URL}/${matchId}?token=${encodeURIComponent(token)}`;
+      const wsUrl = `${WEBSOCKET_URL}/${matchId}?token=${encodeURIComponent(
+        token
+      )}`;
       console.log("🌐 URL del WebSocket:", wsUrl);
       this.ws = new WebSocket(wsUrl);
       this.setupEventHandlers();
@@ -96,7 +99,7 @@ class TicTacWebSocketClient {
       this.isConnected = false;
       isMyTurn = false;
       updateConnectionStatus("disconnected", "🔴 Desconectado");
-      
+
       if (!event.wasClean && this.reconnectAttempts < MAX_RETRIES) {
         this.handleConnectionError();
       }
@@ -124,7 +127,10 @@ class TicTacWebSocketClient {
 
   makeMove(row, col) {
     if (!this.isConnected || !isMyTurn) {
-      console.log("❌ No se puede mover:", { connected: this.isConnected, myTurn: isMyTurn });
+      console.log("❌ No se puede mover:", {
+        connected: this.isConnected,
+        myTurn: isMyTurn,
+      });
       return false;
     }
 
@@ -134,7 +140,7 @@ class TicTacWebSocketClient {
       game_type: "tictactoe",
       move: {
         row: row,
-        column: col,  // Cambiar 'col' a 'column' para que coincida con el backend
+        column: col, // Cambiar 'col' a 'column' para que coincida con el backend
       },
       player_id: this.playerId,
     };
@@ -162,9 +168,11 @@ class TicTacWebSocketClient {
     this.reconnectAttempts++;
 
     if (this.reconnectAttempts <= MAX_RETRIES) {
-      console.log(`🔄 Reintentando conexión... (${this.reconnectAttempts}/${MAX_RETRIES})`);
+      console.log(
+        `🔄 Reintentando conexión... (${this.reconnectAttempts}/${MAX_RETRIES})`
+      );
       updateConnectionStatus("reconnecting", "🟡 Reconectando...");
-      
+
       setTimeout(() => {
         this.connect(this.matchId, this.token, this.playerId);
       }, RECONNECT_DELAY);
@@ -324,7 +332,7 @@ function extractUserIdFromToken(token) {
   if (!token) return null;
 
   try {
-    const payload = token.split('.')[1];
+    const payload = token.split(".")[1];
     const decoded = JSON.parse(atob(payload));
     return decoded.sub || decoded.user_id || null;
   } catch (error) {
@@ -388,29 +396,29 @@ function handleWebSocketMessage(data) {
 
 function handleGameFinishedAutomatically(data) {
   console.log("🏁 Juego finalizado automáticamente:", data);
-  
+
   // Bloquear el tablero
   gameOver = true;
   const boardElement = document.getElementById("board");
   if (boardElement) {
     boardElement.style.pointerEvents = "none";
   }
-  
+
   // Extraer información del resultado
   const winner = data.winner;
   const isTie = data.is_tie;
   const finalScores = data.final_scores || [];
-  
+
   console.log("🏆 Ganador:", winner, "| Empate:", isTie);
   console.log("📊 Puntuaciones finales:", finalScores);
-  
+
   if (isTie) {
     // Manejar empate
     updateMessage("¡Es un empate! 🤝");
     const modalTitle = "🤝 ¡Empate!";
     const modalMessage = "¡Fue una partida muy reñida! Nadie ganó esta vez.";
     showGameEndModal(modalTitle, modalMessage, "tie");
-    
+
     // Resaltar todas las casillas para empate
     for (let r = 0; r < 3; r++) {
       for (let c = 0; c < 3; c++) {
@@ -422,15 +430,16 @@ function handleGameFinishedAutomatically(data) {
     }
   } else if (winner) {
     // Determinar si el jugador actual ganó o perdió
-    const currentPlayerBackendSymbol = getBackendSymbolFromFrontend(playerSymbol);
-    const isCurrentPlayerWinner = (winner === currentPlayerBackendSymbol);
-    
+    const currentPlayerBackendSymbol =
+      getBackendSymbolFromFrontend(playerSymbol);
+    const isCurrentPlayerWinner = winner === currentPlayerBackendSymbol;
+
     console.log("🎯 Comparación de ganador:");
     console.log("  - Ganador del backend:", winner);
     console.log("  - Mi símbolo frontend:", playerSymbol);
     console.log("  - Mi símbolo backend:", currentPlayerBackendSymbol);
     console.log("  - ¿Soy el ganador?:", isCurrentPlayerWinner);
-    
+
     if (isCurrentPlayerWinner) {
       updateMessage(`¡Has ganado! 🎉`);
       const modalTitle = "🎉 ¡Victoria!";
@@ -443,11 +452,13 @@ function handleGameFinishedAutomatically(data) {
       showGameEndModal(modalTitle, modalMessage, "defeat");
     }
   }
-  
+
   // Desconectar WebSocket después de un breve delay para permitir que se vea el resultado
   setTimeout(() => {
     if (wsClient) {
-      console.log("🔌 Desconectando WebSocket después de finalización automática");
+      console.log(
+        "🔌 Desconectando WebSocket después de finalización automática"
+      );
       wsClient.disconnect();
     }
   }, 5000); // 5 segundos para que el usuario vea el resultado
@@ -484,7 +495,13 @@ function handleNewFormatGameState(data) {
       // Si el backend envía números
       playerSymbol = backendSymbol === 1 ? "X" : "O";
     }
-    console.log("🎮 Mi símbolo asignado:", playerSymbol, "(mapeado desde", backendSymbol, ")");
+    console.log(
+      "🎮 Mi símbolo asignado:",
+      playerSymbol,
+      "(mapeado desde",
+      backendSymbol,
+      ")"
+    );
   }
 
   // Determinar el estado del juego
@@ -521,7 +538,7 @@ function handleNewFormatGameState(data) {
   } else if (gameStateData.current_player === "Y") {
     mappedCurrentPlayer = "O";
   }
-  
+
   updateTurnFromGameState(mappedCurrentPlayer);
   updateTurnMessage();
   updatePlayersInfo(2);
@@ -530,11 +547,14 @@ function handleNewFormatGameState(data) {
 function handleOriginalFormatGameState(data) {
   console.log("📋 Formato original detectado");
   console.log("📋 Player ID asignado:", data.player_id);
-  console.log("📋 Símbolo del jugador:", data.player_symbol || data.player_color);
+  console.log(
+    "📋 Símbolo del jugador:",
+    data.player_symbol || data.player_color
+  );
   console.log("📋 Estado del juego:", data.state);
 
   playerId = data.player_id;
-  
+
   // Mapear símbolos del backend a Tic-Tac-Toe
   const backendSymbol = data.player_symbol || data.player_color;
   if (backendSymbol === "R" || backendSymbol === "red") {
@@ -544,7 +564,7 @@ function handleOriginalFormatGameState(data) {
   } else {
     playerSymbol = backendSymbol; // Usar tal como viene si ya es X o O
   }
-  
+
   console.log("🎮 Símbolo mapeado:", playerSymbol);
 
   if (data.state === "waiting_for_players") {
@@ -593,15 +613,25 @@ function updateTurnFromGameState(currentPlayer) {
   console.log("🎯 Determinando turno:", {
     currentPlayerFromServer: currentPlayer,
     myPlayerSymbol: playerSymbol,
-    playerId: playerId
+    playerId: playerId,
   });
 
   if (currentPlayer === "X" || currentPlayer === 1 || currentPlayer === "R") {
     isCurrentPlayer = playerSymbol === "X";
-    console.log("🔴 Turno del jugador X/R:", { isMyTurn: isCurrentPlayer, mySymbol: playerSymbol });
-  } else if (currentPlayer === "O" || currentPlayer === 2 || currentPlayer === "Y") {
+    console.log("🔴 Turno del jugador X/R:", {
+      isMyTurn: isCurrentPlayer,
+      mySymbol: playerSymbol,
+    });
+  } else if (
+    currentPlayer === "O" ||
+    currentPlayer === 2 ||
+    currentPlayer === "Y"
+  ) {
     isCurrentPlayer = playerSymbol === "O";
-    console.log("🟡 Turno del jugador O/Y:", { isMyTurn: isCurrentPlayer, mySymbol: playerSymbol });
+    console.log("🟡 Turno del jugador O/Y:", {
+      isMyTurn: isCurrentPlayer,
+      mySymbol: playerSymbol,
+    });
   }
 
   isMyTurn = isCurrentPlayer;
@@ -612,7 +642,10 @@ function updateTurnFromGameState(currentPlayer) {
 
 function updateTurnMessage() {
   if (isMyTurn) {
-    updateMessage(`🎯 Tu turno (${playerSymbol})`, playerSymbol === "X" ? "current-red" : "current-yellow");
+    updateMessage(
+      `🎯 Tu turno (${playerSymbol})`,
+      playerSymbol === "X" ? "current-red" : "current-yellow"
+    );
   } else if (isOnlineMode) {
     updateMessage(`⏳ Turno del oponente`);
   }
@@ -667,7 +700,10 @@ function handleMoveMade(data) {
   if (data.result?.valid) {
     processValidMove(data);
   } else {
-    console.error("❌ Movimiento inválido:", data.result?.reason || "Razón desconocida");
+    console.error(
+      "❌ Movimiento inválido:",
+      data.result?.reason || "Razón desconocida"
+    );
     updateMessage(`❌ ${data.result?.reason || "Movimiento inválido"}`);
   }
 }
@@ -676,7 +712,7 @@ function processValidMove(data) {
   // Actualizar el tablero con el movimiento
   const move = data.move;
   let symbol = data.player_symbol;
-  
+
   // Mapear símbolo del backend a Tic-Tac-Toe
   if (symbol === "R") {
     symbol = "X";
@@ -742,7 +778,7 @@ function updateTileVisualization(row, col, symbol) {
 
 function processGameStateAfterMove(gameState, playerId) {
   console.log("🎮 Procesando estado después del movimiento:", gameState);
-  
+
   if (gameState.winner) {
     // Mapear ganador
     let mappedWinner = gameState.winner;
@@ -762,13 +798,13 @@ function processGameStateAfterMove(gameState, playerId) {
     } else if (gameState.current_player === "Y") {
       mappedCurrentPlayer = "O";
     }
-    
+
     console.log("🔄 Actualizando turno después del movimiento:", {
       originalCurrentPlayer: gameState.current_player,
       mappedCurrentPlayer: mappedCurrentPlayer,
-      mySymbol: playerSymbol
+      mySymbol: playerSymbol,
     });
-    
+
     updateTurnFromGameState(mappedCurrentPlayer);
     updateTurnMessage();
   }
@@ -821,7 +857,9 @@ function handleOnlineGameWinner(winner) {
     titleClass = "winner";
   } else {
     modalTitle = "😔 Derrota";
-    modalMessage = `El oponente ha ganado como jugador ${getWinnerSymbolName(winner)}.`;
+    modalMessage = `El oponente ha ganado como jugador ${getWinnerSymbolName(
+      winner
+    )}.`;
     titleClass = "loser";
   }
 
@@ -866,7 +904,11 @@ function getWinnerSymbolName(winner) {
 function updateBoardFromServer(serverBoard) {
   // Actualizar el tablero local con el estado del servidor
   console.log("🔄 Actualizando tablero desde servidor:", serverBoard);
-  console.log(`📋 Tablero del servidor: ${serverBoard.length}x${serverBoard[0]?.length || 0}`);
+  console.log(
+    `📋 Tablero del servidor: ${serverBoard.length}x${
+      serverBoard[0]?.length || 0
+    }`
+  );
 
   // SOLUCIÓN: Si el servidor envía un tablero de Connect4 (6x7), extraer solo las primeras 3x3 celdas
   const maxRows = Math.min(3, serverBoard.length);
@@ -893,7 +935,9 @@ function updateBoardCell(row, col, serverValue) {
   if (localValue !== currentValue) {
     board[row][col] = localValue;
     updateTileVisualization(row, col, localValue);
-    console.log(`📋 Celda actualizada [${row}][${col}]: "${currentValue}" -> "${localValue}"`);
+    console.log(
+      `📋 Celda actualizada [${row}][${col}]: "${currentValue}" -> "${localValue}"`
+    );
   }
 }
 
@@ -950,7 +994,7 @@ function setGame() {
   gameOver = false;
   moveCount = 0;
   winningPositions = [];
-  
+
   // Verificar que el elemento mensaje existe
   const messageElement = document.getElementById("message");
   if (messageElement) {
@@ -960,7 +1004,7 @@ function setGame() {
       messageElement.innerText = "🎮 Jugador O comienza";
     }
   }
-  
+
   // Ocultar botón de reinicio y modal
   const restartBtn = document.getElementById("restartBtn");
   if (restartBtn) {
@@ -1033,10 +1077,10 @@ function updateMessage(text, playerClass) {
   const messageElement = document.getElementById("message");
   if (messageElement) {
     messageElement.innerText = text;
-    
+
     // Limpiar clases anteriores
     messageElement.classList.remove("current-red", "current-yellow");
-    
+
     // Añadir nueva clase si se proporciona
     if (playerClass) {
       messageElement.classList.add(playerClass);
@@ -1048,7 +1092,11 @@ function checkWinner() {
   // Verificar filas
   for (let r = 0; r < 3; r++) {
     if (checkLine(board[r][0], board[r][1], board[r][2])) {
-      highlightWinningLine([[r, 0], [r, 1], [r, 2]]);
+      highlightWinningLine([
+        [r, 0],
+        [r, 1],
+        [r, 2],
+      ]);
       handleWin(board[r][0]);
       return true;
     }
@@ -1057,7 +1105,11 @@ function checkWinner() {
   // Verificar columnas
   for (let c = 0; c < 3; c++) {
     if (checkLine(board[0][c], board[1][c], board[2][c])) {
-      highlightWinningLine([[0, c], [1, c], [2, c]]);
+      highlightWinningLine([
+        [0, c],
+        [1, c],
+        [2, c],
+      ]);
       handleWin(board[0][c]);
       return true;
     }
@@ -1065,14 +1117,22 @@ function checkWinner() {
 
   // Verificar diagonal principal
   if (checkLine(board[0][0], board[1][1], board[2][2])) {
-    highlightWinningLine([[0, 0], [1, 1], [2, 2]]);
+    highlightWinningLine([
+      [0, 0],
+      [1, 1],
+      [2, 2],
+    ]);
     handleWin(board[0][0]);
     return true;
   }
 
   // Verificar diagonal secundaria
   if (checkLine(board[0][2], board[1][1], board[2][0])) {
-    highlightWinningLine([[0, 2], [1, 1], [2, 0]]);
+    highlightWinningLine([
+      [0, 2],
+      [1, 1],
+      [2, 0],
+    ]);
     handleWin(board[0][2]);
     return true;
   }
@@ -1099,7 +1159,7 @@ function highlightWinningLine(positions) {
 function handleWin(winner) {
   gameOver = true;
   console.log("🏆 Juego terminado - Ganador local:", winner);
-  
+
   // Bloquear el tablero
   const boardElement = document.getElementById("board");
   if (boardElement) {
@@ -1112,7 +1172,7 @@ function handleWin(winner) {
   } else {
     // En modo offline, mostrar mensaje y modal
     updateMessage(`¡Jugador ${winner} ha ganado! 🎉`);
-    
+
     const modalTitle = `🎉 ¡Jugador ${winner} Gana!`;
     const modalMessage = `¡Felicidades al jugador ${winner} por la victoria!`;
     showGameEndModal(modalTitle, modalMessage, "winner");
@@ -1134,7 +1194,7 @@ function handleWin(winner) {
 function handleTie() {
   gameOver = true;
   console.log("🤝 Juego terminado - Empate");
-  
+
   // Bloquear el tablero
   const boardElement = document.getElementById("board");
   if (boardElement) {
@@ -1161,8 +1221,12 @@ function handleTie() {
     handleOnlineGameTie();
   } else {
     // En modo offline, mostrar modal de empate
-    showGameEndModal("🤝 ¡Empate!", "¡Un juego muy reñido! Nadie ha ganado esta vez.", "tie");
-    
+    showGameEndModal(
+      "🤝 ¡Empate!",
+      "¡Un juego muy reñido! Nadie ha ganado esta vez.",
+      "tie"
+    );
+
     // En modo offline, reiniciar automáticamente después de 3 segundos
     setTimeout(function () {
       restartGame();
@@ -1172,12 +1236,12 @@ function handleTie() {
 
 function handleOnlineGameTie() {
   console.log("🤝 Manejando empate online");
-  
+
   updateMessage("¡Es un empate! 🤝");
   const modalTitle = "🤝 ¡Empate!";
   const modalMessage = "¡Fue una partida muy reñida! Buen juego.";
   showGameEndModal(modalTitle, modalMessage, "tie");
-  
+
   // Desconectar WebSocket después de un breve delay
   setTimeout(() => {
     if (wsClient) {
@@ -1188,41 +1252,41 @@ function handleOnlineGameTie() {
 
 function showGameEndModal(title, message, resultType) {
   console.log("📱 Mostrando modal de fin de juego:", title);
-  
+
   // Crear o actualizar modal
-  let modal = document.getElementById('gameEndModal');
+  let modal = document.getElementById("gameEndModal");
   if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'gameEndModal';
-    modal.className = 'game-end-modal';
+    modal = document.createElement("div");
+    modal.id = "gameEndModal";
+    modal.className = "game-end-modal";
     document.body.appendChild(modal);
   }
-  
+
   // Determinar clase CSS según el tipo de resultado
-  let resultClass = '';
-  let emoji = '';
-  switch(resultType) {
-    case 'victory':
-      resultClass = 'victory';
-      emoji = '🎉';
+  let resultClass = "";
+  let emoji = "";
+  switch (resultType) {
+    case "victory":
+      resultClass = "victory";
+      emoji = "🎉";
       break;
-    case 'defeat':
-      resultClass = 'defeat';
-      emoji = '😔';
+    case "defeat":
+      resultClass = "defeat";
+      emoji = "😔";
       break;
-    case 'tie':
-      resultClass = 'tie';
-      emoji = '🤝';
+    case "tie":
+      resultClass = "tie";
+      emoji = "🤝";
       break;
-    case 'winner':
-      resultClass = 'winner';
-      emoji = '🏆';
+    case "winner":
+      resultClass = "winner";
+      emoji = "🏆";
       break;
     default:
-      resultClass = 'default';
-      emoji = '🎮';
+      resultClass = "default";
+      emoji = "🎮";
   }
-  
+
   modal.innerHTML = `
     <div class="modal-content ${resultClass}">
       <div class="modal-header">
@@ -1232,31 +1296,32 @@ function showGameEndModal(title, message, resultType) {
         <p>${message}</p>
       </div>
       <div class="modal-footer">
-        ${isOnlineMode ? 
-          '<button id="backToLobby" class="btn btn-primary">Volver al Lobby</button>' :
-          ''
+        ${
+          isOnlineMode
+            ? '<button id="backToLobby" class="btn btn-primary">Volver al Lobby</button>'
+            : ""
         }
         <button id="goBack" class="btn btn-secondary">Volver</button>
       </div>
     </div>
   `;
-  
-  modal.style.display = 'flex';
-  
+
+  modal.style.display = "flex";
+
   // Agregar event listeners
-  const backToLobbyBtn = document.getElementById('backToLobby');
-  const goBackBtn = document.getElementById('goBack');
-  
+  const backToLobbyBtn = document.getElementById("backToLobby");
+  const goBackBtn = document.getElementById("goBack");
+
   if (backToLobbyBtn) {
-    backToLobbyBtn.addEventListener('click', () => {
-      modal.style.display = 'none';
-      window.location.href = '/all-games/online/';
+    backToLobbyBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+      window.location.href = "/all-games/online/";
     });
   }
-  
+
   if (goBackBtn) {
-    goBackBtn.addEventListener('click', () => {
-      modal.style.display = 'none';
+    goBackBtn.addEventListener("click", () => {
+      modal.style.display = "none";
       goBackToPreviousPage();
     });
   }
@@ -1292,7 +1357,7 @@ function setupEventListeners() {
 function updateGameConfig(newMatchId, newGameType = "tictactoe") {
   gameConfig.matchId = newMatchId;
   gameConfig.gameType = newGameType;
-  
+
   console.log("⚙️ Configuración del juego actualizada:", gameConfig);
 }
 
@@ -1300,7 +1365,8 @@ function updateGameConfig(newMatchId, newGameType = "tictactoe") {
 function displayUserInfo() {
   const userInfoElement = document.getElementById("userInfo");
   if (userInfoElement && userInfo?.user) {
-    const userDisplay = userInfo.user.email || userInfo.user.user_id || "Invitado";
+    const userDisplay =
+      userInfo.user.email || userInfo.user.user_id || "Invitado";
     userInfoElement.textContent = `🎮 ${userDisplay}`;
   }
 }
@@ -1318,7 +1384,7 @@ function goBackToPreviousPage() {
   if (wsClient) {
     wsClient.disconnect();
   }
-  
+
   // Volver a la página anterior
   if (window.history.length > 1) {
     window.history.back();
@@ -1343,11 +1409,11 @@ window.restartGameFromModal = restartGameFromModal;
 document.addEventListener("DOMContentLoaded", function () {
   // No llamar setGame aquí si ya se llama en window.onload
   setupEventListeners();
-  
+
   // Agregar estilos CSS para el modal de fin de juego
-  if (!document.getElementById('gameEndModalStyles')) {
-    const style = document.createElement('style');
-    style.id = 'gameEndModalStyles';
+  if (!document.getElementById("gameEndModalStyles")) {
+    const style = document.createElement("style");
+    style.id = "gameEndModalStyles";
     style.textContent = `
       .game-end-modal {
         position: fixed;

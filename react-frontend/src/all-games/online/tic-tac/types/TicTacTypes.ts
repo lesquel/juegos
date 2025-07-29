@@ -32,7 +32,7 @@ export interface GameConfig {
   isOnline: boolean;
   wsUrl: string;
   authToken: string;
-  playerName?: string;
+  playerName: string;
   roomCode?: string;
 }
 

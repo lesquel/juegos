@@ -5,10 +5,10 @@ interface TicTacHeaderProps {
   currentPlayer: Player;
   statusMessage: string;
   gameStatus: 'waiting' | 'playing' | 'finished';
-  playerSymbol?: 'X' | 'O';
-  opponentName?: string;
+  playerSymbol?: Player | null;
+  opponentName?: string | null;
   isOnlineMode?: boolean;
-  roomCode?: string;
+  roomCode?: string | null;
   onBack?: () => void;
 }
 
