@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     tanstackRouter({
       target: "react",
-      autoCodeSplitting: true,
+      autoCodeSplitting: false, // Deshabilitado temporalmente para evitar errores
     }),
     react(),
   ],
