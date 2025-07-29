@@ -44,6 +44,14 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
 
   // Initialize game logic
   useEffect(() => {
+    // Evitar recrear la lógica si ya existe una instancia válida
+    if (gameLogicRef.current && 
+        gameLogicRef.current.getConfig()?.roomCode === roomCode &&
+        gameLogicRef.current.getConfig()?.isOnline === isOnlineMode) {
+      console.log('🔄 Reutilizando instancia de TicTacGameLogic existente');
+      return;
+    }
+
     const config = {
       isOnline: isOnlineMode,
       wsUrl,
@@ -53,6 +61,12 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
     };
 
     console.log("config", config);
+    
+    // Limpiar instancia anterior si existe
+    if (gameLogicRef.current) {
+      gameLogicRef.current.disconnect();
+    }
+    
     gameLogicRef.current = new TicTacGameLogic(config, setGameState);
 
     if (isOnlineMode) {
@@ -64,6 +78,7 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
     return () => {
       if (gameLogicRef.current) {
         gameLogicRef.current.disconnect();
+        gameLogicRef.current = null;
       }
     };
   }, [isOnlineMode, wsUrl, authToken, roomCode]);
