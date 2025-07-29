@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏇 Hipódromo Casino Premium 🏇</title>
+    <style>
+        :root {
+            --primary-gold: #ffd700;
+            --secondary-gold: #ffed4e;
+            --accent-red: #ff2d2d;
+            --accent-green: #00ff88;
+            --accent-blue: #00ccff;
+            --dark-bg: #0a0a0a;
+            --card-bg: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --neon-shadow: 0 0 20px;
+            --premium-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --casino-green: #0f5132;
+            --win-green: #28a745;
+            --lose-red: #dc3545;
+            --track-brown: #8B4513;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%),
+                linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 25%, #0f0f0f 50%, #1a1a1a 75%, #0c0c0c 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 98px,
+                    rgba(255, 215, 0, 0.02) 100px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 98px,
+                    rgba(255, 215, 0, 0.02) 100px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .casino-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .title {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold), var(--primary-gold));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            animation: titleShine 3s ease-in-out infinite, titleFloat 6s ease-in-out infinite;
+            letter-spacing: 2px;
+        }
+
+        @keyframes titleShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .game-header {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+            background: var(--card-bg);
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .game-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            padding: 3px;
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-blue), var(--primary-gold));
+            border-radius: inherit;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .balance-info {
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-align: center;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border-radius: 15px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .race-info {
+            text-align: center;
+            color: #ecf0f1;
+        }
+
+        .race-number {
+            font-size: 1.5em;
+            color: #f1c40f;
+            font-weight: bold;
+        }
+
+        .countdown {
+            font-size: 2em;
+            color: #e74c3c;
+            font-weight: bold;
+            text-shadow: 0 0 20px #e74c3c;
+        }
+
+        .racetrack {
+            background: linear-gradient(to bottom, 
+                #8B4513 0%, 
+                #A0522D 10%, 
+                #D2691E 50%, 
+                #A0522D 90%, 
+                #8B4513 100%);
+            border: 4px solid #654321;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                inset 0 0 50px rgba(0,0,0,0.3),
+                0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .track-lanes {
+            position: relative;
+            height: 400px;
+        }
+
+        .lane {
+            height: 80px;
+            margin-bottom: 20px;
+            position: relative;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255,255,255,0.1) 2%, 
+                transparent 4%, 
+                transparent 96%, 
+                rgba(255,255,255,0.1) 98%, 
+                transparent 100%);
+            border-top: 2px dashed rgba(255,255,255,0.3);
+            border-bottom: 2px dashed rgba(255,255,255,0.3);
+        }
+
+        .lane:last-child {
+            margin-bottom: 0;
+        }
+
+        .horse {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3em;
+            transition: left 0.3s ease-out;
+            z-index: 10;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
+        }
+
+        .horse.running {
+            animation: gallop 0.3s ease-in-out infinite alternate;
+        }
+
+        @keyframes gallop {
+            from { transform: translateY(-50%) rotate(-2deg); }
+            to { transform: translateY(-50%) rotate(2deg); }
+        }
+
+        .horse.winner {
+            animation: winnerBounce 1s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px #ffd700);
+        }
+
+        @keyframes winnerBounce {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+        }
+
+        .finish-line {
+            position: absolute;
+            right: 30px;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: repeating-linear-gradient(
+                0deg,
+                #000 0px,
+                #000 15px,
+                #fff 15px,
+                #fff 30px
+            );
+            box-shadow: 0 0 15px rgba(255,255,255,0.8);
+        }
+
+        .distance-markers {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #bdc3c7;
+        }
+
+        .betting-panel {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .horses-info {
+            background: linear-gradient(145deg, #2c3e50, #34495e);
+            border: 3px solid #3498db;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .horses-info h3 {
+            color: #f1c40f;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .horse-card {
+            background: linear-gradient(145deg, #34495e, #2c3e50);
+            border: 2px solid #7f8c8d;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .horse-card:hover {
+            border-color: #3498db;
+            background: linear-gradient(145deg, #3498db, #2980b9);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        .horse-card.selected {
+            border-color: #e74c3c;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            box-shadow: 0 0 25px rgba(231, 76, 60, 0.6);
+        }
+
+        .horse-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .horse-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+
+        .horse-emoji {
+            font-size: 2em;
+        }
+
+        .horse-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #bdc3c7;
+        }
+
+        .odds {
+            color: #f1c40f;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .betting-controls {
+            background: linear-gradient(145deg, #1a252f, #2c3e50);
+            border: 3px solid #27ae60;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .betting-controls h3 {
+            color: #2ecc71;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .bet-amount-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .amount-chip {
+            padding: 12px;
+            background: linear-gradient(145deg, #34495e, #2c3e50);
+            border: 2px solid #7f8c8d;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .amount-chip:hover {
+            border-color: #3498db;
+            background: linear-gradient(145deg, #3498db, #2980b9);
+        }
+
+        .amount-chip.selected {
+            border-color: #f1c40f;
+            background: linear-gradient(145deg, #f1c40f, #f39c12);
+            color: #000;
+        }
+
+        .bet-types {
+            margin-bottom: 20px;
+        }
+
+        .bet-type {
+            background: linear-gradient(145deg, #34495e, #2c3e50);
+            border: 2px solid #7f8c8d;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .bet-type:hover {
+            border-color: #e67e22;
+            background: linear-gradient(145deg, #e67e22, #d35400);
+        }
+
+        .bet-type.selected {
+            border-color: #e74c3c;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+        }
+
+        .current-bet-info {
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .start-race-button {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            background: linear-gradient(145deg, #27ae60, #229954);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        }
+
+        .start-race-button:hover:not(:disabled) {
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(46, 204, 113, 0.4);
+        }
+
+        .start-race-button:disabled {
+            background: #7f8c8d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .race-results {
+            text-align: center;
+            margin: 30px 0;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .winner-announcement {
+            font-size: 2.5em;
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 0 0 30px #ffd700;
+            animation: winnerGlow 1s ease-in-out infinite alternate;
+            margin-bottom: 15px;
+        }
+
+        @keyframes winnerGlow {
+            from { text-shadow: 0 0 30px #ffd700; }
+            to { text-shadow: 0 0 50px #ffd700, 0 0 70px #ffd700; }
+        }
+
+        .payout-info {
+            font-size: 1.8em;
+            color: #2ecc71;
+            font-weight: bold;
+            text-shadow: 0 0 15px #2ecc71;
+        }
+
+        .lose-info {
+            font-size: 1.8em;
+            color: #e74c3c;
+            font-weight: bold;
+            text-shadow: 0 0 15px #e74c3c;
+        }
+
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #2c3e50, #34495e);
+            border: 2px solid #7f8c8d;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-title {
+            color: #3498db;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            color: #ecf0f1;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f1c40f, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .betting-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .title {
+                font-size: 2.5em;
+            }
+            
+            .horse {
+                font-size: 2em;
+            }
+            
+            .track-lanes {
+                height: 300px;
+            }
+            
+            .lane {
+                height: 60px;
+                margin-bottom: 15px;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="casino-container">
+        <h1 class="title">🏇 HIPÓDROMO CASINO 🏇</h1>
+        
+        <div class="game-header">
+            <div class="balance-info">
+                💰 Balance: $<span id="balance">1000</span>
+            </div>
+            <div class="race-info">
+                <div class="race-number">Carrera #<span id="raceNumber">1</span></div>
+                <div id="countdownDisplay"></div>
+            </div>
+            <div class="balance-info">
+                🎯 Apuesta: $<span id="totalBet">0</span>
+            </div>
+        </div>
+
+        <div class="racetrack">
+            <div class="distance-markers">
+                <span>Inicio</span>
+                <span>25%</span>
+                <span>50%</span>
+                <span>75%</span>
+                <span>META</span>
+            </div>
+            
+            <div class="track-lanes" id="trackLanes">
+                <!-- Los carriles se generarán dinámicamente -->
+            </div>
+            
+            <div class="finish-line"></div>
+        </div>
+
+        <div class="betting-panel">
+            <div class="horses-info">
+                <h3>🐎 CABALLOS EN CARRERA</h3>
+                <div id="horsesContainer">
+                    <!-- Los caballos se generarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="betting-controls">
+                <h3>💰 CENTRO DE APUESTAS</h3>
+                
+                <div class="bet-amount-selector">
+                    <div class="amount-chip selected" data-amount="10">$10</div>
+                    <div class="amount-chip" data-amount="25">$25</div>
+                    <div class="amount-chip" data-amount="50">$50</div>
+                    <div class="amount-chip" data-amount="100">$100</div>
+                </div>
+
+                <div class="bet-types">
+                    <div class="bet-type selected" data-type="win">
+                        Ganador (Mayor pago)
+                    </div>
+                    <div class="bet-type" data-type="place">
+                        Lugar (1º o 2º)
+                    </div>
+                    <div class="bet-type" data-type="show">
+                        Show (1º, 2º o 3º)
+                    </div>
+                </div>
+
+                <div class="current-bet-info">
+                    <div id="betInfo">Selecciona un caballo para apostar</div>
+                </div>
+
+                <button class="start-race-button" id="startRaceButton" onclick="startRace()">
+                    🏁 ¡INICIAR CARRERA! 🏁
+                </button>
+            </div>
+        </div>
+
+        <div class="race-results" id="raceResults">
+            <div>¡Selecciona tu caballo favorito y comienza la carrera!</div>
+        </div>
+
+        <div class="statistics">
+            <div class="stat-card">
+                <div class="stat-title">Carreras Totales</div>
+                <div class="stat-value" id="totalRaces">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Victorias</div>
+                <div class="stat-value" id="wins">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">% Aciertos</div>
+                <div class="stat-value" id="winRate">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Ganancia Total</div>
+                <div class="stat-value" id="totalProfit">$0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        class HorseRacing {
+            constructor() {
+                this.balance = 1000;
+                this.selectedHorse = null;
+                this.selectedAmount = 10;
+                this.selectedBetType = 'win';
+                this.isRacing = false;
+                this.raceNumber = 1;
+                
+                // Estadísticas
+                this.stats = {
+                    totalRaces: 0,
+                    wins: 0,
+                    totalProfit: 0
+                };
+                
+                // Definir caballos con diferentes características
+                this.horses = [
+                    {
+                        id: 1,
+                        name: "Rayo Dorado",
+                        emoji: "🐎",
+                        color: "#f1c40f",
+                        speed: 0.8,
+                        stamina: 0.9,
+                        odds: 3.5,
+                        position: 0,
+                        lane: 0
+                    },
+                    {
+                        id: 2,
+                        name: "Viento Negro",
+                        emoji: "🐴",
+                        color: "#34495e",
+                        speed: 0.9,
+                        stamina: 0.7,
+                        odds: 2.8,
+                        position: 0,
+                        lane: 1
+                    },
+                    {
+                        id: 3,
+                        name: "Estrella Roja",
+                        emoji: "🏇",
+                        color: "#e74c3c",
+                        speed: 0.85,
+                        stamina: 0.8,
+                        odds: 3.2,
+                        position: 0,
+                        lane: 2
+                    },
+                    {
+                        id: 4,
+                        name: "Trueno Azul",
+                        emoji: "🦄",
+                        color: "#3498db",
+                        speed: 0.75,
+                        stamina: 0.95,
+                        odds: 4.2,
+                        position: 0,
+                        lane: 3
+                    }
+                ];
+                
+                this.raceDistance = 100; // Porcentaje
+                this.init();
+            }
+
+            init() {
+                this.createTrack();
+                this.createHorseCards();
+                this.setupEventListeners();
+                this.updateDisplay();
+            }
+
+            createTrack() {
+                const trackLanes = document.getElementById('trackLanes');
+                trackLanes.innerHTML = '';
+                
+                this.horses.forEach((horse, index) => {
+                    const lane = document.createElement('div');
+                    lane.className = 'lane';
+                    
+                    const horseElement = document.createElement('div');
+                    horseElement.className = 'horse';
+                    horseElement.id = `horse-${horse.id}`;
+                    horseElement.textContent = horse.emoji;
+                    horseElement.style.color = horse.color;
+                    
+                    lane.appendChild(horseElement);
+                    trackLanes.appendChild(lane);
+                });
+            }
+
+            createHorseCards() {
+                const container = document.getElementById('horsesContainer');
+                container.innerHTML = '';
+                
+                this.horses.forEach(horse => {
+                    const card = document.createElement('div');
+                    card.className = 'horse-card';
+                    card.dataset.horseId = horse.id;
+                    
+                    card.innerHTML = `
+                        <div class="horse-header">
+                            <div class="horse-name">${horse.name}</div>
+                            <div class="horse-emoji">${horse.emoji}</div>
+                        </div>
+                        <div class="horse-stats">
+                            <div>Velocidad: ${Math.round(horse.speed * 100)}%</div>
+                            <div>Resistencia: ${Math.round(horse.stamina * 100)}%</div>
+                        </div>
+                        <div class="odds">Cuota: ${horse.odds}:1</div>
+                    `;
+                    
+                    card.addEventListener('click', () => this.selectHorse(horse.id));
+                    container.appendChild(card);
+                });
+            }
+
+            setupEventListeners() {
+                // Selección de cantidad de apuesta
+                document.querySelectorAll('.amount-chip').forEach(chip => {
+                    chip.addEventListener('click', (e) => {
+                        document.querySelector('.amount-chip.selected').classList.remove('selected');
+                        e.target.classList.add('selected');
+                        this.selectedAmount = parseInt(e.target.dataset.amount);
+                        this.updateBetInfo();
+                    });
+                });
+
+                // Selección de tipo de apuesta
+                document.querySelectorAll('.bet-type').forEach(type => {
+                    type.addEventListener('click', (e) => {
+                        document.querySelector('.bet-type.selected').classList.remove('selected');
+                        e.target.classList.add('selected');
+                        this.selectedBetType = e.target.dataset.type;
+                        this.updateBetInfo();
+                    });
+                });
+            }
+
+            selectHorse(horseId) {
+                if (this.isRacing) return;
+                
+                // Actualizar selección visual
+                document.querySelectorAll('.horse-card').forEach(card => card.classList.remove('selected'));
+                document.querySelector(`[data-horse-id="${horseId}"]`).classList.add('selected');
+                
+                this.selectedHorse = horseId;
+                this.updateBetInfo();
+            }
+
+            updateBetInfo() {
+                const betInfo = document.getElementById('betInfo');
+                
+                if (!this.selectedHorse) {
+                    betInfo.textContent = 'Selecciona un caballo para apostar';
+                    return;
+                }
+                
+                const horse = this.horses.find(h => h.id === this.selectedHorse);
+                const multiplier = this.getBetMultiplier();
+                const potentialWin = Math.round(this.selectedAmount * horse.odds * multiplier);
+                
+                betInfo.innerHTML = `
+                    <div><strong>${horse.name}</strong></div>
+                    <div>Tipo: ${this.getBetTypeName()}</div>
+                    <div>Apuesta: $${this.selectedAmount}</div>
+                    <div style="color: #2ecc71;">Ganancia potencial: $${potentialWin}</div>
+                `;
+            }
+
+            getBetTypeName() {
+                const names = {
+                    'win': 'Ganador',
+                    'place': 'Lugar (1º-2º)',
+                    'show': 'Show (1º-3º)'
+                };
+                return names[this.selectedBetType];
+            }
+
+            getBetMultiplier() {
+                const multipliers = {
+                    'win': 1.0,    // Pago completo
+                    'place': 0.4,  // 40% del pago
+                    'show': 0.2    // 20% del pago
+                };
+                return multipliers[this.selectedBetType];
+            }
+
+            async startRace() {
+                if (this.isRacing || !this.selectedHorse || this.balance < this.selectedAmount) {
+                    if (this.balance < this.selectedAmount) {
+                        this.showResult('¡Saldo insuficiente!', false);
+                    } else if (!this.selectedHorse) {
+                        this.showResult('¡Selecciona un caballo primero!', false);
+                    }
+                    return;
+                }
+                
+                this.isRacing = true;
+                this.balance -= this.selectedAmount;
+                
+                const startButton = document.getElementById('startRaceButton');
+                startButton.disabled = true;
+                startButton.textContent = '🏁 CARRERA EN CURSO... 🏁';
+                
+                // Resetear posiciones
+                this.horses.forEach(horse => {
+                    horse.position = 0;
+                    const horseElement = document.getElementById(`horse-${horse.id}`);
+                    horseElement.style.left = '20px';
+                    horseElement.classList.add('running');
+                });
+                
+                // Countdown
+                await this.showCountdown();
+                
+                // Simular carrera
+                const winner = await this.simulateRace();
+                
+                // Determinar resultados
+                const results = this.determineResults();
+                const isWin = this.checkWin(results);
+                
+                this.processResult(isWin, results, winner);
+                
+                // Limpiar
+                this.horses.forEach(horse => {
+                    const horseElement = document.getElementById(`horse-${horse.id}`);
+                    horseElement.classList.remove('running');
+                });
+                
+                // Marcar ganador
+                const winnerElement = document.getElementById(`horse-${winner.id}`);
+                winnerElement.classList.add('winner');
+                
+                setTimeout(() => {
+                    winnerElement.classList.remove('winner');
+                }, 5000);
+                
+                this.isRacing = false;
+                startButton.disabled = false;
+                startButton.textContent = '🏁 ¡INICIAR CARRERA! 🏁';
+                this.raceNumber++;
+                
+                this.updateDisplay();
+            }
+
+            async showCountdown() {
+                const countdownDisplay = document.getElementById('countdownDisplay');
+                
+                for (let i = 3; i > 0; i--) {
+                    countdownDisplay.innerHTML = `<div class="countdown">${i}</div>`;
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+                
+                countdownDisplay.innerHTML = '<div class="countdown" style="color: #2ecc71;">¡YA!</div>';
+                await new Promise(resolve => setTimeout(resolve, 500));
+                countdownDisplay.innerHTML = '';
+            }
+
+            async simulateRace() {
+                const raceDistance = 1000; // Distancia de la pista en pixels
+                const maxSteps = 100;
+                
+                for (let step = 0; step < maxSteps; step++) {
+                    let raceFinished = false;
+                    
+                    this.horses.forEach(horse => {
+                        if (horse.position < raceDistance) {
+                            // Calcular movimiento basado en estadísticas del caballo
+                            const baseSpeed = 8 + (Math.random() * 12);
+                            const speedModifier = horse.speed;
+                            const staminaModifier = horse.stamina * (1 - (step / maxSteps) * 0.3);
+                            const randomFactor = 0.8 + (Math.random() * 0.4);
+                            
+                            const movement = baseSpeed * speedModifier * staminaModifier * randomFactor;
+                            horse.position += movement;
+                            
+                            // Actualizar posición visual
+                            const horseElement = document.getElementById(`horse-${horse.id}`);
+                            const visualPosition = Math.min(horse.position, raceDistance);
+                            const percentage = (visualPosition / raceDistance) * 90; // 90% del ancho disponible
+                            horseElement.style.left = `${20 + (percentage * 10)}px`;
+                            
+                            if (horse.position >= raceDistance) {
+                                raceFinished = true;
+                            }
+                        }
+                    });
+                    
+                    if (raceFinished) break;
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                // Determinar ganador (el que llegó más lejos)
+                return this.horses.reduce((winner, horse) => 
+                    horse.position > winner.position ? horse : winner
+                );
+            }
+
+            determineResults() {
+                // Ordenar caballos por posición (descendente)
+                const sortedHorses = [...this.horses].sort((a, b) => b.position - a.position);
+                return {
+                    first: sortedHorses[0],
+                    second: sortedHorses[1],
+                    third: sortedHorses[2],
+                    fourth: sortedHorses[3]
+                };
+            }
+
+            checkWin(results) {
+                const selectedHorse = this.horses.find(h => h.id === this.selectedHorse);
+                
+                switch (this.selectedBetType) {
+                    case 'win':
+                        return results.first.id === this.selectedHorse;
+                    case 'place':
+                        return results.first.id === this.selectedHorse || 
+                               results.second.id === this.selectedHorse;
+                    case 'show':
+                        return results.first.id === this.selectedHorse || 
+                               results.second.id === this.selectedHorse || 
+                               results.third.id === this.selectedHorse;
+                    default:
+                        return false;
+                }
+            }
+
+            processResult(isWin, results, winner) {
+                this.stats.totalRaces++;
+                
+                if (isWin) {
+                    const horse = this.horses.find(h => h.id === this.selectedHorse);
+                    const multiplier = this.getBetMultiplier();
+                    const winAmount = Math.round(this.selectedAmount * horse.odds * multiplier);
+                    
+                    this.balance += this.selectedAmount + winAmount; // Devolver apuesta + ganancia
+                    this.stats.wins++;
+                    this.stats.totalProfit += winAmount;
+                    
+                    this.showResult(`¡${horse.name} ${this.getPositionText()}! ¡Ganaste ${winAmount}!`, true);
+                    this.createCelebration();
+                } else {
+                    this.stats.totalProfit -= this.selectedAmount;
+                    this.showResult(`${winner.name} ganó la carrera. Perdiste ${this.selectedAmount}`, false);
+                }
+                
+                this.showRaceResults(results);
+            }
+
+            getPositionText() {
+                switch (this.selectedBetType) {
+                    case 'win': return 'ganó';
+                    case 'place': return 'llegó en los primeros 2';
+                    case 'show': return 'llegó en los primeros 3';
+                    default: return 'ganó';
+                }
+            }
+
+            showResult(message, isWin) {
+                const resultsDiv = document.getElementById('raceResults');
+                
+                if (isWin) {
+                    resultsDiv.innerHTML = `<div class="payout-info">${message}</div>`;
+                } else {
+                    resultsDiv.innerHTML = `<div class="lose-info">${message}</div>`;
+                }
+            }
+
+            showRaceResults(results) {
+                const resultsDiv = document.getElementById('raceResults');
+                const currentContent = resultsDiv.innerHTML;
+                
+                const positions = [
+                    { place: '🥇', horse: results.first },
+                    { place: '🥈', horse: results.second },
+                    { place: '🥉', horse: results.third },
+                    { place: '4️⃣', horse: results.fourth }
+                ];
+                
+                const positionsHtml = positions.map(pos => 
+                    `<span style="margin: 0 10px; font-size: 1.2em;">
+                        ${pos.place} ${pos.horse.name}
+                    </span>`
+                ).join('');
+                
+                resultsDiv.innerHTML = currentContent + 
+                    `<div style="margin-top: 20px; font-size: 1.1em;">
+                        <div style="color: #f1c40f; margin-bottom: 10px;">🏁 RESULTADOS FINALES 🏁</div>
+                        <div>${positionsHtml}</div>
+                    </div>`;
+            }
+
+            createCelebration() {
+                const celebration = document.getElementById('celebration');
+                celebration.innerHTML = '';
+                
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.background = this.getRandomColor();
+                    celebration.appendChild(confetti);
+                }
+                
+                setTimeout(() => {
+                    celebration.innerHTML = '';
+                }, 5000);
+            }
+
+            getRandomColor() {
+                const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            updateDisplay() {
+                document.getElementById('balance').textContent = this.balance;
+                document.getElementById('totalBet').textContent = this.selectedHorse ? this.selectedAmount : 0;
+                document.getElementById('raceNumber').textContent = this.raceNumber;
+                
+                // Actualizar estadísticas
+                const winRate = this.stats.totalRaces > 0 ? 
+                    ((this.stats.wins / this.stats.totalRaces) * 100).toFixed(1) : 0;
+                
+                document.getElementById('totalRaces').textContent = this.stats.totalRaces;
+                document.getElementById('wins').textContent = this.stats.wins;
+                document.getElementById('winRate').textContent = winRate + '%';
+                document.getElementById('totalProfit').textContent = 
+                    (this.stats.totalProfit >= 0 ? '+ : '-) + Math.abs(this.stats.totalProfit);
+            }
+
+            // Generar odds dinámicas basadas en rendimiento
+            updateOdds() {
+                this.horses.forEach(horse => {
+                    // Simular cambios en las odds basados en "forma" del caballo
+                    const variation = (Math.random() - 0.5) * 0.4; // ±0.2
+                    horse.odds = Math.max(1.5, Math.min(6.0, horse.odds + variation));
+                    horse.odds = Math.round(horse.odds * 10) / 10; // Redondear a 1 decimal
+                });
+                
+                this.createHorseCards(); // Actualizar display
+            }
+        }
+
+        // Variables globales para acceso desde HTML
+        let horseRacing;
+
+        function startRace() {
+            horseRacing.startRace();
+        }
+
+        // Inicializar el juego cuando se carga la página
+        window.addEventListener('DOMContentLoaded', () => {
+            horseRacing = new HorseRacing();
+            
+            // Actualizar odds periódicamente
+            setInterval(() => {
+                if (!horseRacing.isRacing) {
+                    horseRacing.updateOdds();
+                }
+            }, 30000); // Cada 30 segundos
+        });
+    </script>
+</body>
+</html>
