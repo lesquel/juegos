@@ -4,7 +4,7 @@ const API_URL_PROD = "https://juegosbackend-910998875911.northamerica-south1.run
 const ENVIRONMENT = import.meta.env.VITE_ENVIRONMENT || "development";
 
 // WebSocket URLs - detecta automáticamente según el entorno
-const WS_URL_DEV = import.meta.env.VITE_WS || "ws://localhost:8080";
+const WS_URL_DEV = import.meta.env.VITE_WS || "ws://localhost:8080"; // Corregido - backend en puerto 8080
 const WS_URL_PROD = import.meta.env.VITE_WS_PROD || import.meta.env.VITE_WS_PRO || "wss://juegosbackend-910998875911.northamerica-south1.run.app";
 
 // Selección automática de WebSocket URL según entorno
@@ -32,7 +32,7 @@ export const API_URL =
   ENVIRONMENT === "development" ? API_URL_DEV : API_URL_PROD;
 
 export const environment = {
-  BASE_URL: "http://localhost:8080", // Forzado
+  BASE_URL: "http://localhost:8080", // Corregido - backend en puerto 8080
   API_URL,
   ENVIRONMENT,
   WS_URL, // URL de WebSocket seleccionada automáticamente según entorno
@@ -41,7 +41,7 @@ export const environment = {
   // Para debugging en desarrollo
   isDevelopment: ENVIRONMENT === "development",
   isProduction: ENVIRONMENT === "production",
-  
+
   // Debug info (solo en desarrollo)
   ...(ENVIRONMENT === "development" && {
     debug: {

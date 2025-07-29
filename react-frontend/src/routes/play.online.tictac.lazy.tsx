@@ -19,15 +19,27 @@ function TicTacGamePage() {
   const authToken = user?.access_token?.access_token || "fallback_token";
   const wsUrl = environment.WS_URL + "/ws/games";
 
+  // Redirect back if no match_id is provided since game is online-only
+  if (!matchId) {
+    return (
+      <div className="w-full ">
+        <div className="mb-4 p-4 bg-red-900/50 rounded-lg text-center text-white">
+          <p className="text-sm">
+            ❌ Error: match_id es requerido. El juego solo funciona en modo online.
+          </p>
+          <button
+            onClick={() => window.history.back()}
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Volver
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full ">
-      {!matchId && (
-        <div className="mb-4 p-4 bg-blue-900/50 rounded-lg text-center text-white">
-          <p className="text-sm">
-            🎮 Modo offline - Añade ?match_id=test123 para modo online
-          </p>
-        </div>
-      )}
       <TicTacGame
         onBack={() => router.history.back()}
         isOnlineMode={isOnlineMode}

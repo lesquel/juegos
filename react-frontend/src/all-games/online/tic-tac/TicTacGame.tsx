@@ -27,7 +27,7 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
   const [gameState, setGameState] = useState<GameState>({
     board: Array(9).fill(null),
     currentPlayer: "X",
-    gameStatus: isOnlineMode ? "waiting" : "playing",
+    gameStatus: "waiting", // Always waiting for online games
     winner: null,
     winningPositions: [],
     playerSymbol: null,
@@ -35,7 +35,7 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
     roomCode: roomCode || null,
     player_id: "Jugador",
     opponentName: null,
-    isPlayerTurn: !isOnlineMode,
+    isPlayerTurn: false, // Always false initially for online games
     lastMove: null,
     gameId: null,
     spectators: 0,
@@ -82,23 +82,32 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
 
   // Memoizar la configuración para evitar cambios innecesarios
   const config = useMemo(() => ({
-    isOnline: isOnlineMode,
+    isOnline: true, // Always online now
     wsUrl,
     authToken,
     player_id: userId,
     roomCode,
-  }), [isOnlineMode, wsUrl, authToken, userId, roomCode]);
+  }), [wsUrl, authToken, userId, roomCode]);
 
   useEffect(() => {
-    // Skip if we've already initialized for this room
-    if (isOnlineMode && roomCode && initRef.current === roomCode) {
-      console.log("🔄 Skipping re-initialization for same room:", roomCode);
+    console.log('🎯 useEffect triggered with:', {
+      roomCode,
+      initRefCurrent: initRef.current,
+      hasGameLogic: !!gameLogicRef.current,
+      isConnected: gameLogicRef.current?.isConnected()
+    });
+
+    // Skip if we've already initialized for this room AND we have a valid connection
+    if (roomCode && initRef.current === roomCode && gameLogicRef.current?.isConnected()) {
+      console.log("🔄 Skipping re-initialization for same room with active connection:", roomCode);
       return;
     }
 
     console.log("TicTacGame config:", config);
 
-    if (isOnlineMode && roomCode) {
+    // Only online mode is supported
+    if (roomCode) {
+      console.log('🚀 Starting initialization for room:', roomCode);
       // Mark this room as initialized
       initRef.current = roomCode;
 
@@ -118,6 +127,24 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
       // Si ya tenemos una instancia y es para el mismo room, no crear otra
       if (gameLogicRef.current && gameLogicRef.current.getConfig().roomCode === roomCode) {
         console.log('🔄 Using existing instance for same room');
+
+        // Pero sí intentar conectar si no está conectado
+        if (!gameLogicRef.current.isConnected()) {
+          console.log('🔌 Existing instance not connected, attempting connection...');
+          const connectTimeout = setTimeout(() => {
+            console.log('⏰ Connect timeout triggered for existing instance...');
+            if (gameLogicRef.current && !gameLogicRef.current.isConnected()) {
+              console.log('🔌 Calling connect() method on existing instance...');
+              gameLogicRef.current.connect().catch((error) => {
+                console.error('❌ Failed to connect existing instance:', error);
+              });
+            }
+          }, 100);
+
+          return () => {
+            clearTimeout(connectTimeout);
+          };
+        }
         return;
       }
 
@@ -134,14 +161,21 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
 
       // Delay para evitar múltiples conexiones simultáneas en modo desarrollo
       const connectTimeout = setTimeout(() => {
+        console.log('⏰ Connect timeout triggered, attempting connection...');
         if (gameLogicRef.current && !gameLogicRef.current.isConnected()) {
+          console.log('🔌 Calling connect() method...');
           gameLogicRef.current.connect().catch((error) => {
             console.error('❌ Failed to connect:', error);
-            // Si falla la conexión, intentar modo offline
+            // Set error state for failed online connection
             if (gameLogicRef.current) {
-              console.log('🔄 Falling back to offline mode');
-              gameLogicRef.current.startOfflineGame();
+              console.log('🔄 Connection failed - game cannot proceed');
+              // Could potentially redirect back or show error state
             }
+          });
+        } else {
+          console.log('⚠️ Connect timeout triggered but conditions not met:', {
+            hasGameLogic: !!gameLogicRef.current,
+            isConnected: gameLogicRef.current?.isConnected()
           });
         }
       }, 100);
@@ -150,27 +184,12 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
       return () => {
         clearTimeout(connectTimeout);
       };
-    } else {
-      // Para modo offline, crear una nueva instancia siempre
-      if (gameLogicRef.current) {
-        gameLogicRef.current.disconnect();
-      }
-      console.log('🎮 Starting offline game');
-      gameLogicRef.current = new TicTacGameLogic(config, setGameState);
-      gameLogicRef.current.startOfflineGame();
     }
 
     return () => {
-      // Solo desconectar si no es modo online o si no hay otros componentes usando la instancia
-      if (gameLogicRef.current && !isOnlineMode) {
-        // Para modo offline sí podemos limpiar inmediatamente
-        console.log('🧹 Cleaning up offline game');
-        gameLogicRef.current.disconnect();
-        gameLogicRef.current = null;
-      }
       // Para modo online, no desconectamos inmediatamente para permitir reutilización
     };
-  }, [config, isOnlineMode, roomCode]);
+  }, [config, roomCode]);
 
   const handleCellClick = useCallback((index: number) => {
     if (gameLogicRef.current) {
@@ -179,11 +198,11 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
   }, []);
 
   const handlePlayAgain = useCallback(() => {
-    if (gameLogicRef.current) {
-      gameLogicRef.current.resetGame();
-    }
+    // Reset functionality removed - game is online only
     setShowModal(false);
-  }, []);
+    // Navigate back or disconnect since we can't reset
+    onBack?.();
+  }, [onBack]);
 
   const handleBack = useCallback(() => {
     console.log('🔙 Handling back navigation');
@@ -245,13 +264,7 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
       return !canMove;
     }
 
-    // Fallback si no hay gameLogic
-    if (!isOnlineMode) {
-      const disabled = gameState.gameStatus !== "playing";
-      console.log('🎮 Fallback offline mode - Game disabled:', disabled, 'Status:', gameState.gameStatus);
-      return disabled;
-    }
-
+    // Fallback - always online mode
     const disabled = gameState.gameStatus !== "playing" || !gameState.isPlayerTurn;
     console.log('🌐 Fallback online mode - Game disabled:', disabled, {
       status: gameState.gameStatus,
@@ -261,7 +274,7 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
       isConnected: gameState.isConnected
     });
     return disabled;
-  }, [isOnlineMode, gameState.gameStatus, gameState.isPlayerTurn, gameState.playerSymbol, gameState.currentPlayer, gameState.isConnected]);
+  }, [gameState.gameStatus, gameState.isPlayerTurn, gameState.playerSymbol, gameState.currentPlayer, gameState.isConnected]);
 
 
   return (

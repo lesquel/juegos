@@ -1,8 +1,8 @@
-from typing import Protocol
+from typing import Optional, Protocol
 
 
 class IFile(Protocol):
-    filename: str
+    filename: Optional[str]
 
     async def read(self) -> bytes:
         ...
