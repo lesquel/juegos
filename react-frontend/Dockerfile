@@ -1,39 +1,15 @@
-# ------------------------------
-# Etapa de construcción
-# ------------------------------
+# Builder
 FROM node:20-alpine AS builder
-
 WORKDIR /app
-
-# Copiar solo archivos necesarios para instalar dependencias
-COPY package.json package-lock.json* ./
+COPY package.json package-lock.json ./
 RUN npm install
-
-# Copiar el resto del código
 COPY . .
+RUN npm run build
 
-# Construir la app (si aplica)
-# Descomenta si usas React, Vite, Astro, etc.
-# RUN npm run build
-
-# ------------------------------
-# Etapa de producción
-# ------------------------------
-FROM node:20-alpine
-
-WORKDIR /app
-
-# Copiar los archivos desde la etapa de construcción
-COPY --from=builder /app /app
-
-# Instalar solo dependencias de producción
-RUN npm install --omit=dev
-
-# Cloud Run usa el puerto 8080
-ENV PORT=8080
-
-# Expón el puerto 8080
+# Production
+FROM nginx:stable-alpine
+# Cambiar puerto 80 a 8080 para Cloud Run
+RUN sed -i 's/listen 80;/listen 8080;/g' /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 8080
-
-# Iniciar la app (ajusta si tu comando es diferente)
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
