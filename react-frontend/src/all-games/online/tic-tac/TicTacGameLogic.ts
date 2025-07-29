@@ -363,10 +363,29 @@ export class TicTacGameLogic {
 
       case 'game_finished_automatically':
       case 'game_over': {
+        console.log('🏆 Juego terminado:', message);
+        
         const finishMessage = message as WebSocketMessage & { winner?: string; winningPositions?: number[] };
+        
+        // Mapear el ganador igual que en vanilla JS
+        let mappedWinner: Player | 'draw' | null = null;
+        const winner = finishMessage.winner;
+        
+        if (winner === "R") {
+          mappedWinner = "X";
+        } else if (winner === "Y") {
+          mappedWinner = "O";
+        } else if (winner === "draw") {
+          mappedWinner = "draw";
+        } else if (winner === "X" || winner === "O") {
+          mappedWinner = winner; // Ya está en formato correcto
+        }
+        
+        console.log('🏆 Ganador mapeado:', winner, '->', mappedWinner);
+        
         this.updateState({
           gameStatus: 'finished',
-          winner: this.mapBackendWinnerToFrontend(finishMessage.winner || ''),
+          winner: mappedWinner,
           winningPositions: finishMessage.winningPositions || [],
           isPlayerTurn: false
         });
@@ -377,6 +396,11 @@ export class TicTacGameLogic {
 
       case 'player_assigned':
         this.handlePlayerAssigned(message);
+        break;
+
+      case 'game_restarted':
+        console.log('🔄 Juego reiniciado');
+        this.resetGameState();
         break;
 
       case 'error': {
@@ -434,117 +458,164 @@ export class TicTacGameLogic {
   }
 
   private handleGameState(message: any): void {
-    console.log('🎮 Handling game state:', message);
+    console.log('🎮 Estado del juego recibido:', message);
 
-    // Extraer información del estado del juego desde la respuesta del backend
-    const gameState = message.game_state || message;
-    const board = gameState.board || message.board;
-    const currentPlayer = gameState.current_player || message.current_player;
-    const winner = gameState.winner || message.winner;
-    const gameOver = gameState.game_over || message.game_over || false;
-    const playerColor = message.player_color || message.data?.player_color;
-    const state = message.state || gameState.state;
-    const playersMapping = message.players;
+    // Detectar el formato del mensaje como en el vanilla JS
+    if (message.game_state) {
+      this.handleNewFormatGameState(message);
+    } else {
+      this.handleOriginalFormatGameState(message);
+    }
+  }
 
-    console.log('🎮 Players mapping:', playersMapping);
-    console.log('🎮 Current player symbol:', this.gameState.playerSymbol);
+  private handleNewFormatGameState(data: any): void {
+    const gameStateData = data.game_state;
+    const playersMapping = data.players;
 
-    // Asignar símbolo del jugador SOLO SI NO TENEMOS UNO YA
-    if (!this.gameState.playerSymbol) {
-      let frontendSymbol: Player | null = null;
-      let isFirstPlayer = false;
+    console.log('📋 Formato nuevo detectado');
+    console.log('📋 Game state data:', gameStateData);
+    console.log('📋 Players mapping:', playersMapping);
 
-      // Primera opción: usar playersMapping si está disponible
-      if (playersMapping) {
-        const currentUserId = this.getCurrentUserId();
-        console.log('🎮 Current user ID:', currentUserId);
-
-        if (currentUserId && playersMapping[currentUserId]) {
-          const backendSymbol = playersMapping[currentUserId];
-          frontendSymbol = this.mapBackendSymbolToFrontend(backendSymbol);
-          isFirstPlayer = backendSymbol === 'R';
-          console.log('🎮 Assigned symbol from players mapping:', backendSymbol, '->', frontendSymbol);
-        }
+    // Determinar mi símbolo basado en el mapping de jugadores
+    const currentUserId = this.getCurrentUserId();
+    if (currentUserId && playersMapping?.[currentUserId]) {
+      const backendSymbol = playersMapping[currentUserId];
+      let frontendSymbol: Player;
+      
+      if (backendSymbol === "R") {
+        frontendSymbol = "X"; // Primer jugador es X
+      } else if (backendSymbol === "Y") {
+        frontendSymbol = "O"; // Segundo jugador es O
+      } else {
+        frontendSymbol = backendSymbol === 1 ? "X" : "O";
       }
+      
+      console.log('🎮 Mi símbolo asignado:', frontendSymbol, '(mapeado desde', backendSymbol, ')');
+      this.updateState({ playerSymbol: frontendSymbol });
+    }
 
-      // Segunda opción: usar player_color si playersMapping no funcionó
-      if (!frontendSymbol && playerColor) {
-        if (playerColor === 'red') {
-          frontendSymbol = 'X';
-          isFirstPlayer = true;
-        } else if (playerColor === 'yellow') {
-          frontendSymbol = 'O';
-          isFirstPlayer = false;
+    // Determinar el estado del juego
+    if (gameStateData.game_over) {
+      console.log('🏆 Juego terminado');
+      if (gameStateData.winner) {
+        // Mapear el ganador del backend también
+        let mappedWinner: Player | 'draw' = gameStateData.winner;
+        if (gameStateData.winner === "R") {
+          mappedWinner = "X";
+        } else if (gameStateData.winner === "Y") {
+          mappedWinner = "O";
         }
-      }
-
-      if (frontendSymbol) {
-        // En Tic-Tac-Toe, el jugador X (red/R) siempre empieza
-        const isMyTurnInitially = isFirstPlayer && (!currentPlayer || currentPlayer === 'R' || currentPlayer === 1);
-
         this.updateState({
-          playerSymbol: frontendSymbol,
-          isPlayerTurn: isMyTurnInitially
+          gameStatus: 'finished',
+          winner: mappedWinner
         });
       }
+      return;
     }
 
-    // Actualizar el tablero si está disponible
-    if (board) {
-      this.updateBoardFromServer(board);
+    // El juego está en progreso
+    console.log('🎮 Estado: Jugando (2 jugadores conectados)');
+    this.updateState({ gameStatus: 'playing' });
+
+    // Para Tic-Tac-Toe, el backend ahora envía el tablero correctamente
+    if (gameStateData.board) {
+      console.log('📋 Actualizando tablero desde servidor');
+      this.updateBoardFromServer(gameStateData.board);
     }
 
-    // Actualizar el estado del juego
-    if (gameOver && winner !== undefined) {
-      const frontendWinner = this.mapBackendWinnerToFrontend(winner);
+    // Determinar de quién es el turno - mapear "R" -> "X", "Y" -> "O"
+    let mappedCurrentPlayer: Player = gameStateData.current_player;
+    if (gameStateData.current_player === "R") {
+      mappedCurrentPlayer = "X";
+    } else if (gameStateData.current_player === "Y") {
+      mappedCurrentPlayer = "O";
+    }
+
+    // Determinar si es mi turno usando la misma lógica del vanilla JS
+    this.updateTurnFromGameState(mappedCurrentPlayer);
+    this.updateState({ currentPlayer: mappedCurrentPlayer });
+  }
+
+  private handleOriginalFormatGameState(data: any): void {
+    console.log('📋 Formato original detectado');
+    console.log('📋 Player ID asignado:', data.player_id);
+    console.log('📋 Símbolo del jugador:', data.player_symbol || data.player_color);
+    console.log('📋 Estado del juego:', data.state);
+
+    // Mapear símbolos del backend a Tic-Tac-Toe como en vanilla JS
+    const backendSymbol = data.player_symbol || data.player_color;
+    let playerSymbol: Player;
+    
+    if (backendSymbol === "R" || backendSymbol === "red") {
+      playerSymbol = "X";
+    } else if (backendSymbol === "Y" || backendSymbol === "yellow") {
+      playerSymbol = "O";
+    } else {
+      playerSymbol = backendSymbol; // Usar tal como viene si ya es X o O
+    }
+
+    console.log('🎮 Símbolo mapeado:', playerSymbol);
+
+    this.updateState({
+      playerSymbol,
+      gameStatus: data.state === 'waiting_for_players' ? 'waiting' : 'playing'
+    });
+
+    // Actualizar el tablero si existe
+    if (data.board) {
+      this.updateBoardFromServer(data.board);
+    }
+
+    // Determinar turno usando la misma lógica del vanilla JS
+    if (data.current_player) {
+      this.updateTurnFromGameState(data.current_player);
+    }
+
+    if (data.winner) {
+      // Mapear el ganador también
+      let mappedWinner: Player | 'draw' = data.winner;
+      if (data.winner === "R") {
+        mappedWinner = "X";
+      } else if (data.winner === "Y") {
+        mappedWinner = "O";
+      }
       this.updateState({
         gameStatus: 'finished',
-        winner: frontendWinner
-      });
-    } else {
-      // Determinar el jugador actual basado en current_player del backend
-      let frontendCurrentPlayer: Player = 'X';
-      if (typeof currentPlayer === 'string') {
-        if (currentPlayer === 'R') {
-          frontendCurrentPlayer = 'X';
-        } else if (currentPlayer === 'Y') {
-          frontendCurrentPlayer = 'O';
-        }
-      } else if (typeof currentPlayer === 'number') {
-        if (currentPlayer === 1) {
-          frontendCurrentPlayer = 'X'; // R en backend
-        } else if (currentPlayer === 2) {
-          frontendCurrentPlayer = 'O'; // Y en backend
-        }
-      }
-
-      // Determinar si es el turno del jugador SOLO SI YA TENEMOS SÍMBOLO ASIGNADO
-      let isMyTurn = false;
-      if (this.gameState.playerSymbol) {
-        // Simplificar: X juega cuando current_player es 'R' o 1, O juega cuando es 'Y' o 2
-        if (this.gameState.playerSymbol === 'X' && (currentPlayer === 'R' || currentPlayer === 1)) {
-          isMyTurn = true;
-        } else if (this.gameState.playerSymbol === 'O' && (currentPlayer === 'Y' || currentPlayer === 2)) {
-          isMyTurn = true;
-        }
-      }
-
-
-
-      // Determinar el estado del juego basado en la respuesta del backend
-      let gameStatus: 'waiting' | 'playing' | 'finished' = 'playing';
-      if (state === 'waiting_for_players') {
-        gameStatus = 'waiting';
-      } else if (state === 'playing' || currentPlayer) {
-        gameStatus = 'playing';
-      }
-
-      this.updateState({
-        gameStatus,
-        currentPlayer: frontendCurrentPlayer,
-        isPlayerTurn: isMyTurn
+        winner: mappedWinner
       });
     }
+  }
+
+  // Método para determinar turno igual que el vanilla JS
+  private updateTurnFromGameState(currentPlayer: any): void {
+    // Determinar de quién es el turno basado en current_player
+    let isCurrentPlayer = false;
+
+    console.log('🎯 Determinando turno:', {
+      currentPlayerFromServer: currentPlayer,
+      myPlayerSymbol: this.gameState.playerSymbol,
+      currentUserId: this.getCurrentUserId(),
+    });
+
+    if (currentPlayer === "X" || currentPlayer === 1 || currentPlayer === "R") {
+      isCurrentPlayer = this.gameState.playerSymbol === "X";
+      console.log('🔴 Turno del jugador X/R:', {
+        isMyTurn: isCurrentPlayer,
+        mySymbol: this.gameState.playerSymbol,
+      });
+    } else if (currentPlayer === "O" || currentPlayer === 2 || currentPlayer === "Y") {
+      isCurrentPlayer = this.gameState.playerSymbol === "O";
+      console.log('🟡 Turno del jugador O/Y:', {
+        isMyTurn: isCurrentPlayer,
+        mySymbol: this.gameState.playerSymbol,
+      });
+    }
+
+    console.log('📋 Current player del servidor:', currentPlayer);
+    console.log('📋 Mi símbolo:', this.gameState.playerSymbol);
+    console.log('📋 Es mi turno:', isCurrentPlayer);
+
+    this.updateState({ isPlayerTurn: isCurrentPlayer });
   }
 
 
@@ -596,6 +667,20 @@ export class TicTacGameLogic {
     }
   }
 
+  private resetGameState(): void {
+    console.log('🔄 Reseteando estado del juego');
+    
+    this.updateState({
+      board: Array(9).fill(null) as Board,
+      currentPlayer: 'X',
+      gameStatus: 'playing',
+      winner: null,
+      winningPositions: [],
+      isPlayerTurn: this.gameState.playerSymbol === 'X', // X siempre empieza
+      lastMove: null
+    });
+  }
+
   private handlePlayerAssigned(message: any): void {
     if (message.player_symbol) {
       const frontendSymbol = this.mapBackendSymbolToFrontend(message.player_symbol);
@@ -627,36 +712,136 @@ export class TicTacGameLogic {
   }
 
   private handleMoveMade(message: any): void {
+    console.log('🎯 Movimiento procesado:', message);
+
+    // Verificar si el movimiento es válido como en vanilla JS
     if (message.result?.valid) {
-      const move = message.move;
-      const playerSymbol = message.player_symbol === 'R' ? 'X' : 'O';
-      // Manejar tanto 'col' como 'column' para compatibilidad
-      const position = move.row * 3 + (move.col || move.column);
+      this.processValidMove(message);
+    } else {
+      console.error('❌ Movimiento inválido:', message.result?.reason || 'Razón desconocida');
+      // Mostrar error al usuario pero no desconectar
+    }
+  }
 
-      const newBoard = [...this.gameState.board] as Board;
-      if (position >= 0 && position < 9) {
-        newBoard[position] = playerSymbol;
+  private processValidMove(data: any): void {
+    console.log('📋 Procesando movimiento válido:', data);
+    
+    // Actualizar el tablero con el movimiento
+    const move = data.move;
+    let symbol = data.player_symbol;
 
-        this.updateState({
-          board: newBoard,
-          currentPlayer: this.getNextPlayer(playerSymbol),
-          isPlayerTurn: !this.gameState.isPlayerTurn
-        });
+    // Mapear símbolo del backend a Tic-Tac-Toe como en vanilla JS
+    if (symbol === "R") {
+      symbol = "X";
+    } else if (symbol === "Y") {
+      symbol = "O";
+    }
 
-        const gameResult = this.checkGameResult(newBoard);
-        if (gameResult.isFinished) {
-          this.updateState({
-            gameStatus: 'finished',
-            winner: gameResult.winner,
-            winningPositions: gameResult.winningPositions
-          });
+    console.log('📋 Movimiento válido:', {
+      row: move.row,
+      column: move.column,
+      symbol: symbol,
+      original_symbol: data.player_symbol,
+      result: data.result,
+    });
+
+    // Actualizar el tablero local
+    const position = move.row * 3 + move.column;
+    const newBoard = [...this.gameState.board] as Board;
+    
+    if (position >= 0 && position < 9 && newBoard[position] === null) {
+      newBoard[position] = symbol as Player;
+      this.updateState({ board: newBoard });
+    }
+
+    // Verificar ganador localmente después de actualizar el tablero
+    console.log('🔍 Verificando ganador después del movimiento...');
+    const gameResult = this.checkGameResult(newBoard);
+    if (gameResult.isFinished) {
+      console.log('🏆 ¡Ganador detectado localmente!');
+      this.updateState({
+        gameStatus: 'finished',
+        winner: gameResult.winner,
+        winningPositions: gameResult.winningPositions
+      });
+      return;
+    }
+
+    // Verificar empate
+    const moveCount = newBoard.filter(cell => cell !== null).length;
+    if (moveCount >= 9) {
+      console.log('🤝 Empate detectado localmente!');
+      this.updateState({
+        gameStatus: 'finished',
+        winner: 'draw'
+      });
+      return;
+    }
+
+    // Actualizar el estado del juego si existe información adicional
+    if (data.game_state) {
+      console.log('🎮 Actualizando estado con data.game_state:', data.game_state);
+      this.processGameStateAfterMove(data.game_state, data.player_id);
+    } else {
+      // Si no hay game_state en la respuesta, solicitar el estado actualizado
+      console.log('🔄 No hay game_state en la respuesta, solicitando estado...');
+      setTimeout(() => {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          const getStateMessage = {
+            type: 'get_game_state',
+            match_id: this.config.roomCode,
+            game_type: 'tictactoe'
+          };
+          this.ws.send(JSON.stringify(getStateMessage));
         }
+      }, 200); // MOVE_STATE_DELAY del vanilla JS
+    }
+  }
+
+  private processGameStateAfterMove(gameState: any, playerId: string): void {
+    console.log('🎮 Procesando estado después del movimiento:', gameState);
+
+    if (gameState.winner) {
+      // Mapear ganador como en vanilla JS
+      let mappedWinner: Player | 'draw' = gameState.winner;
+      if (gameState.winner === "R") {
+        mappedWinner = "X";
+      } else if (gameState.winner === "Y") {
+        mappedWinner = "O";
       }
+      
+      this.updateState({
+        gameStatus: 'finished',
+        winner: mappedWinner
+      });
+    } else if (gameState.game_over) {
+      this.updateState({
+        gameStatus: 'finished',
+        winner: 'draw'
+      });
+    } else {
+      // Mapear current_player para determinar turnos
+      let mappedCurrentPlayer: Player = gameState.current_player;
+      if (gameState.current_player === "R") {
+        mappedCurrentPlayer = "X";
+      } else if (gameState.current_player === "Y") {
+        mappedCurrentPlayer = "O";
+      }
+
+      console.log('🔄 Actualizando turno después del movimiento:', {
+        originalCurrentPlayer: gameState.current_player,
+        mappedCurrentPlayer: mappedCurrentPlayer,
+        mySymbol: this.gameState.playerSymbol,
+      });
+
+      this.updateTurnFromGameState(mappedCurrentPlayer);
+      this.updateState({ currentPlayer: mappedCurrentPlayer });
     }
   }
 
 
 
+  // Método para determinar turno igual que el vanilla JS
   private updateBoardFromServer(serverBoard: any[][]): void {
     if (!serverBoard || !Array.isArray(serverBoard)) return;
 
@@ -682,36 +867,8 @@ export class TicTacGameLogic {
   }
 
   private joinGame(matchId: string): void {
-    // Evitar múltiples mensajes de join si ya tenemos un símbolo asignado
-    if (this.gameState.playerSymbol) {
-      console.log('🎮 Player already has symbol, skipping join game message');
-      // En lugar de join, solicitar el estado del juego
-      setTimeout(() => {
-        if (this.ws?.readyState === WebSocket.OPEN) {
-          this.sendMessage({
-            type: 'get_game_state',
-            match_id: matchId
-          });
-        }
-      }, 100);
-      return;
-    }
-
-    // Verificar si hay una conexión existente con símbolo para prevenir duplicados
-    const existingConnection = TicTacGameLogic.getActiveConnection(matchId);
-    if (existingConnection && existingConnection !== this && existingConnection.gameState.playerSymbol) {
-      console.log('🎮 Existing connection has symbol, requesting game state instead of joining');
-      setTimeout(() => {
-        if (this.ws?.readyState === WebSocket.OPEN) {
-          this.sendMessage({
-            type: 'get_game_state',
-            match_id: matchId
-          });
-        }
-      }, 100);
-      return;
-    }
-
+    console.log('🚪 Joining game with match_id:', matchId);
+    
     const joinMessage = {
       type: 'join_game',
       match_id: matchId,
@@ -719,8 +876,14 @@ export class TicTacGameLogic {
       player_id: this.getCurrentUserId()
     };
 
-    console.log('🎮 Sending join game message:', joinMessage);
-    this.sendMessage(joinMessage);
+    console.log('🚪 Enviando mensaje de unión:', joinMessage);
+    
+    // Enviar directamente como JSON sin wrapper, igual que el vanilla JS
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify(joinMessage));
+    } else {
+      console.error('❌ No se puede enviar mensaje: WebSocket no conectado');
+    }
   }
 
 
@@ -758,7 +921,7 @@ export class TicTacGameLogic {
 
     console.log('🎯 Making move:', { position, row, col, playerSymbol: this.gameState.playerSymbol });
 
-    // Send move to server using the expected backend format
+    // Send move to server using the same format as vanilla JS
     const moveMessage = {
       type: 'make_move',
       match_id: this.config.roomCode,
@@ -766,12 +929,19 @@ export class TicTacGameLogic {
       player_id: this.getCurrentUserId(),
       move: {
         row: row,
-        col: col
+        column: col // Usar 'column' como en el vanilla JS
       }
     };
 
-    console.log('📤 Sending move message:', moveMessage);
-    this.sendMessage(moveMessage);
+    console.log('🎯 Enviando movimiento:', moveMessage);
+    
+    // Enviar directamente como JSON sin wrapper
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify(moveMessage));
+    } else {
+      console.error('❌ No se puede enviar mensaje: WebSocket no conectado');
+      return false;
+    }
 
     return true;
   }
@@ -834,7 +1004,7 @@ export class TicTacGameLogic {
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
         return {
           isFinished: true,
-          winner: board[a]!,
+          winner: board[a],
           winningPositions: pattern
         };
       }
