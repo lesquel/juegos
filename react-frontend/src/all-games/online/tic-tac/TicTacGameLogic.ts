@@ -138,20 +138,20 @@ export class TicTacGameLogic {
 
     switch (message.type) {
       case 'game_state':
-        this.handleGameState(message.data);
+        this.handleGameState(message);
         break;
 
       case 'player_joined':
-        this.handlePlayerJoined(message.data);
+        this.handlePlayerJoined(message);
         break;
 
       case 'move_made':
-        this.handleMoveMade(message.data);
+        this.handleMoveMade(message);
         break;
 
       case 'game_finished_automatically':
       case 'game_over':
-        this.handleGameOver(message.data);
+        this.handleGameOver(message);
         break;
 
       case 'game_restarted':
@@ -160,7 +160,7 @@ export class TicTacGameLogic {
         break;
 
       case 'error':
-        console.error('💥 Server error:', message.data.message);
+        console.error('💥 Server error:', (message as any).message);
         break;
 
       default:
@@ -168,13 +168,13 @@ export class TicTacGameLogic {
     }
   }
 
-  private handleGameState(data: any): void {
-    console.log('🎮 Game state received:', data);
+  private handleGameState(message: any): void {
+    console.log('🎮 Game state received:', message);
     
-    if (data.game_state) {
+    if (message.game_state) {
       // New format with game_state object
-      const gameState = data.game_state;
-      const playersMapping = data.players;
+      const gameState = message.game_state;
+      const playersMapping = message.players;
       
       // Map player symbols from backend (R/Y) to frontend (X/O)
       if (playersMapping?.[this.config.playerName]) {
@@ -203,27 +203,27 @@ export class TicTacGameLogic {
         });
       }
     } else {
-      // Original format
+      // Original format - access properties directly from message
       this.updateState({
-        playerSymbol: data.player_symbol === 'R' ? 'X' : 'O',
-        gameStatus: data.state === 'waiting_for_players' ? 'waiting' : 'playing'
+        playerSymbol: message.player_symbol === 'R' ? 'X' : 'O',
+        gameStatus: message.state === 'waiting_for_players' ? 'waiting' : 'playing'
       });
     }
   }
 
-  private handlePlayerJoined(data: any): void {
-    console.log('✅ Player joined:', data);
+  private handlePlayerJoined(message: any): void {
+    console.log('✅ Player joined:', message);
     this.updateState({
-      gameStatus: data.players_count === 2 ? 'playing' : 'waiting'
+      gameStatus: message.players_count === 2 ? 'playing' : 'waiting'
     });
   }
 
-  private handleMoveMade(data: any): void {
-    console.log('🎯 Move made:', data);
+  private handleMoveMade(message: any): void {
+    console.log('🎯 Move made:', message);
     
-    if (data.result?.valid) {
-      const move = data.move;
-      const playerSymbol = data.player_symbol === 'R' ? 'X' : 'O';
+    if (message.result?.valid) {
+      const move = message.move;
+      const playerSymbol = message.player_symbol === 'R' ? 'X' : 'O';
       
       // Convert row/col to linear position for our board
       const position = move.row * 3 + move.column;
@@ -309,11 +309,11 @@ export class TicTacGameLogic {
     });
   }
 
-  private handleGameOver(data: any): void {
+  private handleGameOver(message: any): void {
     this.updateState({
       gameStatus: 'finished',
-      winner: data.winner,
-      winningPositions: data.winningPositions || [],
+      winner: message.winner,
+      winningPositions: message.winningPositions || [],
       isPlayerTurn: false
     });
   }
