@@ -1,30 +1,39 @@
-# Etapa 1: build
-FROM node:20-slim AS builder
+# ------------------------------
+# Etapa de construcción
+# ------------------------------
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Instalar pnpm
-RUN npm install -g pnpm
+# Copiar solo archivos necesarios para instalar dependencias
+COPY package.json package-lock.json* ./
+RUN npm install
 
-# Copiar dependencias
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install
-
-# Copiar el resto del proyecto
+# Copiar el resto del código
 COPY . .
 
-# Construir la app
-RUN pnpm run build
+# Construir la app (si aplica)
+# Descomenta si usas React, Vite, Astro, etc.
+# RUN npm run build
 
-# Etapa 2: producción con nginx
-FROM nginx:stable-alpine AS production
+# ------------------------------
+# Etapa de producción
+# ------------------------------
+FROM node:20-alpine
 
-# Cambiar nginx a puerto 8080 para Cloud Run
-RUN sed -i 's/80;/8080;/g' /etc/nginx/conf.d/default.conf
+WORKDIR /app
 
-# Limpiar y copiar archivos de la build
-RUN rm -rf /usr/share/nginx/html/*
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copiar los archivos desde la etapa de construcción
+COPY --from=builder /app /app
 
+# Instalar solo dependencias de producción
+RUN npm install --omit=dev
+
+# Cloud Run usa el puerto 8080
+ENV PORT=8080
+
+# Expón el puerto 8080
 EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+
+# Iniciar la app (ajusta si tu comando es diferente)
+CMD ["npm", "start"]
