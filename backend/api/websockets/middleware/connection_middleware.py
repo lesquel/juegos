@@ -64,12 +64,6 @@ class WebSocketConnectionMiddleware(WebSocketMiddleware):
             )
             raise AlreadyParticipatingError("Duplicate connection")
 
-        # Don't send connection confirmation immediately - let the message loop handle it
-        # This avoids timing issues with WebSocket state
-        # await connection_handler.send_connection_confirmation(
-        #     websocket, match_id, str(user.user_id)
-        # )
-
         return {
             "user": user,
             "match": match,

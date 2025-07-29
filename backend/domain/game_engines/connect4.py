@@ -29,16 +29,6 @@ class Conecta4Game(BaseGameEngine):
     def create_board(self):
         return [[" " for _ in range(self.columns)] for _ in range(self.rows)]
 
-    def reset_game(self):
-        """Reinicia el juego a su estado inicial"""
-        self.board = self.create_board()
-        self.current_player = "R"
-        self.curr_columns = [5, 5, 5, 5, 5, 5, 5]
-        self.move_count = 0
-        self.game_over = False
-        self.winner = None
-        self.winning_positions = []
-
     def apply_move(self, move: dict) -> Dict[str, Any]:
         """
         Aplica un movimiento al tablero y retorna el estado del juego

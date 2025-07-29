@@ -271,25 +271,6 @@ class GameWebSocketManager(WebSocketManager):
             # Enviar error solo al jugador que hizo el movimiento inválido
             await websocket.send_json({"type": "error", "message": str(e)})
 
-    async def _handle_restart_game(
-        self, match_id: str, websocket: WebSocket, message: dict
-    ):
-        """Maneja el reinicio del juego"""
-        game = self.get_game(match_id)
-        if not game:
-            await websocket.send_json(
-                {"type": "error", "message": GAME_NOT_FOUND_ERROR}
-            )
-            return
-
-        # Reiniciar el juego
-        game.reset_game()
-
-        # Notificar a todos los jugadores
-        response = {"type": "game_restarted", "game_state": game.get_game_state()}
-
-        await self.broadcast(match_id, response)
-
     async def _handle_get_game_state(
         self, match_id: str, websocket: WebSocket, message: dict
     ):
@@ -362,8 +343,6 @@ class GameWebSocketManager(WebSocketManager):
             await self._handle_create_game(match_id, websocket, message)
         elif message_type == "make_move":
             await self._handle_make_move(match_id, websocket, message)
-        elif message_type == "restart_game":
-            await self._handle_restart_game(match_id, websocket, message)
         elif message_type == "get_game_state":
             await self._handle_get_game_state(match_id, websocket, message)
         else:

@@ -27,15 +27,6 @@ class TictactoeGame(BaseGameEngine):
     def create_board(self):
         return [[" " for _ in range(3)] for _ in range(3)]
 
-    def reset_game(self):
-        """Reinicia el juego a su estado inicial"""
-        self.board = self.create_board()
-        self.current_player = "R"  # Primer jugador es R
-        self.move_count = 0
-        self.game_over = False
-        self.winner = None
-        self.winning_positions = []
-
     def apply_move(self, move: dict) -> Dict[str, Any]:
         """Aplica un movimiento al tablero"""
         if self.game_over:

@@ -82,21 +82,6 @@ class GameActions:
         except ValueError as e:
             await websocket.send_json({"type": "error", "message": str(e)})
 
-    async def handle_restart_game(
-        self, match_id: str, websocket: WebSocket, message: dict
-    ):
-        """Maneja el reinicio del juego"""
-        game = self.manager.get_game(match_id)
-        if not game:
-            await websocket.send_json(
-                {"type": "error", "message": GAME_NOT_FOUND_ERROR}
-            )
-            return
-
-        game.reset_game()
-        response = {"type": "game_restarted", "game_state": game.get_game_state()}
-        await self.manager.broadcast(match_id, response)
-
     async def handle_get_game_state(
         self, match_id: str, websocket: WebSocket, message: dict
     ):
