@@ -1,9 +1,7 @@
-from pathlib import Path
 from typing import Any, Dict
 
 from application.mixins.logging_mixin import LoggingMixin
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from infrastructure.core.settings_config import settings
 from infrastructure.logging import get_logger
 
@@ -98,7 +96,6 @@ class AppConfigurator(LoggingMixin):
         configuration_steps = [
             ("middlewares", lambda: add_middlewares(app, self.app_settings)),
             ("exception_handlers", lambda: setup_exception_handlers(app)),
-            ("static_files", lambda: self._setup_static_files(app)),
             ("routers", lambda: add_routers(app)),
             ("admin", lambda: setup_admin(app)),
         ]
@@ -116,34 +113,6 @@ class AppConfigurator(LoggingMixin):
                     raise  # Componentes críticos
                 else:
                     self.logger.warning(f"⚠️ Continuing without {step_name}")
-
-    def _setup_static_files(self, app: FastAPI) -> None:
-        """
-        Configura el servicio de archivos estáticos con manejo mejorado.
-
-        Args:
-            app: Aplicación FastAPI
-        """
-        uploads_dir = Path("uploads")
-
-        try:
-            # Crear directorio si no existe
-            uploads_dir.mkdir(parents=True, exist_ok=True)
-
-            # Verificar permisos
-            if not uploads_dir.is_dir():
-                raise PermissionError(f"Cannot create uploads directory: {uploads_dir}")
-
-            # Montar archivos estáticos
-            app.mount(
-                "/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads"
-            )
-
-            self.logger.info(f"📁 Static files configured: {uploads_dir.absolute()}")
-
-        except Exception as e:
-            self.logger.error(f"❌ Failed to setup static files: {e}")
-            raise
 
     def _get_app_description(self) -> str:
         """Genera descripción de la aplicación."""
@@ -180,9 +149,6 @@ class AppConfigurator(LoggingMixin):
             "environment": self.app_settings.environment,
             "debug": self.app_settings.debug,
             "configured_components": list(self._configured_components),
-            "settings_info": (
-                self.app_settings.get_debug_info()
-                if hasattr(self.app_settings, "get_debug_info")
-                else {}
-            ),
+            "storage_configured": hasattr(settings, "storage_settings"),
+            "using_cloud_storage": True,  # Siempre usamos Cloud Storage
         }

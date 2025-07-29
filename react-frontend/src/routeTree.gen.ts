@@ -18,7 +18,6 @@ import { Route as PlayMarketplaceLostCityRouteImport } from './routes/play/marke
 import { Route as PlayMarketplaceTheSocietyOfMultiphobicsRouteImport } from './routes/play/marketplace/TheSocietyOfMultiphobics'
 import { Route as PlayMarketplaceLostOnStrangerTerraRouteImport } from './routes/play/marketplace/LostOnStrangerTerra'
 
-const TestLazyRouteImport = createFileRoute('/test')()
 const GamesLazyRouteImport = createFileRoute('/games')()
 const CategoryGamesLazyRouteImport = createFileRoute('/category-games')()
 const GamesIndexLazyRouteImport = createFileRoute('/games/')()
@@ -82,11 +81,6 @@ const PlayMarketplaceDadosLazyRouteImport = createFileRoute(
 )()
 const GamesIdMatchesLazyRouteImport = createFileRoute('/games/$id/matches')()
 
-const TestLazyRoute = TestLazyRouteImport.update({
-  id: '/test',
-  path: '/test',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() => import('./routes/test.lazy').then((d) => d.Route))
 const GamesLazyRoute = GamesLazyRouteImport.update({
   id: '/games',
   path: '/games',
@@ -346,7 +340,6 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/category-games': typeof CategoryGamesLazyRouteWithChildren
   '/games': typeof GamesLazyRouteWithChildren
-  '/test': typeof TestLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
   '/category-games/$id': typeof CategoryGamesIdLazyRoute
@@ -383,7 +376,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
-  '/test': typeof TestLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
   '/category-games/$id': typeof CategoryGamesIdLazyRoute
@@ -423,7 +415,6 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/category-games': typeof CategoryGamesLazyRouteWithChildren
   '/games': typeof GamesLazyRouteWithChildren
-  '/test': typeof TestLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
   '/category-games/$id': typeof CategoryGamesIdLazyRoute
@@ -464,7 +455,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/category-games'
     | '/games'
-    | '/test'
     | '/auth/login'
     | '/auth/register'
     | '/category-games/$id'
@@ -501,7 +491,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/test'
     | '/auth/login'
     | '/auth/register'
     | '/category-games/$id'
@@ -540,7 +529,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/category-games'
     | '/games'
-    | '/test'
     | '/auth/login'
     | '/auth/register'
     | '/category-games/$id'
@@ -580,7 +568,6 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   CategoryGamesLazyRoute: typeof CategoryGamesLazyRouteWithChildren
   GamesLazyRoute: typeof GamesLazyRouteWithChildren
-  TestLazyRoute: typeof TestLazyRoute
   TransfersIdLazyRoute: typeof TransfersIdLazyRoute
   TransfersNewLazyRoute: typeof TransfersNewLazyRoute
   UserMeLazyRoute: typeof UserMeLazyRoute
@@ -610,13 +597,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/games': {
       id: '/games'
       path: '/games'
@@ -918,7 +898,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   CategoryGamesLazyRoute: CategoryGamesLazyRouteWithChildren,
   GamesLazyRoute: GamesLazyRouteWithChildren,
-  TestLazyRoute: TestLazyRoute,
   TransfersIdLazyRoute: TransfersIdLazyRoute,
   TransfersNewLazyRoute: TransfersNewLazyRoute,
   UserMeLazyRoute: UserMeLazyRoute,

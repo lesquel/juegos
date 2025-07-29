@@ -117,7 +117,7 @@ class AppInfoAdmin(ModelView, model=AppInfoModel):
     ) -> dict:
         """Procesar subida de múltiples imágenes"""
         form_data = await request.form()
-        upload_service = FileUploadService(upload_directory="uploads")
+        upload_service = FileUploadService()  # Ahora siempre usa GCS
         processed = data.copy()
 
         for field_name, subfolder in self.image_fields.items():

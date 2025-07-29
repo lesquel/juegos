@@ -59,5 +59,13 @@ htmlcov/
 temp/
 tmp/
 
+# Google Cloud credentials
+credentials/
+*.json
+service-account-key.json
+gcs-key.json
+
+# Storage uploads (development)
+uploads/
 
 sonar-project.properties

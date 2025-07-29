@@ -115,7 +115,7 @@ class ImageUploadAdminMixin:
     ) -> dict:
         """Procesar subida de imagen"""
         form_data = await request.form()
-        upload_service = FileUploadService(upload_directory="uploads")
+        upload_service = FileUploadService()  # Ahora se autoconfigura
         processed = data.copy()
 
         # Buscar el archivo en form_data o en data
@@ -166,7 +166,7 @@ class ImageUploadAdminMixin:
                     current_img = result.scalar_one_or_none()
 
                     if current_img and not current_img.startswith("<div"):
-                        upload_service = FileUploadService(upload_directory="uploads")
+                        upload_service = FileUploadService()  # Ahora se autoconfigura
                         # Ejecutar la eliminación de forma asíncrona
                         await upload_service.delete_image(current_img)
         except Exception:

@@ -10,6 +10,7 @@ import type {
 interface BackendMessage {
   type: string;
   match_id?: string;
+  game_type?: string;
   player_id?: string | null;
   move?: {
     row: number;
@@ -145,6 +146,12 @@ export class TicTacGameLogic {
   public async connect(): Promise<void> {
     const roomCode = this.config.roomCode;
 
+    console.log('🚀 TicTacGameLogic.connect() called with config:', {
+      roomCode,
+      wsUrl: this.config.wsUrl,
+      authToken: this.config.authToken ? 'present' : 'missing'
+    });
+
     if (!roomCode) {
       throw new Error('Room code is required for connection');
     }
@@ -195,10 +202,11 @@ export class TicTacGameLogic {
       TicTacGameLogic.registerConnection(roomCode, this);
     } catch (error) {
       console.error('❌ Connection failed:', error);
-      // En caso de error, intentar modo offline si es posible
-      if (!this.config.isOnline) {
-        this.switchToOfflineMode();
-      }
+      // Set error state for online-only mode
+      this.updateState({
+        gameStatus: 'error',
+        isConnected: false
+      });
       throw error;
     } finally {
       this.isConnecting = false;
@@ -227,9 +235,16 @@ export class TicTacGameLogic {
         }
 
         const token = this.config.authToken;
+        // Fix WebSocket URL format to match working JavaScript implementation
+        // Remove the '/games' prefix since it's already included in wsUrl from TicTacGame.tsx
         const wsUrl = `${this.config.wsUrl}/${this.config.roomCode}?token=${encodeURIComponent(token)}`;
 
         console.log('🔌 Creating new WebSocket connection to:', wsUrl);
+        console.log('🔧 Config details:', {
+          wsUrl: this.config.wsUrl,
+          roomCode: this.config.roomCode,
+          tokenLength: token?.length || 0
+        });
 
         this.ws = new WebSocket(wsUrl);
 
@@ -248,13 +263,10 @@ export class TicTacGameLogic {
           this.updateState({ isConnected: true });
           this.reconnectAttempts = 0;
 
-          // Join the game using match_id if available
+          // Join the game immediately after connection like in working JavaScript
           if (this.config.roomCode) {
             console.log('🎮 Joining game with match_id:', this.config.roomCode);
-            // Delay para evitar enviar join inmediatamente
-            setTimeout(() => {
-              this.joinGame(this.config.roomCode!);
-            }, 100);
+            this.joinGame(this.config.roomCode);
           }
 
           resolve();
@@ -297,8 +309,11 @@ export class TicTacGameLogic {
             if (roomCode) {
               TicTacGameLogic.unregisterConnection(roomCode);
             }
-            // Cambiar a modo offline como último recurso
-            this.switchToOfflineMode();
+            // Set error state for online-only mode
+            this.updateState({
+              gameStatus: 'error',
+              isConnected: false
+            });
           }
         };
 
@@ -306,10 +321,13 @@ export class TicTacGameLogic {
           console.error('WebSocket error:', error);
           this.updateState({ isConnected: false });
 
-          // If connection fails, switch to offline mode
+          // Set error state for online-only mode
           if (this.reconnectAttempts === 0) {
-            console.log('⚠️ WebSocket connection failed, switching to offline mode');
-            this.switchToOfflineMode();
+            console.log('⚠️ WebSocket connection failed');
+            this.updateState({
+              gameStatus: 'error',
+              isConnected: false
+            });
           }
 
           reject(new Error('WebSocket connection failed'));
@@ -337,10 +355,13 @@ export class TicTacGameLogic {
       if (this.ws?.readyState !== WebSocket.OPEN && this.reconnectAttempts <= this.maxReconnectAttempts) {
         this.connect().catch((error) => {
           console.error('Reconnection failed:', error);
-          // Si falla la reconexión y no hay más intentos, cambiar a modo offline
+          // Si falla la reconexión y no hay más intentos, establecer estado de error
           if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            console.log('⚠️ Max reconnection attempts reached, switching to offline mode');
-            this.switchToOfflineMode();
+            console.log('⚠️ Max reconnection attempts reached');
+            this.updateState({
+              gameStatus: 'error',
+              isConnected: false
+            });
           }
         });
       }
@@ -373,8 +394,6 @@ export class TicTacGameLogic {
         break;
       }
 
-
-
       case 'player_assigned':
         this.handlePlayerAssigned(message);
         break;
@@ -383,50 +402,21 @@ export class TicTacGameLogic {
         const errorMessage = (message as any).message || 'Unknown error';
         console.error('💥 Server error:', errorMessage);
 
-        // Manejar diferentes tipos de errores
+        // Simple error handling - just log and set error state
         if (errorMessage.includes('Juego no encontrado') || errorMessage.includes('Game not found')) {
-          console.warn('🎯 Game not found error - cleaning up and retrying');
-
-          // Limpiar la conexión del registro de conexiones activas
-          if (this.config.roomCode) {
-            TicTacGameLogic.removeConnection(this.config.roomCode);
-          }
-
+          console.warn('🎯 Game not found error');
           this.updateState({
             gameStatus: 'error',
             isConnected: false
           });
-
-          // Resetear intentos de reconexión para empezar desde cero
-          this.reconnectAttempts = 0;
-
-          // Intentar reconectar después de un breve delay
-          setTimeout(() => {
-            if (this.config.roomCode) {
-              console.log('🔄 Retrying connection for room:', this.config.roomCode);
-              this.connect().catch((err) => {
-                console.error('❌ Retry connection failed:', err);
-                this.switchToOfflineMode();
-              });
-            }
-          }, 2000);
-        } else if (errorMessage.includes('Columna inválida') || errorMessage.includes('Invalid column')) {
-          // Para errores de movimiento inválido, no desconectar, solo mostrar error
-          console.warn('⚠️ Invalid move error from server:', errorMessage);
-          // Optionally update UI to show the error to user
-          // this.updateState({ lastError: errorMessage });
-        } else {
-          // Para otros errores, marcar como error pero mantener conexión
-          console.warn('⚠️ Server error (maintaining connection):', errorMessage);
-          // this.updateState({ lastError: errorMessage });
         }
         break;
       }
 
       default:
         console.warn('⚠️ Unknown message type:', message.type);
-        // También intentar manejar como game_state si tiene información del juego
-        if ((message as any).game_state || (message as any).board || (message as any).state) {
+        // Try to handle as game_state if it has game information
+        if ((message as any).board || (message as any).game_state || (message as any).player_symbol) {
           console.log('🔄 Treating unknown message as game_state');
           this.handleGameState(message);
         }
@@ -452,39 +442,33 @@ export class TicTacGameLogic {
     // Asignar símbolo del jugador SOLO SI NO TENEMOS UNO YA
     if (!this.gameState.playerSymbol) {
       let frontendSymbol: Player | null = null;
-      let isFirstPlayer = false;
 
-      // Primera opción: usar playersMapping si está disponible
-      if (playersMapping) {
+      // Simplificar - usar player_color directamente como en el JS que funciona
+      if (playerColor) {
+        if (playerColor === 'red' || playerColor === 'R') {
+          frontendSymbol = 'X';
+        } else if (playerColor === 'yellow' || playerColor === 'Y') {
+          frontendSymbol = 'O';
+        }
+        console.log('🎮 Assigned symbol from player_color:', playerColor, '->', frontendSymbol);
+      }
+
+      // Usar playersMapping como fallback
+      if (!frontendSymbol && playersMapping) {
         const currentUserId = this.getCurrentUserId();
         console.log('🎮 Current user ID:', currentUserId);
 
         if (currentUserId && playersMapping[currentUserId]) {
           const backendSymbol = playersMapping[currentUserId];
           frontendSymbol = this.mapBackendSymbolToFrontend(backendSymbol);
-          isFirstPlayer = backendSymbol === 'R';
           console.log('🎮 Assigned symbol from players mapping:', backendSymbol, '->', frontendSymbol);
         }
       }
 
-      // Segunda opción: usar player_color si playersMapping no funcionó
-      if (!frontendSymbol && playerColor) {
-        if (playerColor === 'red') {
-          frontendSymbol = 'X';
-          isFirstPlayer = true;
-        } else if (playerColor === 'yellow') {
-          frontendSymbol = 'O';
-          isFirstPlayer = false;
-        }
-      }
-
       if (frontendSymbol) {
-        // En Tic-Tac-Toe, el jugador X (red/R) siempre empieza
-        const isMyTurnInitially = isFirstPlayer && (!currentPlayer || currentPlayer === 'R' || currentPlayer === 1);
-
         this.updateState({
           playerSymbol: frontendSymbol,
-          isPlayerTurn: isMyTurnInitially
+          isPlayerTurn: frontendSymbol === 'X' // X always starts first
         });
       }
     }
@@ -682,33 +666,8 @@ export class TicTacGameLogic {
   }
 
   private joinGame(matchId: string): void {
-    // Evitar múltiples mensajes de join si ya tenemos un símbolo asignado
-    if (this.gameState.playerSymbol) {
-      console.log('🎮 Player already has symbol, skipping join game message');
-      // En lugar de join, solicitar el estado del juego
-      setTimeout(() => {
-        if (this.ws?.readyState === WebSocket.OPEN) {
-          this.sendMessage({
-            type: 'get_game_state',
-            match_id: matchId
-          });
-        }
-      }, 100);
-      return;
-    }
-
-    // Verificar si hay una conexión existente con símbolo para prevenir duplicados
-    const existingConnection = TicTacGameLogic.getActiveConnection(matchId);
-    if (existingConnection && existingConnection !== this && existingConnection.gameState.playerSymbol) {
-      console.log('🎮 Existing connection has symbol, requesting game state instead of joining');
-      setTimeout(() => {
-        if (this.ws?.readyState === WebSocket.OPEN) {
-          this.sendMessage({
-            type: 'get_game_state',
-            match_id: matchId
-          });
-        }
-      }, 100);
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      console.log('❌ WebSocket not connected, cannot join game');
       return;
     }
 
@@ -723,8 +682,6 @@ export class TicTacGameLogic {
     this.sendMessage(joinMessage);
   }
 
-
-
   public makeMove(position: number): boolean {
     // Validate move
     if (!this.canMakeMove(position)) {
@@ -732,12 +689,7 @@ export class TicTacGameLogic {
       return false;
     }
 
-    // For offline mode
-    if (!this.config.isOnline) {
-      return this.makeOfflineMove(position);
-    }
-
-    // For online mode
+    // Only online mode is supported
     if (!this.gameState.isPlayerTurn || !this.gameState.playerSymbol) {
       console.log('❌ Not player turn or no symbol assigned:', {
         isPlayerTurn: this.gameState.isPlayerTurn,
@@ -746,17 +698,18 @@ export class TicTacGameLogic {
       return false;
     }
 
-    // Convert linear position to row/col for backend (0-based indexing)
-    const row = Math.floor(position / 3);
-    const col = position % 3;
+    // Convert linear position to row/col for backend (1-based indexing for Tic-Tac-Toe)
+    const row = Math.floor(position / 3) + 1;
+    const col = (position % 3) + 1;
 
-    // Validate coordinates are within bounds
-    if (row < 0 || row > 2 || col < 0 || col > 2) {
+    // Validate coordinates are within bounds (1-3 for tic-tac-toe)
+    if (row < 1 || row > 3 || col < 1 || col > 3) {
       console.error('❌ Invalid coordinates:', { position, row, col });
       return false;
     }
 
     console.log('🎯 Making move:', { position, row, col, playerSymbol: this.gameState.playerSymbol });
+    console.log('🔍 Config check:', { roomCode: this.config.roomCode, hasRoomCode: !!this.config.roomCode });
 
     // Send move to server using the expected backend format
     const moveMessage = {
@@ -771,31 +724,8 @@ export class TicTacGameLogic {
     };
 
     console.log('📤 Sending move message:', moveMessage);
+    console.log('📤 Message stringified:', JSON.stringify(moveMessage));
     this.sendMessage(moveMessage);
-
-    return true;
-  }
-
-  private makeOfflineMove(position: number): boolean {
-    const newBoard = [...this.gameState.board] as Board;
-    newBoard[position] = this.gameState.currentPlayer;
-
-    const gameResult = this.checkGameResult(newBoard);
-
-    this.updateState({
-      board: newBoard,
-      currentPlayer: this.getNextPlayer(this.gameState.currentPlayer),
-      lastMove: {
-        player: this.gameState.currentPlayer,
-        position,
-        timestamp: Date.now()
-      },
-      ...(gameResult.isFinished && {
-        gameStatus: 'finished',
-        winner: gameResult.winner,
-        winningPositions: gameResult.winningPositions
-      })
-    });
 
     return true;
   }
@@ -863,7 +793,7 @@ export class TicTacGameLogic {
 
 
   public finishGame(participants: { user_id: string; score: number }[]): void {
-    if (this.config.isOnline && this.config.roomCode) {
+    if (this.config.roomCode) {
       this.sendMessage({
         type: 'game_finished',
         match_id: this.config.roomCode,
@@ -876,7 +806,10 @@ export class TicTacGameLogic {
 
   private sendMessage(message: BackendMessage): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message));
+      console.log('📤 sendMessage called with:', message);
+      const messageString = JSON.stringify(message);
+      console.log('📤 Sending WebSocket message:', messageString);
+      this.ws.send(messageString);
     } else {
       console.error('WebSocket not connected');
     }
@@ -917,29 +850,7 @@ export class TicTacGameLogic {
     this.connectionPromise = null;
   }
 
-  // Utility methods for offline mode
-  public startOfflineGame(): void {
-
-    this.updateState({
-      gameStatus: 'playing',
-      isPlayerTurn: true,
-      currentPlayer: 'X',
-      playerSymbol: 'X', // En modo offline, el jugador siempre empieza como X
-      isConnected: false
-    });
-  }
-
-  private switchToOfflineMode(): void {
-
-    this.config = { ...this.config, isOnline: false };
-    this.startOfflineGame();
-  }
-
   public canPlayerMove(): boolean {
-    if (!this.config.isOnline) {
-      return this.gameState.gameStatus === 'playing';
-    }
-
     return this.gameState.isPlayerTurn &&
       this.gameState.gameStatus === 'playing' &&
       this.gameState.playerSymbol !== null &&
@@ -947,10 +858,6 @@ export class TicTacGameLogic {
   }
 
   public getPlayerTurnMessage(): string {
-    if (!this.config.isOnline) {
-      return `Turno del jugador ${this.gameState.currentPlayer}`;
-    }
-
     if (!this.gameState.isConnected) {
       return 'Conectando...';
     }
@@ -972,45 +879,9 @@ export class TicTacGameLogic {
         if (this.gameState.winner === 'draw') {
           return '¡Empate!';
         }
-        if (this.config.isOnline) {
-          return this.gameState.winner === this.gameState.playerSymbol ? '¡Ganaste!' : 'Perdiste';
-        }
-        return `¡Ganó el jugador ${this.gameState.winner}!`;
+        return this.gameState.winner === this.gameState.playerSymbol ? '¡Ganaste!' : 'Perdiste';
       default:
         return 'Preparando juego...';
     }
-  }
-
-  public resetGame(): void {
-    console.log('🔄 Resetting game');
-
-    // Reset game state
-    this.gameState = this.createInitialState();
-
-    // Keep connection and room info
-    this.gameState.isConnected = this.isConnected();
-    this.gameState.roomCode = this.config.roomCode || null;
-    this.gameState.player_id = this.config.player_id;
-
-    // If online, maintain current configuration and request game state
-    if (this.config.isOnline && this.isConnected()) {
-      this.gameState.gameStatus = 'waiting';
-
-      // Request fresh game state from server
-      setTimeout(() => {
-        if (this.ws?.readyState === WebSocket.OPEN) {
-          this.sendMessage({
-            type: 'get_game_state',
-            match_id: this.config.roomCode
-          });
-        }
-      }, 100);
-    } else {
-      // For offline mode, start a new game immediately
-      this.startOfflineGame();
-    }
-
-    // Notify state update
-    this.onStateUpdate(this.gameState);
   }
 }
