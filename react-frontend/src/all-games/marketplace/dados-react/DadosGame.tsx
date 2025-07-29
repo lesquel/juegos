@@ -246,7 +246,7 @@ const DadosGame: React.FC = () => {
   }
 
   return (
-    <div className="dados-game">
+    <div className="dados-game h-full">
       <div className="casino-container">
         <div className="main-game">
           {/* Balance Display - Más prominente */}
