@@ -27,12 +27,12 @@ const UseSingleTransfer: React.FC<{ id: string }> = memo(({ id }) => {
             Error al cargar transferencia
           </h2>
           <p className="text-red-300">{error.message}</p>
-          <a
-            href="/transfers"
+          <Link
+            to="/user/me"
             className="mt-4 inline-block bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg hover:from-teal-600 hover:to-cyan-500 transition duration-300"
           >
             Volver a transferencias
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -98,13 +98,13 @@ const UseSingleTransfer: React.FC<{ id: string }> = memo(({ id }) => {
         {/* Header */}
         <header className="mb-8">
           <nav className="mb-4">
-            <a
-              href="/user/me"
+            <Link
+              to="/user/me"
               className="text-teal-400 hover:text-teal-300 font-semibold flex items-center gap-2 transition-colors"
             >
               <ArrowRight className="h-5 w-5 text-teal-400" />
               Volver a transferencias
-            </a>
+            </Link>
           </nav>
 
           <div className="flex items-center justify-between">
@@ -167,15 +167,15 @@ const UseSingleTransfer: React.FC<{ id: string }> = memo(({ id }) => {
                   className="w-full rounded-lg shadow-lg"
                   loading="lazy"
                 />
-                <a
-                  href={data.transfer_img}
+                <Link
+                  to={data.transfer_img}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors"
                 >
                   <Image className="h-5 w-5" />
                   Ver imagen completa
-                </a>
+                </Link>
               </div>
             ) : (
               <div className="text-center py-8 text-gray-400">
