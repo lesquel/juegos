@@ -1,6 +1,7 @@
 import React, { memo, useState, useMemo, useCallback } from "react";
 import { z } from "zod";
 import { useForm } from "@tanstack/react-form";
+import { useNavigate } from "@tanstack/react-router";
 import { Modal } from "@components/Modal";
 import type { Game } from "@modules/games/models/game.model";
 import type { Match } from "@modules/games/models/match.model";
@@ -82,14 +83,18 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
     const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [authRequiredMsg, setAuthRequiredMsg] = useState(false);
+    const navigate = useNavigate();
 
     const onSuccess = useCallback(
       (data: Match) => {
         setIsLoading(false);
-        const newUrl = `${location.protocol}//${location.host}/${game?.game_url}?match_id=${data.match_id}`;
-        location.href = newUrl;
+        // Usar TanStack Router para la navegación
+        navigate({ 
+          to: `/${game?.game_url}`,
+          search: { match_id: data.match_id }
+        });
       },
-      [game?.game_url]
+      [game?.game_url, navigate]
     );
 
     const { mutate, error } = useCreateMatch(gameId, onSuccess);
@@ -121,11 +126,12 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
           setTimeout(() => {
             setAuthRequiredMsg(false);
             setIsModalOpen(false);
-            location.href = `${location.protocol}//${location.host}/auth/login`;
+            // Usar TanStack Router para la navegación a login
+            navigate({ to: "/auth/login" });
           }, 2500);
         }
       },
-      [mutate]
+      [mutate, navigate]
     );
 
     const form = useForm({
