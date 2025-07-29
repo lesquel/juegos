@@ -13,7 +13,17 @@ export function RootLayoutComponent() {
         GlobalClientData.getGlobalInfo()
             .then((globalInfo) => {
                 const appName = globalInfo.site_name;
+                const faviconUrl = globalInfo.site_icon;
                 document.title = appName;
+                let favicon = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
+                if (!favicon) {
+                    favicon = document.createElement("link") as HTMLLinkElement;
+                    favicon.rel = "icon";
+                    document.head.appendChild(favicon);
+                }
+
+                // Establece el nuevo ícono
+                favicon.href = faviconUrl;
 
             });
     }, []);

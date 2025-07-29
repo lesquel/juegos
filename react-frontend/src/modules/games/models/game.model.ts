@@ -4,6 +4,7 @@ import type { Info } from "@models/info.model";
 export enum GameType {
   offline = "offline",
   online = "online",
+  luck = "luck",
 }
 
 export interface GameDetail {
@@ -20,7 +21,7 @@ export interface GameDetail {
   game_capacity?: number;
 }
 
-export interface Game extends Omit<GameDetail, "categories"> {}
+export interface Game extends Omit<GameDetail, "categories"> { }
 
 export interface GameList {
   info: Info;
