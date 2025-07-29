@@ -1,27 +1,26 @@
-# Etapa 1: Build con Node
 FROM node:20 AS builder
 
 WORKDIR /app
 
-# Copia solo package.json y package-lock.json para aprovechar caché
-COPY package.json package-lock.json ./
+# Copia package.json pero NO package-lock.json
+COPY package.json ./
 
-# Limpia y instala dependencias frescas
-RUN rm -rf node_modules && npm install
+# Elimina package-lock.json si existe (para asegurarnos)
+RUN rm -f package-lock.json
 
-# Copia el resto de los archivos
+# Instalación limpia
+RUN npm install
+
+# Copia el resto del código
 COPY . .
 
-# Ejecuta el build
+# Build
 RUN npm run build
 
-# Etapa 2: Servir con Nginx
 FROM nginx:stable-alpine
 
-# Cambia el puerto si quieres (opcional)
 RUN sed -i 's/listen 80;/listen 8080;/g' /etc/nginx/conf.d/default.conf
 
-# Copia los archivos estáticos del build a nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 8080
