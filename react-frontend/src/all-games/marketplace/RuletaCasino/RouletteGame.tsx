@@ -7,7 +7,8 @@ import { GameInfo } from './components/GameInfo';
 import { ChipSelector } from './components/ChipSelector';
 import { WinDisplay } from './components/WinDisplay';
 import { GameEndModal } from './components/GameEndModal';
-import { useRouletteBetting } from './services/rouletteBettingService';
+import { useRouletteGameId, useRouletteBetting, useRouletteBalance } from './services/rouletteBettingService';
+import type { RouletteBetData, RouletteGameResult } from './services/rouletteBettingService';
 import './styles/roulette-game.css';
 
 export function RouletteGame() {
@@ -22,8 +23,19 @@ export function RouletteGame() {
     isWin: boolean;
   } | null>(null);
 
-  // Servicio de apuestas
-  const bettingService = useRouletteBetting();
+  // Hooks para detectar el game ID y balance
+  const { rouletteGameId, isLoading: isLoadingGameId } = useRouletteGameId();
+  const { balance, isLoading: isLoadingBalance, hasInsufficientFunds } = useRouletteBalance();
+  
+  // Servicio de apuestas (solo si tenemos gameId)
+  const bettingService = useRouletteBetting(rouletteGameId || "");
+
+  // Sincronizar balance del backend con el estado local
+  useEffect(() => {
+    if (balance > 0) {
+      setGameState(prev => ({ ...prev, balance }));
+    }
+  }, [balance]);
 
   // Limpiar timeouts al desmontar
   useEffect(() => {
@@ -38,13 +50,10 @@ export function RouletteGame() {
   }, [spinTimeouts]);
 
   const handlePlaceBet = useCallback((betId: string) => {
-    if (gameState.isSpinning) return;
-
-    const canAfford = RouletteGameLogic.canAffordBet(gameState.balance, gameState.selectedChip);
-    if (!canAfford) return;
+    if (gameState.isSpinning || !bettingService.canPlaceBet(gameState.selectedChip)) return;
 
     setGameState(prev => RouletteGameLogic.placeBet(prev, betId, prev.selectedChip));
-  }, [gameState.isSpinning, gameState.balance, gameState.selectedChip]);
+  }, [gameState.isSpinning, gameState.selectedChip, bettingService]);
 
   const handleChipChange = useCallback((chipValue: number) => {
     if (gameState.isSpinning) return;
@@ -68,9 +77,21 @@ export function RouletteGame() {
       isWin: result.isWin
     });
 
-    // Finalizar match automáticamente
-    if (bettingService.currentMatch) {
-      await bettingService.finishMatch(winningNumber, result.totalWinnings, result.isWin);
+    // Finalizar match automáticamente usando el servicio correcto
+    if (bettingService.currentMatch && rouletteGameId) {
+      const gameResult: RouletteGameResult = {
+        win: result.isWin,
+        winAmount: result.totalWinnings,
+        winningNumber,
+        totalBet: gameState.totalBet
+      };
+
+      try {
+        await bettingService.finishGame.mutateAsync(gameResult);
+        console.log("✅ Match de ruleta finalizado exitosamente");
+      } catch (error) {
+        console.error("❌ Error al finalizar match de ruleta:", error);
+      }
     }
 
     // Mostrar modal después de un breve delay
@@ -79,17 +100,31 @@ export function RouletteGame() {
     }, 2000);
 
     setSpinTimeouts(prev => [...prev, modalTimeout]);
-  }, [gameState, bettingService]);
+  }, [gameState, bettingService, rouletteGameId]);
 
   const handleSpin = useCallback(async () => {
-    if (gameState.isSpinning || gameState.totalBet === 0) return;
+    if (gameState.isSpinning || gameState.totalBet === 0 || !rouletteGameId) return;
+
+    // Verificar fondos suficientes
+    if (hasInsufficientFunds(gameState.totalBet)) {
+      console.warn("⚠️ Fondos insuficientes para la apuesta");
+      return;
+    }
 
     clearAllTimeouts();
 
-    // Crear match antes de girar
-    const matchCreated = await bettingService.createMatch(gameState.totalBet, gameState.bets);
-    if (!matchCreated) {
-      console.error('❌ No se pudo crear el match de ruleta');
+    // Crear match antes de girar usando el servicio correcto
+    const betData: RouletteBetData = {
+      betAmount: gameState.totalBet,
+      gameId: rouletteGameId,
+      bets: gameState.bets
+    };
+
+    try {
+      await bettingService.placeBet.mutateAsync(betData);
+      console.log("✅ Match de ruleta creado exitosamente");
+    } catch (error) {
+      console.error("❌ No se pudo crear el match de ruleta:", error);
       return;
     }
 
@@ -110,13 +145,13 @@ export function RouletteGame() {
     }, RouletteGameLogic.CONFIG.SPIN_DURATION);
 
     setSpinTimeouts(prev => [...prev, spinTimeout]);
-  }, [gameState, clearAllTimeouts, processSpinComplete, bettingService]);
+  }, [gameState, clearAllTimeouts, processSpinComplete, bettingService, rouletteGameId, hasInsufficientFunds]);
 
   const handleReset = useCallback(() => {
     if (gameState.isSpinning) return;
 
     clearAllTimeouts();
-    setGameState(RouletteGameLogic.createInitialState());
+    setGameState(prev => ({ ...RouletteGameLogic.createInitialState(), balance: prev.balance }));
     setShowEndModal(false);
     setLastSpinResult(null);
   }, [gameState.isSpinning, clearAllTimeouts]);
@@ -133,19 +168,54 @@ export function RouletteGame() {
       winMessage: '',
       showWinAnimation: false
     }));
-  }, []);
 
-  const handleQuitGame = useCallback(async () => {
-    if (bettingService.currentMatch) {
-      await bettingService.quitMatch();
-    }
-    setShowEndModal(false);
-    setLastSpinResult(null);
-    setGameState(RouletteGameLogic.createInitialState());
+    // Continuar juego usando el servicio
+    bettingService.continueGame();
   }, [bettingService]);
 
-  const canSpin = gameState.totalBet > 0 && !gameState.isSpinning;
-  const canPlaceBets = !gameState.isSpinning;
+  const handleQuitGame = useCallback(async () => {
+    try {
+      await bettingService.quitGame.mutateAsync();
+      console.log("✅ Salida del juego exitosa");
+    } catch (error) {
+      console.error("❌ Error al salir del juego:", error);
+    }
+    
+    setShowEndModal(false);
+    setLastSpinResult(null);
+    setGameState(prev => ({ ...RouletteGameLogic.createInitialState(), balance: prev.balance }));
+  }, [bettingService]);
+
+  const canSpin = gameState.totalBet > 0 && !gameState.isSpinning && !bettingService.isPlacingBet && !!rouletteGameId;
+  const canPlaceBets = !gameState.isSpinning && !bettingService.isPlacingBet;
+
+  // Mostrar loading si está cargando datos
+  if (isLoadingGameId || isLoadingBalance) {
+    return (
+      <div className="roulette-game">
+        <div className="roulette-game__header">
+          <h1>🎰 Ruleta Casino 🎰</h1>
+          <p className="subtitle">Cargando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Mostrar error si no se puede cargar el juego
+  if (!rouletteGameId) {
+    return (
+      <div className="roulette-game">
+        <div className="roulette-game__header">
+          <h1>🎰 Ruleta Casino 🎰</h1>
+          <p className="subtitle">Error al cargar el juego</p>
+        </div>
+        <div className="roulette-error-message">
+          <h3>❌ Juego no disponible</h3>
+          <p>No se pudo encontrar el juego de ruleta. Por favor, contacta al administrador.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="roulette-game">
@@ -158,35 +228,36 @@ export function RouletteGame() {
       <div className="roulette-betting-status">
         {bettingService.currentMatch && (
           <div className="roulette-current-match">
-            ✅ Match activo: {bettingService.currentMatch.id} - Apuesta: {bettingService.currentMatch.betAmount.toLocaleString()} monedas
+            ✅ Match activo: {bettingService.currentMatch.matchId} - Apuesta: {bettingService.currentMatch.betAmount.toLocaleString()} monedas
           </div>
         )}
         
-        {bettingService.isCreatingMatch && (
+        {bettingService.isPlacingBet && (
           <div className="roulette-betting-loading">
             🔄 Creando apuesta...
           </div>
         )}
         
-        {bettingService.isFinishingMatch && (
+        {bettingService.isFinishingGame && (
           <div className="roulette-finishing-loading">
             ⏳ Finalizando ronda...
           </div>
         )}
         
-        {bettingService.isQuittingMatch && (
+        {bettingService.isQuitting && (
           <div className="roulette-quitting-loading">
             🚪 Saliendo del juego...
           </div>
         )}
         
-        {bettingService.error && (
+        {(bettingService.betError || bettingService.finishError || bettingService.quitError) && (
           <div className="roulette-error-message">
             <h3>❌ Error en el Sistema de Apuestas</h3>
-            <p>{bettingService.error}</p>
-            <button onClick={bettingService.clearError} className="clear-error-btn">
-              Cerrar
-            </button>
+            <p>
+              {bettingService.betError?.message || 
+               bettingService.finishError?.message || 
+               bettingService.quitError?.message}
+            </p>
           </div>
         )}
       </div>
@@ -209,7 +280,7 @@ export function RouletteGame() {
 
           <div className="roulette-game__controls">
             <button
-              className={`spin-button ${gameState.isSpinning ? 'spinning' : ''} ${!canSpin ? 'disabled' : ''}`}
+              className={`spin-button ${gameState.isSpinning || bettingService.isPlacingBet ? 'spinning' : ''} ${!canSpin ? 'disabled' : ''}`}
               onClick={handleSpin}
               disabled={!canSpin}
               title={canSpin ? 'Girar la ruleta' : 'Necesitas apostar primero'}
@@ -218,6 +289,11 @@ export function RouletteGame() {
                 <>
                   <span className="spinner">🌀</span>
                   {' '}GIRANDO...
+                </>
+              ) : bettingService.isPlacingBet ? (
+                <>
+                  <span className="spinner">🔄</span>
+                  {' '}CREANDO APUESTA...
                 </>
               ) : (
                 <>
@@ -240,7 +316,7 @@ export function RouletteGame() {
               <button
                 className="reset-btn"
                 onClick={handleReset}
-                disabled={gameState.isSpinning}
+                disabled={gameState.isSpinning || bettingService.isPlacingBet}
                 title="Reiniciar juego"
               >
                 🔄 Reiniciar
@@ -278,7 +354,7 @@ export function RouletteGame() {
         <p className="game-tip">
           💡 <strong>Consejo:</strong> Prueba diferentes estrategias de apuesta. ¡Cada giro es una nueva oportunidad!
         </p>
-        {gameState.balance < RouletteGameLogic.CONFIG.CHIP_VALUES[0] && (
+        {hasInsufficientFunds(RouletteGameLogic.CONFIG.CHIP_VALUES[0]) && (
           <p className="warning">
             ⚠️ Saldo insuficiente. Reinicia el juego para continuar jugando.
           </p>
@@ -295,8 +371,8 @@ export function RouletteGame() {
         onNewGame={handleNewGame}
         onQuitGame={handleQuitGame}
         isNewGameLoading={false}
-        isQuitLoading={bettingService.isQuittingMatch}
-        canContinue={gameState.balance >= RouletteGameLogic.CONFIG.CHIP_VALUES[0]}
+        isQuitLoading={bettingService.isQuitting}
+        canContinue={!hasInsufficientFunds(RouletteGameLogic.CONFIG.CHIP_VALUES[0])}
       />
     </div>
   );

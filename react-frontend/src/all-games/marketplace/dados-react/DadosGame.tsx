@@ -4,7 +4,10 @@ import { DiceDisplay } from './components/DiceDisplay';
 import { BettingPanel } from './components/BettingPanel';
 import { GameStats } from './components/GameStats';
 import { GameModeSelector } from './components/GameModeSelector';
+import { GameEndModal } from './components/GameEndModal';
+import { useDadosGameId, useDadosBetting, useDadosBalance } from './services/dadosBettingService';
 import type { DiceGameState, DiceResult, GameMode } from './types/DadosTypes';
+import type { DadosBetData, DadosGameResult } from './services/dadosBettingService';
 import './styles/DadosStyles.css';
 
 const DadosGame: React.FC = () => {
@@ -13,6 +16,21 @@ const DadosGame: React.FC = () => {
   const [diceResults, setDiceResults] = useState<DiceResult[]>([]);
   const [resultMessage, setResultMessage] = useState<string>('');
   const [showResult, setShowResult] = useState<boolean>(false);
+  
+  // Backend integration - separar gameId hook
+  const { dadosGameId, isLoading: isGameIdLoading } = useDadosGameId();
+  const betting = useDadosBetting(dadosGameId || "");
+  const { balance, isLoading: isBalanceLoading, hasInsufficientFunds } = useDadosBalance();
+  
+  // Modal state management
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState<{
+    isWin: boolean;
+    diceResults: number[];
+    betType: string;
+    betAmount: number;
+    winAmount: number;
+  } | null>(null);
 
   useEffect(() => {
     gameLogic.onStateChange((newState) => {
@@ -52,40 +70,99 @@ const DadosGame: React.FC = () => {
     gameLogic.setSelectedAmount(amount);
   };
 
-  const handlePlaceBet = (betType: string, payout: number) => {
-    const success = gameLogic.placeBet(betType, payout);
-    if (success) {
-      setResultMessage('');
-      setShowResult(false);
+  const handlePlaceBet = async (betType: string, payout: number) => {
+    if (betting.isPlacingBet || !dadosGameId) return;
+    
+    const betAmount = gameState.selectedAmount;
+    
+    // Check if user has enough balance
+    if (hasInsufficientFunds(betAmount)) {
+      setResultMessage('¡Saldo insuficiente!');
+      setShowResult(true);
+      return;
+    }
+
+    try {
+      // Crear apuesta en backend (esto deduce el monto automáticamente)
+      const betData: DadosBetData = {
+        betAmount,
+        gameId: dadosGameId,
+        prediction: betType === 'specific' ? parseInt(betType.split('-')[1]) || 1 : 1, // Parse prediction from bet type
+      };
+
+      await betting.placeBet.mutateAsync(betData);
+      
+      // Place bet in local game logic
+      const success = gameLogic.placeBet(betType, payout);
+      if (success) {
+        setResultMessage('');
+        setShowResult(false);
+        console.log("🎲 Apuesta realizada exitosamente");
+      }
+    } catch (error) {
+      console.error('❌ Error placing bet:', error);
+      setResultMessage('Error al realizar la apuesta');
+      setShowResult(true);
     }
   };
 
   const handleRollDice = async () => {
-    if (!gameState.currentBet.type) {
+    if (!gameState.currentBet.type || !betting.currentMatch || betting.isFinishingGame) {
       setResultMessage('¡Selecciona una apuesta primero!');
       setShowResult(true);
       return;
     }
 
     setShowResult(false);
-    const results = await gameLogic.rollDice();
     
-    if (results.length > 0) {
-      setDiceResults(results);
+    try {
+      const results = await gameLogic.rollDice();
       
-      // Check if won and show result message
-      setTimeout(() => {
-        const wins = gameState.stats.wins;
-        const isWin = gameLogic.getGameState().stats.wins > wins;
+      if (results.length > 0) {
+        setDiceResults(results);
         
-        if (isWin) {
-          const winAmount = gameState.currentBet.amount * gameState.currentBet.payout;
-          setResultMessage(`¡GANASTE $${winAmount}!`);
-        } else {
-          setResultMessage(`Perdiste $${gameState.currentBet.amount}`);
-        }
-        setShowResult(true);
-      }, 100);
+        // Check if won después de un breve delay para mostrar el resultado
+        setTimeout(async () => {
+          const currentStats = gameLogic.getGameState().stats;
+          const isWin = currentStats.wins > gameState.stats.wins;
+          const betAmount = gameState.currentBet.amount;
+          const winAmount = isWin ? betAmount * gameState.currentBet.payout : 0;
+          
+          try {
+            // Finalizar match en backend
+            const gameResult: DadosGameResult = {
+              win: isWin,
+              winAmount,
+              rolledNumber: results[0]?.value || 1,
+              predictedNumber: betting.currentMatch?.prediction || 1,
+              totalBet: betAmount,
+            };
+
+            await betting.finishGame.mutateAsync(gameResult);
+            
+            // Show modal with result
+            setModalData({
+              isWin,
+              diceResults: results.map(r => r.value),
+              betType: gameState.currentBet.type || 'Desconocido',
+              betAmount,
+              winAmount
+            });
+            setShowModal(true);
+            
+            console.log(`🎲 Juego finalizado - ${isWin ? 'GANASTE' : 'PERDISTE'}: $${winAmount}`);
+            
+          } catch (error) {
+            console.error('❌ Error finishing match:', error);
+            setResultMessage('Error al finalizar la partida');
+            setShowResult(true);
+          }
+        }, 1500); // Delay para mostrar la animación de dados
+      }
+    } catch (error) {
+      console.error('❌ Error rolling dice:', error);
+      setResultMessage('Error al tirar los dados');
+      setShowResult(true);
     }
   };
 
@@ -94,24 +171,76 @@ const DadosGame: React.FC = () => {
     setDiceResults([{ value: 0, face: '?' }]);
     setResultMessage('');
     setShowResult(false);
+    setShowModal(false);
+    setModalData(null);
+  };
+
+  const handleModalContinue = () => {
+    setShowModal(false);
+    setModalData(null);
+    setResultMessage('');
+    setShowResult(false);
+    // Permitir continuar jugando - no resetear el juego
+    betting.continueGame();
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setModalData(null);
+    handleResetGame();
+    // Salir del juego
+    betting.quitGame.mutate();
   };
 
   const bettingOptions = gameLogic.getBettingOptions();
   const currentOptions = bettingOptions[gameState.gameMode];
 
+  // Loading states
+  if (isGameIdLoading || isBalanceLoading) {
+    return (
+      <div className="dados-game">
+        <div className="dados-betting-loading">
+          🎲 Cargando juego de dados...
+        </div>
+      </div>
+    );
+  }
+
+  // Error states
+  if (!dadosGameId) {
+    return (
+      <div className="dados-game">
+        <div className="dados-betting-error">
+          ❌ No se pudo encontrar el juego de dados. Por favor, inténtalo de nuevo.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dados-game">
       <div className="casino-container">
         <div className="main-game">
+          {/* Balance Display */}
+          <div className="dados-balance-display">
+            <span className="dados-balance-icon">💰</span>
+            <span>Balance: ${balance.toFixed(2)}</span>
+            {betting.currentMatch && (
+              <span className="dados-match-indicator">
+                🎮 Partida activa: ${betting.currentMatch.betAmount}
+              </span>
+            )}
+          </div>
+
           <GameModeSelector
             currentMode={gameState.gameMode}
             onModeChange={handleModeChange}
-            isRolling={gameState.isRolling}
+            isRolling={gameState.isRolling || betting.isPlacingBet || betting.isFinishingGame}
           />
 
           <DiceDisplay 
             dice={diceResults} 
-            isRolling={gameState.isRolling} 
+            isRolling={gameState.isRolling || betting.isPlacingBet || betting.isFinishingGame} 
           />
 
           <div className="game-info">
@@ -126,6 +255,18 @@ const DadosGame: React.FC = () => {
                 {resultMessage}
               </div>
             )}
+            
+            {/* Error messages */}
+            {betting.betError && (
+              <div className="dados-error-message">
+                ❌ {betting.betError.message}
+              </div>
+            )}
+            {betting.finishError && (
+              <div className="dados-error-message">
+                ❌ {betting.finishError.message}
+              </div>
+            )}
           </div>
 
           <BettingPanel
@@ -133,8 +274,8 @@ const DadosGame: React.FC = () => {
             bettingOptions={currentOptions}
             selectedAmount={gameState.selectedAmount}
             currentBet={gameState.currentBet}
-            balance={gameState.balance}
-            isRolling={gameState.isRolling}
+            balance={balance}
+            isRolling={gameState.isRolling || betting.isPlacingBet || betting.isFinishingGame}
             onPlaceBet={handlePlaceBet}
             onAmountChange={handleAmountChange}
           />
@@ -143,14 +284,21 @@ const DadosGame: React.FC = () => {
             <button
               className="game-btn roll-btn"
               onClick={handleRollDice}
-              disabled={gameState.isRolling || !gameState.currentBet.type || gameState.balance < gameState.currentBet.amount}
+              disabled={
+                gameState.isRolling || 
+                betting.isPlacingBet || 
+                betting.isFinishingGame || 
+                !gameState.currentBet.type || 
+                !betting.currentMatch ||
+                hasInsufficientFunds(gameState.currentBet.amount)
+              }
             >
-              {gameState.isRolling ? '🎲 Tirando...' : '🎲 Tirar Dados'}
+              {gameState.isRolling || betting.isFinishingGame ? '🎲 Procesando...' : '🎲 Tirar Dados'}
             </button>
             <button
               className="game-btn reset-btn"
               onClick={handleResetGame}
-              disabled={gameState.isRolling}
+              disabled={gameState.isRolling || betting.isPlacingBet || betting.isFinishingGame}
             >
               🔄 Reiniciar
             </button>
@@ -159,6 +307,20 @@ const DadosGame: React.FC = () => {
 
         <GameStats gameState={gameState} />
       </div>
+
+      {/* Game End Modal */}
+      {showModal && modalData && (
+        <GameEndModal
+          isOpen={showModal}
+          isWin={modalData.isWin}
+          diceResults={modalData.diceResults}
+          betType={modalData.betType}
+          betAmount={modalData.betAmount}
+          winAmount={modalData.winAmount}
+          onContinue={handleModalContinue}
+          onClose={handleModalClose}
+        />
+      )}
     </div>
   );
 };
