@@ -46,7 +46,7 @@ export class TicTacGameLogic {
   public async connect(): Promise<void> {
     try {
       const token = this.config.authToken;
-      const wsUrl = `${this.config.wsUrl}/${this.config.roomCode}?token=${encodeURIComponent(token)}&player_name=${this.config.playerName}`;
+      const wsUrl = `${this.config.wsUrl}/${this.config.roomCode}?token=${encodeURIComponent(token)}`;
       
       console.log('🔌 Connecting to WebSocket:', wsUrl);
       this.ws = new WebSocket(wsUrl);
