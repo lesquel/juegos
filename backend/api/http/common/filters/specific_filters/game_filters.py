@@ -22,7 +22,7 @@ class GameFilterParams(BaseFilterParams):
     game_description: Optional[str] = Field(None, description="Descripción del juego")
 
     game_type: Optional[GameTypeEnum] = Field(
-        None, description="Tipo de juego (ej. 'online', 'offline')"
+        None, description="Tipo de juego (ej. 'online', 'offline', 'luck')"
     )
 
     def filter_search(self, query, model, value, fields: Optional[list[str]] = None):
