@@ -1,7 +1,3 @@
-"""
-Excepciones base del dominio
-"""
-
 from typing import Any, Dict, Optional
 
 
