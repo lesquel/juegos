@@ -28,6 +28,8 @@ const ListGamesContent = ({
     useState<PaginationGames>(DEFAULT_PAGINATION);
   const [paginationOnline, setPaginationOnline] =
     useState<PaginationGames>(DEFAULT_PAGINATION);
+  const [paginationLuck, setPaginationLuck] =
+    useState<PaginationGames>(DEFAULT_PAGINATION);
 
   const handleSearch = useCallback(
     (filters: SearchFilters) => {
@@ -49,8 +51,10 @@ const ListGamesContent = ({
 
       if (activeTab === "offline") {
         setPaginationOffline((prev) => ({ ...prev, ...newPagination }));
-      } else {
+      } else if (activeTab === "online") {
         setPaginationOnline((prev) => ({ ...prev, ...newPagination }));
+      } else {
+        setPaginationLuck((prev) => ({ ...prev, ...newPagination }));
       }
     },
     [activeTab]
@@ -60,12 +64,45 @@ const ListGamesContent = ({
     (newPagination: PaginationGames) => {
       if (activeTab === "offline") {
         setPaginationOffline(newPagination);
-      } else {
+      } else if (activeTab === "online") {
         setPaginationOnline(newPagination);
+      } else {
+        setPaginationLuck(newPagination);
       }
     },
     [activeTab]
   );
+
+  const renderGamesContent = () => {
+    switch (activeTab) {
+      case "offline":
+        return (
+          <GamesContent
+            pagination={paginationOffline}
+            onPaginationChange={handlePaginationChange}
+            filterType="offline"
+          />
+        );
+      case "online":
+        return (
+          <GamesContent
+            pagination={paginationOnline}
+            onPaginationChange={handlePaginationChange}
+            filterType="online"
+          />
+        );
+      case "luck":
+        return (
+          <GamesContent
+            pagination={paginationLuck}
+            onPaginationChange={handlePaginationChange}
+            filterType="luck"
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
@@ -74,19 +111,7 @@ const ListGamesContent = ({
         <GamesTabSelector activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
-      {activeTab === "offline" ? (
-        <GamesContent
-          pagination={paginationOffline}
-          onPaginationChange={handlePaginationChange}
-          filterType="offline"
-        />
-      ) : (
-        <GamesContent
-          pagination={paginationOnline}
-          onPaginationChange={handlePaginationChange}
-          filterType="online"
-        />
-      )}
+      {renderGamesContent()}
     </>
   );
 };
