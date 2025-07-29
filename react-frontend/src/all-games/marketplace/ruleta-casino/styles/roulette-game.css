@@ -209,17 +209,49 @@
 
 .wheel-ball {
   position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 50%; /* Center vertically within roulette-wheel */
+  left: 50%; /* Center horizontally within roulette-wheel */
+  transform: translate(-50%, -50%); /* Adjust for its own size */
+  /* This element will rotate */
 }
 
 .ball {
+  position: absolute;
+  /* Position the ball relative to its parent (.wheel-ball) */
+  /* This value needs to be carefully chosen to place the ball on the wheel's edge */
+  top: -140px; /* Example: half of wheel diameter - ball radius */
+  left: 50%;
+  transform: translateX(-50%);
   width: 12px;
   height: 12px;
   background: white;
   border-radius: 50%;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* Animation for the ball during spin */
+.roulette-wheel.spinning .wheel-ball {
+  animation: ballSpin 4s ease-out forwards;
+}
+
+@keyframes ballSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(1440deg); } /* Spin multiple times */
+}
+
+/* This class will be added by JavaScript to position the ball after the spin */
+.wheel-ball.landed {
+  transition: transform 1.5s ease-out; /* Increased duration for more noticeable landing */
+}
+
+.wheel-ball.landed .ball {
+  animation: ballLandEffect 0.5s ease-out forwards; /* Add a landing effect to the ball */
+}
+
+@keyframes ballLandEffect {
+  0% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.2); } /* Slightly larger */
+  100% { transform: translateX(-50%) scale(1); }
 }
 
 /* Result Display */

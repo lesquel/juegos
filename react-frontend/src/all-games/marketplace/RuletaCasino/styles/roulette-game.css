@@ -207,19 +207,19 @@
   font-size: 1.5rem;
 }
 
-.wheel-ball {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+/* This class will be added by JavaScript to position the ball after the spin */
+.wheel-ball.landed {
+  transition: transform 1.5s ease-out; /* Increased duration for more noticeable landing */
 }
 
-.ball {
-  width: 12px;
-  height: 12px;
-  background: white;
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+.wheel-ball.landed .ball {
+  animation: ballLandEffect 0.5s ease-out forwards; /* Add a landing effect to the ball */
+}
+
+@keyframes ballLandEffect {
+  0% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.2); } /* Slightly larger */
+  100% { transform: translateX(-50%) scale(1); }
 }
 
 /* Result Display */

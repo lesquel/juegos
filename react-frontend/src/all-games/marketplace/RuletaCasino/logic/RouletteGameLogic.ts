@@ -17,7 +17,7 @@ export class RouletteGameLogic {
     RESULT_DISPLAY_DURATION: 3000,
     CELEBRATION_DURATION: 4000,
     RIGGED_MODE: true,
-    HOUSE_EDGE: 0.95 // 95% probabilidad de perder
+    HOUSE_EDGE: 0.02 // 2% probabilidad de perder (ligeramente más favorable al jugador)
   };
 
   public static readonly NUMBERS: RouletteNumber[] = [

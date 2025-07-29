@@ -50,29 +50,26 @@ export function RouletteGame() {
   const processSpinComplete = useCallback((winningNumber: number) => {
     const result: SpinResult = RouletteGameLogic.processSpinResult(gameState, winningNumber);
     
-    setGameState(prev => RouletteGameLogic.updateStateAfterSpin(prev, result));
+    setGameState(prev => ({
+      ...prev,
+      ...RouletteGameLogic.updateStateAfterSpin(prev, result),
+      winMessage: RouletteGameLogic.getWinMessage(result),
+      showWinAnimation: result.isWin
+    }));
 
-    // Programar ocultado de animación
-    if (result.isWin) {
-      const winTimeout = setTimeout(() => {
-        setGameState(prev => ({
-          ...prev,
-          showWinAnimation: false,
-          winMessage: ''
-        }));
-      }, RouletteGameLogic.CONFIG.CELEBRATION_DURATION);
+    const displayDuration = result.isWin 
+      ? RouletteGameLogic.CONFIG.CELEBRATION_DURATION 
+      : RouletteGameLogic.CONFIG.RESULT_DISPLAY_DURATION;
 
-      setSpinTimeouts(prev => [...prev, winTimeout]);
-    } else {
-      const hideTimeout = setTimeout(() => {
-        setGameState(prev => ({
-          ...prev,
-          winMessage: ''
-        }));
-      }, RouletteGameLogic.CONFIG.RESULT_DISPLAY_DURATION);
+    const hideTimeout = setTimeout(() => {
+      setGameState(prev => ({
+        ...prev,
+        showWinAnimation: false,
+        winMessage: ''
+      }));
+    }, displayDuration);
 
-      setSpinTimeouts(prev => [...prev, hideTimeout]);
-    }
+    setSpinTimeouts(prev => [...prev, hideTimeout]);
   }, [gameState]);
 
   const handleSpin = useCallback(async () => {
@@ -194,7 +191,7 @@ export function RouletteGame() {
 
       <WinDisplay
         message={gameState.winMessage}
-        isVisible={gameState.showWinAnimation || (gameState.winMessage !== '' && !gameState.showWinAnimation)}
+        isVisible={gameState.showWinAnimation}
         isWin={gameState.showWinAnimation}
         winnings={gameState.winnings}
       />
