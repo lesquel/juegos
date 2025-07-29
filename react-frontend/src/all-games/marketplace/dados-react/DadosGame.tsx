@@ -17,6 +17,15 @@ const DadosGame: React.FC = () => {
   const [resultMessage, setResultMessage] = useState<string>('');
   const [showResult, setShowResult] = useState<boolean>(false);
   
+  // Estados adicionales para mejor UX
+  const [lastGameResult, setLastGameResult] = useState<{
+    diceNumbers: number[];
+    betAmount: number;
+    winAmount: number;
+    isWin: boolean;
+    betType: string;
+  } | null>(null);
+  
   // Backend integration - separar gameId hook
   const { dadosGameId, isLoading: isGameIdLoading } = useDadosGameId();
   const betting = useDadosBetting(dadosGameId || "");
@@ -128,6 +137,15 @@ const DadosGame: React.FC = () => {
           const betAmount = gameState.currentBet.amount;
           const winAmount = isWin ? betAmount * gameState.currentBet.payout : 0;
           
+          // Guardar información del resultado para mostrar en la UI
+          setLastGameResult({
+            diceNumbers: results.map(r => r.value),
+            betAmount,
+            winAmount,
+            isWin,
+            betType: gameState.currentBet.type || 'Desconocido'
+          });
+          
           try {
             // Finalizar match en backend
             const gameResult: DadosGameResult = {
@@ -149,6 +167,13 @@ const DadosGame: React.FC = () => {
               winAmount
             });
             setShowModal(true);
+            
+            // Mostrar resultado inmediato en la UI
+            const resultText = isWin 
+              ? `🎉 ¡GANASTE! +$${winAmount.toFixed(2)}` 
+              : `😞 Perdiste $${betAmount.toFixed(2)}`;
+            setResultMessage(resultText);
+            setShowResult(true);
             
             console.log(`🎲 Juego finalizado - ${isWin ? 'GANASTE' : 'PERDISTE'}: $${winAmount}`);
             
@@ -173,6 +198,7 @@ const DadosGame: React.FC = () => {
     setShowResult(false);
     setShowModal(false);
     setModalData(null);
+    setLastGameResult(null); // Limpiar resultado anterior
   };
 
   const handleModalContinue = () => {
@@ -180,6 +206,7 @@ const DadosGame: React.FC = () => {
     setModalData(null);
     setResultMessage('');
     setShowResult(false);
+    // No limpiar lastGameResult para que se siga viendo la información
     // Permitir continuar jugando - no resetear el juego
     betting.continueGame();
   };
@@ -187,6 +214,7 @@ const DadosGame: React.FC = () => {
   const handleModalClose = () => {
     setShowModal(false);
     setModalData(null);
+    setLastGameResult(null); // Limpiar toda la información al salir
     handleResetGame();
     // Salir del juego
     betting.quitGame.mutate();
@@ -221,16 +249,41 @@ const DadosGame: React.FC = () => {
     <div className="dados-game">
       <div className="casino-container">
         <div className="main-game">
-          {/* Balance Display */}
-          <div className="dados-balance-display">
-            <span className="dados-balance-icon">💰</span>
-            <span>Balance: ${balance.toFixed(2)}</span>
+          {/* Balance Display - Más prominente */}
+          <div className="dados-balance-display dados-balance-prominent">
+            <div className="dados-balance-main">
+              <span className="dados-balance-icon">💰</span>
+              <span className="dados-balance-amount">Balance: ${balance.toFixed(2)}</span>
+            </div>
             {betting.currentMatch && (
-              <span className="dados-match-indicator">
-                🎮 Partida activa: ${betting.currentMatch.betAmount}
-              </span>
+              <div className="dados-match-indicator">
+                🎮 Partida activa: ${betting.currentMatch.betAmount.toFixed(2)}
+              </div>
             )}
           </div>
+
+          {/* Resultado del último juego - Información detallada */}
+          {lastGameResult && (
+            <div className={`dados-last-result ${lastGameResult.isWin ? 'win' : 'lose'}`}>
+              <div className="dados-result-header">
+                {lastGameResult.isWin ? '🎉 ¡GANASTE!' : '😞 Perdiste'}
+              </div>
+              <div className="dados-result-details">
+                <div className="dados-result-dice-info">
+                  🎲 Salieron: {lastGameResult.diceNumbers.map(num => `[${num}]`).join(' ')}
+                </div>
+                <div className="dados-result-money">
+                  {lastGameResult.isWin 
+                    ? `💰 Ganaste: $${lastGameResult.winAmount.toFixed(2)}` 
+                    : `💸 Perdiste: $${lastGameResult.betAmount.toFixed(2)}`
+                  }
+                </div>
+                <div className="dados-result-bet">
+                  🎯 Apuesta: {lastGameResult.betType}
+                </div>
+              </div>
+            </div>
+          )}
 
           <GameModeSelector
             currentMode={gameState.gameMode}
@@ -246,10 +299,18 @@ const DadosGame: React.FC = () => {
           <div className="game-info">
             <div className="target-info">
               {gameState.currentBet.type 
-                ? `🎯 Apuesta: ${gameState.currentBet.type} - Pago: ${gameState.currentBet.payout}:1`
-                : '🎯 Selecciona una apuesta'
+                ? `🎯 Apuesta actual: ${gameState.currentBet.type} - Pago: ${gameState.currentBet.payout}:1 (Apostando: $${gameState.currentBet.amount.toFixed(2)})`
+                : '🎯 Selecciona una apuesta para empezar'
               }
             </div>
+            
+            {/* Información de estado actual */}
+            {betting.currentMatch && (
+              <div className="dados-current-status">
+                🎮 Tienes una partida activa por $${betting.currentMatch.betAmount.toFixed(2)}
+              </div>
+            )}
+            
             {showResult && (
               <div className={`result-message ${resultMessage.includes('GANASTE') ? 'win' : 'lose'}`}>
                 {resultMessage}
@@ -265,6 +326,13 @@ const DadosGame: React.FC = () => {
             {betting.finishError && (
               <div className="dados-error-message">
                 ❌ {betting.finishError.message}
+              </div>
+            )}
+            
+            {/* Información de balance insuficiente */}
+            {hasInsufficientFunds(gameState.selectedAmount) && (
+              <div className="dados-insufficient-funds">
+                ⚠️ Saldo insuficiente. Necesitas $${gameState.selectedAmount.toFixed(2)} pero tienes $${balance.toFixed(2)}
               </div>
             )}
           </div>

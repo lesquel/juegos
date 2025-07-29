@@ -787,10 +787,11 @@
   }
 }
 
-/* Balance display integration */
+/* Balance display integration - Mejorado */
 .dados-balance-display {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
   font-size: 1.2rem;
   font-weight: bold;
@@ -802,8 +803,164 @@
   border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
+.dados-balance-prominent {
+  font-size: 1.4rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+  margin-bottom: 1.5rem;
+}
+
+.dados-balance-main {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.dados-balance-amount {
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
 .dados-balance-icon {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  animation: goldGlow 2s infinite alternate;
+}
+
+@keyframes goldGlow {
+  from { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+  to { text-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
+}
+
+.dados-match-indicator {
+  background: rgba(0, 255, 136, 0.2);
+  color: var(--accent-green);
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+/* Resultado del último juego - NUEVO */
+.dados-last-result {
+  margin: 1rem 0;
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  border: 2px solid;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  animation: resultSlideIn 0.5s ease-out;
+}
+
+.dados-last-result.win {
+  border-color: var(--win-green);
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(40, 167, 69, 0.05));
+  box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+}
+
+.dados-last-result.lose {
+  border-color: var(--lose-red);
+  background: linear-gradient(135deg, rgba(220, 53, 69, 0.2), rgba(220, 53, 69, 0.05));
+  box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+}
+
+.dados-result-header {
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.8rem;
+}
+
+.dados-last-result.win .dados-result-header {
+  color: var(--win-green);
+  text-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+}
+
+.dados-last-result.lose .dados-result-header {
+  color: var(--lose-red);
+  text-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+}
+
+/* Estados actuales mejorados */
+.dados-current-status {
+  background: rgba(0, 204, 255, 0.1);
+  color: var(--accent-blue);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 204, 255, 0.3);
+  margin: 0.5rem 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+.dados-insufficient-funds {
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  margin: 0.5rem 0;
+  text-align: center;
+  font-weight: 600;
+  animation: warningPulse 2s infinite;
+}
+
+@keyframes warningPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Estilos adicionales para nueva funcionalidad */
+.dados-result-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dados-result-dice-info,
+.dados-result-money,
+.dados-result-bet {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.dados-result-dice-info {
+  font-size: 1.1rem;
+  color: var(--secondary-gold);
+}
+
+.dados-result-money {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.dados-last-result.win .dados-result-money {
+  color: var(--win-green);
+}
+
+.dados-last-result.lose .dados-result-money {
+  color: var(--lose-red);
+}
+
+.dados-result-bet {
+  color: var(--accent-blue);
+  font-size: 0.95rem;
+}
+
+@keyframes resultSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dados-betting-error {
