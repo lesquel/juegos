@@ -687,3 +687,86 @@
     font-size: 1.2rem;
   }
 }
+
+/* Estilos para el sistema de apuestas */
+.betting-status {
+  background: rgba(0, 255, 127, 0.2);
+  border: 1px solid #00ff7f;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.loading-status {
+  background: rgba(255, 165, 0, 0.2);
+  border: 1px solid #ffa500;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.error-message {
+  background: rgba(255, 99, 71, 0.2);
+  border: 1px solid #ff6347;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+  color: #ff6347;
+}
+
+.balance-info {
+  background: rgba(135, 206, 235, 0.2);
+  border: 1px solid #87ceeb;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.betting-game-controls {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.quit-button, .continue-button {
+  background: linear-gradient(45deg, #ff4757, #ff3838);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 24px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+}
+
+.continue-button {
+  background: linear-gradient(45deg, #3742fa, #2f3542);
+}
+
+.quit-button:hover, .continue-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+}
+
+.continue-button:hover {
+  box-shadow: 0 6px 20px rgba(55, 66, 250, 0.4);
+}
+
+.quit-button:disabled, .continue-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}

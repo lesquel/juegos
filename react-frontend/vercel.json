@@ -8,7 +8,13 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/"
+      "has": [
+        {
+          "type": "host",
+          "value": ".*"
+        }
+      ],
+      "destination": "/index.html"
     }
   ]
 }
