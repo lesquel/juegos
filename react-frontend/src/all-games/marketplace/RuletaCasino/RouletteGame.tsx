@@ -6,6 +6,8 @@ import { BettingTable } from './components/BettingTable';
 import { GameInfo } from './components/GameInfo';
 import { ChipSelector } from './components/ChipSelector';
 import { WinDisplay } from './components/WinDisplay';
+import { GameEndModal } from './components/GameEndModal';
+import { useRouletteBetting } from './services/rouletteBettingService';
 import './styles/roulette-game.css';
 
 export function RouletteGame() {
@@ -13,6 +15,15 @@ export function RouletteGame() {
     RouletteGameLogic.createInitialState()
   );
   const [spinTimeouts, setSpinTimeouts] = useState<NodeJS.Timeout[]>([]);
+  const [showEndModal, setShowEndModal] = useState(false);
+  const [lastSpinResult, setLastSpinResult] = useState<{
+    winningNumber: number;
+    winAmount: number;
+    isWin: boolean;
+  } | null>(null);
+
+  // Servicio de apuestas
+  const bettingService = useRouletteBetting();
 
   // Limpiar timeouts al desmontar
   useEffect(() => {
@@ -47,38 +58,40 @@ export function RouletteGame() {
     setGameState(prev => RouletteGameLogic.clearBets(prev));
   }, [gameState.isSpinning]);
 
-  const processSpinComplete = useCallback((winningNumber: number) => {
+  const processSpinComplete = useCallback(async (winningNumber: number) => {
     const result: SpinResult = RouletteGameLogic.processSpinResult(gameState, winningNumber);
     
     setGameState(prev => RouletteGameLogic.updateStateAfterSpin(prev, result));
+    setLastSpinResult({
+      winningNumber,
+      winAmount: result.totalWinnings,
+      isWin: result.isWin
+    });
 
-    // Programar ocultado de animación
-    if (result.isWin) {
-      const winTimeout = setTimeout(() => {
-        setGameState(prev => ({
-          ...prev,
-          showWinAnimation: false,
-          winMessage: ''
-        }));
-      }, RouletteGameLogic.CONFIG.CELEBRATION_DURATION);
-
-      setSpinTimeouts(prev => [...prev, winTimeout]);
-    } else {
-      const hideTimeout = setTimeout(() => {
-        setGameState(prev => ({
-          ...prev,
-          winMessage: ''
-        }));
-      }, RouletteGameLogic.CONFIG.RESULT_DISPLAY_DURATION);
-
-      setSpinTimeouts(prev => [...prev, hideTimeout]);
+    // Finalizar match automáticamente
+    if (bettingService.currentMatch) {
+      await bettingService.finishMatch(winningNumber, result.totalWinnings, result.isWin);
     }
-  }, [gameState]);
+
+    // Mostrar modal después de un breve delay
+    const modalTimeout = setTimeout(() => {
+      setShowEndModal(true);
+    }, 2000);
+
+    setSpinTimeouts(prev => [...prev, modalTimeout]);
+  }, [gameState, bettingService]);
 
   const handleSpin = useCallback(async () => {
     if (gameState.isSpinning || gameState.totalBet === 0) return;
 
     clearAllTimeouts();
+
+    // Crear match antes de girar
+    const matchCreated = await bettingService.createMatch(gameState.totalBet, gameState.bets);
+    if (!matchCreated) {
+      console.error('❌ No se pudo crear el match de ruleta');
+      return;
+    }
 
     // Iniciar giro
     setGameState(prev => ({
@@ -97,14 +110,39 @@ export function RouletteGame() {
     }, RouletteGameLogic.CONFIG.SPIN_DURATION);
 
     setSpinTimeouts(prev => [...prev, spinTimeout]);
-  }, [gameState, clearAllTimeouts, processSpinComplete]);
+  }, [gameState, clearAllTimeouts, processSpinComplete, bettingService]);
 
   const handleReset = useCallback(() => {
     if (gameState.isSpinning) return;
 
     clearAllTimeouts();
     setGameState(RouletteGameLogic.createInitialState());
+    setShowEndModal(false);
+    setLastSpinResult(null);
   }, [gameState.isSpinning, clearAllTimeouts]);
+
+  const handleNewGame = useCallback(async () => {
+    setShowEndModal(false);
+    setLastSpinResult(null);
+    
+    // Limpiar apuestas y preparar para nueva ronda
+    setGameState(prev => ({
+      ...prev,
+      bets: new Map(),
+      totalBet: 0,
+      winMessage: '',
+      showWinAnimation: false
+    }));
+  }, []);
+
+  const handleQuitGame = useCallback(async () => {
+    if (bettingService.currentMatch) {
+      await bettingService.quitMatch();
+    }
+    setShowEndModal(false);
+    setLastSpinResult(null);
+    setGameState(RouletteGameLogic.createInitialState());
+  }, [bettingService]);
 
   const canSpin = gameState.totalBet > 0 && !gameState.isSpinning;
   const canPlaceBets = !gameState.isSpinning;
@@ -114,6 +152,43 @@ export function RouletteGame() {
       <div className="roulette-game__header">
         <h1>🎰 Ruleta Casino 🎰</h1>
         <p className="subtitle">¡Haz tu apuesta y gira la ruleta!</p>
+      </div>
+
+      {/* Estado de apuestas */}
+      <div className="roulette-betting-status">
+        {bettingService.currentMatch && (
+          <div className="roulette-current-match">
+            ✅ Match activo: {bettingService.currentMatch.id} - Apuesta: {bettingService.currentMatch.betAmount.toLocaleString()} monedas
+          </div>
+        )}
+        
+        {bettingService.isCreatingMatch && (
+          <div className="roulette-betting-loading">
+            🔄 Creando apuesta...
+          </div>
+        )}
+        
+        {bettingService.isFinishingMatch && (
+          <div className="roulette-finishing-loading">
+            ⏳ Finalizando ronda...
+          </div>
+        )}
+        
+        {bettingService.isQuittingMatch && (
+          <div className="roulette-quitting-loading">
+            🚪 Saliendo del juego...
+          </div>
+        )}
+        
+        {bettingService.error && (
+          <div className="roulette-error-message">
+            <h3>❌ Error en el Sistema de Apuestas</h3>
+            <p>{bettingService.error}</p>
+            <button onClick={bettingService.clearError} className="clear-error-btn">
+              Cerrar
+            </button>
+          </div>
+        )}
       </div>
 
       <GameInfo
@@ -209,6 +284,20 @@ export function RouletteGame() {
           </p>
         )}
       </div>
+
+      {/* Modal de fin de partida */}
+      <GameEndModal
+        isOpen={showEndModal}
+        isWin={lastSpinResult?.isWin || false}
+        winAmount={lastSpinResult?.winAmount || 0}
+        winningNumber={lastSpinResult?.winningNumber || null}
+        currentBalance={gameState.balance}
+        onNewGame={handleNewGame}
+        onQuitGame={handleQuitGame}
+        isNewGameLoading={false}
+        isQuitLoading={bettingService.isQuittingMatch}
+        canContinue={gameState.balance >= RouletteGameLogic.CONFIG.CHIP_VALUES[0]}
+      />
     </div>
   );
 }
