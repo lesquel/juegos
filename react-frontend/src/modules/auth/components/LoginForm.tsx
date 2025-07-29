@@ -8,6 +8,7 @@ import { authRoutesConfig } from "../config/auth.routes.config";
 import { FormInput } from "@modules/auth/components/FormInputAuth";
 import { LockIcon, Mail, User } from "lucide-react";
 
+
 interface LoginFormValues {
   email: string;
   password: string;
