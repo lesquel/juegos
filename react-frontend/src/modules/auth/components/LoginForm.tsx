@@ -15,7 +15,7 @@ interface LoginFormValues {
 
 export const LoginForm: React.FC = memo(() => {
   const { isAuthenticated } = useAuth();
-  
+
   useEffect(() => {
     // Si el usuario ya está autenticado, no debería estar aquí
     if (typeof window !== 'undefined' && isAuthenticated()) {
@@ -104,9 +104,9 @@ const UseLoginForm: React.FC = memo(() => {
   );
 
   return (
-    <main className="w-full max-w-md mx-auto bg-gray-900 bg-opacity-50 rounded-2xl p-8 shadow-lg backdrop-blur-lg backdrop-filter border border-gray-700">
+    <main className="w-full max-w-md mx-auto bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600 rounded-xl p-8 shadow-2xl backdrop-filter backdrop-blur-sm">
       <header className="flex justify-center mb-6">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center shadow-lg">
           {userIcon}
         </div>
       </header>
@@ -118,55 +118,55 @@ const UseLoginForm: React.FC = memo(() => {
         <p className="text-gray-400">Inicia sesión para continuar</p>
       </div>
 
-      <form
-        onSubmit={onFormSubmit}
-        className="w-full flex flex-col items-center gap-2"
-      >
-        {errorMessage && (
-          <div
-            role="alert"
-            className="text-red-400 text-sm mb-4 text-center bg-red-900 bg-opacity-50 p-3 rounded-lg w-full"
+          <form
+            onSubmit={onFormSubmit}
+            className="w-full flex flex-col items-center gap-4"
           >
-            {errorMessage}
-          </div>
-        )}
+            {errorMessage && (
+              <div
+                role="alert"
+                className="text-red-400 text-sm mb-4 text-center bg-red-900/50 p-3 rounded-lg w-full border border-red-700/50"
+              >
+                {errorMessage}
+              </div>
+            )}
 
-        <FormInput
-          form={form}
-          name="email"
-          type="email"
-          placeholder="Correo Electrónico"
-          label="Correo Electrónico"
-          icon={emailIcon}
-        />
+            <FormInput
+              form={form}
+              name="email"
+              type="email"
+              placeholder="Correo Electrónico"
+              label="Correo Electrónico"
+              icon={emailIcon}
+            />
 
-        <FormInput
-          form={form}
-          name="password"
-          type="password"
-          placeholder="Contraseña"
-          label="Contraseña"
-          icon={passwordIcon}
-        />
+            <FormInput
+              form={form}
+              name="password"
+              type="password"
+              placeholder="Contraseña"
+              label="Contraseña"
+              icon={passwordIcon}
+            />
 
-        <button
-          type="submit"
-          className="w-full cursor-pointer bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold py-3 rounded-lg shadow-lg hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out text-lg"
-          aria-label="Iniciar sesión"
-        >
-          Acceder
-        </button>
-      </form>
+            <button
+              type="submit"
+              className="w-full cursor-pointer bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold py-3 rounded-lg shadow-lg hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300 ease-in-out text-lg"
+              aria-label="Iniciar sesión"
+            >
+              Acceder
+            </button>
+          </form>
 
-      <footer className="text-sm text-gray-400 mt-6 text-center">
-        ¿No tienes una cuenta?{" "}
-        <Link
-          to={registerUrl}
-          className="text-purple-400 hover:text-purple-300 font-semibold"
-        >
-          Regístrate aquí
-        </Link>
-      </footer>
+          <footer className="text-sm text-gray-400 mt-6 text-center">
+            ¿No tienes una cuenta?{" "}
+            <Link
+              to={registerUrl}
+              className="text-purple-400 hover:text-purple-300 font-semibold transition-colors duration-200"
+            >
+              Regístrate aquí
+            </Link>
+          </footer>
     </main>
   );
 });

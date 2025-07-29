@@ -5,6 +5,7 @@ import { NavbarAvatar } from "@modules/user/components/NavbarAvatar";
 import { authRoutesConfig } from "../config/auth.routes.config";
 import { useAuthStore } from "../store/auth.store";
 import { LogInIcon, UserPlus } from "lucide-react";
+import { LinkMyTransfer } from "@/modules/transfers/components/LinkMyTransfer";
 
 export const NavbarAuthLoginRegister: React.FC = memo(() => {
   const [hasMounted, setHasMounted] = useState(false);
@@ -13,34 +14,26 @@ export const NavbarAuthLoginRegister: React.FC = memo(() => {
 
   useEffect(() => {
     setHasMounted(true);
-    console.log('🔄 NavbarAuth mounted. isLogged:', isLogged, 'user:', !!user);
   }, [isLogged, user]);
 
-  // Memoizar el contenido renderizado
   const content = useMemo(() => {
     if (!hasMounted) {
-      console.log('⏳ NavbarAuth not mounted yet');
       return null;
     }
 
-    console.log('🎭 NavbarAuth rendering. isLogged:', isLogged, 'user:', !!user);
-
     return (
       <div className="flex items-center gap-4 justify-between w-full">
-        <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded font-mono">
-          DEBUG: {isLogged ? 'LOGGED' : 'NOT LOGGED'}
-        </span>
         {isLogged ? (
           <>
             <NavbarAvatar />
-            {/* <LinkMyTransfer /> */}
+            <LinkMyTransfer />
           </>
         ) : (
           <ItemAuthLoginRegister />
         )}
       </div>
     );
-  }, [hasMounted, isLogged, user]);
+  }, [hasMounted, isLogged]);
 
   return content;
 });

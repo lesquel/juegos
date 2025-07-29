@@ -16,7 +16,7 @@ interface RegisterFormValues {
 
 export const RegisterForm: React.FC = memo(() => {
   const { isAuthenticated } = useAuth();
-  
+
   useEffect(() => {
     // Si el usuario ya está autenticado, no debería estar aquí
     // TanStack Router manejará la redirección automáticamente
@@ -26,7 +26,7 @@ export const RegisterForm: React.FC = memo(() => {
   }, [isAuthenticated]);
 
   return (
-      <UseRegisterForm />
+    <UseRegisterForm />
   );
 });
 
@@ -39,7 +39,7 @@ const UseRegisterForm: React.FC = memo(() => {
   const validators = useMemo(
     () => ({
       onChange: z.object({
-        email: z.string().email(),
+        email: z.string().email("Correo electrónico inválido"),
         password: z.string(),
         confirmPassword: z.string(),
       }),
@@ -119,9 +119,9 @@ const UseRegisterForm: React.FC = memo(() => {
   );
 
   return (
-    <main className="w-full max-w-md mx-auto bg-gray-900 bg-opacity-50 rounded-2xl p-8 shadow-lg backdrop-blur-lg backdrop-filter border border-gray-700">
+    <main className="w-full max-w-md mx-auto bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600 rounded-xl p-8 shadow-2xl backdrop-filter backdrop-blur-sm">
       <header className="flex justify-center mb-6">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 flex items-center justify-center">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 flex items-center justify-center shadow-lg">
           {userIcon}
         </div>
       </header>
@@ -131,11 +131,11 @@ const UseRegisterForm: React.FC = memo(() => {
         <p className="text-gray-400">Únete a la comunidad y empieza a jugar.</p>
       </div>
 
-      <form onSubmit={onFormSubmit} className="w-full">
+      <form onSubmit={onFormSubmit} className="w-full flex flex-col items-center gap-4">
         {errorMessage && (
           <div
             role="alert"
-            className="text-red-400 text-sm mb-4 text-center bg-red-900 bg-opacity-50 p-3 rounded-lg"
+            className="text-red-400 text-sm mb-4 text-center bg-red-900/50 p-3 rounded-lg w-full border border-red-700/50"
           >
             {errorMessage}
           </div>
@@ -165,13 +165,12 @@ const UseRegisterForm: React.FC = memo(() => {
           type="password"
           placeholder="Confirmar Contraseña"
           label="Confirmar Contraseña"
-          className="mb-6"
           icon={passwordIcon}
         />
 
         <button
           type="submit"
-          className="w-full cursor-pointer bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-3 rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out text-lg"
+          className="w-full cursor-pointer bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-3 rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-300 ease-in-out text-lg"
           aria-label="Crear cuenta"
         >
           Registrarse
@@ -182,7 +181,7 @@ const UseRegisterForm: React.FC = memo(() => {
         ¿Ya tienes una cuenta?{" "}
         <Link
           to={loginUrl}
-          className="text-teal-400 hover:text-teal-300 font-semibold"
+          className="text-teal-400 hover:text-teal-300 font-semibold transition-colors duration-200"
         >
           Inicia sesión aquí
         </Link>
