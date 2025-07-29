@@ -1,10 +1,10 @@
 import React from 'react';
-import type { Player } from '../types/TicTacTypes';
+import type { Player, GameStatus } from '../types/TicTacTypes';
 
 interface TicTacHeaderProps {
   currentPlayer: Player;
   statusMessage: string;
-  gameStatus: 'waiting' | 'playing' | 'finished';
+  gameStatus: GameStatus;
   playerSymbol?: Player | null;
   opponentName?: string | null;
   isOnlineMode?: boolean;
@@ -12,8 +12,8 @@ interface TicTacHeaderProps {
   onBack?: () => void;
 }
 
-export const TicTacHeader: React.FC<TicTacHeaderProps> = ({ 
-  currentPlayer, 
+export const TicTacHeader: React.FC<TicTacHeaderProps> = ({
+  currentPlayer,
   statusMessage,
   gameStatus,
   playerSymbol,
@@ -53,7 +53,7 @@ export const TicTacHeader: React.FC<TicTacHeaderProps> = ({
   return (
     <div className="tic-tac-header">
       {onBack && (
-        <button 
+        <button
           className="back-button"
           onClick={onBack}
           aria-label="Volver"
@@ -61,23 +61,23 @@ export const TicTacHeader: React.FC<TicTacHeaderProps> = ({
           ← Volver
         </button>
       )}
-      
+
       <h1 className="game-title">Tres en Raya</h1>
-      
+
       <div className="game-info">
         <div className={`status-indicator ${getStatusClass()}`}>
           <span className="status-text">{statusMessage}</span>
         </div>
-        
+
         {roomCode && (
           <div className="room-info">
             <span className="room-label">Sala:</span>
             <span className="room-code">{roomCode}</span>
           </div>
         )}
-        
+
         {getPlayerIndicator()}
-        
+
         <div className={`current-player ${currentPlayer.toLowerCase()}`}>
           Jugador actual: <span className="player-symbol">{currentPlayer}</span>
         </div>

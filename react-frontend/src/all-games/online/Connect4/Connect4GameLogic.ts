@@ -5,8 +5,35 @@ export class Connect4GameLogic {
   private ws: WebSocket | null = null;
   private gameState: GameState;
   private onStateChange: ((state: GameState) => void) | null = null;
+  private isConnecting = false;
+  private connectionPromise: Promise<void> | null = null;
+  private roomCode: string | null = null;
 
-  constructor() {
+  // Static registry to prevent multiple connections to the same room
+  private static activeConnections = new Map<string, Connect4GameLogic>();
+
+  // Static methods to manage active connections
+  static getActiveConnection(roomCode: string): Connect4GameLogic | undefined {
+    return this.activeConnections.get(roomCode);
+  }
+
+  static hasActiveConnection(roomCode: string): boolean {
+    const connection = this.activeConnections.get(roomCode);
+    return connection?.isConnected() ?? false;
+  }
+
+  static registerConnection(roomCode: string, instance: Connect4GameLogic): void {
+    console.log(`📝 Registering Connect4 connection for room: ${roomCode}`);
+    this.activeConnections.set(roomCode, instance);
+  }
+
+  static unregisterConnection(roomCode: string): void {
+    console.log(`🗑️ Unregistering Connect4 connection for room: ${roomCode}`);
+    this.activeConnections.delete(roomCode);
+  }
+
+  constructor(roomCode?: string) {
+    this.roomCode = roomCode || null;
     this.gameState = {
       board: Array(6).fill(null).map(() => Array(7).fill(null)),
       currentPlayer: 'red',

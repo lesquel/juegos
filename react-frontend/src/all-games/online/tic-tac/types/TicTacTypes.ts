@@ -2,10 +2,11 @@ export type Player = 'X' | 'O';
 export type CellValue = Player | null;
 export type Board = CellValue[];
 
-export type GameStatus = 
+export type GameStatus =
   | 'waiting'    // Esperando conexión/jugador
   | 'playing'    // Jugando
-  | 'finished'; // Juego terminado
+  | 'finished'   // Juego terminado
+  | 'error';     // Error en el juego
 
 export interface GameState {
   board: Board;
@@ -16,7 +17,7 @@ export interface GameState {
   playerSymbol: Player | null;
   isConnected: boolean;
   roomCode: string | null;
-  playerName: string;
+  player_id: string;
   opponentName: string | null;
   isPlayerTurn: boolean;
   lastMove: {
@@ -32,13 +33,32 @@ export interface GameConfig {
   isOnline: boolean;
   wsUrl: string;
   authToken: string;
-  playerName: string;
+  player_id: string;
   roomCode?: string;
 }
 
 export interface WebSocketMessage {
   type: string;
   data: any;
+}
+
+export interface GameWebSocketMessage {
+  type: string;
+  data?: {
+    match_id?: string;
+    game_type?: string;
+    move?: {
+      row: number;
+      column: number;
+    };
+    player_id?: string;
+  };
+  match_id?: string;
+  game_type?: string;
+  move?: {
+    row: number;
+    column: number;
+  };
 }
 
 export interface UserInfo {
