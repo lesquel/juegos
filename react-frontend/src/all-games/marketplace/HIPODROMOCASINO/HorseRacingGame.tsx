@@ -15,18 +15,77 @@ export function HorseRacingGame() {
   );
   const [raceHistory, setRaceHistory] = useState<RaceHistoryEntry[]>([]);
   const [raceTimeouts, setRaceTimeouts] = useState<NodeJS.Timeout[]>([]);
+  const [raceStartTime, setRaceStartTime] = useState<number | null>(null);
+  const animationFrameId = React.useRef<number | null>(null);
 
-  // Limpiar timeouts al desmontar
+  // Limpiar timeouts y animation frames al desmontar
   useEffect(() => {
     return () => {
       raceTimeouts.forEach(timeout => clearTimeout(timeout));
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
     };
   }, [raceTimeouts]);
 
   const clearAllTimeouts = useCallback(() => {
     raceTimeouts.forEach(timeout => clearTimeout(timeout));
     setRaceTimeouts([]);
+    if (animationFrameId.current) {
+      cancelAnimationFrame(animationFrameId.current);
+      animationFrameId.current = null;
+    }
   }, [raceTimeouts]);
+
+  // Animación de la carrera
+  useEffect(() => {
+    if (!gameState.isRacing || raceStartTime === null) {
+      return;
+    }
+
+    const animateRace = (currentTime: DOMHighResTimeStamp) => {
+      const elapsedTime = currentTime - raceStartTime;
+      const raceProgress = Math.min(elapsedTime / HorseRacingLogic.CONFIG.RACE_DURATION, 1);
+
+      setGameState(prev => {
+        const newHorses = prev.horses.map(horse => {
+          // Simular el avance basado en el progreso de la carrera
+          // Esto es una simplificación, la lógica real de velocidad debería estar en HorseRacingLogic
+          const newPosition = raceProgress * HorseRacingLogic.CONFIG.TRACK_LENGTH;
+
+          // If race results are available, ensure horses reach their final positions
+          if (prev.currentRaceResults) {
+            const finalPosition = prev.currentRaceResults.find(r => r.horse.id === horse.id)?.position;
+            if (finalPosition === 1) {
+              // Winner always reaches the end
+              return { ...horse, currentPosition: newPosition };
+            } else if (finalPosition) {
+              // Non-winners reach a position proportional to their final rank
+              const proportionalPosition = newPosition * (1 - (finalPosition - 1) * 0.1); // Adjust as needed
+              return { ...horse, currentPosition: Math.min(proportionalPosition, HorseRacingLogic.CONFIG.TRACK_LENGTH) };
+            }
+          }
+          return { ...horse, currentPosition: newPosition };
+        });
+        return { ...prev, horses: newHorses };
+      });
+
+      if (raceProgress < 1) {
+        animationFrameId.current = requestAnimationFrame(animateRace);
+      } else {
+        // La animación ha terminado, la carrera ha llegado a su fin visualmente
+        // La lógica de isRacing se maneja en processRaceResult
+      }
+    };
+
+    animationFrameId.current = requestAnimationFrame(animateRace);
+
+    return () => {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+    };
+  }, [gameState.isRacing, raceStartTime, setGameState]);
 
   const handleSelectHorse = useCallback((horseId: number) => {
     setGameState(prev => HorseRacingLogic.selectHorse(prev, horseId));
@@ -44,12 +103,13 @@ export function HorseRacingGame() {
     // Procesar resultados de la carrera
     setGameState(prev => HorseRacingLogic.processRaceResult(prev, results));
 
-    // Programar ocultado de animación de victoria
+    // Programar ocultado de animación de victoria y fin de carrera
     const winTimeout = setTimeout(() => {
       setGameState(prev => ({
         ...prev,
         showWinAnimation: false,
-        winMessage: ''
+        winMessage: '',
+        isRacing: false, // La carrera termina oficialmente aquí
       }));
     }, HorseRacingLogic.CONFIG.CELEBRATION_DURATION);
 
@@ -70,8 +130,11 @@ export function HorseRacingGame() {
       isRacing: true,
       winMessage: '',
       showWinAnimation: false,
-      horses: HorseRacingLogic.resetPositions(prev.horses)
+      horses: HorseRacingLogic.resetPositions(prev.horses),
+      currentRaceResults: null, // Clear previous results
     }));
+
+    setRaceStartTime(performance.now());
 
     // Generar resultados de la carrera
     const raceResults = HorseRacingLogic.generateRiggedRaceResults(gameState);
@@ -80,13 +143,16 @@ export function HorseRacingGame() {
     setGameState(prev => ({
       ...prev,
       countdownActive: true,
-      countdownNumber: 3
+      countdownNumber: 3,
+      currentRaceResults: raceResults, // Store race results in gameState
     }));
 
     // El countdown se encargará de llamar a handleCountdownComplete con los resultados
+    // Asegurarse de que handleCountdownComplete se llama DESPUÉS de que la animación haya terminado
     setTimeout(() => {
       handleCountdownComplete(raceResults);
-    }, HorseRacingLogic.CONFIG.COUNTDOWN_DURATION + HorseRacingLogic.CONFIG.RACE_DURATION);
+      setRaceStartTime(null); // Reset race start time
+    }, HorseRacingLogic.CONFIG.RACE_DURATION);
 
   }, [gameState, clearAllTimeouts, handleCountdownComplete]);
 
@@ -114,6 +180,8 @@ export function HorseRacingGame() {
             isRacing={gameState.isRacing}
             raceResults={gameState.currentRaceResults}
             raceNumber={gameState.raceNumber}
+            trackLength={HorseRacingLogic.CONFIG.TRACK_LENGTH}
+            raceDuration={HorseRacingLogic.CONFIG.RACE_DURATION}
           />
 
           <div className="race-controls">

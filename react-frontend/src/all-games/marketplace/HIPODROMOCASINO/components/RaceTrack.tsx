@@ -6,9 +6,11 @@ interface RaceTrackProps {
   isRacing: boolean;
   raceResults: RaceResult[] | null;
   raceNumber: number;
+  trackLength: number;
+  raceDuration: number;
 }
 
-export function RaceTrack({ horses, isRacing, raceResults, raceNumber }: RaceTrackProps) {
+export function RaceTrack({ horses, isRacing, raceResults, raceNumber, trackLength, raceDuration }: RaceTrackProps) {
   
   const renderHorse = (horse: Horse, index: number) => {
     const winner = raceResults?.find(r => r.position === 1);
@@ -26,7 +28,9 @@ export function RaceTrack({ horses, isRacing, raceResults, raceNumber }: RaceTra
           className={`horse ${isRacing ? 'running' : ''} ${isWinner ? 'winner' : ''}`}
           style={{ 
             '--horse-color': horse.color,
-            transform: `translateX(${horse.currentPosition}px)`
+            '--track-length': `${trackLength}px`,
+            '--race-duration': `${raceDuration}ms`,
+            left: `${horse.currentPosition}px`
           } as React.CSSProperties}
         >
           <div className="horse-emoji">{horse.emoji}</div>
@@ -63,11 +67,9 @@ export function RaceTrack({ horses, isRacing, raceResults, raceNumber }: RaceTra
                   return '🥉';
                 })()}
               </div>
-              <div className="horse-info">
-                <div className="horse-emoji">{result.horse.emoji}</div>
-                <div className="horse-name">{result.horse.name}</div>
-                <div className="race-time">{result.time.toFixed(1)}s</div>
-              </div>
+              <div className="horse-emoji">{result.horse.emoji}</div>
+              <div className="horse-name">{result.horse.name}</div>
+              <div className="race-time">{result.time.toFixed(1)}s</div>
             </div>
           ))}
         </div>
@@ -105,9 +107,9 @@ export function RaceTrack({ horses, isRacing, raceResults, raceNumber }: RaceTra
 
       <div className="track-info">
         <div className="track-conditions">
-          <span>🌤️ Condiciones: Buenas</span>
-          <span>🏃 Distancia: 1200m</span>
-          <span>💨 Viento: Favorable</span>
+          <span><span className="icon">🌤️</span> Condiciones: Buenas</span>
+          <span><span className="icon">🏃</span> Distancia: 1200m</span>
+          <span><span className="icon">💨</span> Viento: Favorable</span>
         </div>
       </div>
     </div>

@@ -18,7 +18,8 @@ export class HorseRacingLogic {
     COUNTDOWN_DURATION: 3000,
     CELEBRATION_DURATION: 4000,
     MAX_HISTORY: 10,
-    MIN_BET_WARNING: 100
+    MIN_BET_WARNING: 100,
+    TRACK_LENGTH: 500, // Longitud visual de la pista para la animación (en píxeles)
   };
 
   public static readonly BET_PAYOUTS: BetPayouts = {

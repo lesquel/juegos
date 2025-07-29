@@ -39,18 +39,19 @@
 
 /* Layout */
 .game-container {
-  display: grid;
-  grid-template-columns: 350px 1fr;
+  display: flex;
   gap: 20px;
   padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
+  flex-direction: column;
 }
 
 .game-sidebar {
   height: fit-content;
   position: sticky;
   top: 20px;
+  width: 100%;
 }
 
 .game-main {

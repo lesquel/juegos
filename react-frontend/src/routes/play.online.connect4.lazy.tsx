@@ -7,7 +7,7 @@ export const Route = createLazyFileRoute('/play/online/connect4')({
 
 function Connect4GamePage() {
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="min-h-screen">
       <Connect4Game onBack={() => window.history.back()} />
     </div>
   )

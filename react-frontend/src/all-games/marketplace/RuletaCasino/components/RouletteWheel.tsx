@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { RouletteGameLogic } from '../logic/RouletteGameLogic';
 
 interface RouletteWheelProps {
@@ -8,6 +8,27 @@ interface RouletteWheelProps {
 }
 
 export function RouletteWheel({ isSpinning, lastWinningNumber, winnings }: RouletteWheelProps) {
+  const wheelBallRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isSpinning && lastWinningNumber !== null) {
+      const winningNumberData = RouletteGameLogic.NUMBERS.find(
+        (num) => num.number === lastWinningNumber
+      );
+
+      if (winningNumberData && wheelBallRef.current) {
+        const degreesPerSector = 360 / RouletteGameLogic.NUMBERS.length;
+        const targetRotation = winningNumberData.sector * degreesPerSector;
+        const finalRotation = 1440 + targetRotation; 
+
+        wheelBallRef.current.style.transform = `translate(-50%, -50%) rotate(${finalRotation}deg)`;
+        wheelBallRef.current.classList.add('landed');
+      }
+    } else if (isSpinning && wheelBallRef.current) {
+      wheelBallRef.current.style.transform = 'translate(-50%, -50%) rotate(0deg)';
+      wheelBallRef.current.classList.remove('landed');
+    }
+  }, [isSpinning, lastWinningNumber]);
   const getResultDisplay = () => {
     if (isSpinning) {
       return (
@@ -57,7 +78,7 @@ export function RouletteWheel({ isSpinning, lastWinningNumber, winnings }: Roule
           <div className="wheel-logo">🎰</div>
         </div>
         
-        <div className="wheel-ball">
+        <div className="wheel-ball" ref={wheelBallRef}>
           <div className="ball"></div>
         </div>
       </div>

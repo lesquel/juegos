@@ -69,16 +69,18 @@
   main {
     display: grid;
     gap: 1rem;
-    grid-template-columns: minmax(min-content, 1fr) minmax(min-content, 600px);
+    grid-template-columns: 1fr; /* Single column for mobile first */
     overflow: auto;
     padding: 1rem;
   }
-  @media (orientation: portrait) {
+
+  @media (min-width: 768px) {
+    /* Adjust for tablets and desktops */
     main {
-      grid-template-columns: 1fr;
-      grid-template-rows: min-content auto auto;
+      grid-template-columns: minmax(min-content, 1fr) minmax(min-content, 600px);
     }
   }
+
   header {
     align-items: center;
     display: flex;
@@ -172,15 +174,15 @@
     line-height: 1;
     margin: 0 auto;
     position: relative;
-    --s-size: calc(
-      (min(100vw - min(20rem, 33vw) - 3rem, 100vh - 3rem) - 2rem) /
-        (var(--s-cnt, 11) + 0.5)
-    );
+    /* Simplified s-size calculation for better responsiveness */
+    --s-size: calc((min(100vw, 100vh) - 2rem) / (var(--s-cnt, 11) + 0.5));
   }
-  @media (orientation: portrait) {
+
+  @media (min-width: 768px) {
     .F {
       --s-size: calc(
-        (min(100vw, 100vh - 3rem) - 2rem) / (var(--s-cnt, 11) + 0.5)
+        (min(100vw - min(20rem, 33vw) - 3rem, 100vh - 3rem) - 2rem) /
+          (var(--s-cnt, 11) + 0.5)
       );
     }
   }
@@ -395,7 +397,7 @@
   }
   @media (max-width: 600px) {
     .drag-overlay {
-      transform: scale(3);
+      transform: scale(2); /* Adjusted for better mobile scaling */
     }
   }
   .G .k {
@@ -644,38 +646,51 @@
   }
   .dialog {
     background: var(--dlg-bg, rgba(0, 0, 0, 0.9));
-    bottom: 0;
+    border-radius: 0.5rem;
     color: var(--txt, #f0f0f0);
-    display: grid;
-    grid-template-rows: 1fr min-content;
-    height: 100%;
-    left: 0;
+    display: flex; /* Use flexbox for centering */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed; /* Use fixed for modal behavior */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8); /* Start smaller and centered */
+    opacity: 0;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    max-width: 90%; /* Limit width */
+    max-height: 90%; /* Limit height */
+    width: auto; /* Adjust width based on content */
+    height: auto; /* Adjust height based on content */
+    padding: 2rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+    z-index: 1000; /* Ensure it's on top */
+  }
+  .dialog.open {
     opacity: 1;
-    position: absolute;
-    text-align: center;
-    transform: translateY(0);
-    transition:
-      transform 0.5s,
-      opacity 0.5s;
-    width: 100%;
+    transform: translate(-50%, -50%) scale(1);
   }
   .dialog:not(.open) {
-    opacity: 0;
     pointer-events: none;
-    transform: translateY(100%);
   }
   .dialog .content {
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     overflow-x: hidden;
     overflow-y: auto;
+    width: 100%;
+    flex-grow: 1; /* Allow content to grow */
+    padding: 1rem 0; /* Add some vertical padding */
   }
   .dialog .content.ovrflw {
     align-content: start;
   }
   .dialog .icon-btn {
     position: absolute;
-    right: 1rem;
-    top: 1rem;
+    right: 0.5rem;
+    top: 0.5rem;
+    z-index: 1001; /* Ensure it's above content */
   }
   .btns {
     display: grid;

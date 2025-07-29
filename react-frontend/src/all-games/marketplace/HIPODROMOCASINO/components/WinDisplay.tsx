@@ -123,22 +123,20 @@ export function WinDisplay({
             </div>
           </div>
 
-          <div className="horse-celebration">
-            <div className="winning-horse">
+          <div className="winning-horse-section">
+            <div className="winning-horse-details">
               <span 
-                className="horse-emoji celebration-horse" 
+                className="horse-emoji-large" 
                 style={{ color: selectedHorse.color }}
               >
                 {selectedHorse.emoji}
               </span>
-              <div className="horse-details">
-                <div className="horse-name">#{selectedHorse.id} {selectedHorse.name}</div>
-                {selectedHorseResult && (
-                  <div className="horse-position">
-                    Posición: {selectedHorseResult.position}° - Tiempo: {selectedHorseResult.time.toFixed(2)}s
-                  </div>
-                )}
-              </div>
+              <div className="horse-name-large">#{selectedHorse.id} {selectedHorse.name}</div>
+              {selectedHorseResult && (
+                <div className="horse-position-large">
+                  Posición: {selectedHorseResult.position}° - Tiempo: {selectedHorseResult.time.toFixed(2)}s
+                </div>
+              )}
             </div>
           </div>
 

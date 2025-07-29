@@ -1,4 +1,5 @@
 import React, { memo, useMemo, useCallback, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 import type { Game } from "@modules/games/models/game.model";
 import type { Match } from "@modules/games/models/match.model";
@@ -13,14 +14,19 @@ interface JoinMatchProps {
 
 export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  
   // Memoizar función de éxito
   const onSuccess = useCallback(
     (data: Match) => {
       setIsLoading(false);
-      const newUrl = `${location.protocol}//${location.host}/${game?.game_url}?match_id=${data.match_id}`;
-      location.href = newUrl;
+      // Usar TanStack Router para la navegación
+      navigate({ 
+        to: `/${game?.game_url}`,
+        search: { match_id: data.match_id }
+      });
     },
-    [game?.game_url]
+    [game?.game_url, navigate]
   );
 
   const { mutate, error } = useJoinMatch(
@@ -43,15 +49,18 @@ export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
     setIsLoading(true);
     if (matchStates.isJoined) {
       if (match.winner_id === null) {
-        const gameUrl = `${location.protocol}//${location.host}/${game.game_url}?match_id=${match.match_id}`;
-        location.href = gameUrl;
+        // Usar TanStack Router para la navegación
+        navigate({ 
+          to: `/${game.game_url}`,
+          search: { match_id: match.match_id }
+        });
       }
       return;
     }
     mutate({
       bet_amount: match.base_bet_amount,
     });
-  }, [matchStates.isJoined, match, game, mutate]);
+  }, [matchStates.isJoined, match, game, mutate, navigate]);
 
   // Memoizar mensaje de error
   const errorMessage = useMemo(() => {
