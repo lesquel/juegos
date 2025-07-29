@@ -74,7 +74,7 @@ export const useUploadTransfer = () => {
           `${BASE_URL}${endpoints.transferPayment.post}`,
           formData,
           {
-            timeout: 10000, // Timeout mayor para uploads
+            timeout: 100000, // Timeout mayor para uploads
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${
