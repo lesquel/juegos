@@ -6,8 +6,8 @@ import { PaginationComponent } from "@components/PaginationComponent";
 import { CardGameSkeleton } from "./CardGameSkeleton";
 import { Box, Search } from "lucide-react";
 import type { PaginationGames } from "../models/pagination-games";
+import type { GameTab } from "./ListGames";
 
-type GameTab = "offline" | "online";
 
 interface GamesContentProps {
   pagination: PaginationGames;
@@ -58,7 +58,6 @@ const GamesContent = memo(
       return null;
     }, [
       data?.results?.length,
-      pagination.search,
       pagination,
       onPaginationChange,
     ]);

@@ -1,6 +1,6 @@
 import React from "react";
 
-type GameTab = "offline" | "online";
+type GameTab = "offline" | "online" | "luck";
 
 interface GamesTabSelectorProps {
   activeTab: GameTab;
@@ -20,6 +20,9 @@ const GamesTabSelector = ({ activeTab, setActiveTab }: GamesTabSelectorProps) =>
       </button>
       <button className={tabClass("online")} onClick={() => setActiveTab("online")} type="button">
         Juegos Online
+      </button>
+      <button className={tabClass("luck")} onClick={() => setActiveTab("luck")} type="button">
+        Juegos de Azar
       </button>
     </div>
   );

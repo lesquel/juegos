@@ -5,7 +5,7 @@ import type { PaginationGames } from "../models/pagination-games";
 import GamesContent from "./GamesContent";
 import GamesTabSelector from "./GamesTabSelector";
 
-type GameTab = "offline" | "online";
+type GameTab = "offline" | "online" | "luck";
 
 const DEFAULT_PAGINATION: PaginationGames = {
   page: 1,
