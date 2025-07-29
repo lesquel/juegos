@@ -17,8 +17,6 @@ function LoginPage() {
   }
 
   return (
-    <div className="bg-gray-200 min-h-screen flex items-center justify-center p-4">
       <LoginForm />
-    </div>
   );
 }

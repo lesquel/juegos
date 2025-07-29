@@ -81,6 +81,7 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
   ({ gameId, game }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [authRequiredMsg, setAuthRequiredMsg] = useState(false);
 
     const onSuccess = useCallback(
       (data: Match) => {
@@ -111,11 +112,17 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
 
     const handleSubmit = useCallback(
       async ({ value }: { value: CreateMatchFormValues }) => {
-        if (useAuthStore.getState().user) {
+        const user = useAuthStore.getState().user;
+
+        if (user) {
           mutate(value);
         } else {
-          setIsModalOpen(false);
-          location.href = `${location.protocol}//${location.host}/login`;
+          setAuthRequiredMsg(true);
+          setTimeout(() => {
+            setAuthRequiredMsg(false);
+            setIsModalOpen(false);
+            location.href = `${location.protocol}//${location.host}/auth/login`;
+          }, 2500);
         }
       },
       [mutate]
@@ -214,7 +221,13 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
                   <Plus className="h-4 w-4" />
                   Crear Partida
                 </button>
+
               </footer>
+              {authRequiredMsg && (
+                <div className="bg-yellow-900 border border-yellow-600 text-yellow-300 px-4 py-3 rounded-lg mb-4">
+                  Debes iniciar sesión para crear una partida. Redirigiendo...
+                </div>
+              )}
             </form>
           </div>
         </Modal>

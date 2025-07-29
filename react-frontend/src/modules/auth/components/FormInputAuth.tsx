@@ -49,8 +49,7 @@ export const FormInput: React.FC<FormInputProps> = memo(
 
     const inputClasses = useMemo(
       () =>
-        `w-full ${icon ? "pl-10" : "pl-4"} ${
-          isPasswordField ? "pr-12" : "pr-4"
+        `w-full ${icon ? "pl-10" : "pl-4"} ${isPasswordField ? "pr-12" : "pr-4"
         } py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200`,
       [icon, isPasswordField]
     );
@@ -69,8 +68,8 @@ export const FormInput: React.FC<FormInputProps> = memo(
             field.state.meta.errors.length === 0
               ? null
               : field.state.meta.errors
-                  .map((error: any) => error.message)
-                  .join(", ");
+                .map((error: any) => error.message)
+                .join(", ");
 
           const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             field.handleChange(e.target.value);

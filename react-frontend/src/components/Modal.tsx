@@ -1,4 +1,4 @@
-import { useEffect, useRef, memo, useCallback } from "react";
+import { useEffect, memo, useCallback } from "react";
 
 interface ModalProps {
   children: React.ReactNode;
@@ -8,21 +8,9 @@ interface ModalProps {
 }
 
 export const Modal = memo(({ children, isOpen, onClose, className = "" }: ModalProps) => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
   const handleEsc = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose();
-      }
-    },
-    [onClose]
-  );
-
-  // Click en backdrop
-  const handleBackdropClick = useCallback(
-    (event: React.MouseEvent) => {
-      if (event.target === event.currentTarget) {
         onClose();
       }
     },
@@ -43,9 +31,7 @@ export const Modal = memo(({ children, isOpen, onClose, className = "" }: ModalP
     if (isOpen) {
       window.addEventListener("keydown", handleEsc);
       document.body.style.overflow = "hidden";
-      dialogRef.current?.showModal();
     } else {
-      dialogRef.current?.close();
       document.body.style.overflow = "unset";
     }
 
@@ -58,23 +44,26 @@ export const Modal = memo(({ children, isOpen, onClose, className = "" }: ModalP
   if (!isOpen) return null;
 
   return (
-    <dialog
-      ref={dialogRef}
-      className={`bg-gray-800 rounded-lg p-8 max-w-md w-full max-h-[90vh] overflow-y-auto ${className}`}
-    >
-      {/* Backdrop como button para manejar click y teclado */}
+    <div className="fixed inset-0 z-50">
+      {/* Backdrop mejorado con blur y gradiente */}
       <button
         type="button"
-        className="fixed inset-0 bg-black bg-opacity-50 z-40 border-0 p-0 cursor-pointer"
-        onClick={handleBackdropClick}
+        className="absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-800/90 to-gray-900/80 backdrop-filter backdrop-blur-md border-0 p-0 cursor-pointer"
+        onClick={onClose}
         onKeyDown={handleBackdropKeyDown}
         aria-label="Cerrar modal"
       />
 
-      <div className="relative z-50">
-        {children}
+      {/* Modal content container - centrado manualmente */}
+      <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
+        <div
+          className={`relative bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600 rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl backdrop-filter backdrop-blur-sm text-white pointer-events-auto ${className}`}
+          style={{ margin: 0 }}
+        >
+          {children}
+        </div>
       </div>
-    </dialog>
+    </div>
   );
 });
 
