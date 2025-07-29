@@ -2,7 +2,7 @@ import React, { memo, useMemo, useCallback, useState } from "react";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 import type { Game } from "@modules/games/models/game.model";
 import type { Match } from "@modules/games/models/match.model";
-import { MatchClientData, useJoinMatch } from "@modules/games/services/matchClientData";
+import { useJoinMatch } from "@modules/games/services/matchClientData";
 import { Clock, Lock, Merge, Plus, Star } from "lucide-react";
 import { LoadingComponent } from "@components/LoadingComponent";
 
@@ -56,13 +56,30 @@ export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
   // Memoizar mensaje de error
   const errorMessage = useMemo(() => {
     if (!error) return null;
+    
+    // Manejar diferentes tipos de errores
+    let errorText = "Ha ocurrido un error inesperado";
+    
+    if (error && typeof error === 'object') {
+      if ('errors' in error && Array.isArray(error.errors)) {
+        // Error de validación del backend
+        errorText = error.errors.join(", ");
+      } else if ('message' in error && typeof error.message === 'string') {
+        // Error de Axios u otro tipo de error
+        errorText = error.message;
+      }
+    } else if (typeof error === 'string') {
+      // Error simple como string
+      errorText = error;
+    }
+    
     return (
       <div
         className="text-center text-red-400 bg-red-900 bg-opacity-50 p-3 rounded-lg mb-4 border border-red-600"
         role="alert"
       >
         <h4 className="font-semibold mb-1">Error:</h4>
-        <p>{error.errors.join(", ")}</p>
+        <p>{errorText}</p>
       </div>
     );
   }, [error]);

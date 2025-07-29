@@ -3,16 +3,18 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Copiar dependencias
-COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
+# Instalar pnpm
+RUN npm install -g pnpm
 
-RUN npm install
+# Copiar dependencias
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
 # Copiar el resto del proyecto
 COPY . .
 
 # Construir la app
-RUN npm run build
+RUN pnpm run build
 
 # Etapa 2: producción con nginx
 FROM nginx:stable-alpine AS production
