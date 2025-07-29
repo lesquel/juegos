@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from "react";
-import { UserClientData } from "@modules/user/services/userClientData";
+import { useUser } from "@modules/user/services/userClientData";
 import { Clock } from "lucide-react";
 
 interface CardParticipantProps {
@@ -8,7 +8,14 @@ interface CardParticipantProps {
 
 export const CardParticipant: React.FC<CardParticipantProps> = memo(
   ({ id }) => {
-    const { data: participant, isLoading, error } = UserClientData.getUser(id);
+    const { data: participant, isLoading, error } = useUser(id);
+
+    console.log({
+      participant,
+      isLoading,
+      error,
+      id
+    })
 
     // Memoizar avatar URL
     const avatarUrl = useMemo(() => `https://i.pravatar.cc/40?u=${id}`, [id]);

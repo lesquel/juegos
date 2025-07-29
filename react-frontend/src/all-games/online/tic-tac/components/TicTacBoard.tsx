@@ -5,12 +5,14 @@ interface TicTacBoardProps {
   board: Board;
   onCellClick: (index: number) => void;
   disabled?: boolean;
+  winningPositions?: number[];
 }
 
 export const TicTacBoard: React.FC<TicTacBoardProps> = ({ 
   board, 
   onCellClick, 
-  disabled = false 
+  disabled = false,
+  winningPositions = []
 }) => {
   const handleCellClick = (index: number) => {
     if (!disabled && !board[index]) {
@@ -19,14 +21,19 @@ export const TicTacBoard: React.FC<TicTacBoardProps> = ({
   };
 
   const renderCell = (value: CellValue, index: number) => {
+    const isWinningCell = winningPositions.includes(index);
+    const isTie = winningPositions.length === 0 && board.every(cell => cell !== null);
+    
     return (
       <button
         key={index}
-        className={`tic-tac-cell ${value ? 'filled' : ''} ${disabled ? 'disabled' : ''}`}
+        className={`tic-tac-cell ${value ? 'filled' : ''} ${disabled ? 'disabled' : ''} ${
+          isWinningCell ? 'winner' : ''
+        } ${isTie ? 'tie' : ''}`}
         onClick={() => handleCellClick(index)}
         disabled={disabled || !!value}
       >
-        <span className={`cell-content ${value?.toLowerCase()}`}>
+        <span className={`cell-content ${value?.toLowerCase() || ''}`}>
           {value}
         </span>
       </button>

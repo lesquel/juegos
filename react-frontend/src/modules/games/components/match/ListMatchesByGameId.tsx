@@ -29,11 +29,7 @@ interface ListMatchesByGameIdProps {
 
 export const ListMatchesByGameId: React.FC<ListMatchesByGameIdProps> = memo(
   ({ id }) => {
-    return (
-      <QueryProvider>
-        <UseListMatchesByGameId id={id} />
-      </QueryProvider>
-    );
+    return <UseListMatchesByGameId id={id} />;
   }
 );
 

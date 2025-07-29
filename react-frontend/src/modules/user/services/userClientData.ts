@@ -19,8 +19,8 @@ const USER_QUERY_CONFIG = {
 const USER_AXIOS_CONFIG = {
   timeout: 6000,
   headers: {
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  },
 };
 
 const baseUrl = environment.API_URL;
@@ -28,7 +28,7 @@ const baseUrl = environment.API_URL;
 // Hook exports for proper React Query usage
 export const useMe = () => {
   const user = useAuthStore.getState().user;
-  
+
   return useQuery({
     queryKey: ["userMe"],
     ...USER_QUERY_CONFIG,
@@ -55,11 +55,10 @@ export const useUser = (id: string) => {
     ...USER_QUERY_CONFIG,
     queryFn: () =>
       axios
-        .get(`${baseUrl}${endpoints.user.getId(id)}`, {
+        .get(`${endpoints.user.getId(id)}`, {
           ...USER_AXIOS_CONFIG,
         })
         .then((response) => {
-          console.log("data user aaaa", response.data);
           return UserAdapter.adaptMeDetail(response.data);
         }),
   });
@@ -67,7 +66,7 @@ export const useUser = (id: string) => {
 
 export const useMyVirtualCurrency = () => {
   const user = useAuthStore.getState().user;
-  
+
   return useQuery({
     queryKey: ["userVirtualCurrency"],
     ...USER_QUERY_CONFIG,
@@ -93,19 +92,25 @@ export class UserClientData {
 
   // Note: These static methods are deprecated - use the hook exports above
   static getmMe() {
-    console.warn('UserClientData.getmMe is deprecated. Use useMe hook instead.');
+    console.warn(
+      "UserClientData.getmMe is deprecated. Use useMe hook instead."
+    );
     // Return a placeholder for backward compatibility
     return { data: null, isLoading: false, error: null };
   }
 
   static getUser(_id: string) {
-    console.warn('UserClientData.getUser is deprecated. Use useUser hook instead.');
+    console.warn(
+      "UserClientData.getUser is deprecated. Use useUser hook instead."
+    );
     // Return a placeholder for backward compatibility
     return { data: null, isLoading: false, error: null };
   }
 
   static getMyVirtualCurrency() {
-    console.warn('UserClientData.getMyVirtualCurrency is deprecated. Use useMyVirtualCurrency hook instead.');
+    console.warn(
+      "UserClientData.getMyVirtualCurrency is deprecated. Use useMyVirtualCurrency hook instead."
+    );
     // Return a placeholder for backward compatibility
     return { data: null, isLoading: false, error: null };
   }

@@ -2,7 +2,7 @@ import React, { memo, useMemo, useCallback, useState } from "react";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 import type { Game } from "@modules/games/models/game.model";
 import type { Match } from "@modules/games/models/match.model";
-import { MatchClientData } from "@modules/games/services/matchClientData";
+import { MatchClientData, useJoinMatch } from "@modules/games/services/matchClientData";
 import { Clock, Lock, Merge, Plus, Star } from "lucide-react";
 import { LoadingComponent } from "@components/LoadingComponent";
 
@@ -23,7 +23,7 @@ export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
     [game?.game_url]
   );
 
-  const { mutate, error } = MatchClientData.joinMatch(
+  const { mutate, error } = useJoinMatch(
     match.match_id,
     onSuccess
   );

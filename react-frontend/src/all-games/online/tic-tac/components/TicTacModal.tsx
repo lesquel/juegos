@@ -6,13 +6,15 @@ interface TicTacModalProps {
   playerSymbol: Player | null;
   onPlayAgain: () => void;
   onBack: () => void;
+  isOnlineMode?: boolean;
 }
 
 export const TicTacModal: React.FC<TicTacModalProps> = ({ 
   winner, 
   playerSymbol, 
   onPlayAgain, 
-  onBack 
+  onBack,
+  isOnlineMode = false
 }) => {
   const getModalTitle = () => {
     if (winner === 'draw') {
@@ -36,6 +38,10 @@ export const TicTacModal: React.FC<TicTacModalProps> = ({
     return '😢';
   };
 
+  const getPlayAgainText = () => {
+    return isOnlineMode ? 'Nueva partida' : 'Jugar de nuevo';
+  };
+
   return (
     <div className="tic-tac-modal-overlay">
       <div className={`tic-tac-modal ${getModalClass()}`}>
@@ -49,12 +55,21 @@ export const TicTacModal: React.FC<TicTacModalProps> = ({
             </p>
           )}
           
+          {isOnlineMode && (
+            <p className="modal-info">
+              {winner === 'draw' ? 
+                'Ambos jugadores empataron' : 
+                `El jugador ${winner} ha ganado la partida`
+              }
+            </p>
+          )}
+          
           <div className="modal-actions">
             <button 
               className="play-again-button"
               onClick={onPlayAgain}
             >
-              Jugar de nuevo
+              {getPlayAgainText()}
             </button>
             
             <button 

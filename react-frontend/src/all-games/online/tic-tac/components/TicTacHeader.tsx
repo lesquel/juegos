@@ -1,82 +1,86 @@
 import React from 'react';
-import type { GameState } from '../types/TicTacTypes';
+import type { Player } from '../types/TicTacTypes';
 
 interface TicTacHeaderProps {
-  gameState: GameState;
-  onBack: () => void;
+  currentPlayer: Player;
+  statusMessage: string;
+  gameStatus: 'waiting' | 'playing' | 'finished';
+  playerSymbol?: 'X' | 'O';
+  opponentName?: string;
+  isOnlineMode?: boolean;
+  roomCode?: string;
+  onBack?: () => void;
 }
 
-export const TicTacHeader: React.FC<TicTacHeaderProps> = ({ gameState, onBack }) => {
-  const getStatusText = () => {
-    if (!gameState.isConnected) {
-      return 'Conectando...';
+export const TicTacHeader: React.FC<TicTacHeaderProps> = ({ 
+  currentPlayer, 
+  statusMessage,
+  gameStatus,
+  playerSymbol,
+  opponentName,
+  isOnlineMode = false,
+  roomCode,
+  onBack
+}) => {
+  const getPlayerIndicator = () => {
+    if (isOnlineMode && playerSymbol) {
+      return (
+        <div className="player-info">
+          <span className="player-label">Eres:</span>
+          <span className={`player-symbol ${playerSymbol.toLowerCase()}`}>
+            {playerSymbol}
+          </span>
+          {opponentName && <span className="opponent-name">vs {opponentName}</span>}
+        </div>
+      );
     }
-    
-    switch (gameState.gameStatus) {
+    return null;
+  };
+
+  const getStatusClass = () => {
+    switch (gameStatus) {
       case 'waiting':
-        return 'Esperando oponente...';
+        return 'waiting';
       case 'playing':
-        if (gameState.currentPlayer === gameState.playerSymbol) {
-          return 'Tu turno';
-        } else {
-          return 'Turno del oponente';
-        }
+        return 'playing';
       case 'finished':
-        if (gameState.winner === 'draw') {
-          return '¡Empate!';
-        } else if (gameState.winner === gameState.playerSymbol) {
-          return '¡Ganaste!';
-        } else {
-          return 'Perdiste';
-        }
+        return 'finished';
       default:
         return '';
     }
   };
 
-  const getStatusClass = () => {
-    if (!gameState.isConnected) return 'connecting';
-    if (gameState.gameStatus === 'waiting') return 'waiting';
-    if (gameState.gameStatus === 'finished') {
-      if (gameState.winner === 'draw') return 'draw';
-      if (gameState.winner === gameState.playerSymbol) return 'win';
-      return 'lose';
-    }
-    return 'playing';
-  };
-
   return (
     <div className="tic-tac-header">
-      <button 
-        className="back-button"
-        onClick={onBack}
-        aria-label="Volver"
-      >
-        ← Volver
-      </button>
+      {onBack && (
+        <button 
+          className="back-button"
+          onClick={onBack}
+          aria-label="Volver"
+        >
+          ← Volver
+        </button>
+      )}
       
       <h1 className="game-title">Tres en Raya</h1>
       
       <div className="game-info">
         <div className={`status-indicator ${getStatusClass()}`}>
-          <span className="status-text">{getStatusText()}</span>
+          <span className="status-text">{statusMessage}</span>
         </div>
         
-        {gameState.roomCode && (
+        {roomCode && (
           <div className="room-info">
             <span className="room-label">Sala:</span>
-            <span className="room-code">{gameState.roomCode}</span>
+            <span className="room-code">{roomCode}</span>
           </div>
         )}
         
-        {gameState.playerSymbol && (
-          <div className="player-info">
-            <span className="player-label">Eres:</span>
-            <span className={`player-symbol ${gameState.playerSymbol.toLowerCase()}`}>
-              {gameState.playerSymbol}
-            </span>
-          </div>
-        )}
+        {getPlayerIndicator()}
+        
+        <div className={`current-player ${currentPlayer.toLowerCase()}`}>
+          Jugador actual: <span className="player-symbol">{currentPlayer}</span>
+        </div>
       </div>
     </div>
   );
