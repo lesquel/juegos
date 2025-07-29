@@ -1,5 +1,5 @@
 // Configuración con valores por defecto seguros - FORZADOS para evitar conflictos
-const API_URL_DEV = "http://localhost:8080"; // Corregido - backend en puerto 8080
+const API_URL_DEV = "http://localhost:8080"; // Forzado - Corregido al puerto del backend
 const API_URL_PROD = "https://juegosbackend-910998875911.northamerica-south1.run.app"; // Forzado
 const ENVIRONMENT = import.meta.env.VITE_ENVIRONMENT || "development";
 

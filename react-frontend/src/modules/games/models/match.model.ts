@@ -33,6 +33,7 @@ export interface FinishMatch {
     user_id: string;
     score: number;
   }[];
+  custom_odds: number;
 }
 
 // Define el modelo para el metodo post crear match

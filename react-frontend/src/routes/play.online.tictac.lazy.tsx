@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useRouter } from "@tanstack/react-router";
 import { TicTacGame } from "@all-games/online/tic-tac/TicTacGame";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { environment } from "@/config/environment";
@@ -12,6 +12,8 @@ function TicTacGamePage() {
   const urlParams = new URLSearchParams(window.location.search);
   const user = useAuthStore.getState().user;
   const matchId = urlParams.get("match_id");
+  const isOnlineMode = !!matchId;
+  const router = useRouter();
 
   // Provide fallback values if user or tokens are not available
   const authToken = user?.access_token?.access_token || "fallback_token";
@@ -39,9 +41,9 @@ function TicTacGamePage() {
   return (
     <div className="w-full ">
       <TicTacGame
-        onBack={() => window.history.back()}
-        isOnlineMode={true}
-        roomCode={matchId}
+        onBack={() => router.history.back()}
+        isOnlineMode={isOnlineMode}
+        roomCode={matchId || undefined}
         authToken={authToken}
         wsUrl={wsUrl}
       />

@@ -1,6 +1,7 @@
 import { environment } from "@config/environment";
 import type { LoginModel, RegiterInpustModel } from "../models/auth.model";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 import axios from "axios";
 import type { UserMe } from "@modules/user/models/user.model";
 import { UserAdapter } from "@modules/user/adapters/user.adapter";
@@ -28,6 +29,8 @@ const baseUrl = environment.API_URL;
 
 export const useLoginMutation = () => {
   const { setUser } = useAuthStore();
+  const router = useRouter();
+  
   return useMutation({
     ...MUTATION_CONFIG,
     mutationFn: async (data: LoginModel) => {
@@ -48,11 +51,8 @@ export const useLoginMutation = () => {
     onSuccess: (data) => {
       // El store ahora maneja automáticamente las cookies
       setUser(data);
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.location.href = "/";
-      }
+      // Usar TanStack Router para navegación
+      router.history.back();
     },
     onError: (error: ErrorResponseErrorsArray) => {
       console.error("onError:", error);
@@ -61,6 +61,8 @@ export const useLoginMutation = () => {
 };
 
 export const useRegisterMutation = () => {
+  const router = useRouter();
+  
   return useMutation({
     ...MUTATION_CONFIG,
     mutationFn: async (data: RegiterInpustModel) => {
@@ -78,7 +80,7 @@ export const useRegisterMutation = () => {
       }
     },
     onSuccess: (data) => {
-      window.location.href = authRoutesConfig.children.login.url;
+      router.navigate({ to: authRoutesConfig.children.login.url });
       return data;
     },
     onError: (error: ErrorResponseErrorsArray) => {
@@ -87,16 +89,27 @@ export const useRegisterMutation = () => {
   });
 };
 
+export const useLogout = () => {
+  const { isLogged, clearUser } = useAuthStore();
+  const router = useRouter();
+  
+  return () => {
+    if (isLogged()) {
+      // El store ahora maneja automáticamente las cookies
+      clearUser();
+      // Redirigir al home usando TanStack Router
+      router.navigate({ to: "/" });
+    }
+  };
+};
+
 export const logoutUser = () => {
   const { isLogged, clearUser } = useAuthStore.getState();
   if (isLogged()) {
     // El store ahora maneja automáticamente las cookies
     clearUser();
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      window.location.href = "/";
-    }
+    // Fallback para casos donde no se puede usar el hook
+    window.location.href = "/";
   }
 };
 
@@ -104,4 +117,5 @@ export class AuthClientData {
   static readonly login = useLoginMutation;
   static readonly register = useRegisterMutation;
   static readonly logout = logoutUser;
+  static readonly useLogout = useLogout;
 }

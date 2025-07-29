@@ -643,3 +643,468 @@
     grid-template-columns: repeat(6, 1fr);
   }
 }
+
+/* ===== ESTILOS PARA SISTEMA DE APUESTAS ===== */
+
+/* Estado de apuestas */
+.roulette-betting-status {
+  margin: 15px 0;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.roulette-current-match,
+.roulette-betting-loading,
+.roulette-finishing-loading,
+.roulette-quitting-loading {
+  padding: 12px 16px;
+  margin: 8px 0;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.roulette-current-match {
+  background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.2));
+  border: 2px solid rgba(46, 204, 113, 0.5);
+  color: #2ecc71;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+}
+
+.roulette-betting-loading,
+.roulette-finishing-loading,
+.roulette-quitting-loading {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
+  border: 2px solid rgba(255, 193, 7, 0.5);
+  color: #ffc107;
+  animation: rouletteLoadingPulse 1.5s ease-in-out infinite alternate;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+}
+
+/* Mensajes de error */
+.roulette-error-message {
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.15), rgba(192, 57, 43, 0.15));
+  border: 2px solid rgba(231, 76, 60, 0.4);
+  padding: 20px;
+  border-radius: 12px;
+  margin: 15px 0;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(231, 76, 60, 0.2);
+}
+
+.roulette-error-message h3 {
+  margin-top: 0;
+  color: #e74c3c;
+  font-size: 1.3rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.roulette-error-message p {
+  margin: 8px 0;
+  color: #ecf0f1;
+  line-height: 1.4;
+}
+
+.clear-error-btn {
+  background: linear-gradient(145deg, #e74c3c, #c0392b);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.clear-error-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}
+
+/* ===== MODAL DE FIN DE PARTIDA ===== */
+.roulette-game-end-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  animation: rouletteFadeIn 0.3s ease-out;
+}
+
+.roulette-game-end-modal {
+  background: linear-gradient(145deg, #0f4c3a, #1a5f4a);
+  border-radius: 25px;
+  padding: 35px;
+  max-width: 550px;
+  width: 90%;
+  border: 3px solid #ffd700;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.6),
+    inset 0 2px 5px rgba(255, 255, 255, 0.1);
+  animation: rouletteModalAppear 0.5s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.roulette-game-end-modal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
+  animation: rouletteModalBorderGlow 2s ease-in-out infinite;
+}
+
+.roulette-modal-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.roulette-modal-header h2 {
+  margin: 0;
+  color: #ffd700;
+  font-size: 2.5rem;
+  text-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.6),
+    0 0 15px rgba(255, 215, 0, 0.4);
+  animation: rouletteModalTitleGlow 2s ease-in-out infinite alternate;
+}
+
+.roulette-modal-content {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.roulette-result {
+  border-radius: 18px;
+  padding: 25px;
+  margin: 20px 0;
+}
+
+.roulette-result.win-result {
+  background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.2));
+  border: 2px solid rgba(46, 204, 113, 0.5);
+  box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+}
+
+.roulette-result.lose-result {
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.2));
+  border: 2px solid rgba(231, 76, 60, 0.5);
+  box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+}
+
+.roulette-result h3 {
+  font-size: 2.2rem;
+  margin: 0 0 15px 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.win-result h3 {
+  color: #2ecc71;
+  animation: rouletteCelebrateText 0.8s ease-out;
+}
+
+.lose-result h3 {
+  color: #e74c3c;
+}
+
+.lose-result p {
+  color: #ecf0f1;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.winning-number-display {
+  margin: 20px 0;
+}
+
+.modal-winning-number {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  line-height: 80px;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 10px 0;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.modal-winning-number.red {
+  background: linear-gradient(145deg, #e74c3c, #c0392b);
+  box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+.modal-winning-number.black {
+  background: linear-gradient(145deg, #2c3e50, #34495e);
+  box-shadow: 0 8px 25px rgba(44, 62, 80, 0.4);
+}
+
+.modal-winning-number.green {
+  background: linear-gradient(145deg, #27ae60, #2ecc71);
+  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+}
+
+.winning-number-desc {
+  font-size: 1.1rem;
+  color: #bdc3c7;
+  margin: 10px 0;
+}
+
+.win-message {
+  font-size: 1.4rem;
+  margin: 15px 0;
+  color: #ecf0f1;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.roulette-modal-win-amount {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffd700;
+  margin: 20px 0;
+  text-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.6),
+    0 0 15px rgba(255, 215, 0, 0.4);
+  animation: rouletteGoldTextGlow 1.5s ease-in-out infinite alternate;
+}
+
+.roulette-current-balance {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 25px 0;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.roulette-current-balance p {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.roulette-modal-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.roulette-new-game-button {
+  background: linear-gradient(145deg, #27ae60, #2ecc71);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 18px 30px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 6px 20px rgba(39, 174, 96, 0.4),
+    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.roulette-new-game-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 8px 25px rgba(39, 174, 96, 0.6),
+    inset 0 2px 5px rgba(255, 255, 255, 0.3);
+}
+
+.roulette-new-game-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  filter: grayscale(50%);
+}
+
+.roulette-quit-game-button {
+  background: linear-gradient(145deg, #e74c3c, #c0392b);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 18px 30px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 6px 20px rgba(231, 76, 60, 0.4),
+    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.roulette-quit-game-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 8px 25px rgba(231, 76, 60, 0.6),
+    inset 0 2px 5px rgba(255, 255, 255, 0.3);
+}
+
+.roulette-insufficient-funds-warning {
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(200, 0, 0, 0.25));
+  border: 2px solid rgba(255, 0, 0, 0.5);
+  color: #ff6b6b;
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 25px;
+  font-weight: bold;
+  text-align: center;
+  animation: rouletteWarningPulse 1.5s ease-in-out infinite alternate;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+}
+
+/* ===== ANIMACIONES ===== */
+@keyframes rouletteLoadingPulse {
+  from { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+  to { 
+    opacity: 0.7; 
+    transform: scale(1.02); 
+  }
+}
+
+@keyframes rouletteFadeIn {
+  from { 
+    opacity: 0; 
+  }
+  to { 
+    opacity: 1; 
+  }
+}
+
+@keyframes rouletteModalAppear {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.7) translateY(-50px) rotateY(-15deg); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1) translateY(0) rotateY(0deg); 
+  }
+}
+
+@keyframes rouletteModalBorderGlow {
+  0%, 100% { 
+    opacity: 0.8; 
+  }
+  50% { 
+    opacity: 1; 
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+}
+
+@keyframes rouletteModalTitleGlow {
+  from { 
+    text-shadow: 
+      2px 2px 4px rgba(0, 0, 0, 0.6),
+      0 0 15px rgba(255, 215, 0, 0.4);
+  }
+  to { 
+    text-shadow: 
+      2px 2px 4px rgba(0, 0, 0, 0.6),
+      0 0 25px rgba(255, 215, 0, 0.6),
+      0 0 35px rgba(255, 215, 0, 0.3);
+  }
+}
+
+@keyframes rouletteCelebrateText {
+  0% { 
+    transform: scale(0.8) rotate(-5deg); 
+    opacity: 0; 
+  }
+  50% { 
+    transform: scale(1.1) rotate(5deg); 
+  }
+  100% { 
+    transform: scale(1) rotate(0deg); 
+    opacity: 1; 
+  }
+}
+
+@keyframes rouletteGoldTextGlow {
+  from { 
+    text-shadow: 
+      2px 2px 4px rgba(0, 0, 0, 0.6),
+      0 0 15px rgba(255, 215, 0, 0.4);
+  }
+  to { 
+    text-shadow: 
+      2px 2px 4px rgba(0, 0, 0, 0.6),
+      0 0 25px rgba(255, 215, 0, 0.7),
+      0 0 35px rgba(255, 215, 0, 0.4);
+  }
+}
+
+@keyframes rouletteWarningPulse {
+  from { 
+    border-color: rgba(255, 0, 0, 0.5);
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(200, 0, 0, 0.25));
+  }
+  to { 
+    border-color: rgba(255, 0, 0, 0.8);
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.35), rgba(200, 0, 0, 0.35));
+  }
+}
+
+/* ===== RESPONSIVE DESIGN PARA MODALES ===== */
+@media (max-width: 768px) {
+  .roulette-modal-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .roulette-game-end-modal {
+    padding: 25px;
+    margin: 15px;
+    max-width: none;
+  }
+  
+  .roulette-modal-header h2 {
+    font-size: 2rem;
+  }
+  
+  .roulette-new-game-button,
+  .roulette-quit-game-button {
+    width: 100%;
+    padding: 15px 25px;
+    font-size: 1.2rem;
+  }
+  
+  .modal-winning-number {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 1.5rem;
+  }
+}

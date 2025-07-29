@@ -1,5 +1,6 @@
 import { environment } from "@config/environment";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 import axios from "axios";
 import { TransferAdapter } from "../adapters/transfer.adapter";
 import { useAuthStore } from "@modules/auth/store/auth.store";
@@ -56,6 +57,8 @@ export const useTransfers = () => {
 };
 
 export const useUploadTransfer = () => {
+  const router = useRouter();
+  
   return useMutation({
     ...TRANSFER_MUTATION_CONFIG,
     mutationFn: async (data: TransferInputModel) => {
@@ -71,7 +74,7 @@ export const useUploadTransfer = () => {
           `${BASE_URL}${endpoints.transferPayment.post}`,
           formData,
           {
-            timeout: 15000, // Timeout mayor para uploads
+            timeout: 100000, // Timeout mayor para uploads
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${
@@ -88,7 +91,7 @@ export const useUploadTransfer = () => {
       }
     },
     onSuccess: (data) => {
-      window.location.href = "/user/me";
+      router.navigate({ to: "/user/me" });
       console.log("Transferencia registrada", data);
     },
     onError: (error: ErrorResponseErrorsArray) => {

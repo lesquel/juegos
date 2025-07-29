@@ -49,8 +49,6 @@ export function SlotGame() {
   );
 
   const [spinTimeouts, setSpinTimeouts] = useState<NodeJS.Timeout[]>([]);
-  const [showGameEndModal, setShowGameEndModal] = useState(false);
-  const [lastGameResult, setLastGameResult] = useState<{win: boolean, amount: number, message: string} | null>(null);
 
   // Obtener el ID del juego dinámicamente
   const { slotGameId, isLoading: isLoadingGameId, allGames } = useSlotGameId();
@@ -64,6 +62,8 @@ export function SlotGame() {
     currentMatch,
     placeBet,
     finishGame,
+    quitGame,
+    continueGame,
     isPlacingBet,
     isFinishingGame,
     isQuitting,
@@ -109,19 +109,6 @@ export function SlotGame() {
         console.log('🏁 Finalizando partida con resultado:', gameResult);
         await finishGame.mutateAsync(gameResult);
         console.log('✅ Partida finalizada exitosamente');
-        
-        // Guardar resultado para el modal
-        setLastGameResult({
-          win: slotResult.win,
-          amount: winAmount,
-          message: SlotGameLogic.getWinMessage(slotResult, winAmount)
-        });
-        
-        // Mostrar modal de fin de partida
-        setTimeout(() => {
-          setShowGameEndModal(true);
-        }, 1000);
-        
       } else {
         console.warn('⚠️ No hay partida activa para finalizar');
       }
@@ -165,11 +152,11 @@ export function SlotGame() {
       return; // No continuar si la apuesta falla
     }
 
-    // Actualizar estado para mostrar que está girando
-    // NO descontamos créditos aquí, el backend ya lo hizo
+    // Actualizar estado inmediatamente después de apostar
     setGameState(prev => ({
       ...prev,
       isSpinning: true,
+      credits: prev.credits - prev.currentBet,
       totalSpins: prev.totalSpins + 1
     }));
 
@@ -201,27 +188,35 @@ export function SlotGame() {
     });
   }, []);
 
+  const handleMaxBet = useCallback(() => {
+    setGameState(prev => ({
+      ...prev,
+      currentBet: SlotGameLogic.getMaxBetForCredits(prev.credits)
+    }));
+  }, []);
+
   const handleReset = useCallback(() => {
     clearAllTimeouts();
     setGameState(SlotGameLogic.createInitialState());
-    setShowGameEndModal(false);
-    setLastGameResult(null);
   }, [clearAllTimeouts]);
 
-  const handleNewGame = useCallback(() => {
-    setShowGameEndModal(false);
-    setLastGameResult(null);
-    // El estado se mantendrá con los créditos actualizados
-    console.log('🎮 Iniciando nueva partida...');
-  }, []);
-
-  const handleQuitAndReset = useCallback(() => {
-    setShowGameEndModal(false);
-    setLastGameResult(null);
+  const handleQuitGame = useCallback(async () => {
+    if (currentMatch?.matchId) {
+      console.log('🚪 Saliendo de la partida:', currentMatch.matchId);
+      try {
+        await quitGame.mutateAsync();
+      } catch (error) {
+        console.error('Error al salir del juego:', error);
+      }
+    }
     clearAllTimeouts();
     setGameState(SlotGameLogic.createInitialState());
-    console.log('🚪 Saliendo y reiniciando juego...');
-  }, [clearAllTimeouts]);
+  }, [currentMatch, quitGame, clearAllTimeouts]);
+
+  const handleContinueGame = useCallback(() => {
+    console.log('🎮 Continuando juego...');
+    continueGame();
+  }, [continueGame]);
 
   // Auto-sincronizar créditos cuando cambia el balance
   useEffect(() => {
@@ -379,12 +374,30 @@ export function SlotGame() {
 
           {/* Controles adicionales del sistema de apuestas */}
           <div className="betting-game-controls">
+            {currentMatch && (
+              <button
+                onClick={handleQuitGame}
+                disabled={isQuitting || gameState.isSpinning}
+                className="quit-button"
+              >
+                {isQuitting ? '🚪 Saliendo...' : '🚪 Salir del Juego'}
+              </button>
+            )}
+            
+            <button
+              onClick={handleContinueGame}
+              disabled={gameState.isSpinning}
+              className="continue-button"
+            >
+              🎮 Continuar Jugando
+            </button>
+            
             <button
               onClick={handleReset}
               disabled={gameState.isSpinning}
               className="reset-button"
             >
-              🔄 Reiniciar Juego Completo
+              🔄 Reiniciar Juego
             </button>
           </div>
         </div>
@@ -420,59 +433,6 @@ export function SlotGame() {
           </div>
         </div>
       </div>
-
-      {/* Modal de fin de partida */}
-      {showGameEndModal && lastGameResult && (
-        <div className="game-end-modal-overlay">
-          <div className="game-end-modal">
-            <div className="modal-header">
-              <h2>🎰 Partida Finalizada 🎰</h2>
-            </div>
-            
-            <div className="modal-content">
-              {lastGameResult.win ? (
-                <div className="win-result">
-                  <h3>🎉 ¡FELICIDADES! 🎉</h3>
-                  <p className="win-message">{lastGameResult.message}</p>
-                  <p className="modal-win-amount">Ganaste: ${lastGameResult.amount}</p>
-                </div>
-              ) : (
-                <div className="lose-result">
-                  <h3>😔 No hubo suerte esta vez</h3>
-                  <p>¡Inténtalo de nuevo!</p>
-                </div>
-              )}
-              
-              <div className="current-balance">
-                <p>💰 Saldo actual: ${SlotGameLogic.formatCredits(gameState.credits)}</p>
-              </div>
-            </div>
-            
-            <div className="modal-actions">
-              <button
-                onClick={handleNewGame}
-                className="new-game-button"
-                disabled={gameState.credits < gameState.currentBet}
-              >
-                🎮 Nueva Partida
-              </button>
-              
-              <button
-                onClick={handleQuitAndReset}
-                className="quit-game-button"
-              >
-                🚪 Salir del Juego
-              </button>
-            </div>
-            
-            {gameState.credits < gameState.currentBet && (
-              <div className="insufficient-funds-warning">
-                ⚠️ Fondos insuficientes para continuar con la apuesta actual
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

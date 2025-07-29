@@ -64,7 +64,15 @@ const InternalTransferForm: React.FC = memo(() => {
   // Memoizar handler de cantidad
   const handleAmountChange = useCallback(
     (field: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      field.handleChange(Number(e.target.value));
+      const value = e.target.value;
+      // Si está vacío, establecer como 0 pero mostrar vacío en el UI
+      if (value === "" || value === "0") {
+        field.handleChange(0);
+      } else {
+        // Convertir a número
+        const numValue = parseFloat(value);
+        field.handleChange(isNaN(numValue) ? 0 : numValue);
+      }
     },
     []
   );
@@ -206,7 +214,7 @@ const InternalTransferForm: React.FC = memo(() => {
                   type="number"
                   step="0.01"
                   min="0"
-                  value={field.state.value}
+                  value={field.state.value === 0 ? "" : field.state.value}
                   onChange={handleAmountChange(field)}
                   disabled={isPending}
                   className="pl-7 block w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 p-3 disabled:opacity-50 disabled:cursor-not-allowed"

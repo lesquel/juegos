@@ -26,9 +26,7 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
   // Memoizar la URL del juego
   const gameUrl = useMemo(() => {
     if (!data) return "/"; // Default or loading state URL
-    return data.game_type === GameType.online
-      ? `matches`
-      : "/" + data.game_url;
+    return data.game_type === GameType.online ? `matches` : "/" + data.game_url;
   }, [data?.game_type, data?.game_id, data?.game_url]);
 
   // Memoizar el icono del botón play
