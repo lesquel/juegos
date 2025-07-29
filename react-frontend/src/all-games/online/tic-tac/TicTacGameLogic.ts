@@ -9,11 +9,70 @@ import type {
 export class TicTacGameLogic {
   private ws: WebSocket | null = null;
   private gameState: GameState;
-  private onStateUpdate: (state: GameState) => void;
+  public onStateUpdate: (state: GameState) => void; // Cambiado a público
   private config: GameConfig;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
+  private isConnecting = false; // Flag para prevenir conexiones duplicadas
+  private connectionPromise: Promise<void> | null = null;
+  
+  // Static registry to prevent multiple connections to the same room
+  private static activeConnections = new Map<string, TicTacGameLogic>();
+
+  // Static methods to manage active connections
+  static getActiveConnection(roomCode: string): TicTacGameLogic | undefined {
+    return this.activeConnections.get(roomCode);
+  }
+
+  static hasActiveConnection(roomCode: string): boolean {
+    const connection = this.activeConnections.get(roomCode);
+    return connection !== undefined && connection.isConnected();
+  }
+
+  static registerConnection(roomCode: string, instance: TicTacGameLogic): void {
+    console.log(`📝 Registering connection for room: ${roomCode}`);
+    this.activeConnections.set(roomCode, instance);
+  }
+
+  static unregisterConnection(roomCode: string): void {
+    console.log(`🗑️ Unregistering connection for room: ${roomCode}`);
+    this.activeConnections.delete(roomCode);
+  }
+
+  // Static factory method to get or create instance for a room
+  static getOrCreateInstance(
+    config: GameConfig,
+    onStateUpdate: (state: GameState) => void
+  ): TicTacGameLogic {
+    const roomCode = config.roomCode;
+    if (!roomCode) {
+      throw new Error('Room code is required');
+    }
+
+    const existingConnection = this.getActiveConnection(roomCode);
+    if (existingConnection && existingConnection.isConnected()) {
+      console.log(`🔄 Reusing existing instance for room: ${roomCode}`);
+      // Update the state callback to the new component
+      existingConnection.onStateUpdate = onStateUpdate;
+      // Notify with current state
+      onStateUpdate(existingConnection.gameState);
+      return existingConnection;
+    }
+
+    console.log(`🆕 Creating new instance for room: ${roomCode}`);
+    return new TicTacGameLogic(config, onStateUpdate);
+  }
+
+  // Static method to cleanup inactive connections
+  static cleanupInactiveConnections(): void {
+    for (const [roomCode, instance] of this.activeConnections.entries()) {
+      if (!instance.isConnected()) {
+        console.log(`🧹 Cleaning up inactive connection for room: ${roomCode}`);
+        this.activeConnections.delete(roomCode);
+      }
+    }
+  }
 
   constructor(
     config: GameConfig,
@@ -43,81 +102,131 @@ export class TicTacGameLogic {
     };
   }
 
+  public getConfig(): GameConfig {
+    return this.config;
+  }
+
+  public isConnected(): boolean {
+    return this.ws?.readyState === WebSocket.OPEN;
+  }
+
   public async connect(): Promise<void> {
-    try {
-      const token = this.config.authToken;
-      const wsUrl = `${this.config.wsUrl}/${this.config.roomCode}?token=${encodeURIComponent(token)}`;
-      
-      console.log('🔌 Connecting to WebSocket:', wsUrl);
-      this.ws = new WebSocket(wsUrl);
-      
-      this.ws.onopen = () => {
-        console.log('🔌 WebSocket connected for Tic-Tac-Toe');
-        this.updateState({ isConnected: true });
-        this.reconnectAttempts = 0;
-        
-        // Join the game using match_id if available
-        if (this.config.roomCode) {
-          this.joinGame(this.config.roomCode);
-        }
-      };
-
-      this.ws.onmessage = (event) => {
-        try {
-          const message: WebSocketMessage = JSON.parse(event.data);
-          this.handleMessage(message);
-        } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
-        }
-      };
-
-      this.ws.onclose = (event) => {
-        console.log('WebSocket closed:', event.code, event.reason);
-        this.updateState({ isConnected: false });
-        
-        if (!event.wasClean && this.reconnectAttempts < this.maxReconnectAttempts) {
-          this.scheduleReconnect();
-        }
-      };
-
-      this.ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        this.updateState({ isConnected: false });
-        
-        // If connection fails, switch to offline mode
-        if (this.reconnectAttempts === 0) {
-          console.log('⚠️ WebSocket connection failed, switching to offline mode');
-          this.switchToOfflineMode();
-        }
-      };
-
-      this.ws.onmessage = (event) => {
-        try {
-          const message: WebSocketMessage = JSON.parse(event.data);
-          this.handleMessage(message);
-        } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
-        }
-      };
-
-      this.ws.onclose = (event) => {
-        console.log('WebSocket closed:', event.code, event.reason);
-        this.updateState({ isConnected: false });
-        
-        if (!event.wasClean && this.reconnectAttempts < this.maxReconnectAttempts) {
-          this.scheduleReconnect();
-        }
-      };
-
-      this.ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        this.updateState({ isConnected: false });
-      };
-
-    } catch (error) {
-      console.error('Connection error:', error);
-      throw new Error('Failed to connect to game server');
+    const roomCode = this.config.roomCode;
+    
+    if (!roomCode) {
+      throw new Error('Room code is required for connection');
     }
+    
+    // Verificar si ya hay una conexión activa para esta sala
+    const activeConnection = TicTacGameLogic.getActiveConnection(roomCode);
+    if (activeConnection && activeConnection !== this && activeConnection.isConnected()) {
+      console.log(`⚠️ Room ${roomCode} already has an active connection, reusing existing instance`);
+      // Copiar el estado de la conexión activa
+      this.gameState = { ...activeConnection.gameState };
+      this.onStateUpdate(this.gameState);
+      return;
+    }
+
+    // Si ya hay una conexión activa o en proceso, no crear otra
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      console.log('⚠️ WebSocket already connected, skipping duplicate connection');
+      TicTacGameLogic.registerConnection(roomCode, this);
+      return;
+    }
+
+    if (this.isConnecting) {
+      console.log('⚠️ Connection already in progress, waiting...');
+      return this.connectionPromise || Promise.resolve();
+    }
+
+    this.isConnecting = true;
+    this.connectionPromise = this.createConnection();
+    
+    try {
+      await this.connectionPromise;
+      // Registrar la conexión activa solo después de una conexión exitosa
+      TicTacGameLogic.registerConnection(roomCode, this);
+    } finally {
+      this.isConnecting = false;
+      this.connectionPromise = null;
+    }
+  }
+
+  private async createConnection(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        // Cerrar conexión existente si la hay
+        if (this.ws) {
+          this.ws.close();
+          this.ws = null;
+        }
+
+        const token = this.config.authToken;
+        const wsUrl = `${this.config.wsUrl}/${this.config.roomCode}?token=${encodeURIComponent(token)}`;
+        
+        console.log('🔌 Connecting to WebSocket:', wsUrl);
+        this.ws = new WebSocket(wsUrl);
+        
+        this.ws.onopen = () => {
+          console.log('🔌 WebSocket connected for Tic-Tac-Toe');
+          this.updateState({ isConnected: true });
+          this.reconnectAttempts = 0;
+          
+          // Join the game using match_id if available
+          if (this.config.roomCode) {
+            this.joinGame(this.config.roomCode);
+          }
+          
+          resolve();
+        };
+
+        this.ws.onmessage = (event) => {
+          try {
+            const message: WebSocketMessage = JSON.parse(event.data);
+            this.handleMessage(message);
+          } catch (error) {
+            console.error('Error parsing WebSocket message:', error);
+          }
+        };
+
+        this.ws.onclose = (event) => {
+          console.log('WebSocket closed:', event.code, event.reason);
+          this.updateState({ isConnected: false });
+          
+          // Limpiar del registro si la conexión se cierra
+          const roomCode = this.config.roomCode;
+          if (roomCode && event.wasClean) {
+            TicTacGameLogic.unregisterConnection(roomCode);
+          }
+          
+          if (!event.wasClean && this.reconnectAttempts < this.maxReconnectAttempts) {
+            this.scheduleReconnect();
+          } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+            // Si agotamos los intentos de reconexión, limpiar del registro
+            if (roomCode) {
+              TicTacGameLogic.unregisterConnection(roomCode);
+            }
+          }
+        };
+
+        this.ws.onerror = (error) => {
+          console.error('WebSocket error:', error);
+          this.updateState({ isConnected: false });
+          
+          // If connection fails, switch to offline mode
+          if (this.reconnectAttempts === 0) {
+            console.log('⚠️ WebSocket connection failed, switching to offline mode');
+            this.switchToOfflineMode();
+          }
+          
+          reject(error);
+        };
+
+      } catch (error) {
+        console.error('Failed to create WebSocket connection:', error);
+        reject(error);
+      }
+    });
   }
 
   private scheduleReconnect(): void {
@@ -500,10 +609,12 @@ export class TicTacGameLogic {
       this.ws = null;
     }
     this.updateState({ isConnected: false });
-  }
-
-  public isConnected(): boolean {
-    return this.ws?.readyState === WebSocket.OPEN;
+    
+    // Limpiar el registro de conexiones activas
+    const roomCode = this.config.roomCode;
+    if (roomCode) {
+      TicTacGameLogic.unregisterConnection(roomCode);
+    }
   }
 
   // Utility methods for offline mode

@@ -53,18 +53,34 @@ export const TicTacGame: React.FC<TicTacGameProps> = ({
     };
 
     console.log("config", config);
-    gameLogicRef.current = new TicTacGameLogic(config, setGameState);
-
-    if (isOnlineMode) {
-      gameLogicRef.current.connect().catch(console.error);
+    
+    if (isOnlineMode && roomCode) {
+      // Usar el método factory para obtener o crear una instancia
+      gameLogicRef.current = TicTacGameLogic.getOrCreateInstance(config, setGameState);
+      
+      // Solo conectar si no está ya conectado
+      if (!gameLogicRef.current.isConnected()) {
+        gameLogicRef.current.connect().catch(console.error);
+      }
     } else {
+      // Para modo offline, crear una nueva instancia siempre
+      if (gameLogicRef.current) {
+        gameLogicRef.current.disconnect();
+      }
+      gameLogicRef.current = new TicTacGameLogic(config, setGameState);
       gameLogicRef.current.startOfflineGame();
     }
 
     return () => {
-      if (gameLogicRef.current) {
+      // Solo desconectar si es el último componente usando esta instancia
+      if (gameLogicRef.current && isOnlineMode && roomCode) {
+        // No desconectar inmediatamente, permitir que otros componentes reutilicen
+        // La limpieza se hará cuando realmente sea necesario
+      } else if (gameLogicRef.current && !isOnlineMode) {
+        // Para modo offline sí podemos limpiar inmediatamente
         gameLogicRef.current.disconnect();
       }
+      gameLogicRef.current = null;
     };
   }, [isOnlineMode, wsUrl, authToken, roomCode]);
 
