@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { SlotGameLogic } from './logic/SlotGameLogic';
-import type { SlotGameState } from './types/SlotTypes';
+import type { SlotGameState, SpinResult } from './types/SlotTypes';
+import { SlotMachine } from './components/SlotMachine';
+import { GameControls } from './components/GameControls';
+import { GameStats } from './components/GameStats';
+import { WinDisplay } from './components/WinDisplay';
 import { useSlotGameBetting, useSlotGameBalance } from '../../../modules/games/services/slotGameService';
 import { useGames } from '../../../modules/games/services/gameClientData';
 import type { SlotGameResult } from '../../../modules/games/services/slotGameService';
@@ -49,8 +53,6 @@ export function SlotGame() {
   );
 
   const [spinTimeouts, setSpinTimeouts] = useState<NodeJS.Timeout[]>([]);
-  const [showGameEndModal, setShowGameEndModal] = useState(false);
-  const [lastGameResult, setLastGameResult] = useState<{win: boolean, amount: number, message: string} | null>(null);
 
   // Obtener el ID del juego dinámicamente
   const { slotGameId, isLoading: isLoadingGameId, allGames } = useSlotGameId();
@@ -111,19 +113,6 @@ export function SlotGame() {
         console.log('🏁 Finalizando partida con resultado:', gameResult);
         await finishGame.mutateAsync(gameResult);
         console.log('✅ Partida finalizada exitosamente');
-        
-        // Guardar resultado para el modal
-        setLastGameResult({
-          win: slotResult.win,
-          amount: winAmount,
-          message: SlotGameLogic.getWinMessage(slotResult, winAmount)
-        });
-        
-        // Mostrar modal de fin de partida
-        setTimeout(() => {
-          setShowGameEndModal(true);
-        }, 1000);
-        
       } else {
         console.warn('⚠️ No hay partida activa para finalizar');
       }
@@ -143,10 +132,10 @@ export function SlotGame() {
     }));
 
     return slotResult;
-  }, [finishGame, currentMatch]);
+  }, [finishGame, currentMatch, slotGameId]);
 
   const handleSpin = useCallback(async () => {
-    if (gameState.isSpinning || gameState.currentBet <= 0 || gameState.credits < gameState.currentBet || !slotGameId) {
+    if (gameState.isSpinning || gameState.currentBet <= 0 || gameState.credits < gameState.currentBet) {
       return;
     }
 
@@ -154,13 +143,8 @@ export function SlotGame() {
 
     try {
       // Crear nueva partida y hacer apuesta
-      const betData = {
-        betAmount: gameState.currentBet,
-        gameId: slotGameId
-      };
-      
-      console.log('💰 Creando partida para apuesta:', betData);
-      await placeBet.mutateAsync(betData);
+      console.log('💰 Creando partida para apuesta de', gameState.currentBet, 'créditos');
+      await placeBet.mutateAsync(gameState.currentBet);
       console.log('✅ Apuesta realizada exitosamente');
     } catch (error) {
       console.error('❌ Error al realizar apuesta:', error);
@@ -194,13 +178,21 @@ export function SlotGame() {
     }, 2000);
 
     setSpinTimeouts([timeout]);
-  }, [gameState, placeBet, clearAllTimeouts, processSpinResult, slotGameId]);
+  }, [gameState, placeBet, clearAllTimeouts, processSpinResult]);
 
   const handleBetChange = useCallback((direction: 'up' | 'down') => {
     setGameState(prev => {
-      const newBet = SlotGameLogic.changeBet(prev.currentBet, direction);
-      return { ...prev, currentBet: newBet };
+      const change = direction === 'up' ? 10 : -10;
+      const newBet = Math.max(10, Math.min(100, prev.bet + change));
+      return { ...prev, bet: newBet };
     });
+  }, []);
+
+  const handleMaxBet = useCallback(() => {
+    setGameState(prev => ({
+      ...prev,
+      bet: Math.min(100, prev.credits)
+    }));
   }, []);
 
   const handleReset = useCallback(() => {
@@ -209,13 +201,9 @@ export function SlotGame() {
   }, [clearAllTimeouts]);
 
   const handleQuitGame = useCallback(async () => {
-    if (currentMatch?.matchId) {
-      console.log('🚪 Saliendo de la partida:', currentMatch.matchId);
-      try {
-        await quitGame.mutateAsync();
-      } catch (error) {
-        console.error('Error al salir del juego:', error);
-      }
+    if (currentMatch?.match_id) {
+      console.log('🚪 Saliendo de la partida:', currentMatch.match_id);
+      await quitGame.mutateAsync(currentMatch.match_id);
     }
     clearAllTimeouts();
     setGameState(SlotGameLogic.createInitialState());
@@ -270,11 +258,11 @@ export function SlotGame() {
   }
 
   const canSpin = !gameState.isSpinning && 
-                 gameState.currentBet > 0 && 
-                 gameState.credits >= gameState.currentBet &&
+                 gameState.bet > 0 && 
+                 gameState.credits >= gameState.bet &&
                  !isPlacingBet;
 
-  const hasInsufficientFunds = gameState.credits < gameState.currentBet;
+  const hasInsufficientFunds = gameState.credits < gameState.bet;
 
   return (
     <div className="slot-game">
@@ -285,7 +273,7 @@ export function SlotGame() {
         <div className="betting-status">
           {currentMatch && (
             <div className="current-match">
-              <span>🎯 Partida activa: {currentMatch.matchId}</span>
+              <span>🎯 Partida activa: {currentMatch.match_id}</span>
             </div>
           )}
           
@@ -328,57 +316,22 @@ export function SlotGame() {
 
       <div className="slot-game__content">
         <div className="slot-game__left">
-          {/* Slot Machine simplificada */}
-          <div className="slot-machine">
-            <div className="jackpot-display">
-              <h2>💰 Jackpot: ${SlotGameLogic.formatCredits(gameState.jackpot)}</h2>
-            </div>
-            
-            <div className="reels">
-              {gameState.currentResults.map((symbol, index) => (
-                <div key={`reel-${index}-${symbol}`} className={`reel ${gameState.isSpinning ? 'spinning' : ''}`}>
-                  <div className="symbol">{symbol}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <SlotMachine 
+            reels={gameState.reels}
+            isSpinning={gameState.isSpinning}
+            jackpot={gameState.jackpot}
+          />
           
-          {/* Controles simplificados */}
-          <div className="game-controls">
-            <div className="credits-display">
-              <span>💰 Créditos: ${SlotGameLogic.formatCredits(gameState.credits)}</span>
-            </div>
-            
-            <div className="bet-controls">
-              <button 
-                onClick={() => handleBetChange('down')}
-                disabled={gameState.isSpinning}
-              >
-                -
-              </button>
-              <span>Apuesta: ${gameState.currentBet}</span>
-              <button 
-                onClick={() => handleBetChange('up')}
-                disabled={gameState.isSpinning}
-              >
-                +
-              </button>
-            </div>
-            
-            <button
-              onClick={handleSpin}
-              disabled={!canSpin}
-              className={`spin-button ${gameState.isSpinning ? 'spinning' : ''}`}
-            >
-              {gameState.isSpinning ? '⏳ Girando...' : '🎰 GIRAR'}
-            </button>
-            
-            {hasInsufficientFunds && (
-              <div className="insufficient-funds">
-                ⚠️ Fondos insuficientes
-              </div>
-            )}
-          </div>
+          <GameControls
+            bet={gameState.bet}
+            credits={gameState.credits}
+            canSpin={canSpin}
+            isSpinning={gameState.isSpinning}
+            hasInsufficientFunds={hasInsufficientFunds}
+            onSpin={handleSpin}
+            onBetChange={handleBetChange}
+            onMaxBet={handleMaxBet}
+          />
 
           {/* Controles adicionales del sistema de apuestas */}
           <div className="betting-game-controls">
@@ -411,34 +364,24 @@ export function SlotGame() {
         </div>
 
         <div className="slot-game__right">
-          {/* Win Display */}
-          {gameState.showWinAnimation && gameState.winMessage && (
-            <div className="win-display">
-              <h3>🎉 ¡GANASTE! 🎉</h3>
-              <p>{gameState.winMessage}</p>
-            </div>
+          {gameState.lastWin > 0 && (
+            <WinDisplay 
+              winAmount={gameState.lastWin}
+              winType={gameState.lastSpin?.results ? 
+                SlotGameLogic.calculateWin(gameState.lastSpin.results, gameState.lastSpin.bet).winType : 
+                'none'
+              }
+            />
           )}
           
-          {/* Game Stats */}
-          <div className="game-stats">
-            <h3>📊 Estadísticas</h3>
-            <div className="stat">
-              <span>💰 Créditos:</span>
-              <span>${SlotGameLogic.formatCredits(gameState.credits)}</span>
-            </div>
-            <div className="stat">
-              <span>🎯 Total Ganado:</span>
-              <span>${SlotGameLogic.formatCredits(gameState.totalWins)}</span>
-            </div>
-            <div className="stat">
-              <span>🎰 Giros:</span>
-              <span>{gameState.totalSpins}</span>
-            </div>
-            <div className="stat">
-              <span>🔥 Jackpot:</span>
-              <span>${SlotGameLogic.formatCredits(gameState.jackpot)}</span>
-            </div>
-          </div>
+          <GameStats
+            credits={gameState.credits}
+            totalWins={gameState.totalWins}
+            totalSpent={gameState.totalSpent}
+            spinsCount={gameState.spinsCount}
+            winStreak={gameState.winStreak}
+            lastSpin={gameState.lastSpin}
+          />
         </div>
       </div>
     </div>

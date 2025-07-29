@@ -49,8 +49,6 @@ export function SlotGame() {
   );
 
   const [spinTimeouts, setSpinTimeouts] = useState<NodeJS.Timeout[]>([]);
-  const [showGameEndModal, setShowGameEndModal] = useState(false);
-  const [lastGameResult, setLastGameResult] = useState<{win: boolean, amount: number, message: string} | null>(null);
 
   // Obtener el ID del juego dinámicamente
   const { slotGameId, isLoading: isLoadingGameId, allGames } = useSlotGameId();
@@ -111,19 +109,6 @@ export function SlotGame() {
         console.log('🏁 Finalizando partida con resultado:', gameResult);
         await finishGame.mutateAsync(gameResult);
         console.log('✅ Partida finalizada exitosamente');
-        
-        // Guardar resultado para el modal
-        setLastGameResult({
-          win: slotResult.win,
-          amount: winAmount,
-          message: SlotGameLogic.getWinMessage(slotResult, winAmount)
-        });
-        
-        // Mostrar modal de fin de partida
-        setTimeout(() => {
-          setShowGameEndModal(true);
-        }, 1000);
-        
       } else {
         console.warn('⚠️ No hay partida activa para finalizar');
       }
@@ -201,6 +186,13 @@ export function SlotGame() {
       const newBet = SlotGameLogic.changeBet(prev.currentBet, direction);
       return { ...prev, currentBet: newBet };
     });
+  }, []);
+
+  const handleMaxBet = useCallback(() => {
+    setGameState(prev => ({
+      ...prev,
+      currentBet: SlotGameLogic.getMaxBetForCredits(prev.credits)
+    }));
   }, []);
 
   const handleReset = useCallback(() => {
