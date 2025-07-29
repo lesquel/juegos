@@ -19,39 +19,41 @@ export const SingleGame = memo(({ id }: SingleGameProps) => {
 SingleGame.displayName = "SingleGame";
 
 const UseSingleGame = memo(({ id }: SingleGameProps) => {
-  console.log('🎯 SingleGame component rendering with ID:', id);
-  
+  console.log("🎯 SingleGame component rendering with ID:", id);
+
   const { data, isLoading, error } = GameClientData.getGameDetail(id);
 
   // Memoizar la URL del juego
   const gameUrl = useMemo(() => {
     if (!data) return "/"; // Default or loading state URL
     return data.game_type === GameType.online
-      ? `${data.game_id}/matches`
+      ? `matches`
       : "/" + data.game_url;
   }, [data?.game_type, data?.game_id, data?.game_url]);
 
   // Memoizar el icono del botón play
   const playIcon = useMemo(() => <PlayCircle className="w-6 h-6" />, []);
 
-  console.log('📊 SingleGame data state:', { 
-    hasData: !!data, 
-    isLoading, 
+  console.log("📊 SingleGame data state:", {
+    hasData: !!data,
+    isLoading,
     hasError: !!error,
-    errorMessage: error?.message 
+    errorMessage: error?.message,
   });
 
   if (isLoading) {
-    console.log('⏳ SingleGame showing loading state');
+    console.log("⏳ SingleGame showing loading state");
     return <SingleGameSkeleton />;
   }
 
   if (error) {
-    console.log('❌ SingleGame showing error state:', error);
+    console.log("❌ SingleGame showing error state:", error);
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
         <div className="text-center bg-red-900 bg-opacity-50 p-8 rounded-lg border border-red-600 max-w-md">
-          <h2 className="text-2xl font-bold text-red-400 mb-4">Error loading game</h2>
+          <h2 className="text-2xl font-bold text-red-400 mb-4">
+            Error loading game
+          </h2>
           <p className="text-red-300 mb-6">{error.message}</p>
           <p className="text-gray-400 text-sm">Game ID: {id}</p>
         </div>
@@ -60,7 +62,7 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
   }
 
   if (!data) {
-    console.log('📭 SingleGame no data available');
+    console.log("📭 SingleGame no data available");
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
         <div className="text-center text-white">
@@ -71,7 +73,7 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
     );
   }
 
-  console.log('✅ SingleGame rendering with data:', data.game_name);
+  console.log("✅ SingleGame rendering with data:", data.game_name);
 
   return (
     <div className="w-full p-10 max-w-6xl mx-auto">
@@ -111,8 +113,7 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
               {data.game_description}
             </p>
             <p className="text-white">
-              <span className="font-bold">Tipo de juego:</span>{" "}
-              {data.game_type}
+              <span className="font-bold">Tipo de juego:</span> {data.game_type}
             </p>
           </div>
         </div>
@@ -122,4 +123,4 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
       <ListCommentGame gameId={id} />
     </div>
   );
-})
+});

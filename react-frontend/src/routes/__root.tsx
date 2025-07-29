@@ -62,7 +62,6 @@ export const Route = createRootRoute({
           <Outlet />
         </main>
       </div>
-      <AuthDebugger />
       <TanStackRouterDevtools />
     </>
   ),

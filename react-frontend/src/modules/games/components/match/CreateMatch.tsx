@@ -4,7 +4,7 @@ import { useForm } from "@tanstack/react-form";
 import { Modal } from "@components/Modal";
 import type { Game } from "@modules/games/models/game.model";
 import type { Match } from "@modules/games/models/match.model";
-import { MatchClientData } from "@modules/games/services/matchClientData";
+import { useCreateMatch } from "@modules/games/services/matchClientData";
 import { useAuthStore } from "@modules/auth/store/auth.store";
 import { DollarSign, Plus } from "lucide-react";
 import { LoadingComponent } from "@components/LoadingComponent";
@@ -91,7 +91,7 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
       [game?.game_url]
     );
 
-    const { mutate, error } = MatchClientData.createMatch(gameId, onSuccess);
+    const { mutate, error } = useCreateMatch(gameId, onSuccess);
 
     const validators = useMemo(
       () => ({

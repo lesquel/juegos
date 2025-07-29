@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { QueryProvider } from "@providers/QueryProvider";
 import { LoadingComponent } from "@components/LoadingComponent";
 import { PaginationComponent } from "@components/PaginationComponent";
-import { MatchClientData } from "@modules/games/services/matchClientData";
+import { useMatchesByGameId } from "@modules/games/services/matchClientData";
 import { GameClientData } from "@modules/games/services/gameClientData";
 import { CreateMatch } from "./CreateMatch";
 import { CardMatch } from "./CardMatch";
@@ -158,10 +158,7 @@ const MatchesContent = memo(
     onPaginationChange: (newPagination: PaginationMatch) => void;
   }) => {
     // La consulta ahora usa toda la información de paginación, incluyendo búsqueda
-    const { data, isLoading, error } = MatchClientData.getMatchesByGameId(
-      gameId,
-      pagination
-    );
+    const { data, isLoading, error } = useMatchesByGameId(gameId, pagination);
 
     // Ya no necesitamos filtrado local, el backend maneja
     const matchCards = useMemo(() => {
