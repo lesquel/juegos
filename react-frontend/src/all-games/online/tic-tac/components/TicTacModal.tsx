@@ -38,8 +38,27 @@ export const TicTacModal: React.FC<TicTacModalProps> = ({
     return '😢';
   };
 
-  const getPlayAgainText = () => {
-    return isOnlineMode ? 'Nueva partida' : 'Jugar de nuevo';
+  const renderOnlineInfo = () => {
+    if (!isOnlineMode) return null;
+    
+    const message = winner === 'draw' ? 
+      'Ambos jugadores empataron' : 
+      `El jugador ${winner} ha ganado la partida`;
+      
+    return <p className="modal-info">{message}</p>;
+  };
+
+  const renderPlayAgainButton = () => {
+    const text = isOnlineMode ? 'Nueva partida' : 'Jugar de nuevo';
+    
+    return (
+      <button 
+        className="play-again-button"
+        onClick={onPlayAgain}
+      >
+        {text}
+      </button>
+    );
   };
 
   return (
@@ -55,22 +74,10 @@ export const TicTacModal: React.FC<TicTacModalProps> = ({
             </p>
           )}
           
-          {isOnlineMode && (
-            <p className="modal-info">
-              {winner === 'draw' ? 
-                'Ambos jugadores empataron' : 
-                `El jugador ${winner} ha ganado la partida`
-              }
-            </p>
-          )}
+          {renderOnlineInfo()}
           
           <div className="modal-actions">
-            <button 
-              className="play-again-button"
-              onClick={onPlayAgain}
-            >
-              {getPlayAgainText()}
-            </button>
+            {renderPlayAgainButton()}
             
             <button 
               className="back-button"
