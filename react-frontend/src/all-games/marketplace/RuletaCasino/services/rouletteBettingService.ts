@@ -34,24 +34,24 @@ export interface RouletteMatchData {
 // Hook para encontrar el ID del juego de ruleta
 export const useRouletteGameId = () => {
   const { data: gamesData, isLoading } = useGames({ page: 1, limit: 100 });
-  
+
   const rouletteGameId = useMemo(() => {
     if (!gamesData?.results) return null;
-    
+
     // Buscar por diferentes nombres posibles
     const possibleNames = [
       'ruleta',
-      'roulette', 
+      'roulette',
       'ruleta casino',
       'casino roulette',
       'roulette wheel',
       'ruletacasino'
     ];
-    
+
     for (const game of gamesData.results) {
       const gameName = game.game_name.toLowerCase();
       const gameId = game.game_id.toLowerCase();
-      
+
       for (const name of possibleNames) {
         if (gameName.includes(name) || gameId.includes(name)) {
           console.log(`🎰 Encontrado juego de ruleta: ${game.game_name} (ID: ${game.game_id})`);
@@ -59,11 +59,11 @@ export const useRouletteGameId = () => {
         }
       }
     }
-    
+
     console.warn('⚠️ No se encontró el juego de ruleta en la lista de juegos');
     return null;
   }, [gamesData]);
-  
+
   return { rouletteGameId, isLoading, allGames: gamesData?.results };
 };
 
@@ -73,7 +73,7 @@ export const useRouletteBetting = (gameId: string) => {
   const router = useRouter();
   const { user } = useAuthStore();
   const { data: virtualCurrency, refetch: refetchCurrency } = useMyVirtualCurrency();
-  
+
   // Estado local del match actual
   const [currentMatch, setCurrentMatch] = useState<RouletteMatchData | null>(null);
 
@@ -175,17 +175,32 @@ export const useRouletteBetting = (gameId: string) => {
             console.log("✅ Match de ruleta finalizado exitosamente");
             // Limpiar match actual
             setCurrentMatch(null);
-            
-            // Refrescar datos del usuario
+
+            // Refrescar datos del usuario EXACTAMENTE como el tragamonedas
+            console.log("🔄 Refrescando datos de usuario en ruleta...");
+            console.log("💰 Balance antes del refresh:", virtualCurrency?.virtual_currency);
+
+            // Hacer refetch PRIMERO como en tragamonedas
             refetchCurrency();
             queryClient.invalidateQueries({ queryKey: ["userMe"] });
             queryClient.invalidateQueries({ queryKey: ["userVirtualCurrency"] });
-            
+
+            // Forzar invalidaciones adicionales múltiples
+            setTimeout(() => {
+              queryClient.invalidateQueries({ queryKey: ["userVirtualCurrency"] });
+              refetchCurrency();
+            }, 100);
+
+            setTimeout(() => {
+              queryClient.invalidateQueries({ queryKey: ["userVirtualCurrency"] });
+              console.log("💰 Invalidaciones múltiples de ruleta completadas");
+            }, 500);
+
             resolve(result);
           },
           onError: (error) => {
             console.error("❌ Error al finalizar match de ruleta:", error);
-            reject(error);
+            reject(new Error(error?.errors?.[0] || 'Error al finalizar match de ruleta'));
           },
         });
       });
@@ -209,10 +224,10 @@ export const useRouletteBetting = (gameId: string) => {
           totalBet: currentMatch.betAmount,
           multiplier: -1,
         };
-        
+
         await finishGame.mutateAsync(quitResult);
       }
-      
+
       // Navegar de vuelta
       router.history.back();
     },
@@ -229,18 +244,18 @@ export const useRouletteBetting = (gameId: string) => {
     currentMatch,
     virtualCurrency,
     canPlaceBet,
-    
+
     // Acciones
     placeBet,
     finishGame,
     quitGame,
     continueGame,
-    
+
     // Estados de loading
     isPlacingBet: placeBet.isPending,
     isFinishingGame: finishGame.isPending,
     isQuitting: quitGame.isPending,
-    
+
     // Errores
     betError: placeBet.error,
     finishError: finishGame.error,
@@ -251,7 +266,7 @@ export const useRouletteBetting = (gameId: string) => {
 // Hook simplificado para verificar el saldo
 export const useRouletteBalance = () => {
   const { data: virtualCurrency, isLoading } = useMyVirtualCurrency();
-  
+
   return {
     balance: virtualCurrency?.virtual_currency || 0,
     isLoading,
