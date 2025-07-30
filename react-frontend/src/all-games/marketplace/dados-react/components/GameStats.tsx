@@ -12,7 +12,6 @@ export const GameStats: React.FC<GameStatsProps> = ({ gameState }) => {
   return (
     <div className="sidebar">
       <div className="balance-info">
-        <div className="balance">💰 ${balance}</div>
         <div className="current-bet">
           Apuesta: ${gameState.currentBet.amount}
         </div>

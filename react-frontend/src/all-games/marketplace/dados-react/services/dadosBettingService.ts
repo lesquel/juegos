@@ -155,10 +155,10 @@ export const useDadosBetting = (gameId: string) => {
         participants: [
           {
             user_id: user.user.user_id,
-            score: gameResult.winAmount,
+            score: gameResult.win ? gameResult.winAmount : 0,
           },
         ],
-        custom_odds: gameResult.win ? (gameResult.winAmount / currentMatch.betAmount) : 0,
+        custom_odds: gameResult.win ? (gameResult.winAmount / currentMatch.betAmount) : -1,
       };
 
       console.log("🏁 Finalizando match de dados:", {
