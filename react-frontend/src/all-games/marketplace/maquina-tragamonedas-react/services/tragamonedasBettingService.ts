@@ -9,42 +9,43 @@ import { environment } from "../../../../config/environment";
 import { endpoints } from "../../../../config/endpoints";
 import type { CreateMatch, FinishMatch } from "../../../../modules/games/models/match.model";
 
-// Tipos específicos para el juego de ruleta
-export interface RouletteBetData {
+// Tipos específicos para el juego de tragamonedas
+export interface TragamonedasBetData {
   betAmount: number;
   gameId: string;
-  bets: Map<string, number>;
 }
 
-export interface RouletteGameResult {
+export interface TragamonedasGameResult {
   win: boolean;
   winAmount: number;
-  winningNumber: number;
+  reels: string[][];
+  winningLines: number[];
   totalBet: number;
+  multiplier: number;
+  isJackpot: boolean;
 }
 
-export interface RouletteMatchData {
+export interface TragamonedasMatchData {
   matchId: string;
   betAmount: number;
   gameId: string;
-  bets: Map<string, number>;
 }
 
-// Hook para encontrar el ID del juego de ruleta
-export const useRouletteGameId = () => {
+// Hook para encontrar el ID del juego de tragamonedas
+export const useTragamonedasGameId = () => {
   const { data: gamesData, isLoading } = useGames({ page: 1, limit: 100 });
   
-  const rouletteGameId = useMemo(() => {
+  const tragamonedasGameId = useMemo(() => {
     if (!gamesData?.results) return null;
     
     // Buscar por diferentes nombres posibles
     const possibleNames = [
-      'ruleta',
-      'roulette', 
-      'ruleta casino',
-      'casino roulette',
-      'roulette wheel',
-      'ruletacasino'
+      'tragamonedas',
+      'slot machine',
+      'slots',
+      'maquina tragamonedas',
+      'casino slots',
+      'slotmachine'
     ];
     
     for (const game of gamesData.results) {
@@ -53,33 +54,33 @@ export const useRouletteGameId = () => {
       
       for (const name of possibleNames) {
         if (gameName.includes(name) || gameId.includes(name)) {
-          console.log(`🎰 Encontrado juego de ruleta: ${game.game_name} (ID: ${game.game_id})`);
+          console.log(`🎰 Encontrado juego de tragamonedas: ${game.game_name} (ID: ${game.game_id})`);
           return game.game_id;
         }
       }
     }
     
-    console.warn('⚠️ No se encontró el juego de ruleta en la lista de juegos');
+    console.warn('⚠️ No se encontró el juego de tragamonedas en la lista de juegos');
     return null;
   }, [gamesData]);
   
-  return { rouletteGameId, isLoading, allGames: gamesData?.results };
+  return { tragamonedasGameId, isLoading, allGames: gamesData?.results };
 };
 
-// Hook principal para manejar las apuestas de ruleta
-export const useRouletteBetting = (gameId: string) => {
+// Hook principal para manejar las apuestas de tragamonedas
+export const useTragamonedasBetting = (gameId: string) => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { user } = useAuthStore();
   const { data: virtualCurrency, refetch: refetchCurrency } = useMyVirtualCurrency();
   
   // Estado local del match actual
-  const [currentMatch, setCurrentMatch] = useState<RouletteMatchData | null>(null);
+  const [currentMatch, setCurrentMatch] = useState<TragamonedasMatchData | null>(null);
 
   // Hooks para match management - llamados en el nivel superior
   const createMatchMutation = useCreateMatch(gameId, (match) => {
     // Callback cuando se crea exitosamente el match
-    console.log("🎰 Match de ruleta creado:", match);
+    console.log("🎰 Match de tragamonedas creado:", match);
   });
 
   const finishMatchMutation = useFinishMatch(currentMatch?.matchId || "");
@@ -92,7 +93,7 @@ export const useRouletteBetting = (gameId: string) => {
 
   // Función para crear un nuevo match al apostar
   const placeBet = useMutation({
-    mutationFn: async (betData: RouletteBetData) => {
+    mutationFn: async (betData: TragamonedasBetData) => {
       if (!canPlaceBet(betData.betAmount)) {
         throw new Error("Monedas insuficientes para esta apuesta");
       }
@@ -102,28 +103,27 @@ export const useRouletteBetting = (gameId: string) => {
         base_bet_amount: betData.betAmount,
       };
 
-      console.log("🎰 Enviando datos para crear match de ruleta:", {
+      console.log("🎰 Enviando datos para crear match de tragamonedas:", {
         gameId: betData.gameId,
         matchData,
         endpoint: `${environment.API_URL}${endpoints.matches.createMatch(betData.gameId)}`
       });
 
-      return new Promise<RouletteMatchData>((resolve, reject) => {
+      return new Promise<TragamonedasMatchData>((resolve, reject) => {
         createMatchMutation.mutate(matchData, {
           onSuccess: (response) => {
-            console.log("✅ Match de ruleta creado exitosamente:", response);
+            console.log("✅ Match de tragamonedas creado exitosamente:", response);
             const match = response.data; // Axios response wrapper
-            const rouletteMatch: RouletteMatchData = {
+            const tragamonedasMatch: TragamonedasMatchData = {
               matchId: match.match_id,
               betAmount: betData.betAmount,
               gameId: betData.gameId,
-              bets: betData.bets,
             };
-            setCurrentMatch(rouletteMatch);
-            resolve(rouletteMatch);
+            setCurrentMatch(tragamonedasMatch);
+            resolve(tragamonedasMatch);
           },
           onError: (error: any) => {
-            console.error("❌ Error detallado al crear match de ruleta:", {
+            console.error("❌ Error detallado al crear match de tragamonedas:", {
               error,
               message: error?.message,
               data: error?.response?.data,
@@ -137,7 +137,7 @@ export const useRouletteBetting = (gameId: string) => {
       });
     },
     onError: (error) => {
-      console.error("❌ Error al crear apuesta de ruleta:", error);
+      console.error("❌ Error al crear apuesta de tragamonedas:", error);
       // Refrescar datos en caso de error
       refetchCurrency();
     },
@@ -145,7 +145,7 @@ export const useRouletteBetting = (gameId: string) => {
 
   // Función para finalizar el match con el resultado
   const finishGame = useMutation({
-    mutationFn: async (gameResult: RouletteGameResult) => {
+    mutationFn: async (gameResult: TragamonedasGameResult) => {
       if (!currentMatch || !user) {
         throw new Error("No hay match activo para finalizar o usuario no autenticado");
       }
@@ -157,10 +157,10 @@ export const useRouletteBetting = (gameId: string) => {
             score: gameResult.win ? gameResult.winAmount : -currentMatch.betAmount,
           },
         ],
-        custom_odds: gameResult.win ? (gameResult.winAmount / currentMatch.betAmount) : -1,
+        custom_odds: gameResult.win ? gameResult.multiplier : -1,
       };
 
-      console.log("🏁 Finalizando match de ruleta:", {
+      console.log("🏁 Finalizando match de tragamonedas:", {
         matchId: currentMatch.matchId,
         finishData,
         gameResult,
@@ -171,26 +171,38 @@ export const useRouletteBetting = (gameId: string) => {
       return new Promise((resolve, reject) => {
         finishMatchMutation.mutate(finishData, {
           onSuccess: (result) => {
-            console.log("✅ Match de ruleta finalizado exitosamente");
+            console.log("✅ Match de tragamonedas finalizado exitosamente:", result);
+            console.log("💰 Resultado del match:", {
+              datosEnviados: finishData,
+              respuestaBackend: result,
+              balanceAntes: virtualCurrency?.virtual_currency,
+            });
+            
             // Limpiar match actual
             setCurrentMatch(null);
             
             // Refrescar datos del usuario
+            console.log("🔄 Refrescando datos de usuario...");
             refetchCurrency();
             queryClient.invalidateQueries({ queryKey: ["userMe"] });
             queryClient.invalidateQueries({ queryKey: ["userVirtualCurrency"] });
             
+            // Agregar timeout para verificar actualización
+            setTimeout(() => {
+              console.log("💰 Balance después del match:", virtualCurrency?.virtual_currency);
+            }, 1000);
+            
             resolve(result);
           },
           onError: (error) => {
-            console.error("❌ Error al finalizar match de ruleta:", error);
+            console.error("❌ Error al finalizar match de tragamonedas:", error);
             reject(error);
           },
         });
       });
     },
     onError: (error) => {
-      console.error("❌ Error al finalizar partida de ruleta:", error);
+      console.error("❌ Error al finalizar partida de tragamonedas:", error);
       // Refrescar datos en caso de error
       refetchCurrency();
     },
@@ -201,11 +213,14 @@ export const useRouletteBetting = (gameId: string) => {
     mutationFn: async () => {
       if (currentMatch) {
         // Finalizar match como perdida si hay uno activo
-        const quitResult: RouletteGameResult = {
+        const quitResult: TragamonedasGameResult = {
           win: false,
           winAmount: 0,
-          winningNumber: 0,
           totalBet: currentMatch.betAmount,
+          reels: [],
+          winningLines: [],
+          isJackpot: false,
+          multiplier: -1,
         };
         
         await finishGame.mutateAsync(quitResult);
@@ -247,7 +262,7 @@ export const useRouletteBetting = (gameId: string) => {
 };
 
 // Hook simplificado para verificar el saldo
-export const useRouletteBalance = () => {
+export const useTragamonedasBalance = () => {
   const { data: virtualCurrency, isLoading } = useMyVirtualCurrency();
   
   return {

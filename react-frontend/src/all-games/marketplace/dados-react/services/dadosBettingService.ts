@@ -22,6 +22,7 @@ export interface DadosGameResult {
   rolledNumber: number;
   predictedNumber: number;
   totalBet: number;
+  multiplier: number;
 }
 
 export interface DadosMatchData {
@@ -158,13 +159,15 @@ export const useDadosBetting = (gameId: string) => {
             score: gameResult.win ? gameResult.winAmount : 0,
           },
         ],
-        custom_odds: gameResult.win ? (gameResult.winAmount / currentMatch.betAmount) : -1,
+        custom_odds: gameResult.win ? gameResult.multiplier : -1,
       };
 
       console.log("🏁 Finalizando match de dados:", {
         matchId: currentMatch.matchId,
         finishData,
-        gameResult
+        gameResult,
+        currentBalance: virtualCurrency?.virtual_currency,
+        expectedOutcome: gameResult.win ? `Ganar +${gameResult.winAmount}` : `Perder -${currentMatch.betAmount}`
       });
 
       return new Promise((resolve, reject) => {
@@ -206,6 +209,7 @@ export const useDadosBetting = (gameId: string) => {
           rolledNumber: 0,
           predictedNumber: currentMatch.prediction,
           totalBet: currentMatch.betAmount,
+          multiplier: -1,
         };
         
         await finishGame.mutateAsync(quitResult);

@@ -6,7 +6,6 @@ from .admin_views import (
     GameAdmin,
     GameReviewAdmin,
     MatchAdmin,
-    MatchParticipationAdmin,
     TransferPaymentAdmin,
     UserAdmin,
 )
@@ -24,13 +23,12 @@ admin_views_by_module = {
     ],
     "Modulo partidas": [
         MatchAdmin,
-        MatchParticipationAdmin,
     ],
     "Modulo pagos": [
         TransferPaymentAdmin,
     ],
     "App Info": [
         AppInfoAdmin,
-        AccountAdmin,
+        # AccountAdmin,
     ],
 }

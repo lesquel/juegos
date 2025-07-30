@@ -52,9 +52,7 @@ class TransferPaymentAdmin(
     # Campos editables
     form_columns = [
         TransferPaymentModel.user_id,
-        TransferPaymentModel.transfer_amount,
         TransferPaymentModel.transfer_state,
-        TransferPaymentModel.transfer_description,
     ]
 
     # Filtros y búsqueda

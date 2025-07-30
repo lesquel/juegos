@@ -154,6 +154,7 @@ const DadosGame: React.FC = () => {
               rolledNumber: results[0]?.value || 1,
               predictedNumber: betting.currentMatch?.prediction || 1,
               totalBet: betAmount,
+              multiplier: isWin ? gameState.currentBet.payout : -1,
             };
 
             await betting.finishGame.mutateAsync(gameResult);
