@@ -10,25 +10,39 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  height: 100%;
+/* IMPORTANTE: Estilos de body que NO deben ser sobrescritos por juegos */
+body:not(.game-container):not(.game-container *) {
+  height: 100% !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #1f2937;
-  color: #f9fafb;
-  line-height: 1.6;
+    sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
+/* Proteger el root del DOM */
 #root {
-  min-height: 100vh;
+  min-height: 100vh !important;
 }
 
 #root main {
   flex-grow: 1;
   min-height: 100%;
+}
+
+/* Proteger estilos de la aplicación principal */
+.app-layout:not(.game-container):not(.game-container *) {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif !important;
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+  line-height: 1.6 !important;
 }
 
 /* Mejoras visuales */

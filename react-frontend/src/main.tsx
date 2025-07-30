@@ -10,6 +10,7 @@ import { routeTree } from './routeTree.gen'
 // Import styles
 import './styles/global.css'
 import './styles/layout.css'
+import './styles/game-isolation.css'
 
 // Import and validate environment
 import './config/validation'

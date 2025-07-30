@@ -1,0 +1,87 @@
+/* 
+ * Isolation CSS - Prevenir conflictos entre juegos y la aplicación principal
+ * Este archivo debe cargarse DESPUÉS de todos los CSS de juegos
+ */
+
+/* Forzar aislamiento completo de juegos */
+.game-container {
+  isolation: isolate !important;
+  contain: layout style paint !important;
+  position: relative !important;
+  width: 100vw !important;
+  min-height: 100vh !important;
+  overflow: auto !important;
+  
+  /* Prevenir que los juegos afecten variables CSS globales */
+  all: initial;
+  display: block;
+  box-sizing: border-box;
+}
+
+/* Resetear selectores globales problemáticos SOLO dentro de juegos */
+.game-container * {
+  all: unset;
+  display: revert;
+  box-sizing: border-box;
+}
+
+.game-container *:where(div, span, p, h1, h2, h3, h4, h5, h6, button, input, a, img, canvas) {
+  display: revert;
+}
+
+/* Proteger la aplicación principal de estilos de juegos */
+body:not(.game-container) {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif !important;
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* Proteger elementos específicos de la UI principal */
+.app-layout:not(.game-container) nav,
+.app-layout:not(.game-container) header,
+.app-layout:not(.game-container) footer,
+.app-layout:not(.game-container) main,
+.app-layout:not(.game-container) .navbar,
+.app-layout:not(.game-container) .content-wrapper {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif !important;
+  line-height: 1.6 !important;
+  color: inherit !important;
+  background: inherit !important;
+}
+
+/* Forzar Tailwind en elementos principales */
+.app-layout:not(.game-container) * {
+  font-family: inherit !important;
+}
+
+/* Prevenir overflow global causado por juegos */
+html, body {
+  overflow-x: hidden !important;
+}
+
+/* Resetear fuentes problemáticas aplicadas globalmente por juegos */
+.app-layout:not(.game-container) {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif !important;
+}
+
+/* Proteger elementos con clases específicas */
+.app-layout:not(.game-container) [class*="text-"],
+.app-layout:not(.game-container) [class*="bg-"],
+.app-layout:not(.game-container) [class*="p-"],
+.app-layout:not(.game-container) [class*="m-"],
+.app-layout:not(.game-container) [class*="flex"],
+.app-layout:not(.game-container) [class*="grid"],
+.app-layout:not(.game-container) [class*="container"] {
+  font-family: inherit !important;
+}

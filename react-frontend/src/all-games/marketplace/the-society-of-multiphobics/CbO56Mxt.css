@@ -1,41 +1,19 @@
 @charset "UTF-8";
-body,
-html {
+
+/* Encapsulamos todos los estilos dentro del contenedor del juego */
+.game-container,
+.game-container * {
   height: 100%;
   margin: 0;
   padding: 0;
   width: 100%;
-}
-@media (prefers-reduced-motion: reduce) {
-  *,
-  :after,
-  :before {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-.score {
-  font-family: monospace;
-}
-@media (max-width: 640px) {
-  .score {
-    font-size: 0.8rem;
-  }
-}
-html {
-  font-size: 16px;
-}
-@media (min-width: 600px) {
-  html {
-    font-size: 24px;
-  }
-}
-*,
-:after,
-:before {
   box-sizing: border-box;
 }
-body {
+
+.game-container {
+  isolation: isolate;
+  contain: layout style;
+  font-size: 16px;
   background: var(--bg, #09162a);
   color: var(--txt, #f0f0f0);
   font-family: sans-serif;
@@ -46,8 +24,34 @@ body {
   hyphens: auto;
   overflow: hidden;
 }
+
+@media (min-width: 600px) {
+  .game-container {
+    font-size: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-container *,
+  .game-container :after,
+  .game-container :before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.game-container .score {
+  font-family: monospace;
+}
+
+@media (max-width: 640px) {
+  .game-container .score {
+    font-size: 0.8rem;
+  }
+}
+
 @media (prefers-color-scheme: light) {
-  body {
+  .game-container {
     --txt: #1a1a1a;
     --txt-2: #555;
     --txt-3: #888;

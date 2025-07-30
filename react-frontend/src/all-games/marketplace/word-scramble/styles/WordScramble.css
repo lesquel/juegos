@@ -12,7 +12,7 @@
   overflow: hidden; /* Prevent scroll */
 }
 
-h1 {
+.game-container h1 {
   font-size: 4rem;
   color: transparent;
   text-align: center;
@@ -195,32 +195,32 @@ h1 {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  h1 {
+  .game-container h1 {
     font-size: 3rem;
   }
-  .start-screen, .game-area, .game-over-screen {
+  .game-container .start-screen, .game-container .game-area, .game-container .game-over-screen {
     padding: 1.5rem;
   }
-  .scrambled-word-display {
+  .game-container .scrambled-word-display {
     font-size: 2.8rem;
   }
-  .guess-form input, .guess-form button {
+  .game-container .guess-form input, .game-container .guess-form button {
     font-size: 1rem;
     padding: 0.7rem;
   }
-  .game-over-screen h2 {
+  .game-container .game-over-screen h2 {
     font-size: 2.5rem;
   }
-  .game-over-screen p {
+  .game-container .game-over-screen p {
     font-size: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  h1 {
+  .game-container h1 {
     font-size: 2.5rem;
   }
-  .start-screen, .game-area, .game-over-screen {
+  .game-container .start-screen, .game-container .game-area, .game-container .game-over-screen {
     padding: 1rem;
   }
   .scrambled-word-display {

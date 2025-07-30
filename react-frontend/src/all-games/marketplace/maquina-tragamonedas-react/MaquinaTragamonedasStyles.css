@@ -1,7 +1,7 @@
 /* Importar fuentes de Google */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap');
 
-/* Variables CSS para tema consistente */
+/* Variables CSS para tema consistente y estilos base SOLO para el juego */
 .game-container {
   --primary-gold: #ffd700;
   --primary-gold-light: #ffed4e;
@@ -18,19 +18,20 @@
   --shadow-glow: 0 0 20px rgba(255, 215, 0, 0.3);
   --transition-main: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --border-radius: 12px;
-}
-
-/* Reset y estilos base */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
+  
+  /* Estilos base del contenedor */
   font-family: 'Roboto', sans-serif;
   background: var(--background-darker);
   color: var(--text-light);
+  isolation: isolate;
+  contain: layout style;
+}
+
+/* Reset y estilos base SOLO para el juego */
+.game-container * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 .game-container .maquina-tragamonedas {

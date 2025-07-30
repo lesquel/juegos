@@ -76,10 +76,34 @@
   --casino-green: initial;
   --win-green: initial;
   --lose-red: initial;
+  --bg: initial;
+  --txt: initial;
+  --txt-2: initial;
+  --txt-3: initial;
+  --dlg-bg: initial;
+  --olay-bg: initial;
+  --bg-05: initial;
+  --bg-10: initial;
+  --bg-2: initial;
+  --tile-1: initial;
 }
 
 .game-container * {
   box-sizing: border-box;
+}
+
+/* IMPORTANTE: Forzar la aplicación de fuentes y estilos base solo FUERA de los juegos */
+.app-layout:not(.game-container):not(.game-container *) {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif !important;
+  line-height: 1.5 !important;
+  font-weight: 400 !important;
+  color-scheme: dark !important;
+  color: rgba(255, 255, 255, 0.87) !important;
+  background-color: transparent !important;
+  font-synthesis: none !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
 /* Reset específico para evitar conflictos con juegos */
@@ -87,53 +111,23 @@
   box-sizing: border-box;
 }
 
-.app-layout {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif !important;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: transparent;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Forzar centrado para elementos importantes */
-.app-layout main {
+/* Forzar centrado para elementos importantes SOLO fuera de juegos */
+.app-layout:not(.game-container) main {
   display: flex !important;
   justify-content: center !important;
   width: 100% !important;
 }
 
-.app-layout main > * {
+.app-layout:not(.game-container) main > * {
   width: 100% !important;
   max-width: 100% !important;
 }
 
-.app-layout:not(.game-container) * {
-  /* Resetear cualquier estilo que pueda haber sido afectado */
-  font-family: inherit !important;
-  line-height: inherit !important;
-  color: inherit !important;
-  background: inherit !important;
-}
-
-/* Específicamente para prevenir conflictos con las rutas de juegos */
-.game-route-container {
-  isolation: isolate;
-  contain: layout style;
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-}
-
-/* Override para elementos críticos de la UI principal */
-.app-layout nav,
-.app-layout header,
-.app-layout footer,
-.app-layout .main-content:not(.game-container *) {
+/* Override para elementos críticos de la UI principal - NO aplicar en juegos */
+.app-layout:not(.game-container) nav,
+.app-layout:not(.game-container) header,
+.app-layout:not(.game-container) footer,
+.app-layout:not(.game-container) .main-content:not(.game-container *) {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif !important;
   line-height: 1.5 !important;
   color: rgba(255, 255, 255, 0.87) !important;

@@ -1,6 +1,8 @@
-body {
+.game-container {
     font-family: 'Poppins', sans-serif;
     overflow: hidden; /* Prevent scrollbars on the body */
+    isolation: isolate;
+    contain: layout style;
 }
 
 .game-container-2048 {
