@@ -20,18 +20,17 @@ export const ListGames = () => {
   // Función para actualizar URL cuando cambie el tab
   const updateUrl = useCallback((newTab: GameTab, additionalParams?: Record<string, any>) => {
     const params: Record<string, any> = {
-      tab: newTab,
-      ...additionalParams,
+      ...(additionalParams || {}), // Manejar el caso cuando additionalParams es undefined
     };
 
     // Solo incluir tab si no es el default
-    if (newTab === "offline") {
-      delete params.tab;
+    if (newTab !== "offline") {
+      params.tab = newTab;
     }
 
     navigate({
       to: '/games',
-      search: params,
+      search: Object.keys(params).length > 0 ? params : undefined, // Si no hay parámetros, usar undefined para limpiar la URL
       replace: true,
     });
   }, [navigate]);

@@ -81,7 +81,8 @@ const ListGamesContent = ({
       params.category_name = newPagination.category_name;
     }
 
-    updateUrl(activeTab, params);
+    // Si no hay parámetros, usar undefined para limpiar la URL
+    updateUrl(activeTab, Object.keys(params).length > 0 ? params : undefined);
   }, [activeTab, updateUrl]);
 
   const handleSearch = useCallback(

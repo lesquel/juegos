@@ -8,6 +8,15 @@ import { Box, Search } from "lucide-react";
 import type { PaginationGames } from "../models/pagination-games";
 import type { GameTab } from "./ListGames";
 
+// Configuración de paginación por defecto
+const DEFAULT_PAGINATION: PaginationGames = {
+  page: 1,
+  limit: 10,
+  sort_by: "created_at",
+  sort_order: "desc",
+  search: "",
+};
+
 
 interface GamesContentProps {
   pagination: PaginationGames;
@@ -42,20 +51,28 @@ const GamesContent = memo(
                 <div className="w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-8 sm:mb-10 lg:mb-12 rounded-full bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center backdrop-blur-sm border border-cyan-400/30">
                   <Search className="h-14 w-14 sm:h-16 sm:w-16 text-cyan-400" />
                 </div>
-                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6 sm:mb-8">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6 sm:mb-8">
                   No se encontraron juegos
                 </h3>
-                <p className="text-gray-300 text-lg sm:text-xl mb-10 sm:mb-12 leading-relaxed">
+                <p className="text-gray-300 text-base sm:text-lg mb-10 sm:mb-12 leading-relaxed">
                   No hay juegos que coincidan con tu búsqueda:{" "}
                   <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-semibold">
                     "{pagination.search}"
                   </span>
                 </p>
                 <button
-                  onClick={() =>
-                    onPaginationChange({ ...pagination, search: "", page: 1 })
-                  }
-                  className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-bold py-4 sm:py-5 px-8 sm:px-12 rounded-2xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 transform hover:scale-105 active:scale-95 text-lg sm:text-xl"
+                  onClick={() => {
+                    const clearedPagination = { 
+                      ...DEFAULT_PAGINATION, // Usar los valores por defecto
+                      page: 1,
+                      search: "", 
+                      game_name: undefined, 
+                      game_description: undefined, 
+                      category_name: undefined 
+                    };
+                    onPaginationChange(clearedPagination);
+                  }}
+                  className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-bold py-4 sm:py-5 px-8 sm:px-12 rounded-2xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 transform hover:scale-105 active:scale-95 text-base sm:text-lg"
                 >
                   Limpiar búsqueda
                 </button>
@@ -97,13 +114,13 @@ const GamesContent = memo(
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent mb-6 sm:mb-8">
                 Error al cargar juegos
               </h2>
-              <p className="text-red-300 text-lg sm:text-xl mb-10 sm:mb-12 leading-relaxed">{error.message}</p>
+              <p className="text-red-300 text-base sm:text-lg mb-10 sm:mb-12 leading-relaxed">{error.message}</p>
               <button
                 onClick={() => window.location.reload()}
-                className="bg-gradient-to-r from-red-500 via-pink-500 to-rose-500 text-white font-bold py-4 sm:py-5 px-8 sm:px-12 rounded-2xl hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 transform hover:scale-105 active:scale-95 text-lg sm:text-xl"
+                className="bg-gradient-to-r from-red-500 via-pink-500 to-rose-500 text-white font-bold py-4 sm:py-5 px-8 sm:px-12 rounded-2xl hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 transform hover:scale-105 active:scale-95 text-base sm:text-lg"
               >
                 Intentar de nuevo
               </button>
@@ -124,10 +141,10 @@ const GamesContent = memo(
               <div className="w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-8 sm:mb-10 lg:mb-12 rounded-full bg-gradient-to-br from-gray-500/20 to-slate-500/20 flex items-center justify-center backdrop-blur-sm border border-gray-400/30">
                 <Box className="h-14 w-14 sm:h-16 sm:w-16 text-gray-400" />
               </div>
-              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-400 to-slate-400 bg-clip-text text-transparent mb-6 sm:mb-8">
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-400 to-slate-400 bg-clip-text text-transparent mb-6 sm:mb-8">
                 No hay juegos disponibles
               </h3>
-              <p className="text-gray-300 text-lg sm:text-xl leading-relaxed">
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
                 Vuelve más tarde para ver nuevos juegos.
               </p>
             </div>
