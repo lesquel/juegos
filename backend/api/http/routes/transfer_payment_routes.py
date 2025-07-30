@@ -119,5 +119,4 @@ async def create_user_transfer_payment(
         transfer_amount=transfer_amount,
         transfer_description=transfer_description,
     )
-    print(f"Form data: {form_data}")
     return await use_case.execute(form_data=form_data)

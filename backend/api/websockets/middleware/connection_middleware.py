@@ -41,37 +41,55 @@ class WebSocketConnectionMiddleware(WebSocketMiddleware):
         )
         error_handler = WebSocketErrorHandler()
 
+        # Initialize variables to avoid unbound issues
+        user = None
+        match = None
+
         # Connection is already accepted in routes.py, so we skip that step here
 
-        # Authenticate user
-        user = await auth_handler.validate_authentication(websocket, match_id)
-        if not user:
-            await error_handler.handle_authentication_failure(websocket, match_id)
-            raise AuthenticationError("Authentication failed")
+        try:
+            # Authenticate user FIRST - don't send error response here
+            user = await auth_handler.validate_authentication(websocket, match_id)
+            if not user:
+                # Just raise the exception, let the caller handle the response
+                raise AuthenticationError("Authentication failed")
 
-        # Validate game setup
-        match = await game_handler.validate_game_setup(match_id, user)
-        if not match:
-            await error_handler.handle_validation_failure(
-                websocket, match_id, "Match validation failed"
-            )
-            raise MatchJoinError("Match validation failed")
+            # Validate game setup SECOND - don't send error response here
+            match = await game_handler.validate_game_setup(match_id, user)
+            if not match:
+                # Just raise the exception, let the caller handle the response
+                raise MatchJoinError("Match validation failed")
 
-        # Connect to game
-        if not game_handler.connect_user_to_game(match_id, websocket, user):
-            await error_handler.handle_duplicate_connection(
-                websocket, match_id, str(user.user_id)
-            )
-            raise AlreadyParticipatingError("Duplicate connection")
+            # Connect to game THIRD - don't send error response here
+            if not game_handler.connect_user_to_game(match_id, websocket, user):
+                # Just raise the exception, let the caller handle the response
+                raise AlreadyParticipatingError("Duplicate connection")
 
-        return {
-            "user": user,
-            "match": match,
-            "connection_handler": connection_handler,
-            "auth_handler": auth_handler,
-            "game_handler": game_handler,
-            "error_handler": error_handler,
-        }
+            return {
+                "user": user,
+                "match": match,
+                "connection_handler": connection_handler,
+                "auth_handler": auth_handler,
+                "game_handler": game_handler,
+                "error_handler": error_handler,
+            }
+
+        except (AuthenticationError, MatchJoinError, AlreadyParticipatingError) as e:
+            # Handle ALL errors in one place - send response OR close connection, not both
+            if isinstance(e, AuthenticationError):
+                await error_handler.handle_authentication_failure(websocket, match_id)
+            elif isinstance(e, MatchJoinError):
+                await error_handler.handle_validation_failure(
+                    websocket, match_id, "Match validation failed"
+                )
+            elif isinstance(e, AlreadyParticipatingError):
+                # Get user_id safely
+                user_id = str(user.user_id) if user else "unknown"
+                await error_handler.handle_duplicate_connection(
+                    websocket, match_id, user_id
+                )
+            # Don't re-raise the exception since we already handled the response
+            return None
 
     async def process_message(
         self, websocket: WebSocket, match_id: str, message: dict, **kwargs
