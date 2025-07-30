@@ -43,9 +43,7 @@ export const CardGame = memo(({ game }: CardGameProps) => {
           <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold drop-shadow-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-200 leading-tight">
             {game_name}
           </h2>
-          <p className="text-gray-300 text-sm sm:text-base lg:text-lg line-clamp-2 leading-relaxed font-medium">
-            {game_description}
-          </p>
+
           <div className="flex items-center justify-between flex-wrap gap-4 sm:gap-6">
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5 lg:p-6 border border-white/20 min-w-[120px]">
               <p className="text-sm sm:text-base text-gray-400 uppercase tracking-wider font-medium mb-1">Cuota base</p>
