@@ -10,8 +10,8 @@ export class DadosGameLogic {
       balance: 1000,
       gameMode: 'single',
       isRolling: false,
-      selectedAmount: 1,
-      currentBet: { type: null, amount: 1, payout: 0 },
+      selectedAmount: 5, // Cambiar de 1 a 5 para que sea más visible si está funcionando
+      currentBet: { type: null, amount: 5, payout: 0 },
       stats: {
         totalRolls: 0,
         wins: 0,
@@ -20,6 +20,7 @@ export class DadosGameLogic {
         history: []
       }
     };
+    console.log(`🎯 DadosGameLogic inicializado con selectedAmount: ${this.gameState.selectedAmount}`);
   }
 
   public onStateChange(callback: (state: DiceGameState) => void) {
@@ -44,24 +45,33 @@ export class DadosGameLogic {
   }
 
   public setSelectedAmount(amount: number) {
+    console.log(`🎯 DadosGameLogic: Cambiando selectedAmount de ${this.gameState.selectedAmount} a ${amount}`);
     this.gameState.selectedAmount = amount;
     if (this.gameState.currentBet.type) {
       this.gameState.currentBet.amount = amount;
+      console.log(`🎯 También actualizando currentBet.amount a ${amount}`);
     }
     this.updateState();
+    console.log(`🎯 Estado después de actualización:`, {
+      selectedAmount: this.gameState.selectedAmount,
+      currentBet: this.gameState.currentBet
+    });
   }
 
   public placeBet(betType: string, payout: number) {
     if (this.gameState.balance < this.gameState.selectedAmount || this.gameState.isRolling) {
+      console.log(`❌ No se puede colocar apuesta - Balance: ${this.gameState.balance}, Selected: ${this.gameState.selectedAmount}, Rolling: ${this.gameState.isRolling}`);
       return false;
     }
 
+    console.log(`🎲 Colocando apuesta en gameLogic - Tipo: ${betType}, Monto: ${this.gameState.selectedAmount}, Payout: ${payout}`);
     this.gameState.currentBet = {
       type: betType,
       amount: this.gameState.selectedAmount,
       payout: payout
     };
     this.updateState();
+    console.log(`✅ Apuesta colocada exitosamente:`, this.gameState.currentBet);
     return true;
   }
 
@@ -270,8 +280,8 @@ export class DadosGameLogic {
       balance: 1000,
       gameMode: 'single',
       isRolling: false,
-      selectedAmount: 1,
-      currentBet: { type: null, amount: 1, payout: 0 },
+      selectedAmount: 5,
+      currentBet: { type: null, amount: 5, payout: 0 },
       stats: {
         totalRolls: 0,
         wins: 0,
@@ -280,6 +290,7 @@ export class DadosGameLogic {
         history: []
       }
     };
+    console.log(`🔄 Juego reiniciado con selectedAmount: ${this.gameState.selectedAmount}`);
     this.updateState();
   }
 }

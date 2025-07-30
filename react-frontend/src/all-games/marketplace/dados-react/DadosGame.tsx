@@ -76,13 +76,22 @@ const DadosGame: React.FC = () => {
   };
 
   const handleAmountChange = (amount: number) => {
+    console.log(`🎯 Cambiando monto de apuesta a: $${amount}`);
     gameLogic.setSelectedAmount(amount);
+    // Verificar que se actualizó correctamente
+    const updatedState = gameLogic.getGameState();
+    console.log(`🎯 Estado actualizado - selectedAmount: $${updatedState.selectedAmount}`);
   };
 
   const handlePlaceBet = async (betType: string, payout: number) => {
     if (betting.isPlacingBet || !dadosGameId) return;
     
-    const betAmount = gameState.selectedAmount;
+    // Obtener el monto actual directamente del gameLogic para asegurar sincronización
+    const currentGameState = gameLogic.getGameState();
+    const betAmount = currentGameState.selectedAmount;
+    
+    console.log(`🎲 Colocando apuesta - Tipo: ${betType}, Monto: $${betAmount}, Payout: ${payout}:1`);
+    console.log(`🎲 Estado actual:`, currentGameState);
     
     // Check if user has enough balance
     if (hasInsufficientFunds(betAmount)) {
@@ -92,11 +101,17 @@ const DadosGame: React.FC = () => {
     }
 
     try {
-      // Crear apuesta en backend (esto deduce el monto automáticamente)
+      // Obtener prediction correcta basada en el tipo de apuesta
+      let prediction = 1; // valor por defecto
+      if (betType.startsWith('exacto-')) {
+        prediction = parseInt(betType.split('-')[1]) || 1;
+      }
+      
+      // Crear apuesta en backend
       const betData: DadosBetData = {
         betAmount,
         gameId: dadosGameId,
-        prediction: betType === 'specific' ? parseInt(betType.split('-')[1]) || 1 : 1, // Parse prediction from bet type
+        prediction,
       };
 
       await betting.placeBet.mutateAsync(betData);
