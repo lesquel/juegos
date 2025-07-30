@@ -51,13 +51,13 @@ export const CardCategoryGame = memo(({ category }: CardCategoryGameProps) => {
           <div className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -m-6 p-6"></div>
           
           <div className="relative">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 sm:mb-5 lg:mb-6 bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent drop-shadow-lg leading-tight">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold mb-4 sm:mb-5 lg:mb-6 bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent drop-shadow-lg leading-tight">
               {category_name}
             </h2>
-            <p className="text-gray-200 text-base sm:text-lg lg:text-xl mb-6 sm:mb-7 lg:mb-8 line-clamp-3 leading-relaxed font-medium">
+            <p className="text-gray-200 text-sm sm:text-base lg:text-lg mb-6 sm:mb-7 lg:mb-8 line-clamp-3 leading-relaxed font-medium">
               {category_description}
             </p>
-            <div className="flex items-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-bold text-lg sm:text-xl group-hover:from-cyan-300 group-hover:to-purple-300 transition-all duration-300">
+            <div className="flex items-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-bold text-base sm:text-lg group-hover:from-cyan-300 group-hover:to-purple-300 transition-all duration-300">
               <span>Explorar Juegos</span>
               <div className="text-current transition-transform duration-300 group-hover:translate-x-1">
                 {arrowIcon}

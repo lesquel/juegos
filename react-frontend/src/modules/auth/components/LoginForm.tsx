@@ -105,11 +105,11 @@ const UseLoginForm: React.FC = memo(() => {
           </div>
         </header>
 
-        <div className="text-center mb-16 sm:mb-20 lg:mb-24">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 sm:mb-8 lg:mb-10 xl:mb-12 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight">
+        <div className="text-center mb-12 sm:mb-14 lg:mb-16">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-5 lg:mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight">
             Bienvenido de Nuevo
           </h1>
-          <p className="text-gray-300 text-xl sm:text-2xl lg:text-3xl xl:text-4xl">Inicia sesión para continuar</p>
+          <p className="text-gray-300 text-base sm:text-lg lg:text-xl">Inicia sesión para continuar</p>
         </div>
 
         <form
@@ -147,7 +147,7 @@ const UseLoginForm: React.FC = memo(() => {
 
           <button
             type="submit"
-            className="relative w-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-bold py-6 sm:py-7 lg:py-8 xl:py-10 rounded-3xl shadow-2xl hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-500 text-xl sm:text-2xl lg:text-3xl xl:text-4xl group overflow-hidden"
+            className="relative w-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-bold py-4 sm:py-5 lg:py-6 rounded-3xl shadow-2xl hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-500 text-base sm:text-lg lg:text-xl group overflow-hidden"
             aria-label="Iniciar sesión"
           >
             {/* Efecto de brillo animado */}
@@ -156,7 +156,7 @@ const UseLoginForm: React.FC = memo(() => {
           </button>
         </form>
 
-        <footer className="text-lg sm:text-xl lg:text-2xl xl:text-3xl text-gray-300 mt-12 sm:mt-16 lg:mt-20 xl:mt-24 text-center">
+        <footer className="text-sm sm:text-base lg:text-lg text-gray-300 mt-8 sm:mt-10 lg:mt-12 text-center">
           ¿No tienes una cuenta?{" "}
           <Link
             to={registerUrl}

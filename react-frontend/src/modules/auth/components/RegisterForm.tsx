@@ -120,17 +120,17 @@ const UseRegisterForm: React.FC = memo(() => {
         </header>
 
         <div className="text-center mb-16 sm:mb-20 lg:mb-24">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 sm:mb-8 lg:mb-10 xl:mb-12 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-8 lg:mb-10 xl:mb-12 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight">
             Crea tu Cuenta
           </h1>
-          <p className="text-gray-300 text-xl sm:text-2xl lg:text-3xl xl:text-4xl">Únete a la comunidad y empieza a jugar.</p>
+          <p className="text-gray-300 text-base sm:text-lg lg:text-xl xl:text-2xl">Únete a la comunidad y empieza a jugar.</p>
         </div>
 
         <form onSubmit={onFormSubmit} className="w-full flex flex-col items-center gap-10 sm:gap-12 lg:gap-14 xl:gap-16">
           {errorMessage && (
             <div
               role="alert"
-              className="w-full text-red-300 text-lg sm:text-xl lg:text-2xl text-center bg-red-500/10 backdrop-blur-sm border border-red-400/30 p-6 sm:p-7 lg:p-8 xl:p-10 rounded-2xl"
+              className="w-full text-red-300 text-sm sm:text-base lg:text-lg text-center bg-red-500/10 backdrop-blur-sm border border-red-400/30 p-6 sm:p-7 lg:p-8 xl:p-10 rounded-2xl"
             >
               {errorMessage}
             </div>
@@ -167,7 +167,7 @@ const UseRegisterForm: React.FC = memo(() => {
 
           <button
             type="submit"
-            className="relative w-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-bold py-6 sm:py-7 lg:py-8 xl:py-10 rounded-3xl shadow-2xl hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-500 text-xl sm:text-2xl lg:text-3xl xl:text-4xl group overflow-hidden"
+            className="relative w-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-bold py-6 sm:py-7 lg:py-8 xl:py-10 rounded-3xl shadow-2xl hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-500 text-base sm:text-lg lg:text-xl xl:text-2xl group overflow-hidden"
             aria-label="Crear cuenta"
           >
             {/* Efecto de brillo animado */}
@@ -176,7 +176,7 @@ const UseRegisterForm: React.FC = memo(() => {
           </button>
         </form>
 
-        <footer className="text-lg sm:text-xl lg:text-2xl xl:text-3xl text-gray-300 mt-12 sm:mt-16 lg:mt-20 xl:mt-24 text-center">
+        <footer className="text-sm sm:text-base lg:text-lg xl:text-xl text-gray-300 mt-12 sm:mt-16 lg:mt-20 xl:mt-24 text-center">
           ¿Ya tienes una cuenta?{" "}
           <Link
             to={loginUrl}

@@ -22,10 +22,10 @@ const Feature: React.FC<FeatureProps> = memo(({ icon, title, description }) => {
             </div>
           </div>
         </div>
-        <h3 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight px-4 sm:px-6">
+        <h3 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight px-4 sm:px-6">
           {title}
         </h3>
-        <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-gray-200 leading-relaxed px-4 sm:px-6 lg:px-8 font-medium">
+        <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-gray-200 leading-relaxed px-4 sm:px-6 lg:px-8 font-medium">
           {description}
         </p>
       </div>

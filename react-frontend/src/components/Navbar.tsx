@@ -71,7 +71,7 @@ export const Navbar = memo(() => {
 
   const renderNavLink = (path: string, label: string, isMobile = false) => {
     const active = isActivePage(path);
-    const baseClasses = isMobile ? "text-xl py-4 px-4" : "py-3 px-5 lg:py-4 lg:px-6 text-lg lg:text-xl";
+    const baseClasses = isMobile ? "text-base py-3 px-3" : "py-2 px-4 lg:py-3 lg:px-5 text-sm lg:text-base";
     const textClass = active
       ? "text-purple-400 font-bold scale-105 drop-shadow-lg"
       : "text-gray-300 hover:text-white";
@@ -94,7 +94,7 @@ export const Navbar = memo(() => {
           <div className="flex items-center">
             <Link
               to="/"
-              className="flex items-center gap-4 sm:gap-5 lg:gap-6 text-2xl sm:text-3xl lg:text-4xl font-bold text-white transition-colors hover:text-purple-400 py-3 sm:py-4 px-2 sm:px-3 rounded-xl hover:bg-white/5"
+              className="flex items-center gap-2 sm:gap-3 lg:gap-4 text-lg sm:text-xl lg:text-2xl font-bold text-white transition-colors hover:text-purple-400 py-2 sm:py-3 px-2 sm:px-3 rounded-xl hover:bg-white/5"
             >
               <GamepadIcon className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12" />
               <span className="tracking-tight">{appName}</span>

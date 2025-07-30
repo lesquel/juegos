@@ -29,12 +29,12 @@ const UseMeComponent = memo(() => {
           <div className="text-center">
             <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-8 sm:mb-10 lg:mb-12 xl:mb-14 p-2">
               <div className="w-full h-full bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center">
-                <span className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white">
+                <span className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white">
                   {data.email.charAt(0).toUpperCase()}
                 </span>
               </div>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               Mi Perfil
             </h1>
           </div>
@@ -43,21 +43,21 @@ const UseMeComponent = memo(() => {
             <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-8 sm:p-10 lg:p-12 xl:p-14">
               <div className="flex items-center gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-7 lg:mb-8">
                 <div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-cyan-400 rounded-full"></div>
-                <label className="text-base sm:text-lg lg:text-xl xl:text-2xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-semibold">
+                <label className="text-sm sm:text-base lg:text-lg xl:text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-semibold">
                   Email:
                 </label>
               </div>
-              <p className="text-white font-semibold text-lg sm:text-xl lg:text-2xl xl:text-3xl break-all leading-relaxed">{data.email}</p>
+              <p className="text-white font-semibold text-base sm:text-lg lg:text-xl xl:text-2xl break-all leading-relaxed">{data.email}</p>
             </div>
 
             <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-400/30 rounded-2xl p-8 sm:p-10 lg:p-12 xl:p-14">
               <div className="flex items-center gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-7 lg:mb-8">
                 <div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-green-400 rounded-full"></div>
-                <label className="text-base sm:text-lg lg:text-xl xl:text-2xl bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent font-semibold">
+                <label className="text-sm sm:text-base lg:text-lg xl:text-xl bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent font-semibold">
                   Moneda Virtual:
                 </label>
               </div>
-              <p className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+              <p className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
                 ${data.virtual_currency}
               </p>
             </div>
@@ -65,11 +65,11 @@ const UseMeComponent = memo(() => {
             <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-8 sm:p-10 lg:p-12 xl:p-14 lg:col-span-1">
               <div className="flex items-center gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-7 lg:mb-8">
                 <div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-purple-400 rounded-full"></div>
-                <label className="text-base sm:text-lg lg:text-xl xl:text-2xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">
+                <label className="text-sm sm:text-base lg:text-lg xl:text-xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">
                   Fecha de registro:
                 </label>
               </div>
-              <p className="text-white font-semibold text-lg sm:text-xl lg:text-2xl xl:text-3xl leading-relaxed">
+              <p className="text-white font-semibold text-base sm:text-lg lg:text-xl xl:text-2xl leading-relaxed">
                 {new Date(data.created_at).toLocaleDateString('es-ES', {
                   year: 'numeric',
                   month: 'long',
@@ -93,10 +93,10 @@ const UseMeComponent = memo(() => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent mb-8 sm:mb-10 lg:mb-12 xl:mb-14">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent mb-8 sm:mb-10 lg:mb-12 xl:mb-14">
             Error al cargar datos
           </h2>
-          <p className="text-red-300 text-lg sm:text-xl lg:text-2xl xl:text-3xl leading-relaxed">Error al cargar los datos del usuario</p>
+          <p className="text-red-300 text-base sm:text-lg lg:text-xl xl:text-2xl leading-relaxed">Error al cargar los datos del usuario</p>
         </div>
       </div>
     );

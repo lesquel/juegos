@@ -33,7 +33,7 @@ const ActionButtons: React.FC = memo(() => {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
         <div className="relative z-10 flex items-center gap-4 sm:gap-5 lg:gap-6">
           {loginIcon}
-          <span className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-wide">Iniciar Sesión</span>
+          <span className="text-lg sm:text-xl lg:text-2xl font-semibold tracking-wide">Iniciar Sesión</span>
         </div>
       </Link>
       <Link
@@ -45,7 +45,7 @@ const ActionButtons: React.FC = memo(() => {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
         <div className="relative z-10 flex items-center gap-4 sm:gap-5 lg:gap-6">
           {registerIcon}
-          <span className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-wide">Registrarse</span>
+          <span className="text-lg sm:text-xl lg:text-2xl font-semibold tracking-wide">Registrarse</span>
         </div>
       </Link>
     </div>
