@@ -70,7 +70,7 @@ export const UseListCategoryGame = memo(() => {
 
     navigate({
       to: '/category-games',
-      search: params,
+      search: Object.keys(params).length > 0 ? params : undefined, // Si no hay parámetros, usar undefined para limpiar la URL
       replace: true, // Usar replace para no crear nueva entrada en el historial
     });
   }, [navigate]);
@@ -148,7 +148,7 @@ export const UseListCategoryGame = memo(() => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="max-w-7xl mx-auto flex justify-center items-center mb-16 sm:mb-20 lg:mb-24 xl:mb-32">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-center text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-center text-white leading-tight">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-teal-400">
               Explora Nuestras Categorías de Juegos
             </span>
@@ -205,19 +205,26 @@ const CategoriesContent = memo(
             <div className="w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 xl:w-48 xl:h-48 mx-auto mb-10 sm:mb-12 lg:mb-14 xl:mb-16 rounded-full bg-gray-800 flex items-center justify-center">
               <Copy className="h-16 w-16 sm:h-18 sm:w-18 lg:h-20 lg:w-20 xl:h-24 xl:w-24 text-gray-400" />
             </div>
-            <h3 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 sm:mb-8 lg:mb-10 xl:mb-12">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-6 sm:mb-8 lg:mb-10 xl:mb-12">
               No se encontraron categorías
             </h3>
-            <p className="text-gray-400 mb-10 sm:mb-12 lg:mb-14 xl:mb-16 text-lg sm:text-xl lg:text-2xl xl:text-3xl max-w-2xl mx-auto leading-relaxed">
+            <p className="text-gray-400 mb-10 sm:mb-12 lg:mb-14 xl:mb-16 text-base sm:text-lg lg:text-xl xl:text-2xl max-w-2xl mx-auto leading-relaxed">
               No hay categorías que coincidan con tu búsqueda:{" "}
               <strong>"{pagination.search}"</strong>
             </p>
             <button
               onClick={() => {
-                const clearedPagination = { ...pagination, search: "", page: 1, category_name: undefined, category_description: undefined, status: undefined };
+                const clearedPagination = { 
+                  ...DEFAULT_PAGINATION, // Usar los valores por defecto
+                  page: 1,
+                  search: "", 
+                  category_name: undefined, 
+                  category_description: undefined, 
+                  status: undefined 
+                };
                 onPaginationChange(clearedPagination);
               }}
-              className="bg-gradient-to-r from-purple-500 to-teal-400 text-white font-bold py-6 px-12 sm:py-7 sm:px-14 lg:py-8 lg:px-16 xl:py-10 xl:px-20 rounded-2xl hover:from-purple-600 hover:to-teal-500 transition duration-300 text-lg sm:text-xl lg:text-2xl xl:text-3xl shadow-2xl hover:shadow-purple-500/25"
+              className="bg-gradient-to-r from-purple-500 to-teal-400 text-white font-bold py-6 px-12 sm:py-7 sm:px-14 lg:py-8 lg:px-16 xl:py-10 xl:px-20 rounded-2xl hover:from-purple-600 hover:to-teal-500 transition duration-300 text-base sm:text-lg lg:text-xl xl:text-2xl shadow-2xl hover:shadow-purple-500/25"
             >
               Limpiar búsqueda
             </button>
@@ -249,13 +256,13 @@ const CategoriesContent = memo(
     if (error) {
       return (
         <div className="text-center bg-red-900 bg-opacity-50 p-12 sm:p-16 lg:p-20 xl:p-24 rounded-3xl border border-red-600 max-w-2xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-red-400 mb-8 sm:mb-10 lg:mb-12 xl:mb-14">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-red-400 mb-8 sm:mb-10 lg:mb-12 xl:mb-14">
             Error al cargar categorías
           </h2>
-          <p className="text-red-300 mb-10 sm:mb-12 lg:mb-14 xl:mb-16 text-lg sm:text-xl lg:text-2xl xl:text-3xl leading-relaxed">{error.message}</p>
+          <p className="text-red-300 mb-10 sm:mb-12 lg:mb-14 xl:mb-16 text-base sm:text-lg lg:text-xl xl:text-2xl leading-relaxed">{error.message}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-gradient-to-r from-purple-500 to-teal-400 text-white font-bold py-6 px-12 sm:py-7 sm:px-14 lg:py-8 lg:px-16 xl:py-10 xl:px-20 rounded-2xl hover:from-purple-600 hover:to-teal-500 transition duration-300 text-lg sm:text-xl lg:text-2xl xl:text-3xl shadow-2xl hover:shadow-purple-500/25"
+            className="bg-gradient-to-r from-purple-500 to-teal-400 text-white font-bold py-6 px-12 sm:py-7 sm:px-14 lg:py-8 lg:px-16 xl:py-10 xl:px-20 rounded-2xl hover:from-purple-600 hover:to-teal-500 transition duration-300 text-base sm:text-lg lg:text-xl xl:text-2xl shadow-2xl hover:shadow-purple-500/25"
           >
             Intentar de nuevo
           </button>
@@ -269,10 +276,10 @@ const CategoriesContent = memo(
           <div className="w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 xl:w-48 xl:h-48 mx-auto mb-10 sm:mb-12 lg:mb-14 xl:mb-16 rounded-full bg-gray-800 flex items-center justify-center">
             <Copy className="h-16 w-16 sm:h-18 sm:w-18 lg:h-20 lg:w-20 xl:h-24 xl:w-24 text-gray-400" />
           </div>
-          <h3 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 sm:mb-8 lg:mb-10 xl:mb-12">
+          <h3 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-6 sm:mb-8 lg:mb-10 xl:mb-12">
             No hay categorías disponibles
           </h3>
-          <p className="text-gray-400 text-lg sm:text-xl lg:text-2xl xl:text-3xl max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-400 text-base sm:text-lg lg:text-xl xl:text-2xl max-w-2xl mx-auto leading-relaxed">
             Vuelve más tarde para ver nuevas categorías.
           </p>
         </div>
