@@ -21,9 +21,8 @@ const UseSingleTransfer: React.FC<{ id: string }> = memo(({ id }) => {
   const errorMessage = useMemo(() => {
     if (!error) return null;
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900/20 to-cyan-900/20"></div>
-        <div className="relative text-center bg-red-500/10 backdrop-blur-md border border-red-400/30 p-8 rounded-2xl max-w-md shadow-2xl">
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center bg-red-500/10 backdrop-blur-md border border-red-400/30 p-8 rounded-2xl max-w-md shadow-2xl">
           <h2 className="text-xl font-bold text-red-400 mb-4">
             Error al cargar transferencia
           </h2>
@@ -94,11 +93,8 @@ const UseSingleTransfer: React.FC<{ id: string }> = memo(({ id }) => {
   if (!data) return null;
 
   return (
-    <main className="min-h-screen relative">
-      {/* Fondo decorativo */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900/20 to-cyan-900/20"></div>
-      
-      <div className="relative container mx-auto px-4 py-12 max-w-4xl">
+    <main className="relative">
+      <div className="px-4 py-12 max-w-4xl mx-auto">
         {/* Header */}
         <header className="mb-10">
           <nav className="mb-6">

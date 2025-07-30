@@ -8,11 +8,12 @@ import { ChipSelector } from './components/ChipSelector';
 import { WinDisplay } from './components/WinDisplay';
 import { GameEndModal } from './components/GameEndModal';
 import { useRouletteGameId, useRouletteBetting, useRouletteBalance } from './services/rouletteBettingService';
+import { useMyVirtualCurrency } from '../../../modules/user/services/userClientData';
 import type { RouletteBetData, RouletteGameResult } from './services/rouletteBettingService';
 import './styles/roulette-game.css';
 
 export function RouletteGame() {
-  const [gameState, setGameState] = useState<RouletteGameState>(() => 
+  const [gameState, setGameState] = useState<RouletteGameState>(() =>
     RouletteGameLogic.createInitialState()
   );
   const [spinTimeouts, setSpinTimeouts] = useState<NodeJS.Timeout[]>([]);
@@ -26,7 +27,10 @@ export function RouletteGame() {
   // Hooks para detectar el game ID y balance
   const { rouletteGameId, isLoading: isLoadingGameId } = useRouletteGameId();
   const { balance, isLoading: isLoadingBalance, hasInsufficientFunds } = useRouletteBalance();
-  
+
+  // Hook directo para forzar refetch del navbar
+  const { refetch: forceRefreshNavbar } = useMyVirtualCurrency();
+
   // Servicio de apuestas (solo si tenemos gameId)
   const bettingService = useRouletteBetting(rouletteGameId || "");
 
@@ -69,7 +73,7 @@ export function RouletteGame() {
 
   const processSpinComplete = useCallback(async (winningNumber: number) => {
     const result: SpinResult = RouletteGameLogic.processSpinResult(gameState, winningNumber);
-    
+
     setGameState(prev => RouletteGameLogic.updateStateAfterSpin(prev, result));
     setLastSpinResult({
       winningNumber,
@@ -90,6 +94,17 @@ export function RouletteGame() {
       try {
         await bettingService.finishGame.mutateAsync(gameResult);
         console.log("✅ Match de ruleta finalizado exitosamente");
+
+        // Forzar refetch inmediato del navbar desde el componente
+        console.log("🔄 Forzando refetch del navbar desde componente ruleta...");
+        forceRefreshNavbar();
+
+        // Refetch adicional con delay para asegurar
+        setTimeout(() => {
+          forceRefreshNavbar();
+          console.log("💰 Refetch adicional del navbar completado");
+        }, 500);
+
       } catch (error) {
         console.error("❌ Error al finalizar match de ruleta:", error);
       }
@@ -101,7 +116,7 @@ export function RouletteGame() {
     }, 2000);
 
     setSpinTimeouts(prev => [...prev, modalTimeout]);
-  }, [gameState, bettingService, rouletteGameId]);
+  }, [gameState, bettingService, rouletteGameId, forceRefreshNavbar]);
 
   const handleSpin = useCallback(async () => {
     if (gameState.isSpinning || gameState.totalBet === 0 || !rouletteGameId) return;
@@ -160,7 +175,7 @@ export function RouletteGame() {
   const handleNewGame = useCallback(async () => {
     setShowEndModal(false);
     setLastSpinResult(null);
-    
+
     // Limpiar apuestas y preparar para nueva ronda
     setGameState(prev => ({
       ...prev,
@@ -181,7 +196,7 @@ export function RouletteGame() {
     } catch (error) {
       console.error("❌ Error al salir del juego:", error);
     }
-    
+
     setShowEndModal(false);
     setLastSpinResult(null);
     setGameState(prev => ({ ...RouletteGameLogic.createInitialState(), balance: prev.balance }));
@@ -232,31 +247,31 @@ export function RouletteGame() {
             ✅ Match activo: {bettingService.currentMatch.matchId} - Apuesta: {bettingService.currentMatch.betAmount.toLocaleString()} monedas
           </div>
         )}
-        
+
         {bettingService.isPlacingBet && (
           <div className="roulette-betting-loading">
             🔄 Creando apuesta...
           </div>
         )}
-        
+
         {bettingService.isFinishingGame && (
           <div className="roulette-finishing-loading">
             ⏳ Finalizando ronda...
           </div>
         )}
-        
+
         {bettingService.isQuitting && (
           <div className="roulette-quitting-loading">
             🚪 Saliendo del juego...
           </div>
         )}
-        
+
         {(bettingService.betError || bettingService.finishError || bettingService.quitError) && (
           <div className="roulette-error-message">
             <h3>❌ Error en el Sistema de Apuestas</h3>
             <p>
-              {bettingService.betError?.message || 
-               bettingService.finishError?.message || 
+              {bettingService.betError?.message ||
+               bettingService.finishError?.message ||
                bettingService.quitError?.message}
             </p>
           </div>

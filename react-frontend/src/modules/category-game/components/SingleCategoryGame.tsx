@@ -26,7 +26,7 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
     if (!error) return null;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-4">
+      <div className="flex items-center justify-center px-4 py-12">
         <div className="text-center bg-red-500/10 backdrop-blur-sm border border-red-500/30 p-12 rounded-3xl max-w-md shadow-2xl">
           <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Clock className="h-10 w-10 text-red-400" />
@@ -114,8 +114,8 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
   if (error) return errorState;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div className="w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {breadcrumb}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-12 items-start">

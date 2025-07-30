@@ -1,7 +1,7 @@
 export const SingleCategoryGameSkeleton = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div className="w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb Skeleton */}
         <div className="mb-8 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3">
           <div className="h-5 w-1/3 bg-gradient-to-r from-gray-600/50 to-gray-500/50 rounded shimmer"></div>

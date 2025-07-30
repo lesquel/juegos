@@ -3,7 +3,7 @@ import TheSocietyOfMultiphobicsGame from '@all-games/marketplace/the-society-of-
 
 export const Route = createFileRoute('/play/marketplace/TheSocietyOfMultiphobics')({
   component: () => (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center">
       <TheSocietyOfMultiphobicsGame />
     </div>
   ),
