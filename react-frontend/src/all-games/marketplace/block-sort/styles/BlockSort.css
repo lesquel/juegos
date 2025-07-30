@@ -1,0 +1,294 @@
+/* Basic styles for the Block Sort Game */
+.block-sort-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center content vertically */
+  min-height: 100%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); /* Dark gradient background */
+  color: #ecf0f1;
+  font-family: 'Poppins', sans-serif; /* Modern font */
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow: hidden; /* Prevent scroll */
+}
+
+h1 {
+  font-size: 4rem;
+  color: transparent;
+  background: linear-gradient(45deg, #8e2de2, #4a00e0); /* Vibrant gradient for title */
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(142, 45, 226, 0.8); /* Neon glow effect */
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 700px; /* Increased max-width */
+  margin-bottom: 1rem;
+  padding: 1.5rem 3rem; /* Increased padding */
+  background: rgba(255, 255, 255, 0.1); /* Translucent background */
+  border-radius: 20px; /* More rounded corners */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Deeper shadow */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+  backdrop-filter: blur(10px); /* Glassmorphism effect */
+}
+
+.game-info p {
+  font-size: 1.8rem; /* Larger font for moves */
+  margin: 0;
+  color: #ecf0f1;
+  font-weight: 600;
+}
+
+.btn-reset, .btn-play-again {
+  background: linear-gradient(45deg, #00c6ff, #0072ff); /* Blue gradient button */
+  color: white;
+  border: none;
+  padding: 1.2rem 2.5rem; /* Larger padding */
+  border-radius: 50px; /* Pill shape */
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 700;
+  transition: all 0.3s ease; /* Smooth transitions */
+  box-shadow: 0 5px 15px rgba(0, 114, 255, 0.4); /* Button shadow */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-reset:hover, .btn-play-again:hover {
+  transform: translateY(-5px); /* Lift effect */
+  box-shadow: 0 8px 25px rgba(0, 114, 255, 0.6); /* Deeper shadow on hover */
+  background: linear-gradient(45deg, #0072ff, #00c6ff); /* Invert gradient on hover */
+}
+
+.game-board {
+  display: flex;
+  gap: 20px; /* Increased gap */
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3); /* Darker translucent background */
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 1200px; /* Adjusted max-width for more columns */
+  min-height: 400px; /* Increased min-height */
+  box-sizing: border-box;
+}
+
+.column {
+  display: flex;
+  flex-direction: column-reverse; /* Blocks stack from bottom */
+  width: 90px; /* Adjusted width for columns */
+  height: 300px; /* Adjusted height for columns */
+  border: 3px solid rgba(255, 255, 255, 0.3); /* Lighter, more prominent border */
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.2); /* Darker translucent background for column */
+  justify-content: flex-start;
+  align-items: center;
+  padding-bottom: 10px; /* More space at the bottom */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Added transform transition */
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5); /* Inner shadow for depth */
+}
+
+.column.selected {
+  border-color: #f1c40f; /* Yellow border when selected */
+  box-shadow: 0 0 25px rgba(241, 196, 15, 0.8), inset 0 0 15px rgba(241, 196, 15, 0.5); /* Stronger glow */
+  transform: translateY(-5px); /* Slight lift */
+}
+
+.block {
+  width: 80px; /* Adjusted block width */
+  height: 60px; /* Adjusted block height */
+  border-radius: 10px; /* More rounded blocks */
+  margin-bottom: 5px; /* More space between blocks */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth color and movement */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2); /* Enhanced shadow and inner glow */
+  border: 1px solid rgba(255, 255, 255, 0.15); /* Subtle block border */
+  position: relative; /* For potential future inner effects */
+  overflow: hidden; /* Ensure inner elements stay within bounds */
+}
+
+.block.selected-moving {
+  z-index: 100; /* Bring selected block to front */
+  transform: translateY(-80px) !important; /* Lift selected block higher */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.3); /* Stronger shadow when moving */
+}
+
+/* Colors for blocks - More vibrant and distinct */
+.block.red { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+.block.blue { background: linear-gradient(45deg, #3498db, #2980b9); }
+.block.green { background: linear-gradient(45deg, #2ecc71, #27ae60); }
+.block.yellow { background: linear-gradient(45deg, #f1c40f, #f39c12); }
+.block.purple { background: linear-gradient(45deg, #9b59b6, #8e44ad); }
+.block.orange { background: linear-gradient(45deg, #e67e22, #d35400); }
+.block.cyan { background: linear-gradient(45deg, #1abc9c, #16a085); }
+.block.magenta { background: linear-gradient(45deg, #ff00ff, #cc00cc); }
+
+
+
+
+
+
+
+
+.win-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9); /* Darker overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.win-content {
+  background: linear-gradient(135deg, #34495e, #2c3e50); /* Dark gradient background */
+  padding: 4rem; /* More padding */
+  border-radius: 25px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7); /* Stronger shadow */
+  border: 2px solid #2ecc71; /* Green border for win */
+  animation: popIn 0.6s ease-out;
+}
+
+.win-content h2 {
+  font-size: 4rem;
+  color: #2ecc71; /* Green for win message */
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 20px rgba(46, 204, 113, 0.8);
+}
+
+.win-content p {
+  font-size: 2rem;
+  margin-bottom: 2.5rem;
+  color: #ecf0f1;
+}
+
+/* Keyframe animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  80% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 3.5rem;
+  }
+  .game-info {
+    max-width: 600px;
+    padding: 1.2rem 2.5rem;
+  }
+  .game-info p {
+    font-size: 1.6rem;
+  }
+  .btn-reset, .btn-play-again {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+  .game-board {
+    gap: 15px;
+    max-width: 1000px;
+    min-height: 350px;
+  }
+  .column {
+    width: 80px;
+    height: 280px;
+  }
+  .block {
+    width: 70px;
+    height: 55px;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 3rem;
+  }
+  .game-info {
+    flex-direction: column;
+    gap: 15px;
+    padding: 1rem 1.5rem;
+  }
+  .game-info p {
+    font-size: 1.4rem;
+  }
+  .btn-reset, .btn-play-again {
+    padding: 0.8rem 1.8rem;
+    font-size: 1rem;
+  }
+  .game-board {
+    gap: 10px;
+    max-width: 700px;
+    min-height: 300px;
+  }
+  .column {
+    width: 70px;
+    height: 250px;
+  }
+  .block {
+    width: 60px;
+    height: 50px;
+  }
+  .win-content h2 {
+    font-size: 3rem;
+  }
+  .win-content p {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .game-info {
+    padding: 0.8rem 1rem;
+  }
+  .game-info p {
+    font-size: 1.2rem;
+  }
+  .btn-reset, .btn-play-again {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  .game-board {
+    gap: 8px;
+    max-width: 400px;
+    min-height: 280px;
+  }
+  .column {
+    width: 60px;
+    height: 220px;
+  }
+  .block {
+    width: 50px;
+    height: 45px;
+  }
+  .win-content h2 {
+    font-size: 2.5rem;
+  }
+  .win-content p {
+    font-size: 1.5rem;
+  }
+}
