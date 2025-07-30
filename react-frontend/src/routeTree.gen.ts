@@ -33,6 +33,9 @@ const PlayOnlineTictacLazyRouteImport = createFileRoute('/play/online/tictac')()
 const PlayOnlineConnect4LazyRouteImport = createFileRoute(
   '/play/online/connect4',
 )()
+const PlayMarketplaceWordScrambleLazyRouteImport = createFileRoute(
+  '/play/marketplace/word-scramble',
+)()
 const PlayMarketplaceTheSocietyOfMultiphobicsLazyRouteImport = createFileRoute(
   '/play/marketplace/the-society-of-multiphobics',
 )()
@@ -158,6 +161,14 @@ const PlayOnlineConnect4LazyRoute = PlayOnlineConnect4LazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/play.online.connect4.lazy').then((d) => d.Route),
 )
+const PlayMarketplaceWordScrambleLazyRoute =
+  PlayMarketplaceWordScrambleLazyRouteImport.update({
+    id: '/play/marketplace/word-scramble',
+    path: '/play/marketplace/word-scramble',
+    getParentRoute: () => rootRouteImport,
+  } as any).lazy(() =>
+    import('./routes/play/marketplace/word-scramble.lazy').then((d) => d.Route),
+  )
 const PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute =
   PlayMarketplaceTheSocietyOfMultiphobicsLazyRouteImport.update({
     id: '/play/marketplace/the-society-of-multiphobics',
@@ -319,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
   '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
   '/play/marketplace/the-society-of-multiphobics': typeof PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute
+  '/play/marketplace/word-scramble': typeof PlayMarketplaceWordScrambleLazyRoute
   '/play/online/connect4': typeof PlayOnlineConnect4LazyRoute
   '/play/online/tictac': typeof PlayOnlineTictacLazyRoute
   '/games/$id': typeof GamesIdIndexLazyRoute
@@ -351,6 +363,7 @@ export interface FileRoutesByTo {
   '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
   '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
   '/play/marketplace/the-society-of-multiphobics': typeof PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute
+  '/play/marketplace/word-scramble': typeof PlayMarketplaceWordScrambleLazyRoute
   '/play/online/connect4': typeof PlayOnlineConnect4LazyRoute
   '/play/online/tictac': typeof PlayOnlineTictacLazyRoute
   '/games/$id': typeof GamesIdIndexLazyRoute
@@ -386,6 +399,7 @@ export interface FileRoutesById {
   '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
   '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
   '/play/marketplace/the-society-of-multiphobics': typeof PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute
+  '/play/marketplace/word-scramble': typeof PlayMarketplaceWordScrambleLazyRoute
   '/play/online/connect4': typeof PlayOnlineConnect4LazyRoute
   '/play/online/tictac': typeof PlayOnlineTictacLazyRoute
   '/games/$id/': typeof GamesIdIndexLazyRoute
@@ -422,6 +436,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/rock-paper-scissors'
     | '/play/marketplace/ruletacasino'
     | '/play/marketplace/the-society-of-multiphobics'
+    | '/play/marketplace/word-scramble'
     | '/play/online/connect4'
     | '/play/online/tictac'
     | '/games/$id'
@@ -454,6 +469,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/rock-paper-scissors'
     | '/play/marketplace/ruletacasino'
     | '/play/marketplace/the-society-of-multiphobics'
+    | '/play/marketplace/word-scramble'
     | '/play/online/connect4'
     | '/play/online/tictac'
     | '/games/$id'
@@ -488,6 +504,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/rock-paper-scissors'
     | '/play/marketplace/ruletacasino'
     | '/play/marketplace/the-society-of-multiphobics'
+    | '/play/marketplace/word-scramble'
     | '/play/online/connect4'
     | '/play/online/tictac'
     | '/games/$id/'
@@ -517,6 +534,7 @@ export interface RootRouteChildren {
   PlayMarketplaceRockPaperScissorsLazyRoute: typeof PlayMarketplaceRockPaperScissorsLazyRoute
   PlayMarketplaceRuletacasinoLazyRoute: typeof PlayMarketplaceRuletacasinoLazyRoute
   PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute: typeof PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute
+  PlayMarketplaceWordScrambleLazyRoute: typeof PlayMarketplaceWordScrambleLazyRoute
   PlayOnlineConnect4LazyRoute: typeof PlayOnlineConnect4LazyRoute
   PlayOnlineTictacLazyRoute: typeof PlayOnlineTictacLazyRoute
 }
@@ -626,6 +644,13 @@ declare module '@tanstack/react-router' {
       path: '/play/online/connect4'
       fullPath: '/play/online/connect4'
       preLoaderRoute: typeof PlayOnlineConnect4LazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play/marketplace/word-scramble': {
+      id: '/play/marketplace/word-scramble'
+      path: '/play/marketplace/word-scramble'
+      fullPath: '/play/marketplace/word-scramble'
+      preLoaderRoute: typeof PlayMarketplaceWordScrambleLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/play/marketplace/the-society-of-multiphobics': {
@@ -821,6 +846,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlayMarketplaceRuletacasinoLazyRoute: PlayMarketplaceRuletacasinoLazyRoute,
   PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute:
     PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute,
+  PlayMarketplaceWordScrambleLazyRoute: PlayMarketplaceWordScrambleLazyRoute,
   PlayOnlineConnect4LazyRoute: PlayOnlineConnect4LazyRoute,
   PlayOnlineTictacLazyRoute: PlayOnlineTictacLazyRoute,
 }

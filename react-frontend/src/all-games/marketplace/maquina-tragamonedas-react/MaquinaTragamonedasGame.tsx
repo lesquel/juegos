@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import './MaquinaTragamonedasStyles.css';
-import { 
-  useTragamonedasGameId, 
+import {
+  useTragamonedasGameId,
   useTragamonedasBetting,
   useTragamonedasBalance,
-  type TragamonedasGameResult 
+  type TragamonedasGameResult
 } from './services/tragamonedasBettingService';
 
 // Símbolos de la máquina tragamonedas
@@ -30,19 +30,11 @@ const PAYLINES = [
   [[2, 0], [1, 1], [0, 2]], // Diagonal inversa
 ] as const;
 
-interface GameResult {
-  reels: string[][];
-  winAmount: number;
-  isWin: boolean;
-  betAmount: number;
-  winningLines: number[];
-}
-
 const MaquinaTragamonedasGame: React.FC = () => {
   // Hooks para backend integration
   const { tragamonedasGameId, isLoading: isLoadingGameId } = useTragamonedasGameId();
   const { balance, isLoading: isLoadingBalance, hasInsufficientFunds } = useTragamonedasBalance();
-  
+
   // Game state
   const [bet, setBet] = useState(10);
   const [reels, setReels] = useState<string[][]>([
@@ -77,7 +69,7 @@ const MaquinaTragamonedasGame: React.FC = () => {
     const weights = [30, 25, 20, 15, 7, 2, 1]; // Probabilidades decrecientes
     const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
     let random = Math.random() * totalWeight;
-    
+
     for (let i = 0; i < SYMBOLS.length; i++) {
       random -= weights[i];
       if (random <= 0) {
@@ -101,7 +93,7 @@ const MaquinaTragamonedasGame: React.FC = () => {
 
     PAYLINES.forEach((line, index) => {
       const symbols = line.map(([row, col]) => gameReels[row][col]);
-      
+
       // Verificar si todos los símbolos son iguales
       if (symbols[0] === symbols[1] && symbols[1] === symbols[2]) {
         winningLinesFound.push(index);
@@ -115,8 +107,8 @@ const MaquinaTragamonedasGame: React.FC = () => {
 
   // Función para verificar si un símbolo está en línea ganadora
   const isSymbolWinning = useCallback((reelIndex: number, symbolIndex: number): boolean => {
-    return winningLines.some(lineIndex => 
-      PAYLINES[lineIndex].some(([row, col]) => 
+    return winningLines.some(lineIndex =>
+      PAYLINES[lineIndex].some(([row, col]) =>
         row === reelIndex && col === symbolIndex
       )
     );
@@ -132,7 +124,7 @@ const MaquinaTragamonedasGame: React.FC = () => {
       }
       return;
     }
-    
+
     setIsSpinning(true);
     setWinAmount(0);
     setWinningLines([]);
@@ -165,15 +157,15 @@ const MaquinaTragamonedasGame: React.FC = () => {
 
       // Verificar ganancias
       const { winningLines: lines, totalWin } = checkWinningLines(finalReels);
-      
+
       // Procesar resultado después de la animación
       setTimeout(async () => {
         setWinningLines(lines);
         setWinAmount(totalWin);
-        
+
         const isWin = totalWin > 0;
         const multiplier = isWin ? (totalWin / bet) : -1;
-        
+
         // Crear resultado para el backend
         const gameResult: TragamonedasGameResult = {
           win: isWin,
@@ -184,10 +176,10 @@ const MaquinaTragamonedasGame: React.FC = () => {
           multiplier: multiplier,
           isJackpot: lines.length === PAYLINES.length
         };
-        
+
         // Guardar resultado para mostrar información
         setLastGameResult(gameResult);
-        
+
         try {
           // Finalizar match en el backend
           console.log("🎰 Enviando resultado a backend:", {
@@ -195,15 +187,15 @@ const MaquinaTragamonedasGame: React.FC = () => {
             currentBalance: balance,
             expectedChange: isWin ? `+${totalWin}` : `-${bet}`
           });
-          
+
           await finishGame.mutateAsync(gameResult);
-          
+
           console.log("✅ Match finalizado, saldo debería actualizarse automáticamente");
-          
+
           // Mostrar mensaje de resultado
           if (isWin) {
             setShowWinAnimation(true);
-            
+
             if (lines.length === PAYLINES.length) {
               setMessage(`🎉 ¡JACKPOT! ¡Ganaste $${totalWin}! 🎉`);
             } else {
@@ -212,12 +204,12 @@ const MaquinaTragamonedasGame: React.FC = () => {
           } else {
             setMessage('😞 ¡Inténtalo de nuevo!');
           }
-          
+
         } catch (finishError) {
           console.error('❌ Error al finalizar match:', finishError);
           setMessage('⚠️ Error al procesar resultado');
         }
-        
+
         setIsSpinning(false);
       }, 500);
 
@@ -226,7 +218,7 @@ const MaquinaTragamonedasGame: React.FC = () => {
       setMessage('❌ Error al crear apuesta');
       setIsSpinning(false);
     }
-  }, [bet, canSpin, tragamonedasGameId, hasInsufficientFunds, placeBet, generateReels, checkWinningLines, finishGame]);
+  }, [bet, canSpin, tragamonedasGameId, hasInsufficientFunds, placeBet, generateReels, checkWinningLines, finishGame, balance]);
 
   // Función para ajustar apuesta
   const adjustBet = useCallback((amount: number) => {
@@ -254,7 +246,7 @@ const MaquinaTragamonedasGame: React.FC = () => {
   // Estados de carga
 
   // Memoizar la tabla de pagos
-  const paytableEntries = useMemo(() => 
+  const paytableEntries = useMemo(() =>
     Object.entries(SYMBOL_VALUES).map(([symbol, value]) => ({ symbol, value })),
     []
   );
@@ -285,8 +277,8 @@ const MaquinaTragamonedasGame: React.FC = () => {
             <div className="message">
               ⚠️ Error: No se pudo encontrar el juego de tragamonedas
             </div>
-            <button 
-              onClick={() => window.history.back()} 
+            <button
+              onClick={() => window.history.back()}
               className="reset-button"
             >
               🔄 Volver
@@ -319,8 +311,8 @@ const MaquinaTragamonedasGame: React.FC = () => {
                   {lastGameResult.win ? '🎉 GANASTE' : '😞 Perdiste'}
                 </span>
                 <span className="result-money">
-                  {lastGameResult.win 
-                    ? `+$${lastGameResult.winAmount.toLocaleString()}` 
+                  {lastGameResult.win
+                    ? `+$${lastGameResult.winAmount.toLocaleString()}`
                     : `-$${lastGameResult.totalBet.toLocaleString()}`
                   }
                 </span>
@@ -358,10 +350,10 @@ const MaquinaTragamonedasGame: React.FC = () => {
             {/* Carretes */}
             <div className={`reels-container ${isSpinning ? 'spinning' : ''}`}>
               {reels.map((reel, reelIndex) => (
-                <div key={`reel-col-${reelIndex}`} className="reel">
+                <div key={`reel-${reelIndex}-${reel.join('')}`} className="reel">
                   {reel.map((symbol, symbolIndex) => (
                     <div
-                      key={`symbol-${reelIndex}-${symbolIndex}-${symbol}`}
+                      key={`symbol-${reelIndex}-${symbolIndex}`}
                       className={`symbol ${isSymbolWinning(reelIndex, symbolIndex) ? 'winning' : ''}`}
                     >
                       {symbol}

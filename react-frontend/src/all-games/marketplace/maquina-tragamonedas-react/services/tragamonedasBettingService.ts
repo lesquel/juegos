@@ -8,6 +8,7 @@ import { useGames } from "../../../../modules/games/services/gameClientData";
 import { environment } from "../../../../config/environment";
 import { endpoints } from "../../../../config/endpoints";
 import type { CreateMatch, FinishMatch } from "../../../../modules/games/models/match.model";
+import type { ErrorResponseErrorsArray } from "../../../../models/errorResponse";
 
 // Tipos específicos para el juego de tragamonedas
 export interface TragamonedasBetData {
@@ -34,10 +35,10 @@ export interface TragamonedasMatchData {
 // Hook para encontrar el ID del juego de tragamonedas
 export const useTragamonedasGameId = () => {
   const { data: gamesData, isLoading } = useGames({ page: 1, limit: 100 });
-  
+
   const tragamonedasGameId = useMemo(() => {
     if (!gamesData?.results) return null;
-    
+
     // Buscar por diferentes nombres posibles
     const possibleNames = [
       'tragamonedas',
@@ -47,11 +48,11 @@ export const useTragamonedasGameId = () => {
       'casino slots',
       'slotmachine'
     ];
-    
+
     for (const game of gamesData.results) {
       const gameName = game.game_name.toLowerCase();
       const gameId = game.game_id.toLowerCase();
-      
+
       for (const name of possibleNames) {
         if (gameName.includes(name) || gameId.includes(name)) {
           console.log(`🎰 Encontrado juego de tragamonedas: ${game.game_name} (ID: ${game.game_id})`);
@@ -59,11 +60,11 @@ export const useTragamonedasGameId = () => {
         }
       }
     }
-    
+
     console.warn('⚠️ No se encontró el juego de tragamonedas en la lista de juegos');
     return null;
   }, [gamesData]);
-  
+
   return { tragamonedasGameId, isLoading, allGames: gamesData?.results };
 };
 
@@ -73,7 +74,7 @@ export const useTragamonedasBetting = (gameId: string) => {
   const router = useRouter();
   const { user } = useAuthStore();
   const { data: virtualCurrency, refetch: refetchCurrency } = useMyVirtualCurrency();
-  
+
   // Estado local del match actual
   const [currentMatch, setCurrentMatch] = useState<TragamonedasMatchData | null>(null);
 
@@ -83,6 +84,7 @@ export const useTragamonedasBetting = (gameId: string) => {
     console.log("🎰 Match de tragamonedas creado:", match);
   });
 
+  // Hook para finalizar match - se usará dinámicamente
   const finishMatchMutation = useFinishMatch(currentMatch?.matchId || "");
 
   // Función para verificar si el usuario puede apostar
@@ -122,16 +124,15 @@ export const useTragamonedasBetting = (gameId: string) => {
             setCurrentMatch(tragamonedasMatch);
             resolve(tragamonedasMatch);
           },
-          onError: (error: any) => {
+          onError: (error: ErrorResponseErrorsArray) => {
             console.error("❌ Error detallado al crear match de tragamonedas:", {
               error,
-              message: error?.message,
-              data: error?.response?.data,
-              status: error?.response?.status,
+              errors: error?.errors,
+              code: error?.code,
               gameId: betData.gameId,
               matchData
             });
-            reject(error);
+            reject(new Error(error?.errors?.[0] || 'Error desconocido'));
           },
         });
       });
@@ -154,7 +155,7 @@ export const useTragamonedasBetting = (gameId: string) => {
         participants: [
           {
             user_id: user.user.user_id,
-            score: gameResult.win ? gameResult.winAmount : -currentMatch.betAmount,
+            score: gameResult.win ? gameResult.winAmount : 0,
           },
         ],
         custom_odds: gameResult.win ? gameResult.multiplier : -1,
@@ -169,6 +170,20 @@ export const useTragamonedasBetting = (gameId: string) => {
       });
 
       return new Promise((resolve, reject) => {
+        // Verificar que tenemos el matchId correcto
+        if (!currentMatch.matchId) {
+          reject(new Error("No se encontró el matchId para finalizar"));
+          return;
+        }
+
+        // Verificar que el hook tiene el matchId correcto
+        if (!finishMatchMutation || currentMatch.matchId === "") {
+          reject(new Error("Hook de finalización no está listo"));
+          return;
+        }
+
+        console.log("🔗 Finalizando match con ID:", currentMatch.matchId);
+
         finishMatchMutation.mutate(finishData, {
           onSuccess: (result) => {
             console.log("✅ Match de tragamonedas finalizado exitosamente:", result);
@@ -177,26 +192,28 @@ export const useTragamonedasBetting = (gameId: string) => {
               respuestaBackend: result,
               balanceAntes: virtualCurrency?.virtual_currency,
             });
-            
+
             // Limpiar match actual
             setCurrentMatch(null);
-            
+
             // Refrescar datos del usuario
             console.log("🔄 Refrescando datos de usuario...");
+            console.log("💰 Balance antes del refresh:", virtualCurrency?.virtual_currency);
+
             refetchCurrency();
             queryClient.invalidateQueries({ queryKey: ["userMe"] });
             queryClient.invalidateQueries({ queryKey: ["userVirtualCurrency"] });
-            
-            // Agregar timeout para verificar actualización
-            setTimeout(() => {
-              console.log("💰 Balance después del match:", virtualCurrency?.virtual_currency);
-            }, 1000);
-            
+
             resolve(result);
           },
           onError: (error) => {
             console.error("❌ Error al finalizar match de tragamonedas:", error);
-            reject(error);
+            console.error("❌ Error details:", {
+              error,
+              matchId: currentMatch.matchId,
+              payload: finishData
+            });
+            reject(new Error(error?.errors?.[0] || 'Error al finalizar match'));
           },
         });
       });
@@ -222,10 +239,10 @@ export const useTragamonedasBetting = (gameId: string) => {
           isJackpot: false,
           multiplier: -1,
         };
-        
+
         await finishGame.mutateAsync(quitResult);
       }
-      
+
       // Navegar de vuelta
       router.history.back();
     },
@@ -242,18 +259,18 @@ export const useTragamonedasBetting = (gameId: string) => {
     currentMatch,
     virtualCurrency,
     canPlaceBet,
-    
+
     // Acciones
     placeBet,
     finishGame,
     quitGame,
     continueGame,
-    
+
     // Estados de loading
     isPlacingBet: placeBet.isPending,
     isFinishingGame: finishGame.isPending,
     isQuitting: quitGame.isPending,
-    
+
     // Errores
     betError: placeBet.error,
     finishError: finishGame.error,
@@ -264,7 +281,7 @@ export const useTragamonedasBetting = (gameId: string) => {
 // Hook simplificado para verificar el saldo
 export const useTragamonedasBalance = () => {
   const { data: virtualCurrency, isLoading } = useMyVirtualCurrency();
-  
+
   return {
     balance: virtualCurrency?.virtual_currency || 0,
     isLoading,
