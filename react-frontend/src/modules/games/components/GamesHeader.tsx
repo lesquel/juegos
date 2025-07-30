@@ -1,14 +1,14 @@
 import React from "react";
 
 const GamesHeader = () => (
-  <div className="text-center mb-12">
+  <div className="text-center mb-8 sm:mb-12">
     <div className="relative">
       {/* Background decoration */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-32 h-32 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-3xl"></div>
+        <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-3xl"></div>
       </div>
       
-      <h1 className="relative text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-6">
+      <h1 className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-4 sm:mb-6">
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">
           Explora Nuestros
         </span>
@@ -19,11 +19,11 @@ const GamesHeader = () => (
       </h1>
     </div>
     
-    <p className="text-gray-300 text-xl max-w-3xl mx-auto leading-relaxed">
+    <p className="text-gray-300 text-base sm:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed px-4">
       Descubre una amplia selección de juegos emocionantes y divertidos para todos los gustos.
     </p>
-    <div className="mt-4">
-      <span className="text-cyan-400 font-semibold text-lg">
+    <div className="mt-3 sm:mt-4">
+      <span className="text-cyan-400 font-semibold text-base sm:text-lg">
         🎮 ¡Cada partida ayuda a una causa benéfica! 💜
       </span>
     </div>

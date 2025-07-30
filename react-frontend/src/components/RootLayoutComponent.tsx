@@ -31,13 +31,17 @@ export function RootLayoutComponent() {
     return (
         <>
             <SaveAuthProvider />
-            <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-cyan-900/20">
-                <Navbar />
-                <main className="pt-0">
-                    <div className="w-full px-4 py-8">
-                        <Outlet />
+            <div className="app-layout app-container">
+                <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-cyan-900/20">
+                    <Navbar />
+                    <div className="main-content">
+                        <div className="content-wrapper">
+                            <main className="py-8 sm:py-12 md:py-16">
+                                <Outlet />
+                            </main>
+                        </div>
                     </div>
-                </main>
+                </div>
             </div>
             <TanStackRouterDevtools />
         </>

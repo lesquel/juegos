@@ -74,8 +74,8 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
   // Memoizar breadcrumb
   const breadcrumb = useMemo(
     () => (
-      <nav className="mb-8" aria-label="Breadcrumb">
-        <ol className="flex items-center space-x-3 text-sm bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3">
+      <nav className="mb-6 sm:mb-8" aria-label="Breadcrumb">
+        <ol className="flex items-center space-x-2 sm:space-x-3 text-xs sm:text-sm bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl px-3 sm:px-4 py-2 sm:py-3">
           <li>
             <Link
               to="/"
@@ -85,7 +85,7 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
             </Link>
           </li>
           <li>
-            <ArrowRight className="h-4 w-4 text-gray-500" />
+            <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500" />
           </li>
           <li>
             <Link
@@ -96,9 +96,9 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
             </Link>
           </li>
           <li>
-            <ArrowRight className="h-4 w-4 text-gray-500" />
+            <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500" />
           </li>
-          <li className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-medium">{data?.category_name}</li>
+          <li className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-medium truncate max-w-32 sm:max-w-none">{data?.category_name}</li>
         </ol>
       </nav>
     ),
@@ -115,10 +115,10 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
 
   return (
     <div className="w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full">
         {breadcrumb}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8 xl:gap-12 items-start">
           {/* Left Column (Category Details) */}
           <aside className="lg:col-span-1 lg:sticky lg:top-24 self-start mb-8 lg:mb-0">
             <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-2xl">
