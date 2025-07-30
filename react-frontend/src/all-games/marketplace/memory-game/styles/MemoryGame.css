@@ -1,0 +1,204 @@
+/* Basic styles for the Memory Game */
+.memory-game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Distribute space vertically */
+  height: 100%; /* Occupy full viewport height */
+  overflow: hidden; /* Prevent overall scrolling */
+  /* background-color: #282c34; */
+  color: white;
+  font-family: 'Arial', sans-serif;
+  padding: 1rem;
+  box-sizing: border-box; /* Include padding in height calculation */
+}
+
+h1 {
+  font-size: 3.5rem;
+  margin-bottom: .5rem;
+  color: transparent;
+  background: linear-gradient(to right, #61dafb, #a777e3); /* Gradient for title */
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 0 15px rgba(167, 119, 227, 0.6); /* Subtle text shadow */
+  font-weight: bold;
+}
+
+.game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+  padding: .5rem 2rem; /* Increased padding */
+  background: linear-gradient(to right, #3a3f47, #4a4f57); /* Gradient background */
+  border-radius: 15px; /* More rounded corners */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+}
+
+.game-info p {
+  font-size: 1.5rem; /* Larger font for moves */
+  margin: 0;
+  color: #f0f0f0; /* Lighter color for contrast */
+  font-weight: bold;
+}
+
+.btn-reset, .btn-play-again {
+  background: linear-gradient(to right, #61dafb, #a777e3); /* Gradient for button */
+  color: #282c34;
+  border: none;
+  padding: .7rem 1rem; /* Larger padding */
+  border-radius: 50px; /* Pill shape */
+  cursor: pointer;
+  font-size: .9rem;
+  font-weight: bold;
+  transition: all 0.3s ease; /* Smooth transitions for all properties */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Button shadow */
+}
+
+.btn-reset:hover, .btn-play-again:hover {
+  transform: translateY(-3px); /* Lift effect */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Deeper shadow on hover */
+  opacity: 0.9; /* Slight opacity change */
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 6 columns */
+  grid-template-rows: repeat(4, 1fr); /* 4 rows */
+  grid-gap: 10px;
+  width: 90vmin; /* Responsive width based on viewport */
+  height: calc(90vmin * (4 / 6)); /* Maintain 6x4 aspect ratio */
+  max-width: 900px; /* Max width for desktop */
+  max-height: 600px; /* Max height for desktop */
+  padding: 10px;
+  background-color: #3a3f47;
+  border-radius: 8px;
+  box-sizing: border-box;
+  overflow: hidden; /* Prevent cards from overflowing board */
+}
+
+.card-item {
+  position: relative;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.card-item.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  font-size: 1.5rem; /* Adjusted font size for 6x4 grid */
+  font-weight: bold;
+}
+
+.card-front {
+  background-color: #f0f0f0;
+  color: #282c34;
+  transform: rotateY(180deg);
+}
+
+.card-back {
+  background-color: #61dafb;
+  color: white;
+}
+
+.card-item.matched .card-inner {
+  opacity: 0; /* Hide matched cards */
+  transition: opacity 0.3s ease-out;
+}
+
+.game-over-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.game-over-content {
+  background-color: #3a3f47;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.game-over-content h2 {
+  font-size: 3rem;
+  color: #61dafb;
+  margin-bottom: 1rem;
+}
+
+.game-over-content p {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .game-board {
+    width: 95vmin; /* Slightly larger on smaller screens */
+    height: calc(95vmin * (4 / 6));
+    max-width: 600px; /* Adjusted max-width for smaller screens */
+    max-height: 400px;
+  }
+  .card-face {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2rem;
+  }
+  .game-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .game-board {
+    grid-template-columns: repeat(4, 1fr); /* Switch to 4 columns for very small screens */
+    grid-template-rows: repeat(6, 1fr); /* 6 rows for 4 columns */
+    width: 95vw; /* Use vw for very small screens */
+    height: calc(95vw * (6 / 4)); /* Maintain 4x6 aspect ratio */
+    max-width: 300px;
+    max-height: 450px;
+  }
+  .card-face {
+    font-size: 1rem;
+  }
+  .game-over-content h2 {
+    font-size: 2rem;
+  }
+  .game-over-content p {
+    font-size: 1rem;
+  }
+  .memory-game-container {
+    padding: .8rem;
+  }
+}
+

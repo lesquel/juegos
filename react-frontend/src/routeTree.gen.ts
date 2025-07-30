@@ -48,6 +48,9 @@ const PlayMarketplacePuzleLazyRouteImport = createFileRoute(
 const PlayMarketplacePongLazyRouteImport = createFileRoute(
   '/play/marketplace/pong',
 )()
+const PlayMarketplaceMemoryGameLazyRouteImport = createFileRoute(
+  '/play/marketplace/memory-game',
+)()
 const PlayMarketplaceHipodromocasinoLazyRouteImport = createFileRoute(
   '/play/marketplace/hipodromocasino',
 )()
@@ -195,6 +198,14 @@ const PlayMarketplacePongLazyRoute = PlayMarketplacePongLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/play/marketplace/pong.lazy').then((d) => d.Route),
 )
+const PlayMarketplaceMemoryGameLazyRoute =
+  PlayMarketplaceMemoryGameLazyRouteImport.update({
+    id: '/play/marketplace/memory-game',
+    path: '/play/marketplace/memory-game',
+    getParentRoute: () => rootRouteImport,
+  } as any).lazy(() =>
+    import('./routes/play/marketplace/memory-game.lazy').then((d) => d.Route),
+  )
 const PlayMarketplaceHipodromocasinoLazyRoute =
   PlayMarketplaceHipodromocasinoLazyRouteImport.update({
     id: '/play/marketplace/hipodromocasino',
@@ -290,6 +301,7 @@ export interface FileRoutesByFullPath {
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
   '/play/marketplace/hipodromocasino': typeof PlayMarketplaceHipodromocasinoLazyRoute
+  '/play/marketplace/memory-game': typeof PlayMarketplaceMemoryGameLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
   '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
@@ -320,6 +332,7 @@ export interface FileRoutesByTo {
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
   '/play/marketplace/hipodromocasino': typeof PlayMarketplaceHipodromocasinoLazyRoute
+  '/play/marketplace/memory-game': typeof PlayMarketplaceMemoryGameLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
   '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
@@ -353,6 +366,7 @@ export interface FileRoutesById {
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
   '/play/marketplace/hipodromocasino': typeof PlayMarketplaceHipodromocasinoLazyRoute
+  '/play/marketplace/memory-game': typeof PlayMarketplaceMemoryGameLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
   '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
@@ -387,6 +401,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/do-not-make'
     | '/play/marketplace/golfrog'
     | '/play/marketplace/hipodromocasino'
+    | '/play/marketplace/memory-game'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
     | '/play/marketplace/rock-paper-scissors'
@@ -417,6 +432,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/do-not-make'
     | '/play/marketplace/golfrog'
     | '/play/marketplace/hipodromocasino'
+    | '/play/marketplace/memory-game'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
     | '/play/marketplace/rock-paper-scissors'
@@ -449,6 +465,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/do-not-make'
     | '/play/marketplace/golfrog'
     | '/play/marketplace/hipodromocasino'
+    | '/play/marketplace/memory-game'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
     | '/play/marketplace/rock-paper-scissors'
@@ -476,6 +493,7 @@ export interface RootRouteChildren {
   PlayMarketplaceDoNotMakeLazyRoute: typeof PlayMarketplaceDoNotMakeLazyRoute
   PlayMarketplaceGolfrogLazyRoute: typeof PlayMarketplaceGolfrogLazyRoute
   PlayMarketplaceHipodromocasinoLazyRoute: typeof PlayMarketplaceHipodromocasinoLazyRoute
+  PlayMarketplaceMemoryGameLazyRoute: typeof PlayMarketplaceMemoryGameLazyRoute
   PlayMarketplacePongLazyRoute: typeof PlayMarketplacePongLazyRoute
   PlayMarketplacePuzleLazyRoute: typeof PlayMarketplacePuzleLazyRoute
   PlayMarketplaceRockPaperScissorsLazyRoute: typeof PlayMarketplaceRockPaperScissorsLazyRoute
@@ -627,6 +645,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayMarketplacePongLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/marketplace/memory-game': {
+      id: '/play/marketplace/memory-game'
+      path: '/play/marketplace/memory-game'
+      fullPath: '/play/marketplace/memory-game'
+      preLoaderRoute: typeof PlayMarketplaceMemoryGameLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/play/marketplace/hipodromocasino': {
       id: '/play/marketplace/hipodromocasino'
       path: '/play/marketplace/hipodromocasino'
@@ -762,6 +787,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlayMarketplaceGolfrogLazyRoute: PlayMarketplaceGolfrogLazyRoute,
   PlayMarketplaceHipodromocasinoLazyRoute:
     PlayMarketplaceHipodromocasinoLazyRoute,
+  PlayMarketplaceMemoryGameLazyRoute: PlayMarketplaceMemoryGameLazyRoute,
   PlayMarketplacePongLazyRoute: PlayMarketplacePongLazyRoute,
   PlayMarketplacePuzleLazyRoute: PlayMarketplacePuzleLazyRoute,
   PlayMarketplaceRockPaperScissorsLazyRoute:
