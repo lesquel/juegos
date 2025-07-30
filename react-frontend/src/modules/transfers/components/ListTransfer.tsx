@@ -71,7 +71,7 @@ const UseListTransfer: React.FC = memo(() => {
     }
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         {data.results.map((transfer) => (
           <CardTransfer key={transfer.transfer_id} transfer={transfer} />
         ))}
@@ -83,19 +83,19 @@ const UseListTransfer: React.FC = memo(() => {
   if (error) return errorMessage;
 
   return (
-    <section className="relative">
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <header className="flex flex-col items-center justify-center md:flex-row md:justify-between md:items-center gap-6 mb-12">
-          <div>
-            <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
-              <div className="p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+    <section className="relative w-full">
+      <div className="w-full">
+        <header className="flex flex-col items-center justify-center md:flex-row md:justify-between md:items-center gap-4 sm:gap-6 mb-8 sm:mb-12">
+          <div className="text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-3 sm:gap-4 mb-3 sm:mb-4">
+              <div className="p-2 sm:p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
                 {transferIcon}
               </div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Mis Transferencias
               </h1>
             </div>
-            <p className="text-gray-300 text-center md:text-left text-lg">
+            <p className="text-gray-300 text-center md:text-left text-base sm:text-lg">
               Gestiona y revisa el historial de tus transferencias
             </p>
           </div>

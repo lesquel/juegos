@@ -138,9 +138,9 @@ const GamesContent = memo(
 
     return (
       <>
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           {gameCards.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {gameCards}
             </div>
           ) : (
@@ -149,7 +149,7 @@ const GamesContent = memo(
         </div>
 
         {data?.results && data.results.length > 0 && (
-          <div className="mt-12">
+          <div className="mt-8 sm:mt-12">
             <PaginationComponent
               pagination={pagination}
               setPagination={onPaginationChange}

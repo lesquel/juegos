@@ -18,9 +18,10 @@ function UserMePage() {
   }
 
   return (
-    <>
+    <div className='w-full flex justify-center items-center flex-col gap-6'>
+
       <MeComponent />
       <ListTransfer />
-    </>
+    </div>
   );
 }
