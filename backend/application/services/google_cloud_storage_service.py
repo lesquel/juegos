@@ -26,14 +26,13 @@ class GoogleCloudStorageService(BaseUseCase, LoggingMixin):
         try:
             # Intentar diferentes métodos de autenticación
 
-            self.logger.info("Using GCS credentials from environment variable")
-            credentials_info = self.storage_settings.gcs_credentials_json
-            client = storage.Client.from_service_account_info(
-                credentials_info, project=self.storage_settings.gcs_project_id
-            )
-
-            # Método 3: Credenciales por defecto (Cloud Run, gcloud auth)
-            if not client:
+            if settings.app_settings.is_development():
+                self.logger.info("Using GCS credentials from environment variable")
+                credentials_info = self.storage_settings.gcs_credentials_json
+                client = storage.Client.from_service_account_info(
+                    credentials_info, project=self.storage_settings.gcs_project_id
+                )
+            else:
                 self.logger.info(
                     "Using default GCS credentials (Cloud Run or gcloud auth)"
                 )
