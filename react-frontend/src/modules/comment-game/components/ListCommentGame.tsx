@@ -29,14 +29,14 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
     // Memoizar estado vacío
     const emptyState = useMemo(
       () => (
-        <section className="text-center py-16">
-          <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
-            <MessageCircleMore className="h-12 w-12 text-cyan-400" />
+        <section className="text-center py-12 sm:py-16">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 sm:mb-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+            <MessageCircleMore className="h-10 w-10 sm:h-12 sm:w-12 text-cyan-400" />
           </div>
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-4">
+          <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-3 sm:mb-4">
             Sé el primero en comentar
           </h3>
-          <p className="text-gray-300 max-w-md mx-auto text-lg">
+          <p className="text-gray-300 max-w-md mx-auto text-base sm:text-lg px-4">
             ¡Comparte tu experiencia con este juego! Tu opinión ayuda a otros
             jugadores a decidir.
           </p>
@@ -58,7 +58,7 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
       }
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full">
           {data.results.map((commentGame: CommentGame) => (
             <CardCommentGame
               key={commentGame.review_id}
@@ -73,9 +73,9 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
     const titleWithCount = useMemo(() => {
       const count = data?.results?.length || 0;
       return (
-        <header className="text-center mb-12">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+        <header className="text-center mb-8 sm:mb-12">
+          <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="p-2 sm:p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
               {commentsIcon}
             </div>
             <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -95,8 +95,8 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
     if (error) return errorMessage;
 
     return (
-      <section className="relative">
-        <div className="px-4 py-12 flex flex-col items-center max-w-6xl mx-auto">
+      <section className="relative w-full">
+        <div className="flex flex-col items-center max-w-6xl mx-auto">
           {titleWithCount}
           {commentsList}
         </div>

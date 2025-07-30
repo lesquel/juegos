@@ -7,9 +7,9 @@ import FeatureCards from "./FeatureCards";
 
 export const Home: React.FC = memo(() => {
   return (
-    <div className="w-full">
-      <div className="px-4 py-16">
-        <div className="flex flex-col items-center justify-center gap-16 text-center max-w-6xl mx-auto">
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-6xl">
+        <div className="flex flex-col items-center justify-center gap-12 sm:gap-16 text-center">
           <Header />
           <WelcomeSection />
           <ActionButtons />

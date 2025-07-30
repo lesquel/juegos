@@ -21,55 +21,55 @@ const UseMeComponent = memo(() => {
     if (!data) return null;
 
     return (
-      <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-2xl">
+      <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 sm:p-8 shadow-2xl w-full max-w-4xl mx-auto">
         {/* Fondo decorativo */}
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl"></div>
         
-        <div className="relative space-y-8">
+        <div className="relative space-y-6 sm:space-y-8">
           <div className="text-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 p-1">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 p-1">
               <div className="w-full h-full bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">
+                <span className="text-lg sm:text-2xl font-bold text-white">
                   {data.email.charAt(0).toUpperCase()}
                 </span>
               </div>
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               Mi Perfil
             </h1>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-4 sm:p-6">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-3 h-3 bg-cyan-400 rounded-full"></div>
-                <label className="text-sm bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-semibold">
+                <label className="text-xs sm:text-sm bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-semibold">
                   Email:
                 </label>
               </div>
-              <p className="text-white font-semibold text-lg break-all">{data.email}</p>
+              <p className="text-white font-semibold text-sm sm:text-base lg:text-lg break-all">{data.email}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-400/30 rounded-2xl p-6">
+            <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-400/30 rounded-2xl p-4 sm:p-6">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                <label className="text-sm bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent font-semibold">
+                <label className="text-xs sm:text-sm bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent font-semibold">
                   Moneda Virtual:
                 </label>
               </div>
-              <p className="text-2xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+              <p className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
                 ${data.virtual_currency}
               </p>
             </div>
 
-            <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-6 md:col-span-2 lg:col-span-1">
+            <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-4 sm:p-6 lg:col-span-1">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
-                <label className="text-sm bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">
+                <label className="text-xs sm:text-sm bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">
                   Fecha de registro:
                 </label>
               </div>
-              <p className="text-white font-semibold">
+              <p className="text-white font-semibold text-sm sm:text-base">
                 {new Date(data.created_at).toLocaleDateString('es-ES', {
                   year: 'numeric',
                   month: 'long',
@@ -102,8 +102,8 @@ const UseMeComponent = memo(() => {
     );
 
   return (
-    <div className="py-12">
-      <div className="px-4 max-w-4xl mx-auto">
+    <div className="w-full flex justify-center">
+      <div className="w-full">
         {userContent}
       </div>
     </div>

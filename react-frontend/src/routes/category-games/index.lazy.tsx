@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { CategoryGameClientData } from "../../modules/category-game/services/categoryGameClientData";
 import { CardCategoryGame } from "../../modules/category-game/components/CardCategoryGame";
 import type { PaginationCategory } from "../../modules/category-game/models/pagination-category";
@@ -19,16 +19,16 @@ const DEFAULT_PAGINATION: PaginationCategory = {
   search: "",
 };
 
-export const Route = createLazyFileRoute('/category-games/')({
+export const Route = createLazyFileRoute("/category-games/")({
   component: CategoryGamesIndexPage,
-})
+});
 
 function CategoryGamesIndexPage() {
   return (
-    <main className="h-full flex-grow bg-gray-900 relative">
+    <main className="h-full flex-grow  relative">
       <UseListCategoryGame />
     </main>
-  )
+  );
 }
 
 const UseListCategoryGame = memo(() => {
