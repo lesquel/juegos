@@ -12,7 +12,8 @@ body {
     height: 100vh;
     background-color: #faf8ef;
     color: #776e65;
-    padding: 1rem;
+    /* padding: 1rem; */
+    padding-bottom: 70px;
     box-sizing: border-box;
 }
 
@@ -22,7 +23,7 @@ body {
     align-items: center;
     width: 100%;
     max-width: 500px;
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
 }
 
 .title-2048 {
@@ -56,8 +57,8 @@ body {
 
 .grid-container {
     position: relative;
-    width: 90vmin; /* Use vmin to fit in viewport */
-    height: 90vmin; /* Use vmin to fit in viewport */
+    width: 90vmin; 
+    height: 90vmin; 
     max-width: 500px;
     max-height: 500px;
     background-color: #bbada0;
@@ -168,7 +169,7 @@ body {
 @media (max-width: 520px) {
     .header-2048 {
         flex-direction: column;
-        gap: 1rem;
+        gap: .5rem;
     }
 
     .grid-container {
@@ -178,5 +179,15 @@ body {
 
     .tile {
         font-size: 1.5rem !important; /* Force smaller font size */
+    }
+    .title-2048 {
+        font-size: 3rem;
+        line-height: 2.8rem;
+    }
+    .score-box {
+        font-size: .8rem;
+    }
+    .btn-2048 {
+        font-size: .8rem;
     }
 }

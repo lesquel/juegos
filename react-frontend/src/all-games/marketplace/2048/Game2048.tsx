@@ -99,3 +99,4 @@ export const Game2048: React.FC = () => {
     </div>
   );
 };
+

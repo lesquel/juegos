@@ -1,6 +1,7 @@
 import { Grid, Tile } from './types';
 
 const GRID_SIZE = 4;
+let tileIdCounter = 0;
 
 // Helper to get empty cells
 const getEmptyCells = (grid: Grid): [number, number][] => {
@@ -17,13 +18,13 @@ const getEmptyCells = (grid: Grid): [number, number][] => {
 
 // Helper to add a new tile
 export const addRandomTile = (grid: Grid): Grid => {
-  const newGrid = grid.map(row => row.map(tile => (tile ? { ...tile, isNew: false, isMerged: false } : null)));
+  const newGrid = [...grid.map(r => [...r])];
   const emptyCells = getEmptyCells(newGrid);
   if (emptyCells.length === 0) return newGrid;
 
   const [x, y] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
   const value = Math.random() < 0.9 ? 2 : 4;
-  newGrid[x][y] = { id: Date.now() + Math.random(), value, isNew: true };
+  newGrid[x][y] = { id: tileIdCounter++, value, isNew: true };
 
   return newGrid;
 };
@@ -75,7 +76,8 @@ const transpose = (grid: Grid): Grid => {
 const move = (grid: Grid, direction: 'up' | 'down' | 'left' | 'right'): { newGrid: Grid; score: number; moved: boolean } => {
   let currentGrid = JSON.parse(JSON.stringify(grid));
   let totalScore = 0;
-  let moved = false;
+
+  
 
   const isVertical = direction === 'up' || direction === 'down';
   const isReverse = direction === 'right' || direction === 'down';
@@ -90,15 +92,13 @@ const move = (grid: Grid, direction: 'up' | 'down' | 'left' | 'right'): { newGri
     const { newRow, score } = processRow(rowToProcess);
     totalScore += score;
     currentGrid[i] = isReverse ? newRow.reverse() : newRow;
-
-    if (JSON.stringify(originalRow) !== JSON.stringify(currentGrid[i])) {
-      moved = true;
-    }
   }
 
   if (isVertical) {
     currentGrid = transpose(currentGrid);
   }
+
+  const moved = JSON.stringify(grid) !== JSON.stringify(currentGrid);
 
   return { newGrid: currentGrid, score: totalScore, moved };
 };
@@ -125,3 +125,4 @@ export const isGameOver = (grid: Grid): boolean => {
   }
   return true;
 };
+
