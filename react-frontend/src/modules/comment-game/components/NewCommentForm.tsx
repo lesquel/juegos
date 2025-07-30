@@ -63,10 +63,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
       if (!error) return null;
       return (
         <div
-          className="text-red-400 bg-red-900 bg-opacity-50 p-3 rounded-lg mb-4 border border-red-600"
+          className="text-red-300 bg-red-500/10 backdrop-blur-sm border border-red-400/30 p-4 rounded-xl mb-6"
           role="alert"
         >
-          <h4 className="font-semibold mb-1">Error al publicar comentario:</h4>
+          <h4 className="font-semibold mb-2 text-red-400">Error al publicar comentario:</h4>
           <p>{error.errors.join(", ")}</p>
         </div>
       );
@@ -83,25 +83,33 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
 
     // Memoizar icono de comentario
     const commentIcon = useMemo(
-      () => <MessageCircleCode className="h-6 w-6 text-teal-400" />,
+      () => <MessageCircleCode className="h-6 w-6 text-cyan-400" />,
       []
     );
 
     return (
-      <section className="bg-gray-800 bg-opacity-50 rounded-2xl p-6 border border-gray-700 mx-auto backdrop-blur-lg">
-        <header className="mb-6">
-          <h3 className="text-xl font-bold text-white flex items-center gap-3">
-            {commentIcon}
-            Deja tu Comentario
-          </h3>
-          <p className="text-gray-400 text-sm mt-1">
-            Comparte tu experiencia con este juego
-          </p>
-        </header>
+      <section className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-2xl">
+        {/* Fondo decorativo */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl"></div>
+        
+        <div className="relative">
+          <header className="mb-8">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                {commentIcon}
+              </div>
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                Deja tu Comentario
+              </h3>
+            </div>
+            <p className="text-gray-300 text-base">
+              Comparte tu experiencia con este juego
+            </p>
+          </header>
 
         <div className="flex items-start space-x-4">
           <div className="flex-1">
-            <form onSubmit={onFormSubmit} className="w-full space-y-4">
+            <form onSubmit={onFormSubmit} className="w-full space-y-6">
               {errorMessage}
 
               {/* Campo de Comentario */}
@@ -125,7 +133,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
                     <div>
                       <label
                         htmlFor="comment-field"
-                        className="block text-sm font-medium text-gray-300 mb-2"
+                        className="block text-sm font-medium text-gray-300 mb-3"
                       >
                         Comentario
                       </label>
@@ -134,7 +142,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
                         rows={4}
                         value={field.state.value}
                         onChange={handleChange}
-                        className="w-full p-3 border border-gray-600 bg-gray-900 text-white rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors resize-none"
+                        className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl shadow-lg focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/30 transition-all duration-300 resize-none placeholder-gray-400"
                         placeholder="Escribe tu comentario sobre este juego..."
                         aria-describedby={
                           fieldErrors ? "comment-error" : undefined
@@ -177,16 +185,16 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
               <button
                 disabled={isLoading}
                 type="submit"
-                className="w-full py-3 px-6 cursor-pointer bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-semibold rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out transform hover:scale-105"
+                className="w-full py-4 px-6 cursor-pointer bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600 text-white font-bold rounded-xl shadow-2xl hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-300 transform hover:scale-[1.02] disabled:scale-100 disabled:opacity-50"
                 aria-label="Publicar comentario"
               >
                 {isLoading ? (
-                  <span className="flex items-center justify-center gap-2">
+                  <span className="flex items-center justify-center gap-3">
                     <Loader />
                     Publicando Comentario...
                   </span>
                 ) : (
-                  <span className="flex items-center justify-center gap-2">
+                  <span className="flex items-center justify-center gap-3">
                     <Send className="w-5 h-5" />
                     Publicar Comentario
                   </span>
@@ -194,6 +202,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = memo(
               </button>
             </form>
           </div>
+        </div>
         </div>
       </section>
     );

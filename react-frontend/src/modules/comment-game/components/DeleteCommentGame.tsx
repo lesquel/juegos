@@ -86,7 +86,7 @@ export const DeleteCommentGame: React.FC<DeleteCommentGameProps> = memo(
         <button
           onClick={openDialog}
           disabled={isPending}
-          className="text-white hover:text-red-500 focus:text-red-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded p-1"
+          className="text-gray-300 hover:text-red-400 focus:text-red-400 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-400/50 rounded-xl p-2 hover:bg-red-500/10"
           aria-label="Eliminar comentario"
           title="Eliminar comentario"
         >
@@ -95,16 +95,19 @@ export const DeleteCommentGame: React.FC<DeleteCommentGameProps> = memo(
 
         <dialog
           ref={dialogRef}
-          className="rounded-lg p-0 max-w-sm w-full backdrop:bg-black/70 bg-transparent border-0"
+          className="rounded-2xl p-0 max-w-sm w-full backdrop:bg-black/70 bg-transparent border-0"
           aria-labelledby="delete-dialog-title"
           aria-describedby="delete-dialog-description"
         >
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-600 shadow-2xl">
-            <div className="flex flex-col items-center justify-center gap-4">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 shadow-2xl">
+            {/* Fondo decorativo */}
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-red-400/5 to-red-600/10 rounded-2xl"></div>
+            
+            <div className="relative flex flex-col items-center justify-center gap-4">
               {/* Warning Icon */}
-              <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-2">
+              <div className="w-16 h-16 rounded-full bg-red-500/20 backdrop-blur-sm flex items-center justify-center mb-2 border border-red-400/30">
                 <svg
-                  className="w-8 h-8 text-red-600"
+                  className="w-8 h-8 text-red-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -121,7 +124,7 @@ export const DeleteCommentGame: React.FC<DeleteCommentGameProps> = memo(
 
               <h2
                 id="delete-dialog-title"
-                className="text-lg font-semibold text-white text-center"
+                className="text-lg font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent text-center"
               >
                 ¿Eliminar comentario?
               </h2>
@@ -138,7 +141,7 @@ export const DeleteCommentGame: React.FC<DeleteCommentGameProps> = memo(
                 <button
                   onClick={closeDialog}
                   disabled={isPending}
-                  className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-gray-300 rounded-xl hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancelar
                 </button>
@@ -146,7 +149,7 @@ export const DeleteCommentGame: React.FC<DeleteCommentGameProps> = memo(
                 <button
                   onClick={handleDelete}
                   disabled={isPending}
-                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-medium"
                 >
                   {isPending ? (
                     <>

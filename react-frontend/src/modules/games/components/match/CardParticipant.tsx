@@ -35,7 +35,7 @@ export const CardParticipant: React.FC<CardParticipantProps> = memo(
     const errorMessage = useMemo(() => {
       if (!error) return null;
       return (
-        <div className="flex items-center space-x-2 text-sm text-red-400 bg-red-900 bg-opacity-30 px-3 py-1 rounded-lg">
+        <div className="flex items-center space-x-2 text-sm text-red-400 bg-red-500/10 backdrop-blur-sm border border-red-400/30 px-3 py-2 rounded-xl">
           <Clock className="h-4 w-4" />
           <span>Error al cargar usuario</span>
         </div>
@@ -45,9 +45,9 @@ export const CardParticipant: React.FC<CardParticipantProps> = memo(
     // Memoizar estado de carga
     const loadingState = useMemo(
       () => (
-        <div className="flex items-center space-x-2 animate-pulse">
-          <div className="w-8 h-8 bg-gray-600 rounded-full"></div>
-          <div className="h-4 bg-gray-600 rounded w-20"></div>
+        <div className="flex items-center space-x-3 animate-pulse">
+          <div className="w-10 h-10 bg-white/20 rounded-full"></div>
+          <div className="h-4 bg-white/20 rounded w-24"></div>
         </div>
       ),
       []
@@ -57,18 +57,18 @@ export const CardParticipant: React.FC<CardParticipantProps> = memo(
     if (error) return errorMessage;
 
     return (
-      <div className="flex items-center space-x-2 bg-gray-700 bg-opacity-50 px-3 py-2 rounded-lg backdrop-blur-sm border border-gray-600 transition-all duration-200 hover:bg-gray-600 hover:bg-opacity-50">
+      <div className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-white/20 hover:scale-[1.02]">
         <div className="relative">
           <img
             src={avatarUrl}
             alt={`Avatar de ${displayName}`}
-            className="w-8 h-8 rounded-full border-2 border-gray-500 object-cover"
+            className="w-10 h-10 rounded-full border-2 border-cyan-400/50 object-cover shadow-lg"
             loading="lazy"
           />
-          <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-gray-700 rounded-full"></div>
+          <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 border-2 border-gray-900 rounded-full"></div>
         </div>
         <div className="flex flex-col">
-          <span className="font-medium text-white text-sm leading-tight">
+          <span className="font-bold text-white text-sm leading-tight">
             {displayName}
           </span>
           <span className="text-xs text-gray-400">{participant?.email}</span>

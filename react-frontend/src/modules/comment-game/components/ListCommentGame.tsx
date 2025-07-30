@@ -17,8 +17,8 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
     const errorMessage = useMemo(() => {
       if (!error) return null;
       return (
-        <div className="text-center bg-red-900 bg-opacity-50 p-6 rounded-lg border border-red-600 max-w-md mx-auto">
-          <h3 className="text-xl font-bold text-red-400 mb-2">
+        <div className="text-center bg-red-500/10 backdrop-blur-md border border-red-400/30 p-8 rounded-2xl max-w-md mx-auto">
+          <h3 className="text-xl font-bold text-red-400 mb-3">
             Error al cargar comentarios
           </h3>
           <p className="text-red-300">{error.message}</p>
@@ -29,14 +29,14 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
     // Memoizar estado vacío
     const emptyState = useMemo(
       () => (
-        <section className="text-center py-12">
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-800 flex items-center justify-center">
-            <MessageCircleMore className="h-10 w-10 text-gray-500" />
+        <section className="text-center py-16">
+          <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+            <MessageCircleMore className="h-12 w-12 text-cyan-400" />
           </div>
-          <h3 className="text-2xl font-bold text-white mb-2">
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-4">
             Sé el primero en comentar
           </h3>
-          <p className="text-gray-400 max-w-md mx-auto">
+          <p className="text-gray-300 max-w-md mx-auto text-lg">
             ¡Comparte tu experiencia con este juego! Tu opinión ayuda a otros
             jugadores a decidir.
           </p>
@@ -47,7 +47,7 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
 
     // Memoizar icono de comentarios
     const commentsIcon = useMemo(
-      () => <MessageCircleCode className="h-6 w-6 text-teal-400" />,
+      () => <MessageCircleCode className="h-7 w-7 text-cyan-400" />,
       []
     );
 
@@ -58,7 +58,7 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
       }
 
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-6xl w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl w-full">
           {data.results.map((commentGame: CommentGame) => (
             <CardCommentGame
               key={commentGame.review_id}
@@ -73,15 +73,17 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
     const titleWithCount = useMemo(() => {
       const count = data?.results?.length || 0;
       return (
-        <header className="text-center mb-10">
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 text-white flex items-center justify-center gap-4">
-            {commentsIcon}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-teal-400">
+        <header className="text-center mb-12">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+              {commentsIcon}
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               Comentarios
-            </span>
-          </h1>
+            </h1>
+          </div>
           {count > 0 && (
-            <p className="text-gray-400 text-lg">
+            <p className="text-gray-300 text-lg">
               {count} {count === 1 ? "comentario" : "comentarios"}
             </p>
           )}
@@ -93,8 +95,11 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
     if (error) return errorMessage;
 
     return (
-      <main className="min-h-full bg-gray-900">
-        <div className="container mx-auto px-4 py-10 flex flex-col items-center">
+      <main className="min-h-screen relative">
+        {/* Fondo decorativo */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900/20 to-cyan-900/20"></div>
+        
+        <div className="relative container mx-auto px-4 py-12 flex flex-col items-center">
           {titleWithCount}
           {commentsList}
         </div>

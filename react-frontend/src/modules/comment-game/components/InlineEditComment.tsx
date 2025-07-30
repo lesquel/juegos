@@ -59,7 +59,11 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(
             type="button"
             key={starValue}
             onClick={() => setEditRating(starValue)}
-            className="text-yellow-400 hover:scale-110 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 rounded"
+            className={`p-2 rounded-xl transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 ${
+              isSelected 
+                ? "text-yellow-400 bg-yellow-400/20" 
+                : "text-gray-500 hover:text-yellow-400 hover:bg-white/10"
+            }`}
             disabled={isPending}
             aria-label={`Calificar con ${starValue} estrella${starValue !== 1 ? "s" : ""}`}
           >
@@ -79,7 +83,7 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(
 
       return (
         <div
-          className="mb-4 p-3 bg-red-900 bg-opacity-50 border border-red-600 text-red-300 rounded-lg"
+          className="mb-4 p-4 bg-red-500/10 backdrop-blur-sm border border-red-400/30 text-red-400 rounded-xl"
           role="alert"
         >
           <strong>Error:</strong>{" "}
@@ -92,35 +96,35 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(
     const saveButtonProps = useMemo(
       () => ({
         disabled: isPending || !editComment.trim(),
-        className: `px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed`,
+        className: `px-6 py-3 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600 disabled:from-gray-600 disabled:to-gray-700 text-white font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`,
       }),
       [isPending, editComment]
     );
 
     return (
-      <div className="mt-4 space-y-4">
+      <div className="mt-6 p-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl shadow-xl space-y-6">
         {isLoading && <LoadingComponent />}
         {errorMessage}
 
         {/* Rating Section */}
-        <fieldset className="space-y-2">
+        <fieldset className="space-y-3">
           <legend className="block text-sm font-medium text-gray-300">
             Tu calificación
           </legend>
           <div
-            className="flex space-x-1"
+            className="flex space-x-2"
             role="radiogroup"
             aria-label="Calificación del comentario"
           >
             {ratingStars}
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-sm font-medium bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
             Calificación actual: {editRating}/5
           </div>
         </fieldset>
 
         {/* Comment Section */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <label
             htmlFor={`edit-comment-${commentId}`}
             className="block text-sm font-medium text-gray-300"
@@ -132,7 +136,7 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(
             rows={3}
             value={editComment}
             onChange={handleCommentChange}
-            className="w-full p-3 border border-gray-600 bg-gray-900 text-white rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 resize-vertical"
+            className="w-full p-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl shadow-lg focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/30 transition-all duration-300 resize-vertical placeholder-gray-400"
             disabled={isPending}
             placeholder="Escribe tu comentario aquí..."
             aria-describedby={`edit-comment-help-${commentId}`}
@@ -146,7 +150,7 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 pt-2">
+        <div className="flex gap-4 pt-2">
           <button onClick={handleSave} {...saveButtonProps}>
             {isPending ? (
               <>
@@ -180,7 +184,7 @@ export const InlineEditComment: React.FC<InlineEditCommentProps> = memo(
           <button
             onClick={handleCancel}
             disabled={isPending}
-            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-gray-300 rounded-xl hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancelar
           </button>
