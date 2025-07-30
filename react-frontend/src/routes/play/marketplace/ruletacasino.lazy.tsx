@@ -3,7 +3,7 @@ import RuletaCasinoGame from '@all-games/marketplace/RuletaCasino'
 
 export const Route = createLazyFileRoute('/play/marketplace/ruletacasino')({
   component: () => (
-    <div className="w-full h-full">
+    <div className="game-container w-full h-full">
       <RuletaCasinoGame />
     </div>
   ),

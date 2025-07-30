@@ -3,7 +3,7 @@ import LostOnStrangerTerraGame from '@all-games/marketplace/lost-on-stranger-ter
 
 export const Route = createFileRoute('/play/marketplace/LostOnStrangerTerra')({
   component: () => (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="game-container w-full h-full flex items-center justify-center">
       <LostOnStrangerTerraGame />
     </div>
   ),

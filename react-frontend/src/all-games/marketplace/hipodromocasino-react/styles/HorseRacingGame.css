@@ -3,7 +3,7 @@
    =============================================== */
 
 /* Main Game Container */
-.horse-racing-game {
+.game-container .horse-racing-game {
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
@@ -16,7 +16,7 @@
   overflow-x: hidden;
 }
 
-.game-title {
+.game-container .game-title {
   text-align: center;
   margin-bottom: 30px;
   padding: 20px;
@@ -25,7 +25,7 @@
   border: 2px solid #00ff88;
 }
 
-.game-title h1 {
+.game-container .game-title h1 {
   font-size: 2.5rem;
   color: #00ff88;
   text-shadow: 0 0 20px #00ff88;
@@ -36,44 +36,44 @@
   gap: 15px;
 }
 
-.game-title .balance-display {
+.game-container .game-title .balance-display {
   font-size: 1.2rem;
   margin-top: 10px;
   color: #ffffff;
 }
 
-.balance-amount {
+.game-container .balance-amount {
   color: #00ff88;
   font-weight: bold;
 }
 
-.balance-display.low-balance .balance-amount {
+.game-container .balance-display.low-balance .balance-amount {
   color: #ff4444;
   animation: blink 1s infinite;
 }
 
 /* Game Layout */
-.game-layout {
+.game-container .game-layout {
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 30px;
   align-items: start;
 }
 
-.main-game-area {
+.game-container .main-game-area {
   display: flex;
   flex-direction: column;
   gap: 25px;
 }
 
-.sidebar {
+.game-container .sidebar {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
 /* Race Track Styles */
-.race-track {
+.game-container .race-track {
   background: linear-gradient(to bottom, #87ceeb 0%, #98fb98 30%, #8fbc8f 100%);
   border-radius: 20px;
   padding: 30px;
@@ -83,25 +83,25 @@
   overflow: hidden;
 }
 
-.track-header {
+.game-container .track-header {
   text-align: center;
   margin-bottom: 25px;
 }
 
-.track-header h2 {
+.game-container .track-header h2 {
   color: #2d4a3d;
   font-size: 1.8rem;
   margin: 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.race-number {
+.game-container .race-number {
   color: #654321;
   font-size: 1.1rem;
   margin-top: 5px;
 }
 
-.track-lanes {
+.game-container .track-lanes {
   position: relative;
   height: 300px;
   background: repeating-linear-gradient(
@@ -115,7 +115,7 @@
   border: 2px solid #654321;
 }
 
-.track-lane {
+.game-container .track-lane {
   position: absolute;
   width: 100%;
   height: 70px;
@@ -125,23 +125,23 @@
   box-sizing: border-box;
 }
 
-.track-lane:nth-child(1) { top: 0; }
-.track-lane:nth-child(2) { top: 75px; }
-.track-lane:nth-child(3) { top: 150px; }
-.track-lane:nth-child(4) { top: 225px; }
+.game-container .track-lane:nth-child(1) { top: 0; }
+.game-container .track-lane:nth-child(2) { top: 75px; }
+.game-container .track-lane:nth-child(3) { top: 150px; }
+.game-container .track-lane:nth-child(4) { top: 225px; }
 
-.horse-runner {
+.game-container .horse-runner {
   font-size: 2rem;
   transition: all 0.3s ease;
   position: relative;
   animation: horse-bob 0.5s infinite alternate;
 }
 
-.horse-runner.racing {
+.game-container .horse-runner.racing {
   animation: horse-gallop 0.2s infinite, horse-move 3s linear;
 }
 
-.horse-info {
+.game-container .horse-info {
   position: absolute;
   left: 0;
   top: -25px;
@@ -154,7 +154,7 @@
   white-space: nowrap;
 }
 
-.finish-line {
+.game-container .finish-line {
   position: absolute;
   right: 20px;
   top: 0;
@@ -171,7 +171,7 @@
 }
 
 /* Race Results */
-.race-results {
+.game-container .race-results {
   background: rgba(0, 0, 0, 0.7);
   border-radius: 15px;
   padding: 25px;
@@ -179,20 +179,20 @@
   text-align: center;
 }
 
-.results-title {
+.game-container .results-title {
   color: #00ff88;
   font-size: 1.5rem;
   margin-bottom: 20px;
 }
 
-.results-podium {
+.game-container .results-podium {
   display: flex;
   justify-content: center;
   gap: 20px;
   margin-bottom: 20px;
 }
 
-.podium-position {
+.game-container .podium-position {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   padding: 15px;
@@ -201,46 +201,46 @@
   border: 2px solid;
 }
 
-.podium-position.position-1 {
+.game-container .podium-position.position-1 {
   border-color: #ffd700;
   background: rgba(255, 215, 0, 0.2);
 }
 
-.podium-position.position-2 {
+.game-container .podium-position.position-2 {
   border-color: #c0c0c0;
   background: rgba(192, 192, 192, 0.2);
 }
 
-.podium-position.position-3 {
+.game-container .podium-position.position-3 {
   border-color: #cd7f32;
   background: rgba(205, 127, 50, 0.2);
 }
 
-.position-medal {
+.game-container .position-medal {
   font-size: 2rem;
   margin-bottom: 10px;
 }
 
-.horse-name {
+.game-container .horse-name {
   font-size: 0.9rem;
   color: #ffffff;
   margin: 5px 0;
 }
 
-.horse-time {
+.game-container .horse-time {
   font-size: 0.8rem;
   color: #cccccc;
 }
 
 /* Betting Panel Styles */
-.betting-panel {
+.game-container .betting-panel {
   background: rgba(0, 0, 0, 0.8);
   border-radius: 15px;
   padding: 25px;
   border: 2px solid #00ff88;
 }
 
-.panel-header {
+.game-container .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -249,47 +249,47 @@
   border-bottom: 1px solid #333;
 }
 
-.panel-header h2 {
+.game-container .panel-header h2 {
   color: #00ff88;
   margin: 0;
   font-size: 1.5rem;
 }
 
-.balance-display {
+.game-container .balance-display {
   text-align: right;
 }
 
-.balance-label {
+.game-container .balance-label {
   color: #cccccc;
   font-size: 0.9rem;
 }
 
-.betting-sections {
+.game-container .betting-sections {
   display: flex;
   flex-direction: column;
   gap: 25px;
 }
 
-.section h3 {
+.game-container .section h3 {
   color: #00ff88;
   margin-bottom: 15px;
   font-size: 1.2rem;
 }
 
-.section h4 {
+.game-container .section h4 {
   color: #ffffff;
   margin-bottom: 10px;
   font-size: 1rem;
 }
 
 /* Horse Selection */
-.horses-grid {
+.game-container .horses-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
 }
 
-.horse-card {
+.game-container .horse-card {
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid #333;
   border-radius: 10px;
@@ -299,73 +299,73 @@
   text-align: center;
 }
 
-.horse-card:hover {
+.game-container .horse-card:hover {
   border-color: #00ff88;
   background: rgba(0, 255, 136, 0.1);
   transform: translateY(-2px);
 }
 
-.horse-card.selected {
+.game-container .horse-card.selected {
   border-color: #00ff88;
   background: rgba(0, 255, 136, 0.2);
   box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
 }
 
-.horse-card.disabled {
+.game-container .horse-card.disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.horse-header {
+.game-container .horse-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.horse-number {
+.game-container .horse-number {
   font-weight: bold;
   color: #00ff88;
 }
 
-.horse-odds {
+.game-container .horse-odds {
   color: #ffd700;
   font-size: 0.9rem;
 }
 
-.horse-display {
+.game-container .horse-display {
   margin: 15px 0;
 }
 
-.horse-emoji {
+.game-container .horse-emoji {
   font-size: 2rem;
   margin-bottom: 5px;
 }
 
-.horse-name {
+.game-container .horse-name {
   font-size: 0.9rem;
   color: #ffffff;
 }
 
-.horse-stats {
+.game-container .horse-stats {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.stat {
+.game-container .stat {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 0.8rem;
 }
 
-.stat-label {
+.game-container .stat-label {
   width: 70px;
   color: #cccccc;
 }
 
-.stat-bar {
+.game-container .stat-bar {
   flex: 1;
   height: 8px;
   background: rgba(255, 255, 255, 0.2);
@@ -373,19 +373,19 @@
   overflow: hidden;
 }
 
-.stat-fill {
+.game-container .stat-fill {
   height: 100%;
   transition: width 0.3s ease;
 }
 
-.stat-value {
+.game-container .stat-value {
   width: 25px;
   text-align: right;
   color: #ffffff;
   font-weight: bold;
 }
 
-.selected-indicator {
+.game-container .selected-indicator {
   background: #00ff88;
   color: #000;
   padding: 5px;
@@ -396,16 +396,16 @@
 }
 
 /* Bet Configuration */
-.amount-buttons,
-.type-buttons {
+.game-container .amount-buttons,
+.game-container .type-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 15px;
 }
 
-.bet-amount-btn,
-.bet-type-btn {
+.game-container .bet-amount-btn,
+.game-container .bet-type-btn {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid #333;
   color: #ffffff;
@@ -416,79 +416,79 @@
   font-size: 0.9rem;
 }
 
-.bet-amount-btn:hover,
-.bet-type-btn:hover {
+.game-container .bet-amount-btn:hover,
+.game-container .bet-type-btn:hover {
   border-color: #00ff88;
   background: rgba(0, 255, 136, 0.1);
 }
 
-.bet-amount-btn.selected,
-.bet-type-btn.selected {
+.game-container .bet-amount-btn.selected,
+.game-container .bet-type-btn.selected {
   background: #00ff88;
   color: #000;
   border-color: #00ff88;
 }
 
-.bet-amount-btn.disabled,
-.bet-type-btn.disabled {
+.game-container .bet-amount-btn.disabled,
+.game-container .bet-type-btn.disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.bet-type-btn {
+.game-container .bet-type-btn {
   flex-direction: column;
   text-align: center;
   min-width: 100px;
 }
 
-.bet-type-name {
+.game-container .bet-type-name {
   font-weight: bold;
   margin-bottom: 2px;
 }
 
-.bet-type-payout {
+.game-container .bet-type-payout {
   color: #ffd700;
   font-size: 0.8rem;
 }
 
-.bet-type-description {
+.game-container .bet-type-description {
   font-size: 0.7rem;
   color: #cccccc;
   margin-top: 2px;
 }
 
 /* Bet Summary */
-.bet-summary {
+.game-container .bet-summary {
   background: rgba(0, 0, 0, 0.5);
   border-radius: 8px;
   padding: 15px;
   border: 1px solid #333;
 }
 
-.summary-content {
+.game-container .summary-content {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.summary-row {
+.game-container .summary-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.9rem;
 }
 
-.summary-value {
+.game-container .summary-value {
   color: #00ff88;
   font-weight: bold;
 }
 
-.potential-winnings .winning-amount {
+.game-container .potential-winnings .winning-amount {
   color: #ffd700;
   font-size: 1.1rem;
 }
 
-.balance-warning {
+.game-container .balance-warning {
   background: rgba(255, 68, 68, 0.2);
   border: 1px solid #ff4444;
   color: #ff4444;
@@ -500,14 +500,14 @@
 }
 
 /* Game Controls */
-.game-controls {
+.game-container .game-controls {
   display: flex;
   flex-direction: column;
   gap: 15px;
   margin-top: 20px;
 }
 
-.control-button {
+.game-container .control-button {
   background: linear-gradient(45deg, #00ff88, #00cc66);
   border: none;
   color: #000;
@@ -520,13 +520,13 @@
   text-transform: uppercase;
 }
 
-.control-button:hover {
+.game-container .control-button:hover {
   background: linear-gradient(45deg, #00cc66, #00aa55);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
 }
 
-.control-button:disabled {
+.game-container .control-button:disabled {
   background: #333;
   color: #666;
   cursor: not-allowed;
@@ -534,21 +534,21 @@
   box-shadow: none;
 }
 
-.control-button.danger {
+.game-container .control-button.danger {
   background: linear-gradient(45deg, #ff4444, #cc3333);
   color: #fff;
 }
 
-.control-button.danger:hover {
+.game-container .control-button.danger:hover {
   background: linear-gradient(45deg, #cc3333, #aa2222);
 }
 
-.control-button.secondary {
+.game-container .control-button.secondary {
   background: linear-gradient(45deg, #666, #555);
   color: #fff;
 }
 
-.control-button.secondary:hover {
+.game-container .control-button.secondary:hover {
   background: linear-gradient(45deg, #555, #444);
 }
 
@@ -580,14 +580,14 @@
 }
 
 /* Game Stats Styles */
-.game-stats {
+.game-container .game-stats {
   background: rgba(0, 0, 0, 0.8);
   border-radius: 15px;
   padding: 25px;
   border: 2px solid #00ccff;
 }
 
-.stats-header {
+.game-container .stats-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -596,37 +596,37 @@
   border-bottom: 1px solid #333;
 }
 
-.stats-header h2 {
+.game-container .stats-header h2 {
   color: #00ccff;
   margin: 0;
   font-size: 1.5rem;
 }
 
-.current-race {
+.game-container .current-race {
   color: #ffd700;
   font-weight: bold;
 }
 
-.stats-sections {
+.game-container .stats-sections {
   display: flex;
   flex-direction: column;
   gap: 25px;
 }
 
-.section h3 {
+.game-container .section h3 {
   color: #00ccff;
   margin-bottom: 15px;
   font-size: 1.2rem;
 }
 
 /* General Stats Grid */
-.general-stats-grid {
+.game-container .general-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 15px;
 }
 
-.stat-card {
+.game-container .stat-card {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   padding: 15px;
@@ -635,46 +635,46 @@
   transition: all 0.3s ease;
 }
 
-.stat-card:hover {
+.game-container .stat-card:hover {
   border-color: #00ccff;
   transform: translateY(-2px);
 }
 
-.stat-card.profit {
+.game-container .stat-card.profit {
   border-color: #00ff88;
   background: rgba(0, 255, 136, 0.1);
 }
 
-.stat-card.loss {
+.game-container .stat-card.loss {
   border-color: #ff4444;
   background: rgba(255, 68, 68, 0.1);
 }
 
-.stat-icon {
+.game-container .stat-icon {
   font-size: 1.5rem;
   margin-bottom: 8px;
 }
 
-.stat-number {
+.game-container .stat-number {
   font-size: 1.2rem;
   font-weight: bold;
   color: #00ff88;
   margin-bottom: 5px;
 }
 
-.stat-title {
+.game-container .stat-title {
   font-size: 0.8rem;
   color: #cccccc;
 }
 
 /* Win/Loss Stats */
-.win-loss-grid {
+.game-container .win-loss-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
 }
 
-.win-loss-item {
+.game-container .win-loss-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -684,46 +684,46 @@
   border: 1px solid #333;
 }
 
-.win-loss-item .label {
+.game-container .win-loss-item .label {
   color: #cccccc;
 }
 
-.win-loss-item .value {
+.game-container .win-loss-item .value {
   font-weight: bold;
 }
 
-.value.wins {
+.game-container .value.wins {
   color: #00ff88;
 }
 
-.value.losses {
+.game-container .value.losses {
   color: #ff4444;
 }
 
-.value.ratio {
+.game-container .value.ratio {
   color: #ffd700;
 }
 
-.value.win-percentage {
+.game-container .value.win-percentage {
   color: #00ccff;
 }
 
-.value.margin.positive {
+.game-container .value.margin.positive {
   color: #00ff88;
 }
 
-.value.margin.negative {
+.game-container .value.margin.negative {
   color: #ff4444;
 }
 
 /* Horse Performance */
-.horse-stats-container {
+.game-container .horse-stats-container {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   overflow: hidden;
 }
 
-.horse-stats-header {
+.game-container .horse-stats-header {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 20px;
@@ -733,12 +733,12 @@
   color: #00ccff;
 }
 
-.horse-stats-list {
+.game-container .horse-stats-list {
   max-height: 300px;
   overflow-y: auto;
 }
 
-.horse-stats-row {
+.game-container .horse-stats-row {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 20px;
@@ -747,54 +747,54 @@
   transition: background 0.3s ease;
 }
 
-.horse-stats-row:hover {
+.game-container .horse-stats-row:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
-.horse-stats-row .horse-info {
+.game-container .horse-stats-row .horse-info {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.stats-data {
+.game-container .stats-data {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 10px;
 }
 
-.stat-item {
+.game-container .stat-item {
   text-align: center;
 }
 
-.stat-item .stat-label {
+.game-container .stat-item .stat-label {
   display: block;
   font-size: 0.7rem;
   color: #cccccc;
   margin-bottom: 2px;
 }
 
-.stat-item .stat-value {
+.game-container .stat-item .stat-value {
   font-weight: bold;
   color: #ffffff;
 }
 
-.stat-value.profit {
+.game-container .stat-value.profit {
   color: #00ff88;
 }
 
-.stat-value.loss {
+.game-container .stat-value.loss {
   color: #ff4444;
 }
 
 /* Betting Insights */
-.insights-list {
+.game-container .insights-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.insight-item {
+.game-container .insight-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -804,54 +804,54 @@
   border: 1px solid #333;
 }
 
-.insight-item.positive {
+.game-container .insight-item.positive {
   border-color: #00ff88;
   background: rgba(0, 255, 136, 0.1);
 }
 
-.insight-item.negative {
+.game-container .insight-item.negative {
   border-color: #ff4444;
   background: rgba(255, 68, 68, 0.1);
 }
 
-.insight-icon {
+.game-container .insight-icon {
   font-size: 1.2rem;
 }
 
-.insight-text {
+.game-container .insight-text {
   flex: 1;
   color: #ffffff;
   font-size: 0.9rem;
 }
 
 /* Race History Styles */
-.race-history {
+.game-container .race-history {
   background: rgba(0, 0, 0, 0.8);
   border-radius: 15px;
   padding: 25px;
   border: 2px solid #ffd700;
 }
 
-.race-history.empty {
+.game-container .race-history.empty {
   text-align: center;
   padding: 50px 25px;
 }
 
-.empty-state {
+.game-container .empty-state {
   color: #cccccc;
 }
 
-.empty-icon {
+.game-container .empty-icon {
   font-size: 3rem;
   margin-bottom: 15px;
 }
 
-.empty-state h3 {
+.game-container .empty-state h3 {
   color: #ffd700;
   margin: 15px 0 10px 0;
 }
 
-.history-header {
+.game-container .history-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -860,32 +860,32 @@
   border-bottom: 1px solid #333;
 }
 
-.header-content h2 {
+.game-container .header-content h2 {
   color: #ffd700;
   margin: 0 0 10px 0;
   font-size: 1.5rem;
 }
 
-.history-summary {
+.game-container .history-summary {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
 }
 
-.summary-item {
+.game-container .summary-item {
   color: #cccccc;
   font-size: 0.9rem;
 }
 
-.summary-item.profit {
+.game-container .summary-item.profit {
   color: #00ff88;
 }
 
-.summary-item.loss {
+.game-container .summary-item.loss {
   color: #ff4444;
 }
 
-.clear-history-btn {
+.game-container .clear-history-btn {
   background: #ff4444;
   border: none;
   color: #fff;
@@ -896,13 +896,13 @@
   transition: all 0.3s ease;
 }
 
-.clear-history-btn:hover {
+.game-container .clear-history-btn:hover {
   background: #cc3333;
   transform: translateY(-1px);
 }
 
 /* History Entries */
-.history-list {
+.game-container .history-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -910,7 +910,7 @@
   overflow-y: auto;
 }
 
-.history-entry {
+.game-container .history-entry {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
   padding: 20px;
@@ -918,118 +918,118 @@
   transition: all 0.3s ease;
 }
 
-.history-entry:hover {
+.game-container .history-entry:hover {
   border-color: #ffd700;
   transform: translateX(5px);
 }
 
-.history-entry.won {
+.game-container .history-entry.won {
   border-color: #00ff88;
   background: rgba(0, 255, 136, 0.1);
 }
 
-.history-entry.lost {
+.game-container .history-entry.lost {
   border-color: #ff4444;
   background: rgba(255, 68, 68, 0.1);
 }
 
-.entry-header {
+.game-container .entry-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.race-number {
+.game-container .race-number {
   font-weight: bold;
   color: #ffd700;
   font-size: 1.1rem;
 }
 
-.result-badge {
+.game-container .result-badge {
   padding: 5px 12px;
   border-radius: 15px;
   font-size: 0.8rem;
   font-weight: bold;
 }
 
-.result-badge.win {
+.game-container .result-badge.win {
   background: #00ff88;
   color: #000;
 }
 
-.result-badge.loss {
+.game-container .result-badge.loss {
   background: #ff4444;
   color: #fff;
 }
 
-.entry-content {
+.game-container .entry-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
   margin-bottom: 15px;
 }
 
-.bet-info {
+.game-container .bet-info {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.bet-detail {
+.game-container .bet-detail {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.9rem;
 }
 
-.bet-detail .label {
+.game-container .bet-detail .label {
   color: #cccccc;
 }
 
-.bet-detail .value {
+.game-container .bet-detail .value {
   font-weight: bold;
   color: #ffffff;
 }
 
-.value.bet-type {
+.game-container .value.bet-type {
   color: #00ccff;
 }
 
-.value.bet-amount {
+.game-container .value.bet-amount {
   color: #ffd700;
 }
 
-.value.payout.positive {
+.game-container .value.payout.positive {
   color: #00ff88;
 }
 
-.value.payout.zero {
+.game-container .value.payout.zero {
   color: #666;
 }
 
-.value.profit.positive {
+.game-container .value.profit.positive {
   color: #00ff88;
 }
 
-.value.profit.negative {
+.game-container .value.profit.negative {
   color: #ff4444;
 }
 
 /* Race Results in History */
-.race-results h4 {
+.game-container .race-results h4 {
   color: #ffd700;
   margin-bottom: 10px;
   font-size: 1rem;
 }
 
-.results-podium {
+.game-container .results-podium {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
 }
 
-.podium-position {
+.game-container .podium-position {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   padding: 8px;
@@ -1038,22 +1038,22 @@
   font-size: 0.8rem;
 }
 
-.podium-position.selected-horse {
+.game-container .podium-position.selected-horse {
   border: 2px solid #00ff88;
   background: rgba(0, 255, 136, 0.2);
 }
 
-.position-medal {
+.game-container .position-medal {
   font-size: 1rem;
   margin-bottom: 5px;
 }
 
-.finish-time {
+.game-container .finish-time {
   color: #cccccc;
   font-size: 0.7rem;
 }
 
-.selected-horse-result {
+.game-container .selected-horse-result {
   background: rgba(0, 255, 136, 0.1);
   border: 1px solid #00ff88;
   border-radius: 6px;
@@ -1063,47 +1063,47 @@
 }
 
 /* Entry Summary */
-.entry-summary {
+.game-container .entry-summary {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 6px;
   padding: 10px 15px;
 }
 
-.win-summary,
-.loss-summary {
+.game-container .win-summary,
+.game-container .loss-summary {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
 }
 
-.win-summary {
+.game-container .win-summary {
   color: #00ff88;
 }
 
-.loss-summary {
+.game-container .loss-summary {
   color: #ff4444;
 }
 
-.win-icon,
-.loss-icon {
+.game-container .win-icon,
+.game-container .loss-icon {
   font-size: 1.2rem;
 }
 
 /* History Footer */
-.history-footer {
+.game-container .history-footer {
   margin-top: 20px;
   padding-top: 15px;
   border-top: 1px solid #333;
 }
 
-.footer-stats {
+.game-container .footer-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 15px;
 }
 
-.footer-stat {
+.game-container .footer-stat {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1112,26 +1112,26 @@
   border-radius: 6px;
 }
 
-.footer-stat .stat-label {
+.game-container .footer-stat .stat-label {
   color: #cccccc;
   font-size: 0.9rem;
 }
 
-.footer-stat .stat-value {
+.game-container .footer-stat .stat-value {
   font-weight: bold;
   color: #ffffff;
 }
 
-.footer-stat .stat-value.profit {
+.game-container .footer-stat .stat-value.profit {
   color: #00ff88;
 }
 
-.footer-stat .stat-value.loss {
+.game-container .footer-stat .stat-value.loss {
   color: #ff4444;
 }
 
 /* Win Display Styles */
-.win-display-overlay {
+.game-container .win-display-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -1145,11 +1145,11 @@
   animation: fadeIn 0.5s ease;
 }
 
-.win-display-overlay.exit {
+.game-container .win-display-overlay.exit {
   animation: fadeOut 0.5s ease;
 }
 
-.win-display {
+.game-container .win-display {
   background: linear-gradient(135deg, #1a5f4a 0%, #2d8659 50%, #00ff88 100%);
   border-radius: 20px;
   padding: 40px;
@@ -1163,16 +1163,16 @@
   animation: winSlideIn 0.5s ease;
 }
 
-.win-display.celebrate {
+.game-container .win-display.celebrate {
   animation: winCelebrate 0.5s ease infinite alternate;
 }
 
-.win-display.exit {
+.game-container .win-display.exit {
   animation: winSlideOut 0.5s ease;
 }
 
 /* Fireworks */
-.fireworks-container {
+.game-container .fireworks-container {
   position: absolute;
   top: 0;
   left: 0;
@@ -1181,23 +1181,23 @@
   pointer-events: none;
 }
 
-.firework {
+.game-container .firework {
   position: absolute;
   font-size: 2rem;
   opacity: 0;
   animation: fireworkExplode 2s ease-in-out infinite;
 }
 
-.firework.animate {
+.game-container .firework.animate {
   opacity: 1;
 }
 
 /* Win Content */
-.win-header {
+.game-container .win-header {
   margin-bottom: 30px;
 }
 
-.win-title {
+.game-container .win-title {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1205,30 +1205,30 @@
   margin-bottom: 15px;
 }
 
-.win-title h1 {
+.game-container .win-title h1 {
   color: #000;
   font-size: 2.5rem;
   margin: 0;
   text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
 }
 
-.trophy-icon {
+.game-container .trophy-icon {
   font-size: 3rem;
   animation: bounce 1s infinite;
 }
 
-.win-subtitle {
+.game-container .win-subtitle {
   color: #000;
   font-size: 1.3rem;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
 }
 
-.horse-celebration {
+.game-container .horse-celebration {
   margin: 25px 0;
 }
 
-.winning-horse {
+.game-container .winning-horse {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1238,42 +1238,42 @@
   padding: 20px;
 }
 
-.celebration-horse {
+.game-container .celebration-horse {
   font-size: 4rem;
   animation: horseJump 0.6s ease infinite alternate;
 }
 
-.horse-details {
+.game-container .horse-details {
   text-align: left;
 }
 
-.horse-name {
+.game-container .horse-name {
   color: #000;
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 5px;
 }
 
-.horse-position {
+.game-container .horse-position {
   color: #333;
   font-size: 1rem;
 }
 
 /* Win Amounts */
-.win-amounts {
+.game-container .win-amounts {
   margin: 30px 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-.bet-details {
+.game-container .bet-details {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   padding: 20px;
 }
 
-.bet-info {
+.game-container .bet-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1281,68 +1281,68 @@
   font-size: 0.9rem;
 }
 
-.bet-info .label {
+.game-container .bet-info .label {
   color: #ccc;
 }
 
-.bet-info .value {
+.game-container .bet-info .value {
   color: #000;
   font-weight: bold;
 }
 
-.value.bet-type {
+.game-container .value.bet-type {
   color: #00ccff;
 }
 
-.value.multiplier {
+.game-container .value.multiplier {
   color: #ffd700;
   font-size: 1.1rem;
 }
 
-.payout-section {
+.game-container .payout-section {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   padding: 20px;
   text-align: center;
 }
 
-.total-payout {
+.game-container .total-payout {
   margin-bottom: 15px;
 }
 
-.payout-label {
+.game-container .payout-label {
   display: block;
   color: #ccc;
   font-size: 0.9rem;
   margin-bottom: 5px;
 }
 
-.payout-amount {
+.game-container .payout-amount {
   color: #ffd700;
   font-size: 2rem;
   font-weight: bold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.profit-label {
+.game-container .profit-label {
   display: block;
   color: #ccc;
   font-size: 0.8rem;
   margin-bottom: 5px;
 }
 
-.profit-value {
+.game-container .profit-value {
   color: #00ff88;
   font-size: 1.5rem;
   font-weight: bold;
 }
 
 /* Celebration Messages */
-.celebration-messages {
+.game-container .celebration-messages {
   margin: 25px 0;
 }
 
-.big-win-message {
+.game-container .big-win-message {
   color: #ffd700;
   font-size: 1.5rem;
   font-weight: bold;
@@ -1350,32 +1350,32 @@
   animation: textGlow 1s ease infinite alternate;
 }
 
-.good-win-message {
+.game-container .good-win-message {
   color: #00ff88;
   font-size: 1.3rem;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.small-win-message {
+.game-container .small-win-message {
   color: #00ccff;
   font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.encouragement-text {
+.game-container .encouragement-text {
   color: #000;
   font-size: 1rem;
   font-style: italic;
 }
 
 /* Win Footer */
-.win-footer {
+.game-container .win-footer {
   margin-top: 30px;
 }
 
-.continue-btn {
+.game-container .continue-btn {
   background: linear-gradient(45deg, #ffd700, #ffaa00);
   border: none;
   color: #000;
@@ -1388,14 +1388,14 @@
   text-transform: uppercase;
 }
 
-.continue-btn:hover {
+.game-container .continue-btn:hover {
   background: linear-gradient(45deg, #ffaa00, #ff8800);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
 }
 
 /* Confetti */
-.confetti-container {
+.game-container .confetti-container {
   position: absolute;
   top: 0;
   left: 0;
@@ -1404,21 +1404,21 @@
   pointer-events: none;
 }
 
-.confetti {
+.game-container .confetti {
   position: absolute;
   font-size: 1.5rem;
   animation: confettiFall 3s linear infinite;
 }
 
-.confetti:nth-child(1) { left: 10%; animation-delay: 0s; }
-.confetti:nth-child(2) { left: 20%; animation-delay: 0.5s; }
-.confetti:nth-child(3) { left: 40%; animation-delay: 1s; }
-.confetti:nth-child(4) { left: 60%; animation-delay: 1.5s; }
-.confetti:nth-child(5) { left: 80%; animation-delay: 2s; }
-.confetti:nth-child(6) { left: 90%; animation-delay: 2.5s; }
+.game-container .confetti:nth-child(1) { left: 10%; animation-delay: 0s; }
+.game-container .confetti:nth-child(2) { left: 20%; animation-delay: 0.5s; }
+.game-container .confetti:nth-child(3) { left: 40%; animation-delay: 1s; }
+.game-container .confetti:nth-child(4) { left: 60%; animation-delay: 1.5s; }
+.game-container .confetti:nth-child(5) { left: 80%; animation-delay: 2s; }
+.game-container .confetti:nth-child(6) { left: 90%; animation-delay: 2.5s; }
 
 /* Countdown Display Styles */
-.countdown-overlay {
+.game-container .countdown-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -1432,16 +1432,16 @@
   animation: fadeIn 0.3s ease;
 }
 
-.countdown-overlay.countdown-complete {
+.game-container .countdown-overlay.countdown-complete {
   animation: countdownComplete 0.5s ease;
 }
 
-.countdown-container {
+.game-container .countdown-container {
   position: relative;
   text-align: center;
 }
 
-.countdown-background {
+.game-container .countdown-background {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1452,7 +1452,7 @@
   background: radial-gradient(circle, rgba(0, 255, 136, 0.2) 0%, transparent 70%);
 }
 
-.countdown-pulse {
+.game-container .countdown-pulse {
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -1460,19 +1460,19 @@
   animation: pulse 1s ease infinite;
 }
 
-.countdown-content {
+.game-container .countdown-content {
   position: relative;
   z-index: 10;
 }
 
-.countdown-message {
+.game-container .countdown-message {
   color: #ffffff;
   font-size: 1.5rem;
   margin-bottom: 20px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-.countdown-number {
+.game-container .countdown-number {
   font-size: 8rem;
   font-weight: bold;
   text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
@@ -1484,31 +1484,31 @@
   transition: all 0.3s ease;
 }
 
-.countdown-number.countdown-animate {
+.game-container .countdown-number.countdown-animate {
   animation: countdownPop 0.5s ease;
 }
 
-.countdown-number.countdown-normal {
+.game-container .countdown-number.countdown-normal {
   font-size: 8rem;
 }
 
-.countdown-number.countdown-urgent {
+.game-container .countdown-number.countdown-urgent {
   font-size: 9rem;
   animation: urgentPulse 0.5s ease infinite alternate;
 }
 
-.countdown-number.countdown-go {
+.game-container .countdown-number.countdown-go {
   font-size: 6rem;
   color: #00ff88 !important;
   animation: goExplosion 0.5s ease;
 }
 
-.countdown-icon {
+.game-container .countdown-icon {
   font-size: 4rem;
   margin-bottom: 10px;
 }
 
-.countdown-subtitle {
+.game-container .countdown-subtitle {
   color: #cccccc;
   font-size: 1.2rem;
   margin-top: 20px;
@@ -1516,7 +1516,7 @@
 }
 
 /* Race Start Effects */
-.race-start-effects {
+.game-container .race-start-effects {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1526,13 +1526,13 @@
   pointer-events: none;
 }
 
-.speed-lines {
+.game-container .speed-lines {
   position: absolute;
   width: 100%;
   height: 100%;
 }
 
-.speed-line {
+.game-container .speed-line {
   position: absolute;
   width: 3px;
   height: 100px;
@@ -1540,80 +1540,80 @@
   animation: speedLine 0.3s ease;
 }
 
-.speed-line:nth-child(1) {
+.game-container .speed-line:nth-child(1) {
   top: 20%;
   left: 10%;
   animation-delay: 0s;
 }
 
-.speed-line:nth-child(2) {
+.game-container .speed-line:nth-child(2) {
   top: 40%;
   right: 10%;
   animation-delay: 0.1s;
 }
 
-.speed-line:nth-child(3) {
+.game-container .speed-line:nth-child(3) {
   top: 60%;
   left: 30%;
   animation-delay: 0.2s;
 }
 
-.speed-line:nth-child(4) {
+.game-container .speed-line:nth-child(4) {
   top: 10%;
   right: 30%;
   animation-delay: 0.15s;
 }
 
-.speed-line:nth-child(5) {
+.game-container .speed-line:nth-child(5) {
   top: 80%;
   left: 60%;
   animation-delay: 0.05s;
 }
 
-.start-particles {
+.game-container .start-particles {
   position: absolute;
   width: 100%;
   height: 100%;
 }
 
-.particle {
+.game-container .particle {
   position: absolute;
   font-size: 2rem;
   animation: particleExplode 0.6s ease;
 }
 
-.particle:nth-child(1) {
+.game-container .particle:nth-child(1) {
   top: 20%;
   left: 20%;
   animation-delay: 0s;
 }
 
-.particle:nth-child(2) {
+.game-container .particle:nth-child(2) {
   top: 30%;
   right: 20%;
   animation-delay: 0.1s;
 }
 
-.particle:nth-child(3) {
+.game-container .particle:nth-child(3) {
   bottom: 30%;
   left: 30%;
   animation-delay: 0.2s;
 }
 
-.particle:nth-child(4) {
+.game-container .particle:nth-child(4) {
   bottom: 20%;
   right: 30%;
   animation-delay: 0.15s;
 }
 
-.particle:nth-child(5) {
+.game-container .particle:nth-child(5) {
   top: 50%;
   left: 50%;
   animation-delay: 0.05s;
 }
 
 /* Countdown Progress */
-.countdown-progress {
+.game-container .countdown-progress {
   position: absolute;
   bottom: -50px;
   left: 50%;
@@ -1625,7 +1625,7 @@
   overflow: hidden;
 }
 
-.countdown-progress-bar {
+.game-container .countdown-progress-bar {
   height: 100%;
   border-radius: 3px;
   transition: width 1s linear;

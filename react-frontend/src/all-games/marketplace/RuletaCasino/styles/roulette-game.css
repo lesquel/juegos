@@ -1,5 +1,5 @@
 /* Roulette Game Styles */
-.roulette-game {
+.game-container .roulette-game {
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
@@ -9,12 +9,12 @@
   min-height: 100vh;
 }
 
-.roulette-game__header {
+.game-container .roulette-game__header {
   text-align: center;
   margin-bottom: 30px;
 }
 
-.roulette-game__header h1 {
+.game-container .roulette-game__header h1 {
   font-size: 2.5rem;
   background: linear-gradient(45deg, #ffd700, #ffed4e);
   -webkit-background-clip: text;
@@ -23,14 +23,14 @@
   margin: 0;
 }
 
-.subtitle {
+.game-container .subtitle {
   color: rgba(255, 255, 255, 0.8);
   font-size: 1.1rem;
   margin-top: 10px;
 }
 
 /* Game Info */
-.game-info {
+.game-container .game-info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
@@ -41,52 +41,52 @@
   border: 2px solid #ffd700;
 }
 
-.info-item {
+.game-container .info-item {
   text-align: center;
   padding: 15px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
 }
 
-.info-item h3 {
+.game-container .info-item h3 {
   margin: 0 0 10px 0;
   color: #ffd700;
   font-size: 1.1rem;
 }
 
-.balance {
+.game-container .balance {
   font-size: 1.5rem;
   font-weight: bold;
   color: #2ecc71;
 }
 
-.balance.low {
+.game-container .balance.low {
   color: #f39c12;
 }
 
-.balance.critical {
+.game-container .balance.critical {
   color: #e74c3c;
   animation: pulse 1s infinite;
 }
 
-.balance.high {
+.game-container .balance.high {
   color: #00ff88;
 }
 
-.total-bet {
+.game-container .total-bet {
   font-size: 1.3rem;
   font-weight: bold;
   color: #ffd700;
 }
 
-.history-container {
+.game-container .history-container {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.number-history {
+.game-container .number-history {
   width: 35px;
   height: 35px;
   border-radius: 50%;
@@ -98,23 +98,23 @@
   border: 2px solid #ffd700;
 }
 
-.number-history.red {
+.game-container .number-history.red {
   background: linear-gradient(135deg, #e74c3c, #c0392b);
   color: white;
 }
 
-.number-history.black {
+.game-container .number-history.black {
   background: linear-gradient(135deg, #2c3e50, #000);
   color: white;
 }
 
-.number-history.zero {
+.game-container .number-history.zero {
   background: linear-gradient(135deg, #2ecc71, #27ae60);
   color: white;
 }
 
 /* Main Game Layout */
-.roulette-game__main {
+.game-container .roulette-game__main {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 30px;
@@ -122,7 +122,7 @@
 }
 
 /* Wheel Section */
-.roulette-game__wheel-section {
+.game-container .roulette-game__wheel-section {
   background: rgba(0, 0, 0, 0.3);
   padding: 30px;
   border-radius: 15px;
@@ -130,12 +130,12 @@
   text-align: center;
 }
 
-.wheel-container {
+.game-container .wheel-container {
   position: relative;
   margin-bottom: 30px;
 }
 
-.roulette-wheel {
+.game-container .roulette-wheel {
   width: 300px;
   height: 300px;
   border-radius: 50%;
@@ -183,7 +183,7 @@
   transition: transform 4s ease-out;
 }
 
-.roulette-wheel.spinning {
+.game-container .roulette-wheel.spinning {
   animation: wheelSpin 4s ease-out;
 }
 
@@ -192,7 +192,7 @@
   to { transform: rotate(1440deg); }
 }
 
-.wheel-center {
+.game-container .wheel-center {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -208,11 +208,11 @@
 }
 
 /* This class will be added by JavaScript to position the ball after the spin */
-.wheel-ball.landed {
+.game-container .wheel-ball.landed {
   transition: transform 1.5s ease-out; /* Increased duration for more noticeable landing */
 }
 
-.wheel-ball.landed .ball {
+.game-container .wheel-ball.landed .ball {
   animation: ballLandEffect 0.5s ease-out forwards; /* Add a landing effect to the ball */
 }
 
@@ -223,7 +223,7 @@
 }
 
 /* Result Display */
-.result-display {
+.game-container .result-display {
   margin-top: 20px;
   padding: 15px;
   background: rgba(0, 0, 0, 0.5);
@@ -235,7 +235,7 @@
   justify-content: center;
 }
 
-.winning-number {
+.game-container .winning-number {
   font-size: 2rem;
   font-weight: bold;
   width: 60px;
@@ -248,27 +248,27 @@
   border: 3px solid #ffd700;
 }
 
-.winning-number.red {
+.game-container .winning-number.red {
   background: linear-gradient(135deg, #e74c3c, #c0392b);
   color: white;
 }
 
-.winning-number.black {
+.game-container .winning-number.black {
   background: linear-gradient(135deg, #2c3e50, #000);
   color: white;
 }
 
-.winning-number.zero {
+.game-container .winning-number.zero {
   background: linear-gradient(135deg, #2ecc71, #27ae60);
   color: white;
 }
 
 /* Controls */
-.roulette-game__controls {
+.game-container .roulette-game__controls {
   margin-top: 20px;
 }
 
-.spin-button {
+.game-container .spin-button {
   background: linear-gradient(145deg, #27ae60, #229954);
   color: white;
   border: none;
@@ -284,28 +284,28 @@
   width: 100%;
 }
 
-.spin-button:hover:not(:disabled) {
+.game-container .spin-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(39, 174, 96, 0.5);
 }
 
-.spin-button.spinning {
+.game-container .spin-button.spinning {
   background: linear-gradient(145deg, #f39c12, #e67e22);
   animation: spinButtonGlow 1s ease-in-out infinite alternate;
 }
 
-.spin-button.disabled {
+.game-container .spin-button.disabled {
   background: linear-gradient(145deg, #95a5a6, #7f8c8d);
   cursor: not-allowed;
 }
 
-.action-buttons {
+.game-container .action-buttons {
   display: flex;
   gap: 10px;
 }
 
-.clear-bets-btn,
-.reset-btn {
+.game-container .clear-bets-btn,
+.game-container .reset-btn {
   flex: 1;
   background: linear-gradient(145deg, #95a5a6, #7f8c8d);
   color: white;
@@ -317,13 +317,13 @@
   transition: all 0.3s ease;
 }
 
-.clear-bets-btn:hover:not(:disabled),
-.reset-btn:hover:not(:disabled) {
+.game-container .clear-bets-btn:hover:not(:disabled),
+.game-container .reset-btn:hover:not(:disabled) {
   transform: translateY(-2px);
 }
 
 /* Betting Section */
-.roulette-game__betting-section {
+.game-container .roulette-game__betting-section {
   background: rgba(0, 0, 0, 0.2);
   padding: 20px;
   border-radius: 15px;
@@ -331,17 +331,17 @@
 }
 
 /* Chip Selector */
-.chip-selector {
+.game-container .chip-selector {
   margin-bottom: 30px;
 }
 
-.chip-selector h3 {
+.game-container .chip-selector h3 {
   color: #ffd700;
   margin-bottom: 15px;
   text-align: center;
 }
 
-.chips-container {
+.game-container .chips-container {
   display: flex;
   gap: 10px;
   justify-content: center;
@@ -349,7 +349,7 @@
   margin-bottom: 15px;
 }
 
-.chip {
+.game-container .chip {
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -365,51 +365,51 @@
   font-size: 0.8rem;
 }
 
-.chip:hover:not(:disabled) {
+.game-container .chip:hover:not(:disabled) {
   transform: scale(1.1);
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
 }
 
-.chip.selected {
+.game-container .chip.selected {
   transform: scale(1.15);
   box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
   border-width: 4px;
 }
 
-.chip.unavailable {
+.game-container .chip.unavailable {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.chip-value {
+.game-container .chip-value {
   font-size: 0.7rem;
   line-height: 1;
 }
 
-.chip-decoration {
+.game-container .chip-decoration {
   font-size: 0.8rem;
   margin-top: 2px;
 }
 
 /* Betting Table */
-.betting-table h3 {
+.game-container .betting-table h3 {
   color: #ffd700;
   margin-bottom: 20px;
   text-align: center;
 }
 
-.numbers-section {
+.game-container .numbers-section {
   margin-bottom: 30px;
 }
 
-.numbers-section h4 {
+.game-container .numbers-section h4 {
   color: #ffd700;
   margin-bottom: 15px;
   text-align: center;
   font-size: 1rem;
 }
 
-.numbers-grid {
+.game-container .numbers-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
   gap: 8px;
@@ -417,7 +417,7 @@
   margin: 0 auto;
 }
 
-.number-btn {
+.game-container .number-btn {
   width: 50px;
   height: 50px;
   border: 2px solid #ffd700;
@@ -432,24 +432,24 @@
   justify-content: center;
 }
 
-.number-btn.red {
+.game-container .number-btn.red {
   background: linear-gradient(135deg, #e74c3c, #c0392b);
 }
 
-.number-btn.black {
+.game-container .number-btn.black {
   background: linear-gradient(135deg, #2c3e50, #000);
 }
 
-.number-btn.zero {
+.game-container .number-btn.zero {
   background: linear-gradient(135deg, #2ecc71, #27ae60);
 }
 
-.number-btn:hover:not(:disabled) {
+.game-container .number-btn:hover:not(:disabled) {
   transform: scale(1.05);
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
 }
 
-.number-btn.last-winner {
+.game-container .number-btn.last-winner {
   animation: winnerGlow 2s ease-in-out infinite alternate;
 }
 
@@ -459,19 +459,19 @@
 }
 
 /* Outside Bets */
-.outside-bets-section h4 {
+.game-container .outside-bets-section h4 {
   color: #ffd700;
   margin-bottom: 15px;
   text-align: center;
 }
 
-.outside-bets {
+.game-container .outside-bets {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 10px;
 }
 
-.outside-bet {
+.game-container .outside-bet {
   padding: 15px 10px;
   border: 2px solid #ffd700;
   border-radius: 8px;
@@ -484,33 +484,33 @@
   position: relative;
 }
 
-.outside-bet:hover:not(:disabled) {
+.game-container .outside-bet:hover:not(:disabled) {
   background: rgba(255, 215, 0, 0.2);
   transform: translateY(-2px);
 }
 
-.outside-bet.red {
+.game-container .outside-bet.red {
   background: rgba(231, 76, 60, 0.3);
 }
 
-.outside-bet.black {
+.game-container .outside-bet.black {
   background: rgba(44, 62, 80, 0.3);
 }
 
-.bet-label {
+.game-container .bet-label {
   display: block;
   font-size: 0.9rem;
   margin-bottom: 3px;
 }
 
-.bet-payout {
+.game-container .bet-payout {
   display: block;
   font-size: 0.8rem;
   color: #ffd700;
 }
 
 /* Bet Chips */
-.bet-chip {
+.game-container .bet-chip {
   position: absolute;
   top: -8px;
   right: -8px;
@@ -528,7 +528,7 @@
 }
 
 /* Win Display */
-.win-display {
+.game-container .win-display {
   position: fixed;
   top: 0;
   left: 0;
@@ -542,7 +542,7 @@
   animation: fadeIn 0.5s ease-out;
 }
 
-.win-display.jackpot {
+.game-container .win-display.jackpot {
   background: rgba(255, 215, 0, 0.2);
 }
 
@@ -551,7 +551,7 @@
   to { opacity: 1; }
 }
 
-.win-display__content {
+.game-container .win-display__content {
   text-align: center;
   padding: 40px;
   background: linear-gradient(145deg, #2c3e50, #34495e);
@@ -561,31 +561,31 @@
   overflow: hidden;
 }
 
-.win-display__message {
+.game-container .win-display__message {
   font-size: 2.5rem;
   font-weight: bold;
   color: #2ecc71;
   margin-bottom: 20px;
 }
 
-.win-display.lose .win-display__message {
+.game-container .win-display.lose .win-display__message {
   color: #e74c3c;
 }
 
-.win-amount {
+.game-container .win-amount {
   font-size: 2rem;
   color: #ffd700;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
-.win-icon,
-.lose-icon {
+.game-container .win-icon,
+.game-container .lose-icon {
   font-size: 3rem;
   margin-bottom: 20px;
 }
 
-.jackpot-stars {
+.game-container .jackpot-stars {
   font-size: 2rem;
   margin-bottom: 20px;
   animation: starTwinkle 1s ease-in-out infinite alternate;
@@ -597,19 +597,19 @@
 }
 
 /* Footer */
-.roulette-game__footer {
+.game-container .roulette-game__footer {
   text-align: center;
   margin-top: 30px;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 215, 0, 0.3);
 }
 
-.game-tip {
+.game-container .game-tip {
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 10px;
 }
 
-.warning {
+.game-container .warning {
   color: #e74c3c;
   font-weight: bold;
   animation: pulse 1s infinite;
@@ -647,7 +647,7 @@
 /* ===== ESTILOS PARA SISTEMA DE APUESTAS ===== */
 
 /* Estado de apuestas */
-.roulette-betting-status {
+.game-container .roulette-betting-status {
   margin: 15px 0;
   padding: 15px;
   background: rgba(0, 0, 0, 0.4);
@@ -656,10 +656,10 @@
   backdrop-filter: blur(10px);
 }
 
-.roulette-current-match,
-.roulette-betting-loading,
-.roulette-finishing-loading,
-.roulette-quitting-loading {
+.game-container .roulette-current-match,
+.game-container .roulette-betting-loading,
+.game-container .roulette-finishing-loading,
+.game-container .roulette-quitting-loading {
   padding: 12px 16px;
   margin: 8px 0;
   border-radius: 8px;
@@ -668,16 +668,16 @@
   font-size: 1rem;
 }
 
-.roulette-current-match {
+.game-container .roulette-current-match {
   background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.2));
   border: 2px solid rgba(46, 204, 113, 0.5);
   color: #2ecc71;
   box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
 }
 
-.roulette-betting-loading,
-.roulette-finishing-loading,
-.roulette-quitting-loading {
+.game-container .roulette-betting-loading,
+.game-container .roulette-finishing-loading,
+.game-container .roulette-quitting-loading {
   background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
   border: 2px solid rgba(255, 193, 7, 0.5);
   color: #ffc107;
@@ -686,7 +686,7 @@
 }
 
 /* Mensajes de error */
-.roulette-error-message {
+.game-container .roulette-error-message {
   background: linear-gradient(135deg, rgba(231, 76, 60, 0.15), rgba(192, 57, 43, 0.15));
   border: 2px solid rgba(231, 76, 60, 0.4);
   padding: 20px;
@@ -696,20 +696,20 @@
   box-shadow: 0 8px 32px rgba(231, 76, 60, 0.2);
 }
 
-.roulette-error-message h3 {
+.game-container .roulette-error-message h3 {
   margin-top: 0;
   color: #e74c3c;
   font-size: 1.3rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.roulette-error-message p {
+.game-container .roulette-error-message p {
   margin: 8px 0;
   color: #ecf0f1;
   line-height: 1.4;
 }
 
-.clear-error-btn {
+.game-container .clear-error-btn {
   background: linear-gradient(145deg, #e74c3c, #c0392b);
   color: white;
   border: none;
@@ -721,13 +721,13 @@
   transition: all 0.3s ease;
 }
 
-.clear-error-btn:hover {
+.game-container .clear-error-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
 }
 
 /* ===== MODAL DE FIN DE PARTIDA ===== */
-.roulette-game-end-modal-overlay {
+.game-container .roulette-game-end-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -742,7 +742,7 @@
   animation: rouletteFadeIn 0.3s ease-out;
 }
 
-.roulette-game-end-modal {
+.game-container .roulette-game-end-modal {
   background: linear-gradient(145deg, #0f4c3a, #1a5f4a);
   border-radius: 25px;
   padding: 35px;
@@ -757,7 +757,7 @@
   overflow: hidden;
 }
 
-.roulette-game-end-modal::before {
+.game-container .roulette-game-end-modal::before {
   content: '';
   position: absolute;
   top: 0;
@@ -768,14 +768,14 @@
   animation: rouletteModalBorderGlow 2s ease-in-out infinite;
 }
 
-.roulette-modal-header {
+.game-container .roulette-modal-header {
   text-align: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
   border-bottom: 2px solid rgba(255, 215, 0, 0.3);
 }
 
-.roulette-modal-header h2 {
+.game-container .roulette-modal-header h2 {
   margin: 0;
   color: #ffd700;
   font-size: 2.5rem;
@@ -785,55 +785,55 @@
   animation: rouletteModalTitleGlow 2s ease-in-out infinite alternate;
 }
 
-.roulette-modal-content {
+.game-container .roulette-modal-content {
   text-align: center;
   margin-bottom: 30px;
 }
 
-.roulette-result {
+.game-container .roulette-result {
   border-radius: 18px;
   padding: 25px;
   margin: 20px 0;
 }
 
-.roulette-result.win-result {
+.game-container .roulette-result.win-result {
   background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.2));
   border: 2px solid rgba(46, 204, 113, 0.5);
   box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
 }
 
-.roulette-result.lose-result {
+.game-container .roulette-result.lose-result {
   background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.2));
   border: 2px solid rgba(231, 76, 60, 0.5);
   box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
 }
 
-.roulette-result h3 {
+.game-container .roulette-result h3 {
   font-size: 2.2rem;
   margin: 0 0 15px 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.win-result h3 {
+.game-container .win-result h3 {
   color: #2ecc71;
   animation: rouletteCelebrateText 0.8s ease-out;
 }
 
-.lose-result h3 {
+.game-container .lose-result h3 {
   color: #e74c3c;
 }
 
-.lose-result p {
+.game-container .lose-result p {
   color: #ecf0f1;
   font-size: 1.2rem;
   margin: 0;
 }
 
-.winning-number-display {
+.game-container .winning-number-display {
   margin: 20px 0;
 }
 
-.modal-winning-number {
+.game-container .modal-winning-number {
   display: inline-block;
   width: 80px;
   height: 80px;
@@ -847,28 +847,28 @@
   border: 3px solid rgba(255, 255, 255, 0.3);
 }
 
-.modal-winning-number.red {
+.game-container .modal-winning-number.red {
   background: linear-gradient(145deg, #e74c3c, #c0392b);
   box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
 }
 
-.modal-winning-number.black {
+.game-container .modal-winning-number.black {
   background: linear-gradient(145deg, #2c3e50, #34495e);
   box-shadow: 0 8px 25px rgba(44, 62, 80, 0.4);
 }
 
-.modal-winning-number.green {
+.game-container .modal-winning-number.green {
   background: linear-gradient(145deg, #27ae60, #2ecc71);
   box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
 }
 
-.winning-number-desc {
+.game-container .winning-number-desc {
   font-size: 1.1rem;
   color: #bdc3c7;
   margin: 10px 0;
 }
 
-.win-message {
+.game-container .win-message {
   font-size: 1.4rem;
   margin: 15px 0;
   color: #ecf0f1;
@@ -876,7 +876,7 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.roulette-modal-win-amount {
+.game-container .roulette-modal-win-amount {
   font-size: 2rem;
   font-weight: bold;
   color: #ffd700;
@@ -887,7 +887,7 @@
   animation: rouletteGoldTextGlow 1.5s ease-in-out infinite alternate;
 }
 
-.roulette-current-balance {
+.game-container .roulette-current-balance {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
   border: 2px solid rgba(255, 255, 255, 0.2);
   padding: 20px;
@@ -897,7 +897,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.roulette-current-balance p {
+.game-container .roulette-current-balance p {
   margin: 0;
   font-size: 1.4rem;
   font-weight: bold;
@@ -905,14 +905,14 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.roulette-modal-actions {
+.game-container .roulette-modal-actions {
   display: flex;
   gap: 20px;
   justify-content: center;
   margin-top: 30px;
 }
 
-.roulette-new-game-button {
+.game-container .roulette-new-game-button {
   background: linear-gradient(145deg, #27ae60, #2ecc71);
   color: white;
   border: none;
@@ -931,21 +931,21 @@
   letter-spacing: 0.5px;
 }
 
-.roulette-new-game-button:hover:not(:disabled) {
+.game-container .roulette-new-game-button:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 
     0 8px 25px rgba(39, 174, 96, 0.6),
     inset 0 2px 5px rgba(255, 255, 255, 0.3);
 }
 
-.roulette-new-game-button:disabled {
+.game-container .roulette-new-game-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
   filter: grayscale(50%);
 }
 
-.roulette-quit-game-button {
+.game-container .roulette-quit-game-button {
   background: linear-gradient(145deg, #e74c3c, #c0392b);
   color: white;
   border: none;
@@ -962,14 +962,14 @@
   letter-spacing: 0.5px;
 }
 
-.roulette-quit-game-button:hover {
+.game-container .roulette-quit-game-button:hover {
   transform: translateY(-3px);
   box-shadow: 
     0 8px 25px rgba(231, 76, 60, 0.6),
     inset 0 2px 5px rgba(255, 255, 255, 0.3);
 }
 
-.roulette-insufficient-funds-warning {
+.game-container .roulette-insufficient-funds-warning {
   background: linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(200, 0, 0, 0.25));
   border: 2px solid rgba(255, 0, 0, 0.5);
   color: #ff6b6b;

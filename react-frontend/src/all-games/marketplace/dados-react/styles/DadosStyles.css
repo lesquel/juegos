@@ -1,6 +1,7 @@
-/* Dados Game Styles */
+/* Dados Game Styles - Isolated */
 
-:root {
+.game-container .dados-game {
+  /* CSS Variables */
   --primary-gold: #ffd700;
   --secondary-gold: #ffed4e;
   --accent-red: #ff2d2d;
@@ -14,9 +15,8 @@
   --casino-green: #0f5132;
   --win-green: #28a745;
   --lose-red: #dc3545;
-}
-
-.dados-game {
+  
+  /* Base Styles */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: radial-gradient(
       circle at 20% 50%,

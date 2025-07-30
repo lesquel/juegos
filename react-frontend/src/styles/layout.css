@@ -57,6 +57,25 @@
 .game-container {
   isolation: isolate;
   position: relative;
+  contain: layout style;
+  width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  
+  /* Reset de cualquier variable CSS global que puedan estar definiendo los juegos */
+  --primary-gold: initial;
+  --secondary-gold: initial;
+  --accent-red: initial;
+  --accent-green: initial;
+  --accent-blue: initial;
+  --dark-bg: initial;
+  --card-bg: initial;
+  --glass-bg: initial;
+  --neon-shadow: initial;
+  --premium-gradient: initial;
+  --casino-green: initial;
+  --win-green: initial;
+  --lose-red: initial;
 }
 
 .game-container * {
@@ -91,4 +110,31 @@
 .app-layout main > * {
   width: 100% !important;
   max-width: 100% !important;
+}
+
+.app-layout:not(.game-container) * {
+  /* Resetear cualquier estilo que pueda haber sido afectado */
+  font-family: inherit !important;
+  line-height: inherit !important;
+  color: inherit !important;
+  background: inherit !important;
+}
+
+/* Específicamente para prevenir conflictos con las rutas de juegos */
+.game-route-container {
+  isolation: isolate;
+  contain: layout style;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Override para elementos críticos de la UI principal */
+.app-layout nav,
+.app-layout header,
+.app-layout footer,
+.app-layout .main-content:not(.game-container *) {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif !important;
+  line-height: 1.5 !important;
+  color: rgba(255, 255, 255, 0.87) !important;
 }

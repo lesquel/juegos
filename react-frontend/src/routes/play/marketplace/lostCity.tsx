@@ -3,7 +3,7 @@ import LostCityGame from '@all-games/marketplace/lost-city'
 
 export const Route = createFileRoute('/play/marketplace/lostCity')({
   component: () => (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="game-container w-full h-full flex items-center justify-center">
       <LostCityGame />
     </div>
   ),

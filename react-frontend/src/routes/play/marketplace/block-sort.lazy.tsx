@@ -3,7 +3,7 @@ import { createLazyFileRoute } from '@tanstack/react-router';
 
 export const Route = createLazyFileRoute('/play/marketplace/block-sort')({
   component: () => (
-    <div className="min-h-full flex-grow bg-black ">
+    <div className="game-container min-h-full flex-grow bg-black ">
       <BlockSortGame />
     </div>
   ),

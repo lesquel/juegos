@@ -3,7 +3,7 @@ import { createLazyFileRoute } from '@tanstack/react-router';
 
 export const Route = createLazyFileRoute('/play/marketplace/word-scramble')({
   component: () => (
-    <div className="min-h-full flex-grow">
+    <div className="game-container min-h-full flex-grow">
       <WordScrambleGame />
     </div>
   ),
