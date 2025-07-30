@@ -10,14 +10,14 @@ interface FeatureProps {
 
 const Feature: React.FC<FeatureProps> = memo(({ icon, title, description }) => {
   return (
-    <article className="transform transition-all duration-300 hover:scale-105 h-full rounded-2xl bg-gray-800 bg-opacity-50 p-6 text-center hover:bg-gray-700 flex flex-col gap-2">
+    <article className="transform transition-all duration-300 hover:scale-105 h-full rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-8 text-center hover:bg-white/20 hover:border-white/30 flex flex-col gap-4 shadow-xl">
       <div className="flex justify-center items-center">
-        <div className="w-13 h-13 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 flex items-center justify-center shadow-lg">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 flex items-center justify-center shadow-lg">
           {icon}
         </div>
       </div>
-      <h3 className="text-xl font-bold text-white">{title}</h3>
-      <p className="text-gray-400 text-sm">{description}</p>
+      <h3 className="text-2xl font-bold text-white">{title}</h3>
+      <p className="text-gray-300 text-base leading-relaxed">{description}</p>
     </article>
   );
 });
@@ -61,8 +61,8 @@ const FeatureCards: React.FC = memo(() => {
   );
 
   return (
-    <section className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
-                {features.map((feature, _index) => (
+    <section className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+      {features.map((feature, _index) => (
         <Feature
           key={feature.title}
           icon={feature.icon}
