@@ -8,7 +8,7 @@ const WelcomeSection: React.FC = memo(() => {
     >
       {/* Fondo decorativo */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5 rounded-3xl blur-3xl"></div>
-      
+
       <div className="relative bg-white/5 backdrop-blur-sm border border-white/20 rounded-3xl p-6 sm:p-8 md:p-12 shadow-2xl">
         <h2
           id="welcome-heading"
@@ -22,17 +22,18 @@ const WelcomeSection: React.FC = memo(() => {
             con Propósito
           </span>
         </h2>
-        
+
         <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8">
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
-            Este proyecto, creado por estudiantes de 4º nivel de{" "}
+            Este proyecto, creado por estudiantes de{" "}
             <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-semibold">
-              Ingeniería de Software de la ULEAM
+              la ULEAM
             </span>{" "}
-            , tiene como fin donar todas las ganancias a fundaciones que luchan contra el cáncer infantil.
+            , tiene como fin promober la eduación y conocimiento de desarrollo
+            de juegos y software.
           </p>
         </div>
-        
+
         <div className="bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-cyan-400/30 rounded-2xl p-4 sm:p-6">
           <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent font-bold block">
             🎮 ¡Tu juego ayuda! 💜

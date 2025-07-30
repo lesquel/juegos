@@ -19,7 +19,7 @@ const Header: React.FC = memo(() => {
             GameForGood
           </span>
         </h1>
-        <p className="text-sm sm:text-base md:text-lg text-gray-400">Plataforma de minijuegos benéfica</p>
+        <p className="text-sm sm:text-base md:text-lg text-gray-400">Plataforma de minijuegos</p>
       </div>
     </header>
   );
