@@ -1,11 +1,10 @@
-/* Styles for the Word Scramble Game */
 .word-scramble-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); /* Dark gradient background */
+  height: 100%; /* Occupy full viewport height */
+  /* background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); */
   color: #ecf0f1;
   font-family: 'Poppins', sans-serif; /* Modern font */
   padding: 1rem;
@@ -15,10 +14,9 @@
 
 h1 {
   font-size: 4rem;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
   color: transparent;
   text-align: center;
+  margin-bottom: .6rem;
   background: linear-gradient(45deg, #8e2de2, #4a00e0); /* Vibrant gradient for title */
   -webkit-background-clip: text;
   background-clip: text;
@@ -34,7 +32,6 @@ h1 {
   justify-content: center;
   background: rgba(255, 255, 255, 0.1); /* Translucent background */
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Deeper shadow */
   border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
   backdrop-filter: blur(10px); /* Glassmorphism effect */
   padding: 2rem;
