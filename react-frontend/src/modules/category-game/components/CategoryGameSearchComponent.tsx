@@ -4,9 +4,10 @@ import { memo, useMemo } from "react";
 interface CategoryGameSearchProps {
   onSearch: (filters: SearchFilters) => void;
   className?: string;
+  initialFilters?: Partial<SearchFilters>;
 }
 
-const CategoryGameSearchComponent = ({ onSearch, className }: CategoryGameSearchProps) => {
+const CategoryGameSearchComponent = ({ onSearch, className, initialFilters: externalInitialFilters }: CategoryGameSearchProps) => {
   const filterOptions = useMemo(() => [
     { value: "all", label: "Todo" },
     { value: "category_name", label: "Nombre de categoría" },
@@ -24,7 +25,8 @@ const CategoryGameSearchComponent = ({ onSearch, className }: CategoryGameSearch
   const initialFilters = useMemo(() => ({
     sortBy: "created_at",
     sortOrder: "desc" as const,
-  }), []);
+    ...externalInitialFilters,
+  }), [externalInitialFilters]);
 
   return (
     <SearchComponent
