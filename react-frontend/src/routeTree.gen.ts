@@ -83,6 +83,9 @@ const PlayMarketplaceDadosLazyRouteImport = createFileRoute(
   '/play/marketplace/dados',
 )()
 const PlayMarketplaceALazyRouteImport = createFileRoute('/play/marketplace/a')()
+const PlayMarketplace2048LazyRouteImport = createFileRoute(
+  '/play/marketplace/2048',
+)()
 const GamesIdMatchesLazyRouteImport = createFileRoute('/games/$id/matches')()
 
 const GamesLazyRoute = GamesLazyRouteImport.update({
@@ -325,6 +328,13 @@ const PlayMarketplaceALazyRoute = PlayMarketplaceALazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/play/marketplace/a.lazy').then((d) => d.Route),
 )
+const PlayMarketplace2048LazyRoute = PlayMarketplace2048LazyRouteImport.update({
+  id: '/play/marketplace/2048',
+  path: '/play/marketplace/2048',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/play/marketplace/2048.lazy').then((d) => d.Route),
+)
 const GamesIdMatchesLazyRoute = GamesIdMatchesLazyRouteImport.update({
   id: '/$id/matches',
   path: '/$id/matches',
@@ -374,6 +384,7 @@ export interface FileRoutesByFullPath {
   '/play/marketplace/lostCity': typeof PlayMarketplaceLostCityRoute
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
+  '/play/marketplace/2048': typeof PlayMarketplace2048LazyRoute
   '/play/marketplace/a': typeof PlayMarketplaceALazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
   '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
@@ -412,6 +423,7 @@ export interface FileRoutesByTo {
   '/play/marketplace/lostCity': typeof PlayMarketplaceLostCityRoute
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
+  '/play/marketplace/2048': typeof PlayMarketplace2048LazyRoute
   '/play/marketplace/a': typeof PlayMarketplaceALazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
   '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
@@ -453,6 +465,7 @@ export interface FileRoutesById {
   '/play/marketplace/lostCity': typeof PlayMarketplaceLostCityRoute
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
+  '/play/marketplace/2048': typeof PlayMarketplace2048LazyRoute
   '/play/marketplace/a': typeof PlayMarketplaceALazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
   '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
@@ -495,6 +508,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/lostCity'
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
+    | '/play/marketplace/2048'
     | '/play/marketplace/a'
     | '/play/marketplace/dados'
     | '/play/marketplace/dados-react'
@@ -533,6 +547,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/lostCity'
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
+    | '/play/marketplace/2048'
     | '/play/marketplace/a'
     | '/play/marketplace/dados'
     | '/play/marketplace/dados-react'
@@ -573,6 +588,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/lostCity'
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
+    | '/play/marketplace/2048'
     | '/play/marketplace/a'
     | '/play/marketplace/dados'
     | '/play/marketplace/dados-react'
@@ -608,6 +624,7 @@ export interface RootRouteChildren {
   PlayMarketplaceTheSocietyOfMultiphobicsRoute: typeof PlayMarketplaceTheSocietyOfMultiphobicsRoute
   PlayMarketplaceLostCityRoute: typeof PlayMarketplaceLostCityRoute
   PlayMarketplaceMaquinaTragamonedasRoute: typeof PlayMarketplaceMaquinaTragamonedasRoute
+  PlayMarketplace2048LazyRoute: typeof PlayMarketplace2048LazyRoute
   PlayMarketplaceALazyRoute: typeof PlayMarketplaceALazyRoute
   PlayMarketplaceDadosLazyRoute: typeof PlayMarketplaceDadosLazyRoute
   PlayMarketplaceDadosReactLazyRoute: typeof PlayMarketplaceDadosReactLazyRoute
@@ -863,6 +880,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayMarketplaceALazyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/marketplace/2048': {
+      id: '/play/marketplace/2048'
+      path: '/play/marketplace/2048'
+      fullPath: '/play/marketplace/2048'
+      preLoaderRoute: typeof PlayMarketplace2048LazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/games/$id/matches': {
       id: '/games/$id/matches'
       path: '/$id/matches'
@@ -957,6 +981,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlayMarketplaceLostCityRoute: PlayMarketplaceLostCityRoute,
   PlayMarketplaceMaquinaTragamonedasRoute:
     PlayMarketplaceMaquinaTragamonedasRoute,
+  PlayMarketplace2048LazyRoute: PlayMarketplace2048LazyRoute,
   PlayMarketplaceALazyRoute: PlayMarketplaceALazyRoute,
   PlayMarketplaceDadosLazyRoute: PlayMarketplaceDadosLazyRoute,
   PlayMarketplaceDadosReactLazyRoute: PlayMarketplaceDadosReactLazyRoute,
