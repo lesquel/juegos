@@ -34,7 +34,7 @@ export const PaginationComponent = memo(({
 
   // Memoizar clases de botón
   const buttonClasses = useMemo(() =>
-    `w-10 h-10 flex items-center justify-center rounded-full text-white transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-125 hover:shadow-lg focus:ring-white ${color} cursor-pointer`,
+    `relative w-12 h-12 flex items-center justify-center rounded-xl text-white transition-all duration-500 ease-out hover:scale-110 hover:shadow-lg focus:ring-2 focus:ring-white/50 backdrop-blur-sm border border-white/20 overflow-hidden group ${color} cursor-pointer`,
     [color]
   );
 
@@ -52,27 +52,49 @@ export const PaginationComponent = memo(({
   ), []);
 
   return (
-    <div className="flex justify-center items-center space-x-4 pt-3">
+    <div className="flex justify-center items-center space-x-6 pt-6">
       <button
         disabled={isFirstPage}
         onClick={prevPage}
-        className={buttonClasses}
+        className={
+          isFirstPage 
+            ? "relative w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 bg-gray-800/50 backdrop-blur-sm border border-gray-600/30 cursor-not-allowed opacity-50"
+            : buttonClasses
+        }
         aria-label="Página anterior"
       >
-        {prevIcon}
+        {/* Efecto de brillo para botones activos */}
+        {!isFirstPage && (
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+        )}
+        <div className="relative z-10">
+          {prevIcon}
+        </div>
       </button>
 
-      <p className="text-gray-400 text-sm">
-        Página {pagination.page} de {info.pages}
-      </p>
+      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-6 py-3">
+        <p className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent text-sm font-semibold">
+          Página {pagination.page} de {info.pages}
+        </p>
+      </div>
 
       <button
         disabled={isLastPage}
         onClick={nextPage}
-        className={buttonClasses}
+        className={
+          isLastPage 
+            ? "relative w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 bg-gray-800/50 backdrop-blur-sm border border-gray-600/30 cursor-not-allowed opacity-50"
+            : buttonClasses
+        }
         aria-label="Página siguiente"
       >
-        {nextIcon}
+        {/* Efecto de brillo para botones activos */}
+        {!isLastPage && (
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+        )}
+        <div className="relative z-10">
+          {nextIcon}
+        </div>
       </button>
     </div>
   );

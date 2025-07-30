@@ -119,73 +119,84 @@ const UseRegisterForm: React.FC = memo(() => {
   );
 
   return (
-    <main className="w-full max-w-md mx-auto bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600 rounded-xl p-8 shadow-2xl backdrop-filter backdrop-blur-sm">
-      <header className="flex justify-center mb-6">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 flex items-center justify-center shadow-lg">
-          {userIcon}
-        </div>
-      </header>
-
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2 text-white">Crea tu Cuenta</h1>
-        <p className="text-gray-400">Únete a la comunidad y empieza a jugar.</p>
-      </div>
-
-      <form onSubmit={onFormSubmit} className="w-full flex flex-col items-center gap-4">
-        {errorMessage && (
-          <div
-            role="alert"
-            className="text-red-400 text-sm mb-4 text-center bg-red-900/50 p-3 rounded-lg w-full border border-red-700/50"
-          >
-            {errorMessage}
+    <main className="relative w-full max-w-md mx-auto bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-2xl">
+      {/* Fondo decorativo */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl"></div>
+      
+      <div className="relative">
+        <header className="flex justify-center mb-8">
+          <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-2xl p-1">
+            <div className="w-full h-full rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
+              {userIcon}
+            </div>
           </div>
-        )}
+        </header>
 
-        <FormInput
-          form={form}
-          name="email"
-          type="email"
-          placeholder="Correo Electrónico"
-          label="Correo Electrónico"
-          icon={emailIcon}
-        />
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Crea tu Cuenta
+          </h1>
+          <p className="text-gray-300 text-lg">Únete a la comunidad y empieza a jugar.</p>
+        </div>
 
-        <FormInput
-          form={form}
-          name="password"
-          type="password"
-          placeholder="Contraseña"
-          label="Contraseña"
-          icon={passwordIcon}
-        />
+        <form onSubmit={onFormSubmit} className="w-full flex flex-col items-center gap-6">
+          {errorMessage && (
+            <div
+              role="alert"
+              className="w-full text-red-300 text-sm text-center bg-red-500/10 backdrop-blur-sm border border-red-400/30 p-4 rounded-xl"
+            >
+              {errorMessage}
+            </div>
+          )}
 
-        <FormInput
-          form={form}
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirmar Contraseña"
-          label="Confirmar Contraseña"
-          icon={passwordIcon}
-        />
+          <FormInput
+            form={form}
+            name="email"
+            type="email"
+            placeholder="Correo Electrónico"
+            label="Correo Electrónico"
+            icon={emailIcon}
+          />
 
-        <button
-          type="submit"
-          className="w-full cursor-pointer bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-3 rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-300 ease-in-out text-lg"
-          aria-label="Crear cuenta"
-        >
-          Registrarse
-        </button>
-      </form>
+          <FormInput
+            form={form}
+            name="password"
+            type="password"
+            placeholder="Contraseña"
+            label="Contraseña"
+            icon={passwordIcon}
+          />
 
-      <footer className="text-sm text-gray-400 mt-6 text-center">
-        ¿Ya tienes una cuenta?{" "}
-        <Link
-          to={loginUrl}
-          className="text-teal-400 hover:text-teal-300 font-semibold transition-colors duration-200"
-        >
-          Inicia sesión aquí
-        </Link>
-      </footer>
+          <FormInput
+            form={form}
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirmar Contraseña"
+            label="Confirmar Contraseña"
+            icon={passwordIcon}
+          />
+
+          <button
+            type="submit"
+            className="relative w-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-bold py-4 rounded-2xl shadow-2xl hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-500 text-lg group overflow-hidden"
+            aria-label="Crear cuenta"
+          >
+            {/* Efecto de brillo animado */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+            <span className="relative z-10">Registrarse</span>
+          </button>
+        </form>
+
+        <footer className="text-sm text-gray-300 mt-8 text-center">
+          ¿Ya tienes una cuenta?{" "}
+          <Link
+            to={loginUrl}
+            className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-semibold hover:from-cyan-300 hover:to-purple-300 transition-all duration-300"
+          >
+            Inicia sesión aquí
+          </Link>
+        </footer>
+      </div>
     </main>
   );
 });

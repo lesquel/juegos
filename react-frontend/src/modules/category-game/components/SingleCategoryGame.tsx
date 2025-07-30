@@ -26,16 +26,18 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
     if (!error) return null;
 
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
-        <div className="text-center bg-red-900 bg-opacity-50 p-8 rounded-lg border border-red-600 max-w-md">
-          <Clock className="h-16 w-16 text-red-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-red-400 mb-4">
+      <div className="flex items-center justify-center px-4 py-12">
+        <div className="text-center bg-red-500/10 backdrop-blur-sm border border-red-500/30 p-12 rounded-3xl max-w-md shadow-2xl">
+          <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Clock className="h-10 w-10 text-red-400" />
+          </div>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent mb-4">
             Error al cargar categoría
           </h2>
-          <p className="text-red-300 mb-6">{error.message}</p>
+          <p className="text-red-300 mb-8 leading-relaxed">{error.message}</p>
           <Link
             to="/category-games"
-            className="inline-block bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg hover:from-teal-600 hover:to-cyan-500 transition duration-300"
+            className="inline-block bg-gradient-to-r from-red-500 via-pink-500 to-rose-500 text-white font-bold py-3 px-8 rounded-xl hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 transform hover:scale-105"
           >
             Volver a categorías
           </Link>
@@ -49,16 +51,20 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
     if (!data?.category_img || !data?.category_name) return null;
 
     return (
-      <img
-        src={data.category_img}
-        alt={`Imagen de la categoría ${data.category_name}`}
-        className="w-full h-48 object-cover rounded-lg bg-gray-800 transform transition-transform duration-300 hover:scale-105"
-        loading="lazy"
-        onError={(e) => {
-          const target = e.target as HTMLImageElement;
-          target.src = "/placeholder-category.jpg"; // Imagen de fallback
-        }}
-      />
+      <div className="relative overflow-hidden rounded-2xl group">
+        <img
+          src={data.category_img}
+          alt={`Imagen de la categoría ${data.category_name}`}
+          className="w-full h-48 object-cover bg-gray-800 transform transition-transform duration-700 group-hover:scale-110"
+          loading="lazy"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = "/placeholder-category.jpg"; // Imagen de fallback
+          }}
+        />
+        {/* Overlay con gradiente */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      </div>
     );
   }, [data?.category_img, data?.category_name]);
 
@@ -68,31 +74,31 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
   // Memoizar breadcrumb
   const breadcrumb = useMemo(
     () => (
-      <nav className="mb-6" aria-label="Breadcrumb">
-        <ol className="flex items-center space-x-2 text-sm">
+      <nav className="mb-8" aria-label="Breadcrumb">
+        <ol className="flex items-center space-x-3 text-sm bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3">
           <li>
             <Link
               to="/"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-300 hover:text-cyan-400 transition-colors duration-300"
             >
               Inicio
             </Link>
           </li>
           <li>
-            <ArrowRight className="h-4 w-4 text-gray-400" />
+            <ArrowRight className="h-4 w-4 text-gray-500" />
           </li>
           <li>
             <Link
               to="/category-games"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-300 hover:text-cyan-400 transition-colors duration-300"
             >
               Categorías
             </Link>
           </li>
           <li>
-            <ArrowRight className="h-4 w-4 text-gray-400" />
+            <ArrowRight className="h-4 w-4 text-gray-500" />
           </li>
-          <li className="text-white font-medium">{data?.category_name}</li>
+          <li className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-medium">{data?.category_name}</li>
         </ol>
       </nav>
     ),
@@ -108,41 +114,50 @@ const UseSingleCategoryGame: React.FC<{ id: string }> = memo(({ id }) => {
   if (error) return errorState;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div className="w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {breadcrumb}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-12 items-start">
           {/* Left Column (Category Details) */}
           <aside className="lg:col-span-1 lg:sticky lg:top-24 self-start mb-8 lg:mb-0">
-            <div className="space-y-6 bg-gray-800 bg-opacity-50 rounded-2xl p-6 shadow-2xl border border-gray-700 backdrop-blur-lg">
-              {categoryImage}
+            <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-2xl">
+              {/* Fondo decorativo */}
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl"></div>
+              
+              <div className="relative space-y-6">
+                {categoryImage}
 
-              <div className="space-y-4 text-center">
-                <header className="flex items-center justify-center gap-3 mb-4">
-                  {categoryIcon}
-                  <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-purple-500 to-teal-400 bg-clip-text text-transparent">
-                    {data?.category_name}
-                  </h1>
-                </header>
-
-                {data?.category_description && (
-                  <p className="text-gray-300 leading-relaxed text-sm md:text-base">
-                    {data.category_description}
-                  </p>
-                )}
-
-                {/* Category Stats */}
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-600">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-400">
-                      {/* Podríamos agregar un contador de juegos aquí */}∞
+                <div className="space-y-6 text-center">
+                  <header className="flex items-center justify-center gap-3">
+                    <div className="p-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                      {categoryIcon}
                     </div>
-                    <div className="text-xs text-gray-400">Juegos</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-teal-400">★</div>
-                    <div className="text-xs text-gray-400">Popular</div>
+                    <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      {data?.category_name}
+                    </h1>
+                  </header>
+
+                  {data?.category_description && (
+                    <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-4">
+                      <p className="text-gray-200 leading-relaxed text-sm md:text-base">
+                        {data.category_description}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Category Stats */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-gradient-to-br from-purple-500/20 to-cyan-500/20 backdrop-blur-sm border border-purple-400/30 rounded-2xl p-4 text-center">
+                      <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                        ∞
+                      </div>
+                      <div className="text-xs text-gray-300">Juegos</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 backdrop-blur-sm border border-yellow-400/30 rounded-2xl p-4 text-center">
+                      <div className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">★</div>
+                      <div className="text-xs text-gray-300">Popular</div>
+                    </div>
                   </div>
                 </div>
               </div>

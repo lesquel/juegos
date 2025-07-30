@@ -41,13 +41,13 @@ export const BetAmountField: React.FC<BetAmountFieldProps> = ({
     <div>
       <label
         htmlFor="bet-amount"
-        className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2"
+        className="flex items-center gap-3 text-sm font-medium text-gray-300 mb-3"
       >
         {moneyIcon}
         Monto de Apuesta Base
       </label>
       <div className="relative">
-        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">
+        <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg font-bold">
           $
         </span>
         <input
@@ -57,7 +57,7 @@ export const BetAmountField: React.FC<BetAmountFieldProps> = ({
           step={1}
           value={field.state.value}
           onChange={handleChange}
-          className="pl-8 pr-4 py-3 w-full border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+          className="pl-10 pr-4 py-4 w-full bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl shadow-lg focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/30 transition-all duration-300 placeholder-gray-400"
           placeholder="Ingresa el monto"
           aria-describedby={fieldErrors ? "bet-amount-error" : undefined}
         />
@@ -71,7 +71,7 @@ export const BetAmountField: React.FC<BetAmountFieldProps> = ({
           {fieldErrors}
         </p>
       )}
-      <p className="text-gray-500 text-xs mt-1">
+      <p className="text-gray-400 text-sm mt-2">
         Mínimo: $1 - Este será el monto que cada jugador debe apostar
       </p>
     </div>
@@ -156,22 +156,22 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
       if (!error) return null;
       return (
         <div
-          className="text-red-400 bg-red-900 bg-opacity-50 p-4 rounded-lg border border-red-600"
+          className="text-red-400 bg-red-500/10 backdrop-blur-sm border border-red-400/30 p-4 rounded-xl"
           role="alert"
         >
-          <h4 className="font-semibold mb-1">Error al crear partida:</h4>
+          <h4 className="font-bold mb-2">Error al crear partida:</h4>
           <p>{error.errors.join(", ")}</p>
         </div>
       );
     }, [error]);
 
     const matchIcon = useMemo(
-      () => <Plus className="h-5 w-5 text-teal-400" />,
+      () => <Plus className="h-5 w-5" />,
       []
     );
 
     const moneyIcon = useMemo(
-      () => <DollarSign className="h-5 w-5 text-green-400" />,
+      () => <DollarSign className="h-5 w-5 text-cyan-400" />,
       []
     );
 
@@ -179,7 +179,7 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
       <div>
         <button
           onClick={openModal}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:scale-105"
+          className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600 text-white font-bold rounded-xl shadow-2xl hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-300 transform hover:scale-[1.02]"
           aria-label="Crear nueva partida"
         >
           {matchIcon}
@@ -188,53 +188,62 @@ export const CreateMatch: React.FC<CreateMatchProps> = memo(
 
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           {isLoading && <LoadingComponent />}
-          <div className="p-6">
-            <header className="mb-6">
-              <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-                {matchIcon}
-                Crear Nueva Partida
-              </h1>
-              <p className="text-gray-400 mt-2">
-                Configura tu partida para{" "}
-                <span className="text-teal-400 font-semibold">
-                  {game?.game_name}
-                </span>
-              </p>
-            </header>
-
-            <form onSubmit={onFormSubmit} className="space-y-6">
-              {errorMessage}
-
-              <form.Field name="base_bet_amount">
-                {(field) => (
-                  <BetAmountField field={field} moneyIcon={moneyIcon} />
-                )}
-              </form.Field>
-
-              <footer className="flex justify-end space-x-4 pt-4">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-6 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300"
-                  aria-label="Crear partida"
-                >
-                  <Plus className="h-4 w-4" />
-                  Crear Partida
-                </button>
-
-              </footer>
-              {authRequiredMsg && (
-                <div className="bg-yellow-900 border border-yellow-600 text-yellow-300 px-4 py-3 rounded-lg mb-4">
-                  Debes iniciar sesión para crear una partida. Redirigiendo...
+          <div className="p-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl">
+            {/* Fondo decorativo */}
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl"></div>
+            
+            <div className="relative">
+              <header className="mb-8">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                    <Plus className="h-6 w-6 text-cyan-400" />
+                  </div>
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                    Crear Nueva Partida
+                  </h1>
                 </div>
-              )}
-            </form>
+                <p className="text-gray-300 text-lg">
+                  Configura tu partida para{" "}
+                  <span className="text-cyan-400 font-bold">
+                    {game?.game_name}
+                  </span>
+                </p>
+              </header>
+
+              <form onSubmit={onFormSubmit} className="space-y-8">
+                {errorMessage}
+
+                <form.Field name="base_bet_amount">
+                  {(field) => (
+                    <BetAmountField field={field} moneyIcon={moneyIcon} />
+                  )}
+                </form.Field>
+
+                <footer className="flex justify-end space-x-4 pt-6">
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-gray-300 font-medium rounded-xl hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-300 transform hover:scale-[1.02]"
+                    aria-label="Crear partida"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Crear Partida
+                  </button>
+                </footer>
+                
+                {authRequiredMsg && (
+                  <div className="bg-yellow-500/10 backdrop-blur-sm border border-yellow-400/30 text-yellow-400 px-4 py-3 rounded-xl">
+                    Debes iniciar sesión para crear una partida. Redirigiendo...
+                  </div>
+                )}
+              </form>
+            </div>
           </div>
         </Modal>
       </div>

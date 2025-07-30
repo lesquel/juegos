@@ -10,14 +10,28 @@ interface FeatureProps {
 
 const Feature: React.FC<FeatureProps> = memo(({ icon, title, description }) => {
   return (
-    <article className="transform transition-all duration-300 hover:scale-105 h-full rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-8 text-center hover:bg-white/20 hover:border-white/30 flex flex-col gap-4 shadow-xl">
-      <div className="flex justify-center items-center">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 flex items-center justify-center shadow-lg">
-          {icon}
+    <article className="group relative transform transition-all duration-500 hover:scale-105 h-full rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 p-8 text-center hover:bg-white/15 hover:border-white/30 flex flex-col gap-6 shadow-2xl overflow-hidden">
+      {/* Fondo decorativo */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      
+      <div className="relative">
+        <div className="flex justify-center items-center mb-2">
+          <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 flex items-center justify-center shadow-2xl p-1 group-hover:scale-110 transition-transform duration-500">
+            <div className="w-full h-full rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
+              {icon}
+            </div>
+          </div>
         </div>
+        <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+          {title}
+        </h3>
+        <p className="text-gray-200 text-base leading-relaxed">
+          {description}
+        </p>
       </div>
-      <h3 className="text-2xl font-bold text-white">{title}</h3>
-      <p className="text-gray-300 text-base leading-relaxed">{description}</p>
+      
+      {/* Efecto de brillo en hover */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
     </article>
   );
 });

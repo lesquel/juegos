@@ -11,19 +11,19 @@ export const CardTransfer: React.FC<CardTransferProps> = memo(
     // Memoizar estado de transferencia con estilo
     const statusBadge = useMemo(() => {
       const statusClasses = {
-        pending: "bg-yellow-500 text-yellow-900",
-        completed: "bg-green-500 text-green-900",
-        rejected: "bg-red-500 text-red-900",
+        pending: "bg-yellow-500/20 text-yellow-400 border-yellow-400/30",
+        completed: "bg-green-500/20 text-green-400 border-green-400/30",
+        rejected: "bg-red-500/20 text-red-400 border-red-400/30",
       };
 
-      const defaultClass = "bg-gray-500 text-gray-900";
+      const defaultClass = "bg-gray-500/20 text-gray-400 border-gray-400/30";
       const className =
         statusClasses[transfer.transfer_state as keyof typeof statusClasses] ||
         defaultClass;
 
       return (
         <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold ${className}`}
+          className={`px-4 py-2 rounded-xl text-sm font-medium border backdrop-blur-sm ${className}`}
         >
           {transfer.transfer_state}
         </span>
@@ -51,19 +51,22 @@ export const CardTransfer: React.FC<CardTransferProps> = memo(
     }, [transfer.transfer_description]);
 
     return (
-      <article className="bg-gray-800 bg-opacity-50 rounded-2xl p-6 shadow-lg backdrop-blur-lg backdrop-filter border border-gray-700 hover:bg-gray-700 transition-all duration-300 transform hover:scale-105">
+      <article className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300 transform hover:scale-[1.02]">
+        {/* Fondo decorativo */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5 rounded-3xl"></div>
+        
         <Link
           to="/transfers/$id"
           params={{ id: transfer.transfer_id }}
-          className="block text-decoration-none"
+          className="relative block text-decoration-none"
           aria-label={`Ver detalles de transferencia ${transfer.transfer_id}`}
         >
-          <header className="flex justify-between items-start mb-4">
+          <header className="flex justify-between items-start mb-6">
             <div>
-              <h2 className="text-lg font-bold text-white mb-1">
+              <h2 className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-2">
                 Transferencia #{transfer.transfer_id}
               </h2>
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-300 text-sm">
                 Usuario: {transfer.user_id}
               </p>
             </div>
@@ -71,43 +74,43 @@ export const CardTransfer: React.FC<CardTransferProps> = memo(
           </header>
 
           {transfer.transfer_img && (
-            <div className="mb-4">
+            <div className="mb-6">
               <img
                 src={transfer.transfer_img}
                 alt={`Comprobante de transferencia ${transfer.transfer_id}`}
-                className="w-full h-32 object-cover rounded-lg"
+                className="w-full h-40 object-cover rounded-2xl border border-white/20 shadow-lg"
                 loading="lazy"
               />
             </div>
           )}
 
-          <div className="space-y-2">
+          <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-gray-400">Monto:</span>
-              <span className="text-xl font-bold text-green-400">
+              <span className="text-gray-400 font-medium">Monto:</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
                 ${transfer.transfer_amount}
               </span>
             </div>
 
             {transfer.transfer_description && (
               <div>
-                <span className="text-gray-400 block text-sm">
+                <span className="text-gray-400 block text-sm font-medium mb-2">
                   Descripción:
                 </span>
-                <p className="text-white text-sm mt-1">
+                <p className="text-gray-200 text-sm leading-relaxed">
                   {truncatedDescription}
                 </p>
               </div>
             )}
 
-            <footer className="flex justify-between items-center pt-3 border-t border-gray-600">
+            <footer className="flex justify-between items-center pt-4 border-t border-white/10">
               <time
-                className="text-gray-400 text-xs"
+                className="text-gray-400 text-sm"
                 dateTime={transfer.created_at}
               >
                 {formattedDate}
               </time>
-              <span className="text-teal-400 text-sm font-semibold hover:text-teal-300 transition-colors">
+              <span className="text-cyan-400 text-sm font-medium hover:text-cyan-300 transition-all duration-200 flex items-center gap-2">
                 Ver detalles →
               </span>
             </footer>

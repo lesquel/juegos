@@ -20,11 +20,15 @@ export const TagCategoryGame: React.FC<TagCategoryGameProps> = memo(
       <Link
         to="/category-games/$id"
         params={{ id: category_id }}
-        className="inline-flex items-center gap-2 p-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-2xl transition-all duration-200 text-white font-medium shadow-md hover:shadow-lg transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        className="group inline-flex items-center gap-2 p-3 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 hover:from-cyan-500/30 hover:to-purple-500/30 backdrop-blur-sm border border-cyan-400/30 hover:border-cyan-400/50 rounded-xl transition-all duration-300 text-white font-medium shadow-lg hover:shadow-cyan-500/25 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
         aria-label={`Ver categoría ${category_name}`}
       >
-        {categoryIcon}
-        <span className="text-sm">{category_name}</span>
+        <div className="text-cyan-400 group-hover:text-cyan-300 transition-colors duration-300">
+          {categoryIcon}
+        </div>
+        <span className="text-sm bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent group-hover:from-cyan-300 group-hover:to-purple-300 transition-all duration-300">
+          {category_name}
+        </span>
       </Link>
     );
   }

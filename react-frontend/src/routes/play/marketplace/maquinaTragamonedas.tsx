@@ -3,7 +3,7 @@ import MaquinaTragamonedasGame from "@all-games/marketplace/maquina-tragamonedas
 
 export const Route = createFileRoute("/play/marketplace/maquinaTragamonedas")({
   component: () => (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center">
       <MaquinaTragamonedasGame />
     </div>
   ),

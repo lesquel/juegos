@@ -3,7 +3,7 @@ import { RockPaperScissorsGame } from '@/all-games/marketplace/rock-paper-scisso
 
 export const Route = createLazyFileRoute('/play/marketplace/rock-paper-scissors')({
   component: () => (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center">
       <RockPaperScissorsGame />
     </div>
   ),

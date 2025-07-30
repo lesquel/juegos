@@ -84,10 +84,10 @@ export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
     
     return (
       <div
-        className="text-center text-red-400 bg-red-900 bg-opacity-50 p-3 rounded-lg mb-4 border border-red-600"
+        className="text-center text-red-400 bg-red-500/10 backdrop-blur-sm p-4 rounded-xl mb-4 border border-red-400/30"
         role="alert"
       >
-        <h4 className="font-semibold mb-1">Error:</h4>
+        <h4 className="font-bold mb-2">Error:</h4>
         <p>{errorText}</p>
       </div>
     );
@@ -100,19 +100,19 @@ export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
     const states = {
       finished: {
         text: "Partida Terminada",
-        icon: <Clock className="h-5 w-5 text-yellow-400" />,
+        icon: <Clock className="h-5 w-5" />,
       },
       full: {
         text: "Partida Llena",
-        icon: <Lock className="h-5 w-5 text-red-400" />,
+        icon: <Lock className="h-5 w-5" />,
       },
       rejoin: {
         text: "Volver a la Partida",
-        icon: <Merge className="h-5 w-5 text-teal-400" />,
+        icon: <Merge className="h-5 w-5" />,
       },
       join: {
         text: "Unirse a la Partida",
-        icon: <Plus className="h-5 w-5 text-teal-400" />,
+        icon: <Plus className="h-5 w-5" />,
       },
     };
 
@@ -128,13 +128,13 @@ export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
     const isDisabled = isFinished || (!isJoined && isFull);
 
     const baseClasses =
-      "w-full font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-101 flex items-center justify-center gap-3 text-lg";
+      "w-full font-bold py-4 px-6 rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-3 text-lg";
 
     if (isDisabled) {
-      return `${baseClasses} bg-gray-600 text-gray-400 cursor-not-allowed`;
+      return `${baseClasses} bg-gray-600/20 backdrop-blur-sm border border-gray-500/30 text-gray-400 cursor-not-allowed`;
     }
 
-    return `${baseClasses} bg-gradient-to-r from-purple-600 to-blue-500 text-white hover:from-purple-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer`;
+    return `${baseClasses} bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600 text-white hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 cursor-pointer`;
   }, [matchStates]);
 
   // Memoizar si el botón está deshabilitado
@@ -159,10 +159,10 @@ export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
       </button>
 
       {/* Información adicional */}
-      <div className="mt-3 text-center text-xs text-gray-400">
+      <div className="mt-4 text-center text-sm text-gray-400">
         {matchStates.isJoined && !matchStates.isFinished && (
-          <p className="flex items-center justify-center gap-1">
-            <Star className="h-3 w-3 text-yellow-400" />
+          <p className="flex items-center justify-center gap-2">
+            <Star className="h-4 w-4 text-yellow-400" />
             Ya estás en esta partida
           </p>
         )}
@@ -171,7 +171,7 @@ export const JoinMatch: React.FC<JoinMatchProps> = memo(({ match, game }) => {
           !matchStates.isFinished && (
             <p>
               Apuesta requerida:{" "}
-              <span className="text-green-400 font-semibold">
+              <span className="text-green-400 font-bold">
                 ${match.base_bet_amount}
               </span>
             </p>

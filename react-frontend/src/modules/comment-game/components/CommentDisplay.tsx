@@ -36,25 +36,27 @@ export const CommentDisplay: React.FC<CommentDisplayProps> = memo(({ comment, ra
   }, [createdAt]);
 
   return (
-    <article className="space-y-3">
+    <article className="space-y-4">
       {/* Rating Stars */}
       <div 
         className="flex items-center"
         aria-label={`Calificación: ${rating} de 5 estrellas`}
       >
-        {starsDisplay}
-        <span className="ml-2 text-sm text-gray-400">
+        <div className="flex items-center">
+          {starsDisplay}
+        </div>
+        <span className="ml-3 text-sm font-medium bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
           ({rating}/5)
         </span>
       </div>
 
       {/* Comment Text */}
-      <p className="text-gray-300 break-words leading-relaxed">
+      <p className="text-gray-200 break-words leading-relaxed text-base">
         {comment}
       </p>
 
       {/* Date */}
-      <footer className="flex justify-end">
+      <footer className="flex justify-end pt-2 border-t border-white/10">
         <time 
           className="text-xs text-gray-400"
           dateTime={createdAt}

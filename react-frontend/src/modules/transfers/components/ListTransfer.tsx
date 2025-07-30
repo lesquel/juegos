@@ -21,10 +21,10 @@ const UseListTransfer: React.FC = memo(() => {
     if (!error) return null;
     return (
       <div
-        className="text-center text-red-400 bg-red-900 bg-opacity-20 p-4 rounded-lg border border-red-600"
+        className="text-center text-red-400 bg-red-500/10 backdrop-blur-md border border-red-400/30 p-6 rounded-2xl max-w-md mx-auto"
         role="alert"
       >
-        <h3 className="font-semibold mb-2">Error al cargar transferencias</h3>
+        <h3 className="font-bold mb-3">Error al cargar transferencias</h3>
         <p>{error.message}</p>
       </div>
     );
@@ -32,7 +32,7 @@ const UseListTransfer: React.FC = memo(() => {
 
   // Memoizar icono de transferencia
   const transferIcon = useMemo(
-    () => <Landmark className="h-6 w-6 text-teal-400" />,
+    () => <Landmark className="h-7 w-7 text-cyan-400" />,
     []
   );
 
@@ -41,10 +41,10 @@ const UseListTransfer: React.FC = memo(() => {
     () => (
       <Link
         to="/transfers/new"
-        className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:from-teal-600 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition duration-300 ease-in-out transform hover:scale-105"
+        className="inline-flex items-center gap-3 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600 text-white font-bold py-4 px-6 rounded-xl shadow-2xl hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 transition-all duration-300 transform hover:scale-[1.02]"
         aria-label="Crear nueva transferencia"
       >
-        <Plus className="h-5 w-5 text-teal-400" />
+        <Plus className="h-5 w-5" />
         Nueva Transferencia
       </Link>
     ),
@@ -55,14 +55,14 @@ const UseListTransfer: React.FC = memo(() => {
   const transfersList = useMemo(() => {
     if (!data?.results?.length) {
       return (
-        <div className="text-center py-12">
-          <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-800 flex items-center justify-center">
+        <div className="text-center py-16">
+          <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
             {transferIcon}
           </div>
-          <h3 className="text-xl font-semibold text-gray-300 mb-2">
+          <h3 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-4">
             No hay transferencias
           </h3>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-300 mb-8 text-lg">
             Aún no tienes ninguna transferencia registrada.
           </p>
           {newTransferButton}
@@ -71,7 +71,7 @@ const UseListTransfer: React.FC = memo(() => {
     }
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {data.results.map((transfer) => (
           <CardTransfer key={transfer.transfer_id} transfer={transfer} />
         ))}
@@ -83,22 +83,28 @@ const UseListTransfer: React.FC = memo(() => {
   if (error) return errorMessage;
 
   return (
-    <main className="max-w-6xl mx-auto px-4 py-8">
-      <header className="flex flex-col items-center justify-center md:flex-row md:justify-between md:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2 flex items-center justify-center md:justify-start gap-3">
-            {transferIcon}
-            Mis Transferencias
-          </h1>
-          <p className="text-gray-400 text-center">
-            Gestiona y revisa el historial de tus transferencias
-          </p>
-        </div>
-        {newTransferButton}
-      </header>
+    <section className="relative">
+      <div className="max-w-6xl mx-auto px-4 py-12">
+        <header className="flex flex-col items-center justify-center md:flex-row md:justify-between md:items-center gap-6 mb-12">
+          <div>
+            <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
+              <div className="p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                {transferIcon}
+              </div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Mis Transferencias
+              </h1>
+            </div>
+            <p className="text-gray-300 text-center md:text-left text-lg">
+              Gestiona y revisa el historial de tus transferencias
+            </p>
+          </div>
+          {newTransferButton}
+        </header>
 
-      <section>{transfersList}</section>
-    </main>
+        <div>{transfersList}</div>
+      </div>
+    </section>
   );
 });
 
