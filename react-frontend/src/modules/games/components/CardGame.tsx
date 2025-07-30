@@ -15,47 +15,47 @@ export const CardGame = memo(({ game }: CardGameProps) => {
     [game_id]
   );
 
-  // Memoizar estilos complejos
-  const gradientStyles = useMemo(
-    () => ({
-      boxShadow:
-        "0 0 15px rgba(20, 184, 166, 0), 0 0 25px rgba(20, 184, 166, 0)",
-    }),
-    []
-  );
-
   return (
     <Link
       to={gameUrl}
-      className="relative block rounded-2xl overflow-hidden group transform transition-all duration-300 ease-in-out hover:scale-105 shadow-lg"
+      className="relative block rounded-3xl overflow-hidden group transform transition-all duration-500 ease-in-out hover:scale-105 hover:-translate-y-2 shadow-2xl hover:shadow-purple-500/25"
     >
-      <div className="absolute inset-0 bg-black opacity-50 z-10 group-hover:opacity-60 transition-opacity duration-300 pointer-events-none"></div>
-      <div
-        className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-teal-500 transition-all duration-300 z-20 pointer-events-none"
-        style={gradientStyles}
-      ></div>
-      <img
-        src={game_img}
-        alt={game_name}
-        loading="lazy"
-        className="w-full h-64 object-cover transform transition-transform duration-500 ease-in-out group-hover:scale-110"
-      />
-      <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 bg-gradient-to-t from-black via-black/70 to-transparent pointer-events-none">
-        <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">
-          {game_name}
-        </h2>
-        <p className="text-gray-300 text-sm mb-4 h-10 overflow-hidden">
-          {game_description}
-        </p>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs text-gray-400">Cuota base</p>
-            <p className="text-lg font-bold text-teal-400">{house_odds}</p>
-          </div>
-          <div
-            className="bg-gradient-to-r from-teal-500 to-cyan-400 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out"
-          >
-            Jugar Ahora
+      {/* Glass overlay effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm z-10 group-hover:from-white/20 group-hover:to-white/10 transition-all duration-500 pointer-events-none"></div>
+      
+      {/* Border glow effect */}
+      <div className="absolute inset-0 rounded-3xl border-2 border-transparent group-hover:border-gradient-to-r group-hover:from-cyan-500 group-hover:to-purple-500 transition-all duration-500 z-20 pointer-events-none"></div>
+      
+      {/* Image with parallax effect */}
+      <div className="relative h-80 overflow-hidden">
+        <img
+          src={game_img}
+          alt={game_name}
+          loading="lazy"
+          className="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent"></div>
+      </div>
+      
+      {/* Content overlay */}
+      <div className="absolute inset-0 z-20 flex flex-col justify-end p-6 pointer-events-none">
+        <div className="transform transition-all duration-500 group-hover:translate-y-0 translate-y-2">
+          <h2 className="text-3xl font-bold mb-3 drop-shadow-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-200">
+            {game_name}
+          </h2>
+          <p className="text-gray-300 text-base mb-6 line-clamp-2 leading-relaxed">
+            {game_description}
+          </p>
+          <div className="flex items-center justify-between">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+              <p className="text-xs text-gray-400 uppercase tracking-wider">Cuota base</p>
+              <p className="text-xl font-bold text-cyan-400">{house_odds}x</p>
+            </div>
+            <div className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold py-3 px-6 rounded-xl shadow-xl transition-all duration-300 ease-in-out group-hover:from-cyan-400 group-hover:to-purple-400 group-hover:shadow-2xl group-hover:shadow-purple-500/50">
+              <span className="flex items-center gap-2">
+                🎮 Jugar Ahora
+              </span>
+            </div>
           </div>
         </div>
       </div>
