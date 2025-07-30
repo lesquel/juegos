@@ -55,6 +55,9 @@ const PlayMarketplacePuzleLazyRouteImport = createFileRoute(
 const PlayMarketplacePongLazyRouteImport = createFileRoute(
   '/play/marketplace/pong',
 )()
+const PlayMarketplaceMemoryGameLazyRouteImport = createFileRoute(
+  '/play/marketplace/memory-game',
+)()
 const PlayMarketplaceMaquinaTragamonedasReactLazyRouteImport = createFileRoute(
   '/play/marketplace/maquina-tragamonedas-react',
 )()
@@ -241,6 +244,14 @@ const PlayMarketplacePongLazyRoute = PlayMarketplacePongLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/play/marketplace/pong.lazy').then((d) => d.Route),
 )
+const PlayMarketplaceMemoryGameLazyRoute =
+  PlayMarketplaceMemoryGameLazyRouteImport.update({
+    id: '/play/marketplace/memory-game',
+    path: '/play/marketplace/memory-game',
+    getParentRoute: () => rootRouteImport,
+  } as any).lazy(() =>
+    import('./routes/play/marketplace/memory-game.lazy').then((d) => d.Route),
+  )
 const PlayMarketplaceMaquinaTragamonedasReactLazyRoute =
   PlayMarketplaceMaquinaTragamonedasReactLazyRouteImport.update({
     id: '/play/marketplace/maquina-tragamonedas-react',
@@ -395,6 +406,7 @@ export interface FileRoutesByFullPath {
   '/play/marketplace/lost-city': typeof PlayMarketplaceLostCityLazyRoute
   '/play/marketplace/lost-on-stranger-terra': typeof PlayMarketplaceLostOnStrangerTerraLazyRoute
   '/play/marketplace/maquina-tragamonedas-react': typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
+  '/play/marketplace/memory-game': typeof PlayMarketplaceMemoryGameLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
   '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
@@ -434,6 +446,7 @@ export interface FileRoutesByTo {
   '/play/marketplace/lost-city': typeof PlayMarketplaceLostCityLazyRoute
   '/play/marketplace/lost-on-stranger-terra': typeof PlayMarketplaceLostOnStrangerTerraLazyRoute
   '/play/marketplace/maquina-tragamonedas-react': typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
+  '/play/marketplace/memory-game': typeof PlayMarketplaceMemoryGameLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
   '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
@@ -476,6 +489,7 @@ export interface FileRoutesById {
   '/play/marketplace/lost-city': typeof PlayMarketplaceLostCityLazyRoute
   '/play/marketplace/lost-on-stranger-terra': typeof PlayMarketplaceLostOnStrangerTerraLazyRoute
   '/play/marketplace/maquina-tragamonedas-react': typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
+  '/play/marketplace/memory-game': typeof PlayMarketplaceMemoryGameLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
   '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
@@ -519,6 +533,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/lost-city'
     | '/play/marketplace/lost-on-stranger-terra'
     | '/play/marketplace/maquina-tragamonedas-react'
+    | '/play/marketplace/memory-game'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
     | '/play/marketplace/rock-paper-scissors'
@@ -558,6 +573,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/lost-city'
     | '/play/marketplace/lost-on-stranger-terra'
     | '/play/marketplace/maquina-tragamonedas-react'
+    | '/play/marketplace/memory-game'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
     | '/play/marketplace/rock-paper-scissors'
@@ -599,6 +615,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/lost-city'
     | '/play/marketplace/lost-on-stranger-terra'
     | '/play/marketplace/maquina-tragamonedas-react'
+    | '/play/marketplace/memory-game'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
     | '/play/marketplace/rock-paper-scissors'
@@ -635,6 +652,7 @@ export interface RootRouteChildren {
   PlayMarketplaceLostCityLazyRoute: typeof PlayMarketplaceLostCityLazyRoute
   PlayMarketplaceLostOnStrangerTerraLazyRoute: typeof PlayMarketplaceLostOnStrangerTerraLazyRoute
   PlayMarketplaceMaquinaTragamonedasReactLazyRoute: typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
+  PlayMarketplaceMemoryGameLazyRoute: typeof PlayMarketplaceMemoryGameLazyRoute
   PlayMarketplacePongLazyRoute: typeof PlayMarketplacePongLazyRoute
   PlayMarketplacePuzleLazyRoute: typeof PlayMarketplacePuzleLazyRoute
   PlayMarketplaceRockPaperScissorsLazyRoute: typeof PlayMarketplaceRockPaperScissorsLazyRoute
@@ -808,6 +826,13 @@ declare module '@tanstack/react-router' {
       path: '/play/marketplace/pong'
       fullPath: '/play/marketplace/pong'
       preLoaderRoute: typeof PlayMarketplacePongLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play/marketplace/memory-game': {
+      id: '/play/marketplace/memory-game'
+      path: '/play/marketplace/memory-game'
+      fullPath: '/play/marketplace/memory-game'
+      preLoaderRoute: typeof PlayMarketplaceMemoryGameLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/play/marketplace/maquina-tragamonedas-react': {
@@ -996,6 +1021,7 @@ const rootRouteChildren: RootRouteChildren = {
     PlayMarketplaceLostOnStrangerTerraLazyRoute,
   PlayMarketplaceMaquinaTragamonedasReactLazyRoute:
     PlayMarketplaceMaquinaTragamonedasReactLazyRoute,
+  PlayMarketplaceMemoryGameLazyRoute: PlayMarketplaceMemoryGameLazyRoute,
   PlayMarketplacePongLazyRoute: PlayMarketplacePongLazyRoute,
   PlayMarketplacePuzleLazyRoute: PlayMarketplacePuzleLazyRoute,
   PlayMarketplaceRockPaperScissorsLazyRoute:
