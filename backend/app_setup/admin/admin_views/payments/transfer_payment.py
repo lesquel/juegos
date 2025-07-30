@@ -1,8 +1,10 @@
 from app_setup.admin.mixins import ImageUploadAdminMixin
+from infrastructure.db.connection import AsyncSessionLocal
 from infrastructure.db.models import TransferPaymentModel
+from infrastructure.db.models.user.user_model import UserModel
 from markupsafe import Markup
 from sqladmin import ModelView
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 from starlette.requests import Request
 
@@ -87,9 +89,9 @@ class TransferPaymentAdmin(
     @staticmethod
     def get_badge_state(state_value: str) -> str:
         """Devuelve el color del badge según el estado"""
-        if state_value == "APPROVED":
+        if state_value == "completed":
             return "success"
-        elif state_value == "PENDING":
+        elif state_value == "pending":
             return "warning"
         return "danger"
 
@@ -134,3 +136,85 @@ class TransferPaymentAdmin(
                 | (UserModel.email.ilike(f"%{search_term}%"))
             )
         return query
+
+    async def on_model_edit(
+        self, data: dict, model: TransferPaymentModel, is_created: bool
+    ) -> None:
+        """Se ejecuta después de editar un modelo"""
+
+        try:
+            if not is_created and str(model.transfer_state).lower() == "completed":
+                async with AsyncSessionLocal() as session:
+                    # Obtener el estado original desde la base de datos
+                    result = await session.execute(
+                        select(TransferPaymentModel.transfer_state).where(
+                            TransferPaymentModel.transfer_id == model.transfer_id
+                        )
+                    )
+                    original_state = result.scalar_one_or_none()
+
+                    # Si el estado original no era COMPLETED, actualizamos el saldo
+                    if (
+                        original_state is not None
+                        and str(original_state).lower() != "completed"
+                    ):
+                        # Sumar la cantidad al saldo del usuario
+                        update_result = await session.execute(
+                            update(UserModel)
+                            .where(UserModel.user_id == model.user_id)
+                            .values(
+                                virtual_currency=UserModel.virtual_currency
+                                + model.transfer_amount
+                            )
+                        )
+
+                        if update_result.rowcount == 1:
+                            await session.commit()
+
+        except Exception:
+            import traceback
+
+            traceback.print_exc()
+            raise
+
+    async def after_model_change(
+        self, data, model, is_created, request: Request
+    ) -> None:
+        """Se ejecuta después de crear o actualizar un modelo"""
+
+        try:
+            # Solo procesar si es una actualización y el estado es COMPLETED
+
+            if not is_created and str(model.transfer_state).lower() == "completed":
+                async with AsyncSessionLocal() as session:
+                    # Obtener el estado original desde la base de datos
+                    result = await session.execute(
+                        select(TransferPaymentModel.transfer_state).where(
+                            TransferPaymentModel.transfer_id == model.transfer_id
+                        )
+                    )
+                    original_state = result.scalar_one_or_none()
+
+                    # Si el estado original no era COMPLETED, actualizamos el saldo
+                    if (
+                        original_state is not None
+                        and str(original_state).lower() != "completed"
+                    ):
+                        # Sumar la cantidad al saldo del usuario
+                        result = await session.execute(
+                            update(UserModel)
+                            .where(UserModel.user_id == model.user_id)
+                            .values(
+                                virtual_currency=UserModel.virtual_currency
+                                + model.transfer_amount
+                            )
+                        )
+
+                        if result.rowcount == 1:
+                            await session.commit()
+
+        except Exception:
+            import traceback
+
+            traceback.print_exc()
+            raise
