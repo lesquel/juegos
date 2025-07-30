@@ -14,10 +14,14 @@
 }
 
 h1 {
-  font-size: 2.5rem;
-  margin-top: 1rem; /* Adjusted margin */
-  margin-bottom: 1rem;
-  color: #61dafb;
+  font-size: 3.5rem;
+  margin-bottom: .5rem;
+  color: transparent;
+  background: linear-gradient(to right, #61dafb, #a777e3); /* Gradient for title */
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 0 15px rgba(167, 119, 227, 0.6); /* Subtle text shadow */
+  font-weight: bold;
 }
 
 .game-info {
@@ -26,31 +30,38 @@ h1 {
   align-items: center;
   width: 100%;
   max-width: 600px;
-  margin-bottom: 1rem; /* Adjusted margin */
-  padding: 0.5rem 1rem;
-  background-color: #3a3f47;
-  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  padding: .5rem 2rem; /* Increased padding */
+  background: linear-gradient(to right, #3a3f47, #4a4f57); /* Gradient background */
+  border-radius: 15px; /* More rounded corners */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
 }
 
 .game-info p {
-  font-size: 1.2rem;
+  font-size: 1.5rem; /* Larger font for moves */
   margin: 0;
+  color: #f0f0f0; /* Lighter color for contrast */
+  font-weight: bold;
 }
 
 .btn-reset, .btn-play-again {
-  background-color: #61dafb;
+  background: linear-gradient(to right, #61dafb, #a777e3); /* Gradient for button */
   color: #282c34;
   border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 5px;
+  padding: .7rem 1rem; /* Larger padding */
+  border-radius: 50px; /* Pill shape */
   cursor: pointer;
-  font-size: 1rem;
+  font-size: .9rem;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease; /* Smooth transitions for all properties */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Button shadow */
 }
 
 .btn-reset:hover, .btn-play-again:hover {
-  background-color: #4fa3d7;
+  transform: translateY(-3px); /* Lift effect */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Deeper shadow on hover */
+  opacity: 0.9; /* Slight opacity change */
 }
 
 .game-board {
@@ -185,6 +196,9 @@ h1 {
   }
   .game-over-content p {
     font-size: 1rem;
+  }
+  .memory-game-container {
+    padding: .8rem;
   }
 }
 
