@@ -46,6 +46,9 @@ const PlayMarketplaceRuletacasinoLazyRouteImport = createFileRoute(
 const PlayMarketplaceRuletaCasinoLazyRouteImport = createFileRoute(
   '/play/marketplace/ruleta-casino',
 )()
+const PlayMarketplaceRockPaperScissorsLazyRouteImport = createFileRoute(
+  '/play/marketplace/rock-paper-scissors',
+)()
 const PlayMarketplacePuzleLazyRouteImport = createFileRoute(
   '/play/marketplace/puzle',
 )()
@@ -80,6 +83,9 @@ const PlayMarketplaceDadosLazyRouteImport = createFileRoute(
   '/play/marketplace/dados',
 )()
 const PlayMarketplaceALazyRouteImport = createFileRoute('/play/marketplace/a')()
+const PlayMarketplace2048LazyRouteImport = createFileRoute(
+  '/play/marketplace/2048',
+)()
 const GamesIdMatchesLazyRouteImport = createFileRoute('/games/$id/matches')()
 
 const GamesLazyRoute = GamesLazyRouteImport.update({
@@ -210,6 +216,16 @@ const PlayMarketplaceRuletaCasinoLazyRoute =
   } as any).lazy(() =>
     import('./routes/play/marketplace/ruleta-casino.lazy').then((d) => d.Route),
   )
+const PlayMarketplaceRockPaperScissorsLazyRoute =
+  PlayMarketplaceRockPaperScissorsLazyRouteImport.update({
+    id: '/play/marketplace/rock-paper-scissors',
+    path: '/play/marketplace/rock-paper-scissors',
+    getParentRoute: () => rootRouteImport,
+  } as any).lazy(() =>
+    import('./routes/play/marketplace/rock-paper-scissors.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 const PlayMarketplacePuzleLazyRoute =
   PlayMarketplacePuzleLazyRouteImport.update({
     id: '/play/marketplace/puzle',
@@ -312,6 +328,13 @@ const PlayMarketplaceALazyRoute = PlayMarketplaceALazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/play/marketplace/a.lazy').then((d) => d.Route),
 )
+const PlayMarketplace2048LazyRoute = PlayMarketplace2048LazyRouteImport.update({
+  id: '/play/marketplace/2048',
+  path: '/play/marketplace/2048',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/play/marketplace/2048.lazy').then((d) => d.Route),
+)
 const GamesIdMatchesLazyRoute = GamesIdMatchesLazyRouteImport.update({
   id: '/$id/matches',
   path: '/$id/matches',
@@ -361,6 +384,7 @@ export interface FileRoutesByFullPath {
   '/play/marketplace/lostCity': typeof PlayMarketplaceLostCityRoute
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
+  '/play/marketplace/2048': typeof PlayMarketplace2048LazyRoute
   '/play/marketplace/a': typeof PlayMarketplaceALazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
   '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
@@ -373,6 +397,7 @@ export interface FileRoutesByFullPath {
   '/play/marketplace/maquina-tragamonedas-react': typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
+  '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
   '/play/marketplace/ruleta-casino': typeof PlayMarketplaceRuletaCasinoLazyRoute
   '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
   '/play/marketplace/squad-13': typeof PlayMarketplaceSquad13LazyRoute
@@ -398,6 +423,7 @@ export interface FileRoutesByTo {
   '/play/marketplace/lostCity': typeof PlayMarketplaceLostCityRoute
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
+  '/play/marketplace/2048': typeof PlayMarketplace2048LazyRoute
   '/play/marketplace/a': typeof PlayMarketplaceALazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
   '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
@@ -410,6 +436,7 @@ export interface FileRoutesByTo {
   '/play/marketplace/maquina-tragamonedas-react': typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
+  '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
   '/play/marketplace/ruleta-casino': typeof PlayMarketplaceRuletaCasinoLazyRoute
   '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
   '/play/marketplace/squad-13': typeof PlayMarketplaceSquad13LazyRoute
@@ -438,6 +465,7 @@ export interface FileRoutesById {
   '/play/marketplace/lostCity': typeof PlayMarketplaceLostCityRoute
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
+  '/play/marketplace/2048': typeof PlayMarketplace2048LazyRoute
   '/play/marketplace/a': typeof PlayMarketplaceALazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
   '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
@@ -450,6 +478,7 @@ export interface FileRoutesById {
   '/play/marketplace/maquina-tragamonedas-react': typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
+  '/play/marketplace/rock-paper-scissors': typeof PlayMarketplaceRockPaperScissorsLazyRoute
   '/play/marketplace/ruleta-casino': typeof PlayMarketplaceRuletaCasinoLazyRoute
   '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
   '/play/marketplace/squad-13': typeof PlayMarketplaceSquad13LazyRoute
@@ -479,6 +508,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/lostCity'
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
+    | '/play/marketplace/2048'
     | '/play/marketplace/a'
     | '/play/marketplace/dados'
     | '/play/marketplace/dados-react'
@@ -491,6 +521,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/maquina-tragamonedas-react'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
+    | '/play/marketplace/rock-paper-scissors'
     | '/play/marketplace/ruleta-casino'
     | '/play/marketplace/ruletacasino'
     | '/play/marketplace/squad-13'
@@ -516,6 +547,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/lostCity'
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
+    | '/play/marketplace/2048'
     | '/play/marketplace/a'
     | '/play/marketplace/dados'
     | '/play/marketplace/dados-react'
@@ -528,6 +560,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/maquina-tragamonedas-react'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
+    | '/play/marketplace/rock-paper-scissors'
     | '/play/marketplace/ruleta-casino'
     | '/play/marketplace/ruletacasino'
     | '/play/marketplace/squad-13'
@@ -555,6 +588,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/lostCity'
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
+    | '/play/marketplace/2048'
     | '/play/marketplace/a'
     | '/play/marketplace/dados'
     | '/play/marketplace/dados-react'
@@ -567,6 +601,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/maquina-tragamonedas-react'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
+    | '/play/marketplace/rock-paper-scissors'
     | '/play/marketplace/ruleta-casino'
     | '/play/marketplace/ruletacasino'
     | '/play/marketplace/squad-13'
@@ -589,6 +624,7 @@ export interface RootRouteChildren {
   PlayMarketplaceTheSocietyOfMultiphobicsRoute: typeof PlayMarketplaceTheSocietyOfMultiphobicsRoute
   PlayMarketplaceLostCityRoute: typeof PlayMarketplaceLostCityRoute
   PlayMarketplaceMaquinaTragamonedasRoute: typeof PlayMarketplaceMaquinaTragamonedasRoute
+  PlayMarketplace2048LazyRoute: typeof PlayMarketplace2048LazyRoute
   PlayMarketplaceALazyRoute: typeof PlayMarketplaceALazyRoute
   PlayMarketplaceDadosLazyRoute: typeof PlayMarketplaceDadosLazyRoute
   PlayMarketplaceDadosReactLazyRoute: typeof PlayMarketplaceDadosReactLazyRoute
@@ -601,6 +637,7 @@ export interface RootRouteChildren {
   PlayMarketplaceMaquinaTragamonedasReactLazyRoute: typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
   PlayMarketplacePongLazyRoute: typeof PlayMarketplacePongLazyRoute
   PlayMarketplacePuzleLazyRoute: typeof PlayMarketplacePuzleLazyRoute
+  PlayMarketplaceRockPaperScissorsLazyRoute: typeof PlayMarketplaceRockPaperScissorsLazyRoute
   PlayMarketplaceRuletaCasinoLazyRoute: typeof PlayMarketplaceRuletaCasinoLazyRoute
   PlayMarketplaceRuletacasinoLazyRoute: typeof PlayMarketplaceRuletacasinoLazyRoute
   PlayMarketplaceSquad13LazyRoute: typeof PlayMarketplaceSquad13LazyRoute
@@ -752,6 +789,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayMarketplaceRuletaCasinoLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/marketplace/rock-paper-scissors': {
+      id: '/play/marketplace/rock-paper-scissors'
+      path: '/play/marketplace/rock-paper-scissors'
+      fullPath: '/play/marketplace/rock-paper-scissors'
+      preLoaderRoute: typeof PlayMarketplaceRockPaperScissorsLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/play/marketplace/puzle': {
       id: '/play/marketplace/puzle'
       path: '/play/marketplace/puzle'
@@ -834,6 +878,13 @@ declare module '@tanstack/react-router' {
       path: '/play/marketplace/a'
       fullPath: '/play/marketplace/a'
       preLoaderRoute: typeof PlayMarketplaceALazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play/marketplace/2048': {
+      id: '/play/marketplace/2048'
+      path: '/play/marketplace/2048'
+      fullPath: '/play/marketplace/2048'
+      preLoaderRoute: typeof PlayMarketplace2048LazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/games/$id/matches': {
@@ -930,6 +981,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlayMarketplaceLostCityRoute: PlayMarketplaceLostCityRoute,
   PlayMarketplaceMaquinaTragamonedasRoute:
     PlayMarketplaceMaquinaTragamonedasRoute,
+  PlayMarketplace2048LazyRoute: PlayMarketplace2048LazyRoute,
   PlayMarketplaceALazyRoute: PlayMarketplaceALazyRoute,
   PlayMarketplaceDadosLazyRoute: PlayMarketplaceDadosLazyRoute,
   PlayMarketplaceDadosReactLazyRoute: PlayMarketplaceDadosReactLazyRoute,
@@ -946,6 +998,8 @@ const rootRouteChildren: RootRouteChildren = {
     PlayMarketplaceMaquinaTragamonedasReactLazyRoute,
   PlayMarketplacePongLazyRoute: PlayMarketplacePongLazyRoute,
   PlayMarketplacePuzleLazyRoute: PlayMarketplacePuzleLazyRoute,
+  PlayMarketplaceRockPaperScissorsLazyRoute:
+    PlayMarketplaceRockPaperScissorsLazyRoute,
   PlayMarketplaceRuletaCasinoLazyRoute: PlayMarketplaceRuletaCasinoLazyRoute,
   PlayMarketplaceRuletacasinoLazyRoute: PlayMarketplaceRuletacasinoLazyRoute,
   PlayMarketplaceSquad13LazyRoute: PlayMarketplaceSquad13LazyRoute,

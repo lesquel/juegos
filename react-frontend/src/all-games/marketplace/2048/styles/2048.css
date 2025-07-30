@@ -1,0 +1,193 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden; /* Prevent scrollbars on the body */
+}
+
+.game-container-2048 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: #faf8ef;
+    color: #776e65;
+    /* padding: 1rem; */
+    padding-bottom: 70px;
+    box-sizing: border-box;
+}
+
+.header-2048 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: .5rem;
+}
+
+.title-2048 {
+    font-size: 4rem;
+    font-weight: 700;
+}
+
+.scores-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.score-box {
+    background-color: #bbada0;
+    color: #f9f6f2;
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.btn-2048 {
+    background-color: #8f7a66;
+    color: #f9f6f2;
+    border: none;
+    padding: 0.8rem 1rem;
+    border-radius: 3px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.grid-container {
+    position: relative;
+    width: 90vmin; 
+    height: 90vmin; 
+    max-width: 500px;
+    max-height: 500px;
+    background-color: #bbada0;
+    border-radius: 6px;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.grid-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.grid-cell {
+    background-color: rgba(238, 228, 218, 0.35);
+    border-radius: 3px;
+}
+
+.tiles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.tile {
+    --tile-size: calc((100% - 15px * 5) / 4);
+    --gap-size: 15px;
+    position: absolute;
+    top: calc(var(--row) * (var(--tile-size) + var(--gap-size)) + var(--gap-size));
+    left: calc(var(--col) * (var(--tile-size) + var(--gap-size)) + var(--gap-size));
+    width: var(--tile-size);
+    height: var(--tile-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    border-radius: 3px;
+    transition: all 0.3s ease-in-out; /* Slower transition */
+}
+
+.tile-2 { background: #eee4da; color: #776e65; font-size: 2.5rem; }
+.tile-4 { background: #ede0c8; color: #776e65; font-size: 2.5rem; }
+.tile-8 { background: #f2b179; color: #f9f6f2; font-size: 2.5rem; }
+.tile-16 { background: #f59563; color: #f9f6f2; font-size: 2.2rem; }
+.tile-32 { background: #f67c5f; color: #f9f6f2; font-size: 2.2rem; }
+.tile-64 { background: #f65e3b; color: #f9f6f2; font-size: 2.2rem; }
+.tile-128 { background: #edcf72; color: #f9f6f2; font-size: 2rem; }
+.tile-256 { background: #edcc61; color: #f9f6f2; font-size: 2rem; }
+.tile-512 { background: #edc850; color: #f9f6f2; font-size: 2rem; }
+.tile-1024 { background: #edc53f; color: #f9f6f2; font-size: 1.5rem; }
+.tile-2048 { background: #edc22e; color: #f9f6f2; font-size: 1.5rem; }
+
+.tile.new {
+    animation: newTile 0.3s ease-in-out;
+}
+
+.tile.merged {
+    animation: mergedTile 0.3s ease-in-out;
+}
+
+@keyframes newTile {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+@keyframes mergedTile {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.game-over-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(238, 228, 218, 0.73);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    animation: fadeIn 0.5s;
+}
+
+.game-over-box h2 {
+    font-size: 3rem;
+    color: #776e65;
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+    .header-2048 {
+        flex-direction: column;
+        gap: .5rem;
+    }
+
+    .grid-container {
+        width: 95vw;
+        height: 95vw;
+    }
+
+    .tile {
+        font-size: 1.5rem !important; /* Force smaller font size */
+    }
+    .title-2048 {
+        font-size: 3rem;
+        line-height: 2.8rem;
+    }
+    .score-box {
+        font-size: .8rem;
+    }
+    .btn-2048 {
+        font-size: .8rem;
+    }
+}
