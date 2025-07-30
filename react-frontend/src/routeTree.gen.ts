@@ -30,39 +30,20 @@ const AuthRegisterLazyRouteImport = createFileRoute('/auth/register')()
 const AuthLoginLazyRouteImport = createFileRoute('/auth/login')()
 const GamesIdIndexLazyRouteImport = createFileRoute('/games/$id/')()
 const PlayOnlineTictacLazyRouteImport = createFileRoute('/play/online/tictac')()
-const PlayOnlinePongLazyRouteImport = createFileRoute('/play/online/pong')()
 const PlayOnlineConnect4LazyRouteImport = createFileRoute(
   '/play/online/connect4',
 )()
 const PlayMarketplaceTheSocietyOfMultiphobicsLazyRouteImport = createFileRoute(
   '/play/marketplace/the-society-of-multiphobics',
 )()
-const PlayMarketplaceSquad13LazyRouteImport = createFileRoute(
-  '/play/marketplace/squad-13',
-)()
 const PlayMarketplaceRuletacasinoLazyRouteImport = createFileRoute(
   '/play/marketplace/ruletacasino',
-)()
-const PlayMarketplaceRuletaCasinoLazyRouteImport = createFileRoute(
-  '/play/marketplace/ruleta-casino',
 )()
 const PlayMarketplacePuzleLazyRouteImport = createFileRoute(
   '/play/marketplace/puzle',
 )()
 const PlayMarketplacePongLazyRouteImport = createFileRoute(
   '/play/marketplace/pong',
-)()
-const PlayMarketplaceMaquinaTragamonedasReactLazyRouteImport = createFileRoute(
-  '/play/marketplace/maquina-tragamonedas-react',
-)()
-const PlayMarketplaceLostOnStrangerTerraLazyRouteImport = createFileRoute(
-  '/play/marketplace/lost-on-stranger-terra',
-)()
-const PlayMarketplaceLostCityLazyRouteImport = createFileRoute(
-  '/play/marketplace/lost-city',
-)()
-const PlayMarketplaceHipodromocasinoReactLazyRouteImport = createFileRoute(
-  '/play/marketplace/hipodromocasino-react',
 )()
 const PlayMarketplaceHipodromocasinoLazyRouteImport = createFileRoute(
   '/play/marketplace/hipodromocasino',
@@ -73,13 +54,9 @@ const PlayMarketplaceGolfrogLazyRouteImport = createFileRoute(
 const PlayMarketplaceDoNotMakeLazyRouteImport = createFileRoute(
   '/play/marketplace/do-not-make',
 )()
-const PlayMarketplaceDadosReactLazyRouteImport = createFileRoute(
-  '/play/marketplace/dados-react',
-)()
 const PlayMarketplaceDadosLazyRouteImport = createFileRoute(
   '/play/marketplace/dados',
 )()
-const PlayMarketplaceALazyRouteImport = createFileRoute('/play/marketplace/a')()
 const GamesIdMatchesLazyRouteImport = createFileRoute('/games/$id/matches')()
 
 const GamesLazyRoute = GamesLazyRouteImport.update({
@@ -162,13 +139,6 @@ const PlayOnlineTictacLazyRoute = PlayOnlineTictacLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/play.online.tictac.lazy').then((d) => d.Route),
 )
-const PlayOnlinePongLazyRoute = PlayOnlinePongLazyRouteImport.update({
-  id: '/play/online/pong',
-  path: '/play/online/pong',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() =>
-  import('./routes/play.online.pong.lazy').then((d) => d.Route),
-)
 const PlayOnlineConnect4LazyRoute = PlayOnlineConnect4LazyRouteImport.update({
   id: '/play/online/connect4',
   path: '/play/online/connect4',
@@ -186,14 +156,6 @@ const PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute =
       (d) => d.Route,
     ),
   )
-const PlayMarketplaceSquad13LazyRoute =
-  PlayMarketplaceSquad13LazyRouteImport.update({
-    id: '/play/marketplace/squad-13',
-    path: '/play/marketplace/squad-13',
-    getParentRoute: () => rootRouteImport,
-  } as any).lazy(() =>
-    import('./routes/play/marketplace/squad-13.lazy').then((d) => d.Route),
-  )
 const PlayMarketplaceRuletacasinoLazyRoute =
   PlayMarketplaceRuletacasinoLazyRouteImport.update({
     id: '/play/marketplace/ruletacasino',
@@ -201,14 +163,6 @@ const PlayMarketplaceRuletacasinoLazyRoute =
     getParentRoute: () => rootRouteImport,
   } as any).lazy(() =>
     import('./routes/play/marketplace/ruletacasino.lazy').then((d) => d.Route),
-  )
-const PlayMarketplaceRuletaCasinoLazyRoute =
-  PlayMarketplaceRuletaCasinoLazyRouteImport.update({
-    id: '/play/marketplace/ruleta-casino',
-    path: '/play/marketplace/ruleta-casino',
-    getParentRoute: () => rootRouteImport,
-  } as any).lazy(() =>
-    import('./routes/play/marketplace/ruleta-casino.lazy').then((d) => d.Route),
   )
 const PlayMarketplacePuzleLazyRoute =
   PlayMarketplacePuzleLazyRouteImport.update({
@@ -225,44 +179,6 @@ const PlayMarketplacePongLazyRoute = PlayMarketplacePongLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/play/marketplace/pong.lazy').then((d) => d.Route),
 )
-const PlayMarketplaceMaquinaTragamonedasReactLazyRoute =
-  PlayMarketplaceMaquinaTragamonedasReactLazyRouteImport.update({
-    id: '/play/marketplace/maquina-tragamonedas-react',
-    path: '/play/marketplace/maquina-tragamonedas-react',
-    getParentRoute: () => rootRouteImport,
-  } as any).lazy(() =>
-    import('./routes/play/marketplace/maquina-tragamonedas-react.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-const PlayMarketplaceLostOnStrangerTerraLazyRoute =
-  PlayMarketplaceLostOnStrangerTerraLazyRouteImport.update({
-    id: '/play/marketplace/lost-on-stranger-terra',
-    path: '/play/marketplace/lost-on-stranger-terra',
-    getParentRoute: () => rootRouteImport,
-  } as any).lazy(() =>
-    import('./routes/play/marketplace/lost-on-stranger-terra.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-const PlayMarketplaceLostCityLazyRoute =
-  PlayMarketplaceLostCityLazyRouteImport.update({
-    id: '/play/marketplace/lost-city',
-    path: '/play/marketplace/lost-city',
-    getParentRoute: () => rootRouteImport,
-  } as any).lazy(() =>
-    import('./routes/play/marketplace/lost-city.lazy').then((d) => d.Route),
-  )
-const PlayMarketplaceHipodromocasinoReactLazyRoute =
-  PlayMarketplaceHipodromocasinoReactLazyRouteImport.update({
-    id: '/play/marketplace/hipodromocasino-react',
-    path: '/play/marketplace/hipodromocasino-react',
-    getParentRoute: () => rootRouteImport,
-  } as any).lazy(() =>
-    import('./routes/play/marketplace/hipodromocasino-react.lazy').then(
-      (d) => d.Route,
-    ),
-  )
 const PlayMarketplaceHipodromocasinoLazyRoute =
   PlayMarketplaceHipodromocasinoLazyRouteImport.update({
     id: '/play/marketplace/hipodromocasino',
@@ -289,14 +205,6 @@ const PlayMarketplaceDoNotMakeLazyRoute =
   } as any).lazy(() =>
     import('./routes/play/marketplace/do-not-make.lazy').then((d) => d.Route),
   )
-const PlayMarketplaceDadosReactLazyRoute =
-  PlayMarketplaceDadosReactLazyRouteImport.update({
-    id: '/play/marketplace/dados-react',
-    path: '/play/marketplace/dados-react',
-    getParentRoute: () => rootRouteImport,
-  } as any).lazy(() =>
-    import('./routes/play/marketplace/dados-react.lazy').then((d) => d.Route),
-  )
 const PlayMarketplaceDadosLazyRoute =
   PlayMarketplaceDadosLazyRouteImport.update({
     id: '/play/marketplace/dados',
@@ -305,13 +213,6 @@ const PlayMarketplaceDadosLazyRoute =
   } as any).lazy(() =>
     import('./routes/play/marketplace/dados.lazy').then((d) => d.Route),
   )
-const PlayMarketplaceALazyRoute = PlayMarketplaceALazyRouteImport.update({
-  id: '/play/marketplace/a',
-  path: '/play/marketplace/a',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() =>
-  import('./routes/play/marketplace/a.lazy').then((d) => d.Route),
-)
 const GamesIdMatchesLazyRoute = GamesIdMatchesLazyRouteImport.update({
   id: '/$id/matches',
   path: '/$id/matches',
@@ -361,24 +262,15 @@ export interface FileRoutesByFullPath {
   '/play/marketplace/lostCity': typeof PlayMarketplaceLostCityRoute
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
-  '/play/marketplace/a': typeof PlayMarketplaceALazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
-  '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
   '/play/marketplace/hipodromocasino': typeof PlayMarketplaceHipodromocasinoLazyRoute
-  '/play/marketplace/hipodromocasino-react': typeof PlayMarketplaceHipodromocasinoReactLazyRoute
-  '/play/marketplace/lost-city': typeof PlayMarketplaceLostCityLazyRoute
-  '/play/marketplace/lost-on-stranger-terra': typeof PlayMarketplaceLostOnStrangerTerraLazyRoute
-  '/play/marketplace/maquina-tragamonedas-react': typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
-  '/play/marketplace/ruleta-casino': typeof PlayMarketplaceRuletaCasinoLazyRoute
   '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
-  '/play/marketplace/squad-13': typeof PlayMarketplaceSquad13LazyRoute
   '/play/marketplace/the-society-of-multiphobics': typeof PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute
   '/play/online/connect4': typeof PlayOnlineConnect4LazyRoute
-  '/play/online/pong': typeof PlayOnlinePongLazyRoute
   '/play/online/tictac': typeof PlayOnlineTictacLazyRoute
   '/games/$id': typeof GamesIdIndexLazyRoute
 }
@@ -398,24 +290,15 @@ export interface FileRoutesByTo {
   '/play/marketplace/lostCity': typeof PlayMarketplaceLostCityRoute
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
-  '/play/marketplace/a': typeof PlayMarketplaceALazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
-  '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
   '/play/marketplace/hipodromocasino': typeof PlayMarketplaceHipodromocasinoLazyRoute
-  '/play/marketplace/hipodromocasino-react': typeof PlayMarketplaceHipodromocasinoReactLazyRoute
-  '/play/marketplace/lost-city': typeof PlayMarketplaceLostCityLazyRoute
-  '/play/marketplace/lost-on-stranger-terra': typeof PlayMarketplaceLostOnStrangerTerraLazyRoute
-  '/play/marketplace/maquina-tragamonedas-react': typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
-  '/play/marketplace/ruleta-casino': typeof PlayMarketplaceRuletaCasinoLazyRoute
   '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
-  '/play/marketplace/squad-13': typeof PlayMarketplaceSquad13LazyRoute
   '/play/marketplace/the-society-of-multiphobics': typeof PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute
   '/play/online/connect4': typeof PlayOnlineConnect4LazyRoute
-  '/play/online/pong': typeof PlayOnlinePongLazyRoute
   '/play/online/tictac': typeof PlayOnlineTictacLazyRoute
   '/games/$id': typeof GamesIdIndexLazyRoute
 }
@@ -438,24 +321,15 @@ export interface FileRoutesById {
   '/play/marketplace/lostCity': typeof PlayMarketplaceLostCityRoute
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
-  '/play/marketplace/a': typeof PlayMarketplaceALazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
-  '/play/marketplace/dados-react': typeof PlayMarketplaceDadosReactLazyRoute
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
   '/play/marketplace/hipodromocasino': typeof PlayMarketplaceHipodromocasinoLazyRoute
-  '/play/marketplace/hipodromocasino-react': typeof PlayMarketplaceHipodromocasinoReactLazyRoute
-  '/play/marketplace/lost-city': typeof PlayMarketplaceLostCityLazyRoute
-  '/play/marketplace/lost-on-stranger-terra': typeof PlayMarketplaceLostOnStrangerTerraLazyRoute
-  '/play/marketplace/maquina-tragamonedas-react': typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
   '/play/marketplace/pong': typeof PlayMarketplacePongLazyRoute
   '/play/marketplace/puzle': typeof PlayMarketplacePuzleLazyRoute
-  '/play/marketplace/ruleta-casino': typeof PlayMarketplaceRuletaCasinoLazyRoute
   '/play/marketplace/ruletacasino': typeof PlayMarketplaceRuletacasinoLazyRoute
-  '/play/marketplace/squad-13': typeof PlayMarketplaceSquad13LazyRoute
   '/play/marketplace/the-society-of-multiphobics': typeof PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute
   '/play/online/connect4': typeof PlayOnlineConnect4LazyRoute
-  '/play/online/pong': typeof PlayOnlinePongLazyRoute
   '/play/online/tictac': typeof PlayOnlineTictacLazyRoute
   '/games/$id/': typeof GamesIdIndexLazyRoute
 }
@@ -479,24 +353,15 @@ export interface FileRouteTypes {
     | '/play/marketplace/lostCity'
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
-    | '/play/marketplace/a'
     | '/play/marketplace/dados'
-    | '/play/marketplace/dados-react'
     | '/play/marketplace/do-not-make'
     | '/play/marketplace/golfrog'
     | '/play/marketplace/hipodromocasino'
-    | '/play/marketplace/hipodromocasino-react'
-    | '/play/marketplace/lost-city'
-    | '/play/marketplace/lost-on-stranger-terra'
-    | '/play/marketplace/maquina-tragamonedas-react'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
-    | '/play/marketplace/ruleta-casino'
     | '/play/marketplace/ruletacasino'
-    | '/play/marketplace/squad-13'
     | '/play/marketplace/the-society-of-multiphobics'
     | '/play/online/connect4'
-    | '/play/online/pong'
     | '/play/online/tictac'
     | '/games/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -516,24 +381,15 @@ export interface FileRouteTypes {
     | '/play/marketplace/lostCity'
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
-    | '/play/marketplace/a'
     | '/play/marketplace/dados'
-    | '/play/marketplace/dados-react'
     | '/play/marketplace/do-not-make'
     | '/play/marketplace/golfrog'
     | '/play/marketplace/hipodromocasino'
-    | '/play/marketplace/hipodromocasino-react'
-    | '/play/marketplace/lost-city'
-    | '/play/marketplace/lost-on-stranger-terra'
-    | '/play/marketplace/maquina-tragamonedas-react'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
-    | '/play/marketplace/ruleta-casino'
     | '/play/marketplace/ruletacasino'
-    | '/play/marketplace/squad-13'
     | '/play/marketplace/the-society-of-multiphobics'
     | '/play/online/connect4'
-    | '/play/online/pong'
     | '/play/online/tictac'
     | '/games/$id'
   id:
@@ -555,24 +411,15 @@ export interface FileRouteTypes {
     | '/play/marketplace/lostCity'
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
-    | '/play/marketplace/a'
     | '/play/marketplace/dados'
-    | '/play/marketplace/dados-react'
     | '/play/marketplace/do-not-make'
     | '/play/marketplace/golfrog'
     | '/play/marketplace/hipodromocasino'
-    | '/play/marketplace/hipodromocasino-react'
-    | '/play/marketplace/lost-city'
-    | '/play/marketplace/lost-on-stranger-terra'
-    | '/play/marketplace/maquina-tragamonedas-react'
     | '/play/marketplace/pong'
     | '/play/marketplace/puzle'
-    | '/play/marketplace/ruleta-casino'
     | '/play/marketplace/ruletacasino'
-    | '/play/marketplace/squad-13'
     | '/play/marketplace/the-society-of-multiphobics'
     | '/play/online/connect4'
-    | '/play/online/pong'
     | '/play/online/tictac'
     | '/games/$id/'
   fileRoutesById: FileRoutesById
@@ -589,24 +436,15 @@ export interface RootRouteChildren {
   PlayMarketplaceTheSocietyOfMultiphobicsRoute: typeof PlayMarketplaceTheSocietyOfMultiphobicsRoute
   PlayMarketplaceLostCityRoute: typeof PlayMarketplaceLostCityRoute
   PlayMarketplaceMaquinaTragamonedasRoute: typeof PlayMarketplaceMaquinaTragamonedasRoute
-  PlayMarketplaceALazyRoute: typeof PlayMarketplaceALazyRoute
   PlayMarketplaceDadosLazyRoute: typeof PlayMarketplaceDadosLazyRoute
-  PlayMarketplaceDadosReactLazyRoute: typeof PlayMarketplaceDadosReactLazyRoute
   PlayMarketplaceDoNotMakeLazyRoute: typeof PlayMarketplaceDoNotMakeLazyRoute
   PlayMarketplaceGolfrogLazyRoute: typeof PlayMarketplaceGolfrogLazyRoute
   PlayMarketplaceHipodromocasinoLazyRoute: typeof PlayMarketplaceHipodromocasinoLazyRoute
-  PlayMarketplaceHipodromocasinoReactLazyRoute: typeof PlayMarketplaceHipodromocasinoReactLazyRoute
-  PlayMarketplaceLostCityLazyRoute: typeof PlayMarketplaceLostCityLazyRoute
-  PlayMarketplaceLostOnStrangerTerraLazyRoute: typeof PlayMarketplaceLostOnStrangerTerraLazyRoute
-  PlayMarketplaceMaquinaTragamonedasReactLazyRoute: typeof PlayMarketplaceMaquinaTragamonedasReactLazyRoute
   PlayMarketplacePongLazyRoute: typeof PlayMarketplacePongLazyRoute
   PlayMarketplacePuzleLazyRoute: typeof PlayMarketplacePuzleLazyRoute
-  PlayMarketplaceRuletaCasinoLazyRoute: typeof PlayMarketplaceRuletaCasinoLazyRoute
   PlayMarketplaceRuletacasinoLazyRoute: typeof PlayMarketplaceRuletacasinoLazyRoute
-  PlayMarketplaceSquad13LazyRoute: typeof PlayMarketplaceSquad13LazyRoute
   PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute: typeof PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute
   PlayOnlineConnect4LazyRoute: typeof PlayOnlineConnect4LazyRoute
-  PlayOnlinePongLazyRoute: typeof PlayOnlinePongLazyRoute
   PlayOnlineTictacLazyRoute: typeof PlayOnlineTictacLazyRoute
 }
 
@@ -710,13 +548,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayOnlineTictacLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/play/online/pong': {
-      id: '/play/online/pong'
-      path: '/play/online/pong'
-      fullPath: '/play/online/pong'
-      preLoaderRoute: typeof PlayOnlinePongLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/play/online/connect4': {
       id: '/play/online/connect4'
       path: '/play/online/connect4'
@@ -731,25 +562,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayMarketplaceTheSocietyOfMultiphobicsLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/play/marketplace/squad-13': {
-      id: '/play/marketplace/squad-13'
-      path: '/play/marketplace/squad-13'
-      fullPath: '/play/marketplace/squad-13'
-      preLoaderRoute: typeof PlayMarketplaceSquad13LazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/play/marketplace/ruletacasino': {
       id: '/play/marketplace/ruletacasino'
       path: '/play/marketplace/ruletacasino'
       fullPath: '/play/marketplace/ruletacasino'
       preLoaderRoute: typeof PlayMarketplaceRuletacasinoLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play/marketplace/ruleta-casino': {
-      id: '/play/marketplace/ruleta-casino'
-      path: '/play/marketplace/ruleta-casino'
-      fullPath: '/play/marketplace/ruleta-casino'
-      preLoaderRoute: typeof PlayMarketplaceRuletaCasinoLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/play/marketplace/puzle': {
@@ -764,34 +581,6 @@ declare module '@tanstack/react-router' {
       path: '/play/marketplace/pong'
       fullPath: '/play/marketplace/pong'
       preLoaderRoute: typeof PlayMarketplacePongLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play/marketplace/maquina-tragamonedas-react': {
-      id: '/play/marketplace/maquina-tragamonedas-react'
-      path: '/play/marketplace/maquina-tragamonedas-react'
-      fullPath: '/play/marketplace/maquina-tragamonedas-react'
-      preLoaderRoute: typeof PlayMarketplaceMaquinaTragamonedasReactLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play/marketplace/lost-on-stranger-terra': {
-      id: '/play/marketplace/lost-on-stranger-terra'
-      path: '/play/marketplace/lost-on-stranger-terra'
-      fullPath: '/play/marketplace/lost-on-stranger-terra'
-      preLoaderRoute: typeof PlayMarketplaceLostOnStrangerTerraLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play/marketplace/lost-city': {
-      id: '/play/marketplace/lost-city'
-      path: '/play/marketplace/lost-city'
-      fullPath: '/play/marketplace/lost-city'
-      preLoaderRoute: typeof PlayMarketplaceLostCityLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play/marketplace/hipodromocasino-react': {
-      id: '/play/marketplace/hipodromocasino-react'
-      path: '/play/marketplace/hipodromocasino-react'
-      fullPath: '/play/marketplace/hipodromocasino-react'
-      preLoaderRoute: typeof PlayMarketplaceHipodromocasinoReactLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/play/marketplace/hipodromocasino': {
@@ -815,25 +604,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayMarketplaceDoNotMakeLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/play/marketplace/dados-react': {
-      id: '/play/marketplace/dados-react'
-      path: '/play/marketplace/dados-react'
-      fullPath: '/play/marketplace/dados-react'
-      preLoaderRoute: typeof PlayMarketplaceDadosReactLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/play/marketplace/dados': {
       id: '/play/marketplace/dados'
       path: '/play/marketplace/dados'
       fullPath: '/play/marketplace/dados'
       preLoaderRoute: typeof PlayMarketplaceDadosLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play/marketplace/a': {
-      id: '/play/marketplace/a'
-      path: '/play/marketplace/a'
-      fullPath: '/play/marketplace/a'
-      preLoaderRoute: typeof PlayMarketplaceALazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/games/$id/matches': {
@@ -930,29 +705,17 @@ const rootRouteChildren: RootRouteChildren = {
   PlayMarketplaceLostCityRoute: PlayMarketplaceLostCityRoute,
   PlayMarketplaceMaquinaTragamonedasRoute:
     PlayMarketplaceMaquinaTragamonedasRoute,
-  PlayMarketplaceALazyRoute: PlayMarketplaceALazyRoute,
   PlayMarketplaceDadosLazyRoute: PlayMarketplaceDadosLazyRoute,
-  PlayMarketplaceDadosReactLazyRoute: PlayMarketplaceDadosReactLazyRoute,
   PlayMarketplaceDoNotMakeLazyRoute: PlayMarketplaceDoNotMakeLazyRoute,
   PlayMarketplaceGolfrogLazyRoute: PlayMarketplaceGolfrogLazyRoute,
   PlayMarketplaceHipodromocasinoLazyRoute:
     PlayMarketplaceHipodromocasinoLazyRoute,
-  PlayMarketplaceHipodromocasinoReactLazyRoute:
-    PlayMarketplaceHipodromocasinoReactLazyRoute,
-  PlayMarketplaceLostCityLazyRoute: PlayMarketplaceLostCityLazyRoute,
-  PlayMarketplaceLostOnStrangerTerraLazyRoute:
-    PlayMarketplaceLostOnStrangerTerraLazyRoute,
-  PlayMarketplaceMaquinaTragamonedasReactLazyRoute:
-    PlayMarketplaceMaquinaTragamonedasReactLazyRoute,
   PlayMarketplacePongLazyRoute: PlayMarketplacePongLazyRoute,
   PlayMarketplacePuzleLazyRoute: PlayMarketplacePuzleLazyRoute,
-  PlayMarketplaceRuletaCasinoLazyRoute: PlayMarketplaceRuletaCasinoLazyRoute,
   PlayMarketplaceRuletacasinoLazyRoute: PlayMarketplaceRuletacasinoLazyRoute,
-  PlayMarketplaceSquad13LazyRoute: PlayMarketplaceSquad13LazyRoute,
   PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute:
     PlayMarketplaceTheSocietyOfMultiphobicsLazyRoute,
   PlayOnlineConnect4LazyRoute: PlayOnlineConnect4LazyRoute,
-  PlayOnlinePongLazyRoute: PlayOnlinePongLazyRoute,
   PlayOnlineTictacLazyRoute: PlayOnlineTictacLazyRoute,
 }
 export const routeTree = rootRouteImport
