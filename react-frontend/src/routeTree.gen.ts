@@ -63,6 +63,9 @@ const PlayMarketplaceDoNotMakeLazyRouteImport = createFileRoute(
 const PlayMarketplaceDadosLazyRouteImport = createFileRoute(
   '/play/marketplace/dados',
 )()
+const PlayMarketplaceBlockSortLazyRouteImport = createFileRoute(
+  '/play/marketplace/block-sort',
+)()
 const PlayMarketplace2048LazyRouteImport = createFileRoute(
   '/play/marketplace/2048',
 )()
@@ -240,6 +243,14 @@ const PlayMarketplaceDadosLazyRoute =
   } as any).lazy(() =>
     import('./routes/play/marketplace/dados.lazy').then((d) => d.Route),
   )
+const PlayMarketplaceBlockSortLazyRoute =
+  PlayMarketplaceBlockSortLazyRouteImport.update({
+    id: '/play/marketplace/block-sort',
+    path: '/play/marketplace/block-sort',
+    getParentRoute: () => rootRouteImport,
+  } as any).lazy(() =>
+    import('./routes/play/marketplace/block-sort.lazy').then((d) => d.Route),
+  )
 const PlayMarketplace2048LazyRoute = PlayMarketplace2048LazyRouteImport.update({
   id: '/play/marketplace/2048',
   path: '/play/marketplace/2048',
@@ -297,6 +308,7 @@ export interface FileRoutesByFullPath {
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
   '/play/marketplace/2048': typeof PlayMarketplace2048LazyRoute
+  '/play/marketplace/block-sort': typeof PlayMarketplaceBlockSortLazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
@@ -328,6 +340,7 @@ export interface FileRoutesByTo {
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
   '/play/marketplace/2048': typeof PlayMarketplace2048LazyRoute
+  '/play/marketplace/block-sort': typeof PlayMarketplaceBlockSortLazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
@@ -362,6 +375,7 @@ export interface FileRoutesById {
   '/play/marketplace/maquinaTragamonedas': typeof PlayMarketplaceMaquinaTragamonedasRoute
   '/games/$id/matches': typeof GamesIdMatchesLazyRoute
   '/play/marketplace/2048': typeof PlayMarketplace2048LazyRoute
+  '/play/marketplace/block-sort': typeof PlayMarketplaceBlockSortLazyRoute
   '/play/marketplace/dados': typeof PlayMarketplaceDadosLazyRoute
   '/play/marketplace/do-not-make': typeof PlayMarketplaceDoNotMakeLazyRoute
   '/play/marketplace/golfrog': typeof PlayMarketplaceGolfrogLazyRoute
@@ -397,6 +411,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
     | '/play/marketplace/2048'
+    | '/play/marketplace/block-sort'
     | '/play/marketplace/dados'
     | '/play/marketplace/do-not-make'
     | '/play/marketplace/golfrog'
@@ -428,6 +443,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
     | '/play/marketplace/2048'
+    | '/play/marketplace/block-sort'
     | '/play/marketplace/dados'
     | '/play/marketplace/do-not-make'
     | '/play/marketplace/golfrog'
@@ -461,6 +477,7 @@ export interface FileRouteTypes {
     | '/play/marketplace/maquinaTragamonedas'
     | '/games/$id/matches'
     | '/play/marketplace/2048'
+    | '/play/marketplace/block-sort'
     | '/play/marketplace/dados'
     | '/play/marketplace/do-not-make'
     | '/play/marketplace/golfrog'
@@ -489,6 +506,7 @@ export interface RootRouteChildren {
   PlayMarketplaceLostCityRoute: typeof PlayMarketplaceLostCityRoute
   PlayMarketplaceMaquinaTragamonedasRoute: typeof PlayMarketplaceMaquinaTragamonedasRoute
   PlayMarketplace2048LazyRoute: typeof PlayMarketplace2048LazyRoute
+  PlayMarketplaceBlockSortLazyRoute: typeof PlayMarketplaceBlockSortLazyRoute
   PlayMarketplaceDadosLazyRoute: typeof PlayMarketplaceDadosLazyRoute
   PlayMarketplaceDoNotMakeLazyRoute: typeof PlayMarketplaceDoNotMakeLazyRoute
   PlayMarketplaceGolfrogLazyRoute: typeof PlayMarketplaceGolfrogLazyRoute
@@ -680,6 +698,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayMarketplaceDadosLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play/marketplace/block-sort': {
+      id: '/play/marketplace/block-sort'
+      path: '/play/marketplace/block-sort'
+      fullPath: '/play/marketplace/block-sort'
+      preLoaderRoute: typeof PlayMarketplaceBlockSortLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/play/marketplace/2048': {
       id: '/play/marketplace/2048'
       path: '/play/marketplace/2048'
@@ -782,6 +807,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlayMarketplaceMaquinaTragamonedasRoute:
     PlayMarketplaceMaquinaTragamonedasRoute,
   PlayMarketplace2048LazyRoute: PlayMarketplace2048LazyRoute,
+  PlayMarketplaceBlockSortLazyRoute: PlayMarketplaceBlockSortLazyRoute,
   PlayMarketplaceDadosLazyRoute: PlayMarketplaceDadosLazyRoute,
   PlayMarketplaceDoNotMakeLazyRoute: PlayMarketplaceDoNotMakeLazyRoute,
   PlayMarketplaceGolfrogLazyRoute: PlayMarketplaceGolfrogLazyRoute,
