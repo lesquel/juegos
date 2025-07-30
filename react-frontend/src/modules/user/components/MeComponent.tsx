@@ -86,7 +86,7 @@ const UseMeComponent = memo(() => {
   if (isLoading) return <LoadingComponent />;
   if (error)
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-4">
+      <div className="flex items-center justify-center px-4 py-12">
         <div className="text-center bg-red-500/10 backdrop-blur-sm border border-red-500/30 p-12 rounded-3xl max-w-md shadow-2xl">
           <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg className="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,8 +102,8 @@ const UseMeComponent = memo(() => {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div className="py-12">
+      <div className="px-4 max-w-4xl mx-auto">
         {userContent}
       </div>
     </div>

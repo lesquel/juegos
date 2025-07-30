@@ -13,7 +13,7 @@ function CategoryGameDetailsPage() {
   
   return (
     <ErrorBoundary>
-      <main className="min-h-full flex-grow bg-gray-900 relative">
+      <main className="w-full">
         <SingleCategoryGame id={id} />
       </main>
     </ErrorBoundary>

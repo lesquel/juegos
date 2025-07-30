@@ -7,7 +7,7 @@ export const Route = createLazyFileRoute('/play/marketplace/pong')({
 
 function PongGamePage() {
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center">
       <PongGame />
     </div>
   )

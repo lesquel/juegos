@@ -95,15 +95,12 @@ export const ListCommentGame: React.FC<ListCommentGameProps> = memo(
     if (error) return errorMessage;
 
     return (
-      <main className="min-h-screen relative">
-        {/* Fondo decorativo */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900/20 to-cyan-900/20"></div>
-        
-        <div className="relative container mx-auto px-4 py-12 flex flex-col items-center">
+      <section className="relative">
+        <div className="px-4 py-12 flex flex-col items-center max-w-6xl mx-auto">
           {titleWithCount}
           {commentsList}
         </div>
-      </main>
+      </section>
     );
   }
 );

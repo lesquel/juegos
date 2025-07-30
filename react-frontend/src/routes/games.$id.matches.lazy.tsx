@@ -9,7 +9,7 @@ function GameMatchesPage() {
   const { id } = Route.useParams()
   
   return (
-    <main className="h-full flex-grow flex items-center justify-center bg-gray-900 relative">
+    <main className="w-full">
       <ListMatchesByGameId id={id} />
     </main>
   )

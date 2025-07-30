@@ -47,7 +47,7 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
   if (error) {
     console.log("❌ SingleGame showing error state:", error);
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-4">
+      <div className="flex items-center justify-center px-4 py-12">
         <div className="text-center bg-red-500/10 backdrop-blur-sm border border-red-500/30 p-8 rounded-2xl max-w-md shadow-2xl">
           <div className="mb-6">
             <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -69,7 +69,7 @@ const UseSingleGame = memo(({ id }: SingleGameProps) => {
   if (!data) {
     console.log("📭 SingleGame no data available");
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-4">
+      <div className="flex items-center justify-center px-4 py-12">
         <div className="text-center bg-white/5 backdrop-blur-sm border border-white/20 p-8 rounded-2xl max-w-md shadow-2xl">
           <div className="mb-6">
             <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">

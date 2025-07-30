@@ -101,8 +101,8 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
   if (gameError) return errorMessage;
 
   return (
-    <main className="min-h-screen bg-gray-900">
-      <div className="container mx-auto px-4 py-8 text-white">
+    <main className="w-full">
+      <div className="px-4 py-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <header className="mb-8">

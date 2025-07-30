@@ -83,11 +83,8 @@ const UseListTransfer: React.FC = memo(() => {
   if (error) return errorMessage;
 
   return (
-    <main className="min-h-screen relative">
-      {/* Fondo decorativo */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900/20 to-cyan-900/20"></div>
-      
-      <div className="relative max-w-6xl mx-auto px-4 py-12">
+    <section className="relative">
+      <div className="max-w-6xl mx-auto px-4 py-12">
         <header className="flex flex-col items-center justify-center md:flex-row md:justify-between md:items-center gap-6 mb-12">
           <div>
             <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
@@ -105,9 +102,9 @@ const UseListTransfer: React.FC = memo(() => {
           {newTransferButton}
         </header>
 
-        <section>{transfersList}</section>
+        <div>{transfersList}</div>
       </div>
-    </main>
+    </section>
   );
 });
 

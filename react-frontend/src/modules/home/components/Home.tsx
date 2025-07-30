@@ -7,8 +7,8 @@ import FeatureCards from "./FeatureCards";
 
 export const Home: React.FC = memo(() => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white">
-      <div className="container mx-auto px-4 py-16">
+    <div className="w-full">
+      <div className="px-4 py-16">
         <div className="flex flex-col items-center justify-center gap-16 text-center max-w-6xl mx-auto">
           <Header />
           <WelcomeSection />
