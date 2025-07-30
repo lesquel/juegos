@@ -30,7 +30,6 @@ class MatchEntity(TimeStampEntityMixin):
         self.participant_ids = participant_ids if participant_ids is not None else []
 
     def is_finished_match(self) -> bool:
-        print(f"Checking if match {self.match_id} is finished: {self.is_finished}")
         return self.is_finished
 
     def add_participant(self, user_id: str):

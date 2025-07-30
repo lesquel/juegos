@@ -19,10 +19,6 @@ class MatchParticipantsResponseAssambler(
     ) -> MatchParticipantsResponseDTO:
         """Convierte una lista de MatchParticipation a MatchParticipantsResponseDTO."""
 
-        print(
-            f"Converting match {match.match_id} with participants {list_participants}"
-        )
-
         return MatchParticipantsResponseDTO(
             match_id=str(match.match_id),
             game_id=str(match.game_id),

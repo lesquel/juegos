@@ -1,7 +1,5 @@
 from typing import Any
 
-from infrastructure.dependencies.factories import get_game_engine
-
 from ..game_names import TICTACTOE_NAME
 from .base_game_manager import BaseGameWebSocketManager
 
@@ -16,9 +14,9 @@ class TictactoeWebSocketManager(BaseGameWebSocketManager):
     def create_game_engine(self, match_id: str) -> Any:
         """Crea una instancia del motor de TicTacToe"""
         from domain.game_engines.tictactoe import TictactoeGame
+
         # Crear instancia fresca del motor para evitar problemas de cache
         engine = TictactoeGame()
-        print(f"🎮 TicTacToe engine created - Board dimensions: {len(engine.board)}x{len(engine.board[0]) if engine.board else 0}")
         return engine
 
     def get_max_players(self) -> int:

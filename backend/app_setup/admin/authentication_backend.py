@@ -30,9 +30,6 @@ def _get_cached_services():
         user_converter = get_user_converter()
 
         # Logging detallado para debugging
-        print(f"token_provider: {token_provider} (type: {type(token_provider)})")
-        print(f"password_hasher: {password_hasher} (type: {type(password_hasher)})")
-        print(f"user_converter: {user_converter} (type: {type(user_converter)})")
 
         # Validar que los servicios no sean None
         if token_provider is None:
@@ -47,8 +44,7 @@ def _get_cached_services():
             "token_provider": token_provider,
             "user_converter": user_converter,
         }
-    except Exception as e:
-        print(f"Error in _get_cached_services: {e}")
+    except Exception:
         raise
 
 
@@ -96,7 +92,6 @@ class AdminAuth(AuthenticationBackend, LoggingMixin):
                 login_request = LoginRequestDTO(email=email, password=password)
 
                 response = await login_use_case.execute(login_request)
-                print(response)
 
                 if response.user.role != UserRole.ADMIN:
                     self.logger.warning(

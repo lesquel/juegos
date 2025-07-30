@@ -46,9 +46,4 @@ class GetMatchParticipantsUseCase(BaseUseCase[str, List[str]]):
 
         self.logger.info(f"Found {len(participants)} participants for match {match_id}")
 
-        print(
-            f"MatchParticipantsUseCase: Found {len(participants)} participants for match {match_id}"
-        )
-        print(f"MatchParticipantsUseCase: Participants: {participants}")
-
         return self.match_participants_assambler.assemble(match, participants)

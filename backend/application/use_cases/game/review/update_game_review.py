@@ -54,8 +54,5 @@ class UpdateGameReviewUseCase(
             existing_review.review_id, existing_review
         )
 
-        print(f"Updated review: {updated_review.comment}")
-        print(f"Updated rating: {updated_review.rating}")
-
         # Convertir entidad a DTO de respuesta
         return self.converter.to_dto(updated_review)

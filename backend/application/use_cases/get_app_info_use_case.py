@@ -1,6 +1,7 @@
 from application.mixins.dto_converter_mixin import EntityToDTOConverter
 from domain.exceptions.app_info import AppInfoNotFound
 from domain.repositories.app_info_repository import IAppInfoRepository
+
 from .base_use_case import BaseUseCase
 
 
@@ -15,7 +16,6 @@ class GetAppInfoUseCase(BaseUseCase):
 
     async def execute(self):
         info = await self.app_info_repo.get_app_info()
-        print(info)
         if not info:
             raise AppInfoNotFound(
                 "App information not found",

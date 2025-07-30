@@ -35,8 +35,6 @@ class ErrorHandler:
     ) -> JSONResponse:
         """Maneja errores de validación de Pydantic"""
 
-        print("DEBUG validation error:", exc.errors())
-
         logger.warning(
             f"Validation error: {len(exc.errors())} field(s) - Path: {request.url}"
         )
