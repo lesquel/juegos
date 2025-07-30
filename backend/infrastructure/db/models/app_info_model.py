@@ -1,16 +1,14 @@
 import uuid
 
+from domain.enums import AccountTypeEnum
 from sqlalchemy import Column, ForeignKey, String, Text, event, text
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import relationship
 from sqlalchemy.types import Enum as SqlEnum
 
-
-from domain.enums import AccountTypeEnum
-
-from .common import TimeStampModelMixin
 from ..base import Base
+from .common import TimeStampModelMixin
 
 
 class AccountModel(Base, TimeStampModelMixin):
@@ -39,8 +37,8 @@ class AppInfoModel(Base, TimeStampModelMixin):
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True
     )
     site_name = Column(String(100), nullable=False, unique=True, index=True)
-    site_icon = Column(String(100), nullable=False, unique=True, index=True)
-    site_logo = Column(String(100), nullable=False, unique=True, index=True)
+    site_icon = Column(String(250), nullable=False, unique=True, index=True)
+    site_logo = Column(String(250), nullable=False, unique=True, index=True)
     accounts = relationship(
         "AccountModel",
         back_populates="app_info",

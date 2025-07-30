@@ -215,3 +215,6 @@ class AppInfoAdmin(ModelView, model=AppInfoModel):
     can_export = True
     export_max_rows = 1000
     export_types = ["csv", "xlsx"]
+    can_create = False
+    can_edit = False
+    can_delete = False
