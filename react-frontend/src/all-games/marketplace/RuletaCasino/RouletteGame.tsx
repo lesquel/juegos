@@ -83,7 +83,8 @@ export function RouletteGame() {
         win: result.isWin,
         winAmount: result.totalWinnings,
         winningNumber,
-        totalBet: gameState.totalBet
+        totalBet: gameState.totalBet,
+        multiplier: result.isWin ? (result.totalWinnings / gameState.totalBet) : -1,
       };
 
       try {

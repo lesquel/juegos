@@ -26,7 +26,7 @@ export const NavbarAuthLoginRegister: React.FC = memo(() => {
         {isLogged ? (
           <>
             <NavbarAvatar />
-            <LinkMyTransfer />
+            {/* <LinkMyTransfer />  */}
           </>
         ) : (
           <ItemAuthLoginRegister />

@@ -21,6 +21,7 @@ export interface RouletteGameResult {
   winAmount: number;
   winningNumber: number;
   totalBet: number;
+  multiplier: number;
 }
 
 export interface RouletteMatchData {
@@ -154,10 +155,10 @@ export const useRouletteBetting = (gameId: string) => {
         participants: [
           {
             user_id: user.user.user_id,
-            score: gameResult.win ? gameResult.winAmount : -currentMatch.betAmount,
+            score: gameResult.win ? gameResult.winAmount : 0,
           },
         ],
-        custom_odds: gameResult.win ? (gameResult.winAmount / currentMatch.betAmount) : -1,
+        custom_odds: gameResult.win ? gameResult.multiplier : -1,
       };
 
       console.log("🏁 Finalizando match de ruleta:", {
@@ -206,6 +207,7 @@ export const useRouletteBetting = (gameId: string) => {
           winAmount: 0,
           winningNumber: 0,
           totalBet: currentMatch.betAmount,
+          multiplier: -1,
         };
         
         await finishGame.mutateAsync(quitResult);

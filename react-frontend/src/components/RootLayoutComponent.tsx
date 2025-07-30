@@ -31,9 +31,9 @@ export function RootLayoutComponent() {
     return (
         <>
             <SaveAuthProvider />
-            <div className="min-h-screen bg-gray-800">
+            <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
                 <Navbar />
-                <main>
+                <main className="pt-0">
                     <Outlet />
                 </main>
             </div>
