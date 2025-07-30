@@ -42,7 +42,7 @@ export function withAuthRequired<P extends object>(
     }, [navigate, isLogged, syncWithCookies]);
 
     if (isChecking) {
-      return <div className="flex items-center justify-center min-h-screen">
+      return <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
       </div>;
     }
@@ -89,7 +89,7 @@ export function withGuestOnly<P extends object>(
     }, [navigate, isLogged, syncWithCookies]);
 
     if (isChecking) {
-      return <div className="flex items-center justify-center min-h-screen">
+      return <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
       </div>;
     }

@@ -74,7 +74,7 @@ const UseListMatchesByGameId: React.FC<{ id: string }> = memo(({ id }) => {
     if (!errorText) return null;
 
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+      <div className="flex justify-center items-center py-12">
         <div className="text-center bg-red-900 bg-opacity-50 p-8 rounded-lg border border-red-600 max-w-md">
           <h2 className="text-2xl font-bold text-red-400 mb-4">
             Error al cargar el juego
