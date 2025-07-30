@@ -8,22 +8,41 @@ interface GamesTabSelectorProps {
 }
 
 const GamesTabSelector = ({ activeTab, setActiveTab }: GamesTabSelectorProps) => {
+  const tabs = [
+    { id: "offline", label: "🎮 Juegos Offline", icon: "🎯" },
+    { id: "online", label: "🌐 Juegos Online", icon: "👥" },
+    { id: "luck", label: "🎰 Juegos de Azar", icon: "🍀" }
+  ];
+
   const tabClass = (tab: GameTab) =>
-    `px-6 py-2 rounded-b-lg font-semibold transition-colors duration-200 focus:outline-none ${activeTab === tab
-      ? "bg-gradient-to-r from-teal-500 to-cyan-400 text-white shadow-lg"
-      : "bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"
+    `relative px-8 py-4 rounded-2xl font-bold transition-all duration-300 focus:outline-none transform hover:scale-105 ${
+      activeTab === tab
+        ? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-2xl shadow-purple-500/25 border-2 border-white/20"
+        : "bg-white/10 backdrop-blur-sm text-gray-300 hover:text-white hover:bg-white/20 border-2 border-white/10 hover:border-white/30"
     }`;
+
   return (
-    <div className="flex justify-center mb-8">
-      <button className={tabClass("offline")} onClick={() => setActiveTab("offline")} type="button">
-        Juegos Offline
-      </button>
-      <button className={tabClass("online")} onClick={() => setActiveTab("online")} type="button">
-        Juegos Online
-      </button>
-      <button className={tabClass("luck")} onClick={() => setActiveTab("luck")} type="button">
-        Juegos de Azar
-      </button>
+    <div className="flex justify-center mb-12">
+      <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-2 border border-white/10 shadow-2xl">
+        <div className="flex gap-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={tabClass(tab.id as GameTab)}
+              onClick={() => setActiveTab(tab.id as GameTab)}
+              type="button"
+            >
+              <span className="flex items-center gap-3">
+                <span className="text-2xl">{tab.icon}</span>
+                <span className="text-lg">{tab.label}</span>
+              </span>
+              {activeTab === tab.id && (
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 animate-pulse"></div>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

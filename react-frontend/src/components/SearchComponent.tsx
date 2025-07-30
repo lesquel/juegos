@@ -149,18 +149,21 @@ export const SearchComponent = memo(
     );
 
     return (
-      <div className={`bg-gray-800 rounded-lg p-4 sm:p-6 ${className}`}>
+      <div className={`relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-2xl ${className}`}>
+        {/* Fondo decorativo con gradiente */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5 rounded-2xl"></div>
+        
         {/* Grid responsivo para los controles */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4 items-end">
+        <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6 items-end">
           {/* Search Input - ocupa toda la fila en mobile, 2 columnas en tablet+, 2 columnas en desktop, 3 en XL */}
           <div className="col-span-1 sm:col-span-2 lg:col-span-2 xl:col-span-3">
             <label
               htmlFor={searchId}
-              className="block text-sm font-medium text-gray-300 mb-2"
+              className="block text-sm font-medium bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-3"
             >
               Término de búsqueda
             </label>
-            <div className="relative">
+            <div className="relative group">
               <input
                 id={searchId}
                 type="text"
@@ -168,15 +171,15 @@ export const SearchComponent = memo(
                 onChange={(e) => handleInputChange(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleManualSearch()}
                 placeholder={placeholder}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
+                className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 pr-14 transition-all duration-300 group-hover:bg-white/15"
               />
               <button
                 type="button"
                 onClick={handleManualSearch}
-                className="absolute inset-y-0 right-2 flex items-center p-1 hover:bg-gray-600 rounded transition-colors duration-200"
+                className="absolute inset-y-0 right-3 flex items-center p-2 text-gray-300 hover:text-cyan-400 hover:bg-white/10 rounded-lg transition-all duration-300 group-hover:scale-105"
                 title="Buscar"
               >
-                <Search className="w-4 h-4" />
+                <Search className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -185,22 +188,29 @@ export const SearchComponent = memo(
           <div className="col-span-1">
             <label
               htmlFor={filterTypeId}
-              className="block text-sm font-medium text-gray-300 mb-2"
+              className="block text-sm font-medium bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-3"
             >
               Buscar por
             </label>
-            <select
-              id={filterTypeId}
-              value={filters.filterType}
-              onChange={(e) => handleFilterTypeChange(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-            >
-              {memoizedFilterOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            <div className="relative group">
+              <select
+                id={filterTypeId}
+                value={filters.filterType}
+                onChange={(e) => handleFilterTypeChange(e.target.value)}
+                className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 text-sm appearance-none cursor-pointer transition-all duration-300 group-hover:bg-white/15"
+              >
+                {memoizedFilterOptions.map((option) => (
+                  <option key={option.value} value={option.value} className="bg-gray-800">
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <svg className="w-4 h-4 text-gray-300 group-hover:text-purple-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           {/* Sort Options - Solo cuando showSort es true */}
@@ -210,43 +220,57 @@ export const SearchComponent = memo(
               <div className="col-span-1">
                 <label
                   htmlFor={sortById}
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-sm font-medium bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-3"
                 >
                   Ordenar por
                 </label>
-                <select
-                  id={sortById}
-                  value={filters.sortBy}
-                  onChange={(e) => handleSortChange("sortBy", e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                >
-                  {memoizedSortOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative group">
+                  <select
+                    id={sortById}
+                    value={filters.sortBy}
+                    onChange={(e) => handleSortChange("sortBy", e.target.value)}
+                    className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 text-sm appearance-none cursor-pointer transition-all duration-300 group-hover:bg-white/15"
+                  >
+                    {memoizedSortOptions.map((option) => (
+                      <option key={option.value} value={option.value} className="bg-gray-800">
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-300 group-hover:text-cyan-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
 
               {/* Sort Order - 1 columna */}
               <div className="col-span-1">
                 <label
                   htmlFor={sortOrderId}
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-sm font-medium bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-3"
                 >
                   Orden
                 </label>
-                <select
-                  id={sortOrderId}
-                  value={filters.sortOrder}
-                  onChange={(e) =>
-                    handleSortChange("sortOrder", e.target.value)
-                  }
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                >
-                  <option value="desc">Desc</option>
-                  <option value="asc">Asc</option>
-                </select>
+                <div className="relative group">
+                  <select
+                    id={sortOrderId}
+                    value={filters.sortOrder}
+                    onChange={(e) =>
+                      handleSortChange("sortOrder", e.target.value)
+                    }
+                    className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 text-sm appearance-none cursor-pointer transition-all duration-300 group-hover:bg-white/15"
+                  >
+                    <option value="desc" className="bg-gray-800">Desc</option>
+                    <option value="asc" className="bg-gray-800">Asc</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-300 group-hover:text-purple-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </>
           )}
@@ -255,7 +279,7 @@ export const SearchComponent = memo(
           <div className="col-span-1">
             <button
               onClick={clearFilters}
-              className="w-full px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-md transition-colors duration-200 flex items-center justify-center gap-2 text-sm font-medium"
+              className="w-full px-4 py-3 bg-gradient-to-r from-red-500/20 to-pink-500/20 hover:from-red-500/30 hover:to-pink-500/30 border border-red-400/30 hover:border-red-400/50 text-white rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm font-medium backdrop-blur-sm hover:scale-105 active:scale-95"
             >
               <X className="w-4 h-4" />
               <span className="hidden sm:inline">Limpiar</span>
@@ -267,18 +291,18 @@ export const SearchComponent = memo(
         {/* Active Filters Display - Responsivo con mejor spacing */}
         {(filters.searchTerm ||
           filters.filterType !== memoizedFilterOptions[0]?.value) && (
-            <div className="mt-4 pt-4 border-t border-gray-700">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm text-gray-300 font-medium">
+            <div className="relative mt-6 pt-6 border-t border-white/20">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-sm bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-medium">
                   Filtros activos:
                 </span>
                 {filters.searchTerm && (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-blue-600 text-white font-medium">
+                  <span className="inline-flex items-center px-4 py-2 rounded-full text-xs bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-400/30 text-cyan-200 font-medium backdrop-blur-sm">
                     "{filters.searchTerm}"
                   </span>
                 )}
                 {filters.filterType !== memoizedFilterOptions[0]?.value && (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-600 text-white font-medium">
+                  <span className="inline-flex items-center px-4 py-2 rounded-full text-xs bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 text-purple-200 font-medium backdrop-blur-sm">
                     {
                       memoizedFilterOptions.find(
                         (opt) => opt.value === filters.filterType

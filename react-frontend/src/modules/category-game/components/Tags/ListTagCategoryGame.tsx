@@ -15,9 +15,9 @@ export const ListTagCategoryGame: React.FC<ListTagCategoryGameProps> = memo(
     // Memoizar estado de carga
     const loadingState = useMemo(
       () => (
-        <div className="flex items-center justify-center p-4 text-white">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-2"></div>
-          <span>Cargando categorías...</span>
+        <div className="flex items-center justify-center p-6 text-white bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-400 mr-3"></div>
+          <span className="text-gray-300">Cargando categorías...</span>
         </div>
       ),
       []
@@ -28,8 +28,10 @@ export const ListTagCategoryGame: React.FC<ListTagCategoryGameProps> = memo(
       if (!error) return null;
 
       return (
-        <div className="p-4 bg-red-900 bg-opacity-50 border border-red-600 rounded-lg text-center">
-          <Clock className="h-6 w-6 text-red-400 mx-auto mb-2" />
+        <div className="p-6 bg-red-500/10 backdrop-blur-sm border border-red-400/30 rounded-2xl text-center">
+          <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+            <Clock className="h-6 w-6 text-red-400" />
+          </div>
           <p className="text-red-300 text-sm">
             Error al cargar categorías: {error.message}
           </p>
@@ -40,9 +42,11 @@ export const ListTagCategoryGame: React.FC<ListTagCategoryGameProps> = memo(
     // Memoizar estado vacío
     const emptyState = useMemo(
       () => (
-        <div className="p-4 text-center text-gray-400">
-          <Tag className="h-8 w-8 mx-auto mb-2 text-gray-500" />
-          <p className="text-sm">No hay categorías asignadas</p>
+        <div className="p-6 text-center bg-white/5 backdrop-blur-sm border border-white/20 rounded-2xl">
+          <div className="w-12 h-12 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+            <Tag className="h-6 w-6 text-gray-400" />
+          </div>
+          <p className="text-sm text-gray-300">No hay categorías asignadas</p>
         </div>
       ),
       []
@@ -64,7 +68,7 @@ export const ListTagCategoryGame: React.FC<ListTagCategoryGameProps> = memo(
     // Memoizar icono de header
     const headerIcon = useMemo(
       () => (
-        <Tag className="h-5 w-5 text-blue-400" />
+        <Tag className="h-5 w-5 text-cyan-400" />
       ),
       []
     );
@@ -73,20 +77,27 @@ export const ListTagCategoryGame: React.FC<ListTagCategoryGameProps> = memo(
     if (error) return errorState;
 
     return (
-      <section className="flex flex-col gap-3 p-4 border border-gray-700 rounded-2xl w-full bg-gray-800 bg-opacity-50 text-white backdrop-blur-lg">
-        <header className="flex items-center gap-2">
-          {headerIcon}
-          <h2 className="text-md font-medium">
-            Categorías
-            {data?.results?.length ? (
-              <span className="ml-2 text-sm text-gray-400">
-                ({data.results.length})
-              </span>
-            ) : null}
-          </h2>
-        </header>
+      <section className="relative flex flex-col gap-4 p-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl w-full shadow-xl">
+        {/* Fondo decorativo */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-purple-500/5 to-pink-500/5 rounded-2xl"></div>
+        
+        <div className="relative">
+          <header className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+              {headerIcon}
+            </div>
+            <h2 className="text-lg font-semibold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+              Categorías
+              {data?.results?.length ? (
+                <span className="ml-2 text-sm text-gray-300 font-normal">
+                  ({data.results.length})
+                </span>
+              ) : null}
+            </h2>
+          </header>
 
-        {categoriesList}
+          {categoriesList}
+        </div>
       </section>
     );
   }

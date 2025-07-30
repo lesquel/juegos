@@ -43,14 +43,14 @@ export const FormInput: React.FC<FormInputProps> = memo(
 
     // Memoizar clases CSS
     const containerClasses = useMemo(
-      () => `mb-4 relative w-full ${className}`,
+      () => `mb-6 relative w-full ${className}`,
       [className]
     );
 
     const inputClasses = useMemo(
       () =>
-        `w-full ${icon ? "pl-10" : "pl-4"} ${isPasswordField ? "pr-12" : "pr-4"
-        } py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200`,
+        `w-full ${icon ? "pl-12" : "pl-4"} ${isPasswordField ? "pr-14" : "pr-4"
+        } py-4 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all duration-300 hover:bg-white/15`,
       [icon, isPasswordField]
     );
 
@@ -84,7 +84,7 @@ export const FormInput: React.FC<FormInputProps> = memo(
               {showLabel && label && (
                 <label
                   htmlFor={field.name}
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-2"
                 >
                   {label}
                 </label>
@@ -95,41 +95,45 @@ export const FormInput: React.FC<FormInputProps> = memo(
                 </label>
               )}
 
-              {icon && (
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  {icon}
-                </div>
-              )}
+              <div className="relative group">
+                {icon && (
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <div className="text-gray-400 group-focus-within:text-cyan-400 transition-colors duration-300">
+                      {icon}
+                    </div>
+                  </div>
+                )}
 
-              <input
-                id={field.name}
-                type={inputType}
-                name={field.name}
-                value={field.state.value}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                placeholder={placeholder}
-                className={inputClasses}
-                aria-describedby={
-                  errorMessage ? `${field.name}-error` : undefined
-                }
-              />
+                <input
+                  id={field.name}
+                  type={inputType}
+                  name={field.name}
+                  value={field.state.value}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder={placeholder}
+                  className={inputClasses}
+                  aria-describedby={
+                    errorMessage ? `${field.name}-error` : undefined
+                  }
+                />
 
-              {isPasswordField && (
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300 transition-colors duration-200"
-                  aria-label={passwordToggleLabel}
-                >
-                  {showPassword ? <EyeIcon /> : <EyeClosedIcon />}
-                </button>
-              )}
+                {isPasswordField && (
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-cyan-400 transition-colors duration-300 group-focus-within:text-cyan-400"
+                    aria-label={passwordToggleLabel}
+                  >
+                    {showPassword ? <EyeIcon /> : <EyeClosedIcon />}
+                  </button>
+                )}
+              </div>
 
               {errorMessage && (
                 <span
                   id={`${field.name}-error`}
-                  className="text-red-400 text-xs mt-1 block absolute"
+                  className="text-red-300 text-sm mt-2 block bg-red-500/10 backdrop-blur-sm border border-red-400/30 rounded-lg p-2"
                   role="alert"
                 >
                   {errorMessage}
