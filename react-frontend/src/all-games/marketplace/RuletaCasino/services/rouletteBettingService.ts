@@ -154,16 +154,18 @@ export const useRouletteBetting = (gameId: string) => {
         participants: [
           {
             user_id: user.user.user_id,
-            score: gameResult.winAmount,
+            score: gameResult.win ? gameResult.winAmount : -currentMatch.betAmount,
           },
         ],
-        custom_odds: gameResult.win ? (gameResult.winAmount / currentMatch.betAmount) : 0,
+        custom_odds: gameResult.win ? (gameResult.winAmount / currentMatch.betAmount) : -1,
       };
 
       console.log("🏁 Finalizando match de ruleta:", {
         matchId: currentMatch.matchId,
         finishData,
-        gameResult
+        gameResult,
+        currentBalance: virtualCurrency?.virtual_currency,
+        expectedOutcome: gameResult.win ? `Ganar +${gameResult.winAmount}` : `Perder -${currentMatch.betAmount}`
       });
 
       return new Promise((resolve, reject) => {

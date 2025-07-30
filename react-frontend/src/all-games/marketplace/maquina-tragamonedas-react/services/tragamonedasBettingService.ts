@@ -18,9 +18,10 @@ export interface TragamonedasBetData {
 export interface TragamonedasGameResult {
   win: boolean;
   winAmount: number;
-  totalBet: number;
   reels: string[][];
   winningLines: number[];
+  totalBet: number;
+  multiplier: number;
   isJackpot: boolean;
 }
 
@@ -153,29 +154,43 @@ export const useTragamonedasBetting = (gameId: string) => {
         participants: [
           {
             user_id: user.user.user_id,
-            score: gameResult.winAmount,
+            score: gameResult.win ? gameResult.winAmount : -currentMatch.betAmount,
           },
         ],
-        custom_odds: gameResult.win ? (gameResult.winAmount / currentMatch.betAmount) : 0,
+        custom_odds: gameResult.win ? gameResult.multiplier : -1,
       };
 
       console.log("🏁 Finalizando match de tragamonedas:", {
         matchId: currentMatch.matchId,
         finishData,
-        gameResult
+        gameResult,
+        currentBalance: virtualCurrency?.virtual_currency,
+        expectedOutcome: gameResult.win ? `Ganar +${gameResult.winAmount}` : `Perder -${currentMatch.betAmount}`
       });
 
       return new Promise((resolve, reject) => {
         finishMatchMutation.mutate(finishData, {
           onSuccess: (result) => {
-            console.log("✅ Match de tragamonedas finalizado exitosamente");
+            console.log("✅ Match de tragamonedas finalizado exitosamente:", result);
+            console.log("💰 Resultado del match:", {
+              datosEnviados: finishData,
+              respuestaBackend: result,
+              balanceAntes: virtualCurrency?.virtual_currency,
+            });
+            
             // Limpiar match actual
             setCurrentMatch(null);
             
             // Refrescar datos del usuario
+            console.log("🔄 Refrescando datos de usuario...");
             refetchCurrency();
             queryClient.invalidateQueries({ queryKey: ["userMe"] });
             queryClient.invalidateQueries({ queryKey: ["userVirtualCurrency"] });
+            
+            // Agregar timeout para verificar actualización
+            setTimeout(() => {
+              console.log("💰 Balance después del match:", virtualCurrency?.virtual_currency);
+            }, 1000);
             
             resolve(result);
           },
@@ -205,6 +220,7 @@ export const useTragamonedasBetting = (gameId: string) => {
           reels: [],
           winningLines: [],
           isJackpot: false,
+          multiplier: -1,
         };
         
         await finishGame.mutateAsync(quitResult);

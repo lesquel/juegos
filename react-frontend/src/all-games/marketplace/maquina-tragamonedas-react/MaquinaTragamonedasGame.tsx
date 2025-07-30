@@ -1,6 +1,11 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import './MaquinaTragamonedasStyles.css';
-import { useTragamonedasGameId, useTragamonedasBetting, useTragamonedasBalance } from './services/tragamonedasBettingService';
+import { 
+  useTragamonedasGameId, 
+  useTragamonedasBetting,
+  useTragamonedasBalance,
+  type TragamonedasGameResult 
+} from './services/tragamonedasBettingService';
 
 // Símbolos de la máquina tragamonedas
 const SYMBOLS = ['🍒', '🍋', '🔔', '⭐', '💎', '7️⃣', '🍀'];
@@ -34,10 +39,9 @@ interface GameResult {
 }
 
 const MaquinaTragamonedasGame: React.FC = () => {
-  // Backend integration
-  const { tragamonedasGameId, isLoading: isGameIdLoading } = useTragamonedasGameId();
-  const betting = useTragamonedasBetting(tragamonedasGameId || "");
-  const { balance, isLoading: isBalanceLoading, hasInsufficientFunds } = useTragamonedasBalance();
+  // Hooks para backend integration
+  const { tragamonedasGameId, isLoading: isLoadingGameId } = useTragamonedasGameId();
+  const { balance, isLoading: isLoadingBalance, hasInsufficientFunds } = useTragamonedasBalance();
   
   // Game state
   const [bet, setBet] = useState(10);
@@ -51,7 +55,22 @@ const MaquinaTragamonedasGame: React.FC = () => {
   const [winningLines, setWinningLines] = useState<number[]>([]);
   const [showWinAnimation, setShowWinAnimation] = useState(false);
   const [message, setMessage] = useState('¡Presiona SPIN para jugar!');
-  const [lastGameResult, setLastGameResult] = useState<GameResult | null>(null);
+  const [lastGameResult, setLastGameResult] = useState<TragamonedasGameResult | null>(null);
+
+  // Backend betting hooks - solo inicializar si tenemos gameId
+  const bettingHooks = useTragamonedasBetting(tragamonedasGameId || "");
+  const {
+    placeBet,
+    finishGame,
+    isPlacingBet,
+    isFinishingGame,
+    betError,
+    finishError,
+  } = bettingHooks;
+
+  // Loading states
+  const isLoading = isLoadingGameId || isLoadingBalance;
+  const canSpin = !isSpinning && !isPlacingBet && !isFinishingGame && !hasInsufficientFunds(bet) && tragamonedasGameId;
 
   // Función para generar un símbolo aleatorio con probabilidades
   const getRandomSymbol = useCallback((): string => {
@@ -103,31 +122,31 @@ const MaquinaTragamonedasGame: React.FC = () => {
     );
   }, [winningLines]);
 
-  // Función principal de giro
+  // Función principal de giro usando backend
   const spin = useCallback(async () => {
-    if (isSpinning || betting.isPlacingBet || !tragamonedasGameId) return;
-    
-    // Verificar saldo suficiente
-    if (hasInsufficientFunds(bet)) {
-      setMessage('¡Saldo insuficiente!');
+    if (!canSpin || !tragamonedasGameId) {
+      if (!tragamonedasGameId) {
+        setMessage('⚠️ Error: Juego no encontrado');
+      } else if (hasInsufficientFunds(bet)) {
+        setMessage('💰 Saldo insuficiente');
+      }
       return;
     }
-
+    
     setIsSpinning(true);
     setWinAmount(0);
     setWinningLines([]);
     setShowWinAnimation(false);
-    setMessage('Girando...');
+    setMessage('🎰 Creando apuesta...');
 
     try {
       // Crear match en el backend
-      const betData = {
+      await placeBet.mutateAsync({
         betAmount: bet,
-        gameId: tragamonedasGameId,
-      };
+        gameId: tragamonedasGameId
+      });
 
-      await betting.placeBet.mutateAsync(betData);
-      console.log("🎰 Apuesta realizada exitosamente");
+      setMessage('🎲 Girando...');
 
       // Animación de giro realista
       const spinDuration = 2000;
@@ -153,58 +172,61 @@ const MaquinaTragamonedasGame: React.FC = () => {
         setWinAmount(totalWin);
         
         const isWin = totalWin > 0;
-        const isJackpot = lines.length === PAYLINES.length;
-
-        // Finalizar match en el backend
-        const gameResult = {
+        const multiplier = isWin ? (totalWin / bet) : -1;
+        
+        // Crear resultado para el backend
+        const gameResult: TragamonedasGameResult = {
           win: isWin,
           winAmount: totalWin,
-          totalBet: bet,
           reels: finalReels,
           winningLines: lines,
-          isJackpot: isJackpot,
+          totalBet: bet,
+          multiplier: multiplier,
+          isJackpot: lines.length === PAYLINES.length
         };
-
-        try {
-          await betting.finishGame.mutateAsync(gameResult);
-          console.log(`🎰 Juego finalizado - ${isWin ? 'GANASTE' : 'PERDISTE'}: $${totalWin}`);
-          
-          // Guardar resultado para mostrar información
-          setLastGameResult({
-            reels: finalReels,
-            winAmount: totalWin,
-            isWin: isWin,
-            betAmount: bet,
-            winningLines: lines,
-          });
-
-        } catch (error) {
-          console.error('❌ Error finishing match:', error);
-          setMessage('Error al finalizar la partida');
-        }
         
-        // Mostrar mensaje de resultado
-        if (isWin) {
-          setShowWinAnimation(true);
+        // Guardar resultado para mostrar información
+        setLastGameResult(gameResult);
+        
+        try {
+          // Finalizar match en el backend
+          console.log("🎰 Enviando resultado a backend:", {
+            gameResult,
+            currentBalance: balance,
+            expectedChange: isWin ? `+${totalWin}` : `-${bet}`
+          });
           
-          if (isJackpot) {
-            setMessage(`🎉 ¡JACKPOT! ¡Ganaste $${totalWin}! 🎉`);
+          await finishGame.mutateAsync(gameResult);
+          
+          console.log("✅ Match finalizado, saldo debería actualizarse automáticamente");
+          
+          // Mostrar mensaje de resultado
+          if (isWin) {
+            setShowWinAnimation(true);
+            
+            if (lines.length === PAYLINES.length) {
+              setMessage(`🎉 ¡JACKPOT! ¡Ganaste $${totalWin}! 🎉`);
+            } else {
+              setMessage(`🎊 ¡Ganaste $${totalWin}! 🎊`);
+            }
           } else {
-            setMessage(`🎊 ¡Ganaste $${totalWin}! 🎊`);
+            setMessage('😞 ¡Inténtalo de nuevo!');
           }
-        } else {
-          setMessage('¡Inténtalo de nuevo!');
+          
+        } catch (finishError) {
+          console.error('❌ Error al finalizar match:', finishError);
+          setMessage('⚠️ Error al procesar resultado');
         }
         
         setIsSpinning(false);
       }, 500);
 
     } catch (error) {
-      console.error('❌ Error spinning reels:', error);
-      setMessage('Error al girar');
+      console.error('❌ Error al crear apuesta:', error);
+      setMessage('❌ Error al crear apuesta');
       setIsSpinning(false);
     }
-  }, [bet, isSpinning, betting, tragamonedasGameId, hasInsufficientFunds, generateReels, checkWinningLines]);
+  }, [bet, canSpin, tragamonedasGameId, hasInsufficientFunds, placeBet, generateReels, checkWinningLines, finishGame]);
 
   // Función para ajustar apuesta
   const adjustBet = useCallback((amount: number) => {
@@ -230,8 +252,6 @@ const MaquinaTragamonedasGame: React.FC = () => {
   }, []);
 
   // Estados de carga
-  const isLoading = isGameIdLoading || isBalanceLoading;
-  const canSpin = !isSpinning && !betting.isPlacingBet && !betting.isFinishingGame && balance >= bet;
 
   // Memoizar la tabla de pagos
   const paytableEntries = useMemo(() => 
@@ -239,29 +259,38 @@ const MaquinaTragamonedasGame: React.FC = () => {
     []
   );
 
-  // Loading states
+  // Mostrar loading si está cargando los datos del backend
   if (isLoading) {
     return (
       <div className="maquina-tragamonedas">
         <div className="tragamonedas-container">
-          <div className="tragamonedas-loading">
-            <h2>🎰 Cargando Tragamonedas...</h2>
-            <p>Conectando con el servidor...</p>
-            <div className="loading-spinner"></div>
+          <div className="tragamonedas-header">
+            <h1>🎰 MÁQUINA TRAGAMONEDAS 🎰</h1>
+            <div className="message">
+              {isLoadingGameId ? '🔍 Cargando juego...' : '💰 Cargando saldo...'}
+            </div>
           </div>
         </div>
       </div>
     );
   }
 
+  // Mostrar error si no se encuentra el juego
   if (!tragamonedasGameId) {
     return (
       <div className="maquina-tragamonedas">
         <div className="tragamonedas-container">
-          <div className="tragamonedas-error">
-            <h2>❌ Error</h2>
-            <p>No se pudo encontrar el juego de tragamonedas.</p>
-            <p>Por favor, contacta al administrador.</p>
+          <div className="tragamonedas-header">
+            <h1>🎰 MÁQUINA TRAGAMONEDAS 🎰</h1>
+            <div className="message">
+              ⚠️ Error: No se pudo encontrar el juego de tragamonedas
+            </div>
+            <button 
+              onClick={() => window.history.back()} 
+              className="reset-button"
+            >
+              🔄 Volver
+            </button>
           </div>
         </div>
       </div>
@@ -280,49 +309,44 @@ const MaquinaTragamonedasGame: React.FC = () => {
           </div>
         </div>
 
-        {/* Estados del match */}
-        {betting.currentMatch && (
-          <div className="tragamonedas-betting-status">
-            <div className="tragamonedas-current-match">
-              🎰 Match activo - Apuesta: ${betting.currentMatch.betAmount}
-            </div>
-          </div>
-        )}
-
-        {/* Estados de loading */}
-        {betting.isPlacingBet && (
-          <div className="tragamonedas-betting-loading">
-            ⏳ Creando apuesta...
-          </div>
-        )}
-
-        {betting.isFinishingGame && (
-          <div className="tragamonedas-finishing-loading">
-            🏁 Finalizando partida...
-          </div>
-        )}
-
         {/* Información del último resultado */}
         {lastGameResult && (
           <div className="tragamonedas-last-result">
             <h3>🎯 Último Resultado</h3>
             <div className="result-info">
               <div className="result-outcome">
-                <span className={`result-status ${lastGameResult.isWin ? 'win' : 'lose'}`}>
-                  {lastGameResult.isWin ? '🎉 GANASTE' : '😞 Perdiste'}
+                <span className={`result-status ${lastGameResult.win ? 'win' : 'lose'}`}>
+                  {lastGameResult.win ? '🎉 GANASTE' : '😞 Perdiste'}
                 </span>
                 <span className="result-money">
-                  {lastGameResult.isWin 
+                  {lastGameResult.win 
                     ? `+$${lastGameResult.winAmount.toLocaleString()}` 
-                    : `-$${lastGameResult.betAmount.toLocaleString()}`
+                    : `-$${lastGameResult.totalBet.toLocaleString()}`
                   }
                 </span>
               </div>
               <div className="result-details">
-                <span>Apuesta: ${lastGameResult.betAmount.toLocaleString()}</span>
+                <span>Apuesta: ${lastGameResult.totalBet.toLocaleString()}</span>
                 {lastGameResult.winningLines.length > 0 && (
                   <span>Líneas ganadoras: {lastGameResult.winningLines.length}</span>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Mostrar errores de betting */}
+        {(betError || finishError) && (
+          <div className="tragamonedas-last-result">
+            <h3>⚠️ Error</h3>
+            <div className="result-info">
+              <div className="result-outcome">
+                <span className="result-status lose">
+                  {betError ? '❌ Error al crear apuesta' : '❌ Error al finalizar'}
+                </span>
+              </div>
+              <div className="result-details">
+                <span>{(betError as Error)?.message || (finishError as Error)?.message || 'Error desconocido'}</span>
               </div>
             </div>
           </div>
@@ -334,10 +358,10 @@ const MaquinaTragamonedasGame: React.FC = () => {
             {/* Carretes */}
             <div className={`reels-container ${isSpinning ? 'spinning' : ''}`}>
               {reels.map((reel, reelIndex) => (
-                <div key={`reel-${reelIndex}`} className="reel">
+                <div key={`reel-col-${reelIndex}`} className="reel">
                   {reel.map((symbol, symbolIndex) => (
                     <div
-                      key={`symbol-${reelIndex}-${symbolIndex}`}
+                      key={`symbol-${reelIndex}-${symbolIndex}-${symbol}`}
                       className={`symbol ${isSymbolWinning(reelIndex, symbolIndex) ? 'winning' : ''}`}
                     >
                       {symbol}
@@ -399,10 +423,15 @@ const MaquinaTragamonedasGame: React.FC = () => {
           <button
             onClick={spin}
             disabled={!canSpin}
-            className={`spin-button ${isSpinning ? 'spinning' : ''}`}
+            className={`spin-button ${(isSpinning || isPlacingBet || isFinishingGame) ? 'spinning' : ''}`}
             aria-label={isSpinning ? 'Girando' : 'Girar carretes'}
           >
-            {isSpinning ? '🌀 GIRANDO...' : '🎰 SPIN'}
+            {(() => {
+              if (isPlacingBet) return '🎰 APOSTANDO...';
+              if (isSpinning) return '🌀 GIRANDO...';
+              if (isFinishingGame) return '💰 FINALIZANDO...';
+              return '🎰 SPIN';
+            })()}
           </button>
 
           {/* Botón de reset */}
