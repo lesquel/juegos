@@ -29,15 +29,17 @@ const CategoryGameSearchComponent = ({ onSearch, className, initialFilters: exte
   }), [externalInitialFilters]);
 
   return (
-    <SearchComponent
-      onSearch={onSearch}
-      filterOptions={filterOptions}
-      sortOptions={sortOptions}
-      placeholder="Buscar categorías..."
-      showSort={true}
-      className={className}
-      initialFilters={initialFilters}
-    />
+    <div className="px-4 sm:px-8 lg:px-12 xl:px-16">
+      <SearchComponent
+        onSearch={onSearch}
+        filterOptions={filterOptions}
+        sortOptions={sortOptions}
+        placeholder="Buscar categorías..."
+        showSort={true}
+        className={className}
+        initialFilters={initialFilters}
+      />
+    </div>
   );
 };
 

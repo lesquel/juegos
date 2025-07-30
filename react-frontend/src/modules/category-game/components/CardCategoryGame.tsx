@@ -23,10 +23,10 @@ export const CardCategoryGame = memo(({ category }: CardCategoryGameProps) => {
   return (
     <Link
       to={categoryUrl}
-      className="relative block rounded-3xl overflow-hidden group transform transition-all duration-500 ease-out hover:scale-105 shadow-2xl hover:shadow-cyan-500/25"
+      className="relative block rounded-3xl overflow-hidden group transform transition-all duration-500 ease-out hover:scale-105 shadow-2xl hover:shadow-cyan-500/25 h-full"
     >
       {/* Contenedor de imagen con parallax */}
-      <div className="relative h-64 overflow-hidden">
+      <div className="relative h-80 sm:h-96 lg:h-[28rem] overflow-hidden">
         <img
           src={category_img}
           alt={category_name}
@@ -45,19 +45,19 @@ export const CardCategoryGame = memo(({ category }: CardCategoryGameProps) => {
       </div>
 
       {/* Contenido */}
-      <div className="absolute inset-0 z-20 flex flex-col justify-end p-6">
-        <div className="relative">
+      <div className="absolute inset-0 z-20 flex flex-col justify-end p-8 sm:p-10 lg:p-12">
+        <div className="relative space-y-4 sm:space-y-5 lg:space-y-6">
           {/* Fondo glassmorphism para el contenido */}
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -m-4 p-4"></div>
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-2xl border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -m-6 p-6"></div>
           
           <div className="relative">
-            <h2 className="text-2xl font-bold mb-3 bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent drop-shadow-lg">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 sm:mb-5 lg:mb-6 bg-gradient-to-r from-cyan-400 via-white to-purple-400 bg-clip-text text-transparent drop-shadow-lg leading-tight">
               {category_name}
             </h2>
-            <p className="text-gray-200 text-sm mb-4 h-10 overflow-hidden leading-relaxed">
+            <p className="text-gray-200 text-base sm:text-lg lg:text-xl mb-6 sm:mb-7 lg:mb-8 line-clamp-3 leading-relaxed font-medium">
               {category_description}
             </p>
-            <div className="flex items-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-semibold group-hover:from-cyan-300 group-hover:to-purple-300 transition-all duration-300">
+            <div className="flex items-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-bold text-lg sm:text-xl group-hover:from-cyan-300 group-hover:to-purple-300 transition-all duration-300">
               <span>Explorar Juegos</span>
               <div className="text-current transition-transform duration-300 group-hover:translate-x-1">
                 {arrowIcon}
