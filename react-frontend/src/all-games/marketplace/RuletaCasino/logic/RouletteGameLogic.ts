@@ -1,11 +1,11 @@
-import type { 
-  RouletteGameState, 
-  BetResult, 
-  WinningBet, 
-  RouletteNumber, 
-  BetOption, 
-  GameConfig, 
-  SpinResult 
+import type {
+  RouletteGameState,
+  BetResult,
+  WinningBet,
+  RouletteNumber,
+  BetOption,
+  GameConfig,
+  SpinResult
 } from '../types/RouletteTypes';
 
 export class RouletteGameLogic {
@@ -17,7 +17,7 @@ export class RouletteGameLogic {
     RESULT_DISPLAY_DURATION: 3000,
     CELEBRATION_DURATION: 4000,
     RIGGED_MODE: true,
-    HOUSE_EDGE: 0.02 // 2% probabilidad de perder (ligeramente más favorable al jugador)
+    HOUSE_EDGE: 0.05 // 5% probabilidad de perder (mucho más favorable al jugador)
   };
 
   public static readonly NUMBERS: RouletteNumber[] = [
@@ -63,7 +63,7 @@ export class RouletteGameLogic {
   public static readonly BET_OPTIONS: BetOption[] = [
     // Apuestas internas
     { id: 'straight', name: 'Pleno', payout: 35, description: 'Un número', type: 'inside' },
-    
+
     // Apuestas externas
     { id: 'red', name: 'Rojo', payout: 1, description: 'Números rojos', type: 'outside' },
     { id: 'black', name: 'Negro', payout: 1, description: 'Números negros', type: 'outside' },
@@ -130,7 +130,7 @@ export class RouletteGameLogic {
 
   public static getNumberColor(number: number): 'red' | 'black' | 'green' {
     if (number === 0) return 'green';
-    
+
     const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
     return redNumbers.includes(number) ? 'red' : 'black';
   }
@@ -190,14 +190,14 @@ export class RouletteGameLogic {
         const payout = this.getBetPayout(betId);
         const multiplier = payout + 1; // Incluye la apuesta original
         const winAmount = betAmount * multiplier;
-        
+
         winningBets.push({
           betId,
           betAmount,
           payout: winAmount,
           multiplier
         });
-        
+
         totalWinnings += winAmount;
       }
     });
@@ -211,43 +211,44 @@ export class RouletteGameLogic {
     }
 
     const shouldTriggerHouseEdge = Math.random() < this.CONFIG.HOUSE_EDGE;
-    
+
     if (shouldTriggerHouseEdge) {
       const losingNumbers = this.findLosingNumbers(state);
-      
+
       if (losingNumbers.length > 0) {
         return this.selectLosingNumber(losingNumbers);
       }
-      
+
       return this.findLeastProfitableNumber(state);
     }
-    
-    return this.generateRandomNumber();
+
+    // 85% del tiempo, buscar números que hagan ganar al jugador
+    return this.findWinningNumber(state);
   }
 
   private static findLosingNumbers(state: RouletteGameState): number[] {
     const losingNumbers: number[] = [];
-    
+
     for (let num = 0; num <= 36; num++) {
       const isLosingNumber = this.isNumberLosing(state, num);
-      
+
       if (isLosingNumber) {
         losingNumbers.push(num);
       }
     }
-    
+
     return losingNumbers;
   }
 
   private static isNumberLosing(state: RouletteGameState, number: number): boolean {
     let isLosing = true;
-    
+
     state.bets.forEach((amount, betId) => {
       if (this.isBetWinning(betId, number)) {
         isLosing = false;
       }
     });
-    
+
     return isLosing;
   }
 
@@ -256,14 +257,14 @@ export class RouletteGameLogic {
     if (losingNumbers.includes(0)) {
       return Math.random() < 0.3 ? 0 : losingNumbers[Math.floor(Math.random() * losingNumbers.length)];
     }
-    
+
     return losingNumbers[Math.floor(Math.random() * losingNumbers.length)];
   }
 
   private static findLeastProfitableNumber(state: RouletteGameState): number {
     let minPayout = Infinity;
     let leastProfitableNumber = 0;
-    
+
     for (let num = 0; num <= 36; num++) {
       const { totalWinnings } = this.calculateWinnings(state, num);
       if (totalWinnings < minPayout) {
@@ -271,7 +272,7 @@ export class RouletteGameLogic {
         leastProfitableNumber = num;
       }
     }
-    
+
     return leastProfitableNumber;
   }
 
@@ -282,7 +283,7 @@ export class RouletteGameLogic {
 
   public static processSpinResult(state: RouletteGameState, winningNumber: number): SpinResult {
     const { totalWinnings, winningBets } = this.calculateWinnings(state, winningNumber);
-    
+
     return {
       winningNumber,
       totalWinnings,

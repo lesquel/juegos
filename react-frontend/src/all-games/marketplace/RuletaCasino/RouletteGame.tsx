@@ -54,10 +54,15 @@ export function RouletteGame() {
   }, [spinTimeouts]);
 
   const handlePlaceBet = useCallback((betId: string) => {
-    if (gameState.isSpinning || !bettingService.canPlaceBet(gameState.selectedChip)) return;
+    if (gameState.isSpinning || gameState.balance < gameState.selectedChip) return;
 
-    setGameState(prev => RouletteGameLogic.placeBet(prev, betId, prev.selectedChip));
-  }, [gameState.isSpinning, gameState.selectedChip, bettingService]);
+    console.log("🎯 Colocando apuesta:", { betId, chip: gameState.selectedChip, currentTotalBet: gameState.totalBet });
+    setGameState(prev => {
+      const newState = RouletteGameLogic.placeBet(prev, betId, prev.selectedChip);
+      console.log("🎯 Estado actualizado:", { oldTotalBet: prev.totalBet, newTotalBet: newState.totalBet });
+      return newState;
+    });
+  }, [gameState.isSpinning, gameState.selectedChip, gameState.balance, gameState.totalBet]);
 
   const handleChipChange = useCallback((chipValue: number) => {
     if (gameState.isSpinning) return;
